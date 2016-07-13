@@ -52,40 +52,26 @@ public final class WeatherRenderer {
 	/**
 	 * Renders the {@link WeatherRenderer}
 	 */
-	public static final void render(FrameBuffer toDrawTo, World world, Graphics graphics) {
+	public static final void render(final FrameBuffer toDrawTo, final World world, final Graphics graphics) {
 		renderSky(toDrawTo, world, graphics);
 		renderStars(toDrawTo, world, graphics);
 		updateSun(world, graphics);
 	}
 
 
-	public static void renderClouds(World world, Graphics graphics) {
-		graphics.getSpriteBatch().begin();
-		graphics.getSpriteBatch().setShader(Shaders.particleTexture);
-		int source = graphics.getSpriteBatch().getBlendSrcFunc();
-		int destination = graphics.getSpriteBatch().getBlendDstFunc();
-		graphics.getSpriteBatch().setBlendFunction(GL11.GL_ONE, GL11.GL_ONE);
-		for (Cloud c : world.getClouds()) {
-			c.render(graphics, graphics.getCam().position);
-		}
-		graphics.getSpriteBatch().setBlendFunction(source, destination);
-		graphics.getSpriteBatch().end();
-	}
-
-
-	private static final void updateSun(World world, Graphics graphics) {
-		float time = world.getEpoch().getTime();
-		float radius = graphics.getWidth()/2.5f;
-		Vector2 position = orbitalPivot.cpy().add(new Vector2(0f, radius).rotate(-((time - 12f) / 12f) * 180f));
+	private static final void updateSun(final World world, final Graphics graphics) {
+		final float time = world.getEpoch().getTime();
+		final float radius = graphics.getWidth()/2.5f;
+		final Vector2 position = orbitalPivot.cpy().add(new Vector2(0f, radius).rotate(-((time - 12f) / 12f) * 180f));
 
 		sunPosition.x = position.x;
 		sunPosition.y = position.y;
 	}
 
 
-	public static final Color getDaylightColor(World world) {
-		float time = world.getEpoch().getTime();
-		Color filter = new Color();
+	public static final Color getDaylightColor(final World world) {
+		final float time = world.getEpoch().getTime();
+		final Color filter = new Color();
 
 		if (time < 10) {
 			filter.r = (float) (0.06D + 1.1D * exp(-0.100*pow(time-10, 2)));
@@ -111,9 +97,9 @@ public final class WeatherRenderer {
 	}
 
 
-	public static final Color getSunColor(World world) {
-		float time = world.getEpoch().getTime();
-		Color filter = new Color();
+	public static final Color getSunColor(final World world) {
+		final float time = world.getEpoch().getTime();
+		final Color filter = new Color();
 
 		if (time < 10) {
 			filter.r = (float) (0.5D + 0.5D * exp(-0.050*pow(time-10, 2)));
@@ -135,14 +121,14 @@ public final class WeatherRenderer {
 
 
 	/** Renders the sky */
-	private static final void renderSky(FrameBuffer toDrawTo, World world, Graphics graphics) {
+	private static final void renderSky(final FrameBuffer toDrawTo, final World world, final Graphics graphics) {
 		skyBuffer.begin();
 		graphics.getSpriteBatch().begin();
 		graphics.getSpriteBatch().setShader(Shaders.sky);
-		Color filter = getDaylightColor(world);
+		final Color filter = getDaylightColor(world);
 
-		Color topColor = dayTopColor.cpy().mul(world.getEpoch().dayLight()).add(nightTopColor.cpy().mul(1f - world.getEpoch().dayLight())).mul(filter);
-		Color bottomColor = dayBottomColor.cpy().mul(world.getEpoch().dayLight()).add(nightBottomColor.cpy().mul(1f - world.getEpoch().dayLight())).mul(filter);
+		final Color topColor = dayTopColor.cpy().mul(world.getEpoch().dayLight()).add(nightTopColor.cpy().mul(1f - world.getEpoch().dayLight())).mul(filter);
+		final Color bottomColor = dayBottomColor.cpy().mul(world.getEpoch().dayLight()).add(nightBottomColor.cpy().mul(1f - world.getEpoch().dayLight())).mul(filter);
 
 		Shaders.sky.setUniformf("top", topColor);
 		Shaders.sky.setUniformf("bottom", bottomColor);
@@ -155,7 +141,7 @@ public final class WeatherRenderer {
 		graphics.getSpriteBatch().end();
 		skyBuffer.end();
 
-		float time = world.getEpoch().getTime();
+		final float time = world.getEpoch().getTime();
 
 		toDrawTo.begin();
 		graphics.getSpriteBatch().begin();
@@ -171,14 +157,14 @@ public final class WeatherRenderer {
 	}
 
 
-	private static final void renderStars(FrameBuffer toDrawTo, World world, Graphics graphics) {
+	private static final void renderStars(final FrameBuffer toDrawTo, final World world, final Graphics graphics) {
 		toDrawTo.begin();
 		graphics.getSpriteBatch().begin();
-		int source = graphics.getSpriteBatch().getBlendSrcFunc();
-		int destination = graphics.getSpriteBatch().getBlendDstFunc();
+		final int source = graphics.getSpriteBatch().getBlendSrcFunc();
+		final int destination = graphics.getSpriteBatch().getBlendDstFunc();
 		graphics.getSpriteBatch().setBlendFunction(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
 		WorldRenderer.gameWorldTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		for (CelestialBody celestialBody : celestialBodies) {
+		for (final CelestialBody celestialBody : celestialBodies) {
 			celestialBody.render(world, graphics);
 		}
 		graphics.getSpriteBatch().end();
@@ -188,7 +174,7 @@ public final class WeatherRenderer {
 	}
 
 
-	private static final float glareAlpha(float time) {
+	private static final float glareAlpha(final float time) {
 		if (time <= 4f || time >= 20f) {
 			return 1f;
 		}
@@ -196,7 +182,7 @@ public final class WeatherRenderer {
 	}
 
 
-	private static final float nightSuppression(float time) {
+	private static final float nightSuppression(final float time) {
 		if (time >= 4f || time <= 20f) {
 			return 1f;
 		}
@@ -204,7 +190,7 @@ public final class WeatherRenderer {
 	}
 
 
-	public static final float volumetricAlphaMultiplier(float time) {
+	public static final float volumetricAlphaMultiplier(final float time) {
 		if (time >= 8f && time <= 16f) {
 			return 1f;
 		} else if (time >= 16f && time <= 18f) {
@@ -233,7 +219,7 @@ public final class WeatherRenderer {
 		celestialBodies.add(new CelestialBody(0, getGdxWidth()/2.5f, 0f, Color.WHITE, true));
 
 		for (int i = 0; i < 500; i++) {
-			Vector2 cartesian = new Vector2(
+			final Vector2 cartesian = new Vector2(
 				(Util.getRandom().nextFloat() - 0.5f) * max(getGdxWidth(), getGdxHeight()) * 2.0f,
 				(Util.getRandom().nextFloat() - 0.5f) * max(getGdxWidth(), getGdxHeight()) * 2.0f
 			);
@@ -250,7 +236,7 @@ public final class WeatherRenderer {
 		}
 
 		for (int i = 0; i < 15; i++) {
-			Vector2 cartesian = new Vector2(
+			final Vector2 cartesian = new Vector2(
 				(Util.getRandom().nextFloat() - 0.5f) * max(getGdxWidth(), getGdxHeight()) * 2.0f,
 				(Util.getRandom().nextFloat() - 0.5f) * max(getGdxWidth(), getGdxHeight()) * 2.0f
 			);

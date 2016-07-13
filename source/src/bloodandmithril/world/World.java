@@ -7,15 +7,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ConcurrentSkipListSet;
 
-import com.badlogic.gdx.math.Vector2;
-
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualUpdateService;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.event.Event;
 import bloodandmithril.generation.ChunkGenerator;
-import bloodandmithril.graphics.Graphics;
 import bloodandmithril.graphics.background.BackgroundImages;
 import bloodandmithril.graphics.particles.Particle;
 import bloodandmithril.item.items.Item;
@@ -25,7 +22,6 @@ import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
-import bloodandmithril.world.weather.Cloud;
 
 /**
  * A World, holds info about the {@link Topography}, {@link Prop}s, {@link Individual}s and any related entities.
@@ -78,18 +74,13 @@ public final class World implements Serializable {
 	/** Time between each update tick */
 	private float												updateTick = 1f/60f;
 
-	/** Last time a cloud was added */
-	private long												lastCloudAdd 			= System.currentTimeMillis();
-
 	/** Outstanding events to be processed */
 	private final ConcurrentLinkedDeque<Event>					events					= new ConcurrentLinkedDeque<>();
-
-	private final ConcurrentLinkedDeque<Cloud>					clouds					= new ConcurrentLinkedDeque<>();
 
 	/**
 	 * Constructor
 	 */
-	public World(float gravity, Epoch epoch, ChunkGenerator generator) {
+	public World(final float gravity, final Epoch epoch, final ChunkGenerator generator) {
 		this(gravity, epoch, generator, Wiring.injector().getInstance(ParameterPersistenceService.class).getParameters().getNextWorldKey());
 	}
 
@@ -97,7 +88,7 @@ public final class World implements Serializable {
 	/**
 	 * Constructor
 	 */
-	public World(float gravity, Epoch epoch, ChunkGenerator generator, int worldId) {
+	public World(final float gravity, final Epoch epoch, final ChunkGenerator generator, final int worldId) {
 		this.epoch = epoch;
 		this.generator = generator;
 		this.worldId = worldId;
@@ -107,17 +98,13 @@ public final class World implements Serializable {
 		this.projectiles = new WorldProjectiles(worldId);
 		this.topography = new Topography(worldId);
 		this.positionalIndexMap = new PositionalIndexMap(worldId);
-
-		clouds.add(new Cloud(new Vector2(-2000, 200), 300, 5, 30, 50, 300, 0.1f));
-		clouds.add(new Cloud(new Vector2(-200, 200), 300, 5, 30, 50, 300, 0.1f));
-		clouds.add(new Cloud(new Vector2(1600, 200), 300, 5, 30, 50, 300, 0.1f));
 	}
 
 
 	/**
 	 * Adds an event
 	 */
-	public synchronized final void addEvent(Event e) {
+	public synchronized final void addEvent(final Event e) {
 		events.add(e);
 	}
 
@@ -130,7 +117,7 @@ public final class World implements Serializable {
 	}
 
 
-	public final World setUpdateTick(float updateTick) {
+	public final World setUpdateTick(final float updateTick) {
 		this.updateTick = updateTick;
 		return this;
 	}
@@ -140,39 +127,23 @@ public final class World implements Serializable {
 		epoch.incrementTime(updateTick);
 
 		for (int i = 5; i > 0; i--) {
-			for (int individualId : individuals) {
+			for (final int individualId : individuals) {
 				IndividualUpdateService.update(Domain.getIndividual(individualId), updateTick / 5f);
 			}
 		}
 
-		for (Prop prop : props().getProps()) {
+		for (final Prop prop : props().getProps()) {
 			prop.update(updateTick);
 		}
 
-		for (Projectile projectile : projectiles().getProjectiles()) {
+		for (final Projectile projectile : projectiles().getProjectiles()) {
 			projectile.update(updateTick);
 		}
 
-		for (Item item : items().getItems()) {
+		for (final Item item : items().getItems()) {
 			try {
 				item.update(updateTick);
-			} catch (NoTileFoundException e) {}
-		}
-
-		for (Cloud c : clouds) {
-			c.update(updateTick);
-
-			if (c.getPosition().x > Wiring.injector().getInstance(Graphics.class).getCam().position.x * 0.01f + 4000) {
-				clouds.remove(c);
-				System.out.println("Cloud Removed");
-			}
-		}
-
-		if (System.currentTimeMillis() > lastCloudAdd + 180 * 1000) {
-			clouds.add(new Cloud(new Vector2(-2000, 200), 300, 5, 30, 50, 300, 0.1f));
-			System.out.println("Cloud added");
-
-			lastCloudAdd = System.currentTimeMillis();
+			} catch (final NoTileFoundException e) {}
 		}
 	}
 
@@ -193,7 +164,7 @@ public final class World implements Serializable {
 	/**
 	 * @return the {@link #topography}
 	 */
-	public final void setTopography(Topography topography) {
+	public final void setTopography(final Topography topography) {
 		this.topography = topography;
 	}
 
@@ -278,17 +249,12 @@ public final class World implements Serializable {
 	}
 
 
-	public final void setEpoch(Epoch currentEpoch) {
+	public final void setEpoch(final Epoch currentEpoch) {
 		this.epoch = currentEpoch;
 	}
 
 
 	public final ChunkGenerator getGenerator() {
 		return generator;
-	}
-
-
-	public Collection<Cloud> getClouds() {
-		return clouds;
 	}
 }

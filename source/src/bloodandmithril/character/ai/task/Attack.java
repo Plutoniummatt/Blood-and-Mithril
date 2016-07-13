@@ -140,7 +140,7 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 			getHost().setWalking(false);
 		}
 
-		super.executeTask(delta);
+		super.internalExecute(delta);
 	}
 
 

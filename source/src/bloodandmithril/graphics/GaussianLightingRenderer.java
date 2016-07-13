@@ -260,11 +260,6 @@ public class GaussianLightingRenderer {
 		batch.setShader(Shaders.invertY);
 		batch.draw(workingFBO.getColorBufferTexture(), 0, 0);
 		batch.flush();
-		batch.setShader(Shaders.invertYFilter);
-
-		Shaders.invertYFilter.setUniformf("color", 1f, 1f, 1f, 0.9f);
-
-		batch.draw(WorldRenderer.cloudBuffer.getColorBufferTexture(), 0, 0);
 		batch.end();
 	}
 

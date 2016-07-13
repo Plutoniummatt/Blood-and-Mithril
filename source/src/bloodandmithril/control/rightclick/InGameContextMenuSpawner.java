@@ -4,7 +4,9 @@ import static bloodandmithril.control.InputUtilities.getMouseScreenX;
 import static bloodandmithril.control.InputUtilities.getMouseScreenY;
 import static bloodandmithril.control.InputUtilities.getMouseWorldX;
 import static bloodandmithril.control.InputUtilities.getMouseWorldY;
+import static bloodandmithril.control.InputUtilities.isKeyPressed;
 
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.google.inject.Inject;
 
@@ -28,6 +30,10 @@ public class InGameContextMenuSpawner implements RightClickHandler {
 
 	@Override
 	public boolean rightClick(final boolean doubleClick) {
+		if (isKeyPressed(Keys.ANY_KEY)) {
+			return false;
+		}
+
 		UserInterface.contextMenus.clear();
 		final ContextMenu newMenu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
 
