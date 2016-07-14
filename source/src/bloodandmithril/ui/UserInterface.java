@@ -69,6 +69,7 @@ import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.control.Controls;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;
+import bloodandmithril.core.ThreadedTasks;
 import bloodandmithril.core.Threading;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.generation.Structure;
@@ -181,27 +182,13 @@ public class UserInterface {
 	private static BloodAndMithrilClientInputProcessor inputProcessor;
 	private static Controls controls;
 	private static Graphics graphics;
+	private static ThreadedTasks threadedTasks;
 	private static GameSaver gameSaver;
 	private static ChunkLoader chunkLoader;
 	private static FactionControlService factionControlService;
 	private static GameClientStateTracker gameClientStateTracker;
 	private static Threading threading;
 	private static TopographyDebugRenderer topographyDebugRenderer;
-
-	static {
-		if (ClientServerInterface.isClient()) {
-			uiTexture = new Texture(files.internal("data/image/ui.png"));
-			iconTexture = new Texture(files.internal("data/image/icons.png"));
-
-			finalWaypointTexture = new TextureRegion(UserInterface.uiTexture, 0, 42, 16, 16);
-			jumpWaypointTexture = new TextureRegion(UserInterface.uiTexture, 0, 59, 39, 29);
-			currentArrow = new TextureRegion(UserInterface.uiTexture, 500, 1, 11, 8);
-			followArrow = new TextureRegion(UserInterface.uiTexture, 500, 10, 11, 8);
-			uiTasks = new ConcurrentLinkedDeque<>();
-			worldFloatingTexts = Maps.newHashMap();
-			shapeRenderer = new ShapeRenderer();
-		}
-	}
 
 
 	public UserInterface() {
@@ -230,11 +217,19 @@ public class UserInterface {
 
 	/**
 	 * Setup for UI, makes everything it needs.
-	 *
-	 * @param graphics.getWidth() - initial window width
-	 * @param graphics.getHeight() - initial window height
 	 */
 	public static synchronized void setup() {
+		uiTexture = new Texture(files.internal("data/image/ui.png"));
+		iconTexture = new Texture(files.internal("data/image/icons.png"));
+
+		finalWaypointTexture = new TextureRegion(UserInterface.uiTexture, 0, 42, 16, 16);
+		jumpWaypointTexture = new TextureRegion(UserInterface.uiTexture, 0, 59, 39, 29);
+		currentArrow = new TextureRegion(UserInterface.uiTexture, 500, 1, 11, 8);
+		followArrow = new TextureRegion(UserInterface.uiTexture, 500, 10, 11, 8);
+		uiTasks = new ConcurrentLinkedDeque<>();
+		worldFloatingTexts = Maps.newHashMap();
+		shapeRenderer = new ShapeRenderer();
+
 		inputProcessor = Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class);
 		controls = Wiring.injector().getInstance(Controls.class);
 		graphics = Wiring.injector().getInstance(Graphics.class);
@@ -1199,7 +1194,7 @@ public class UserInterface {
 		defaultFont.draw(graphics.getSpriteBatch(), "Number of chunks in memory of active world: " + Integer.toString(chunksInMemory), 5, graphics.getHeight() - 105);
 		defaultFont.draw(graphics.getSpriteBatch(), "Number of tasks queued in AI/Pathfinding thread: " + Integer.toString(AIProcessor.getNumberOfOutstandingTasks()), 5, graphics.getHeight() - 125);
 		defaultFont.draw(graphics.getSpriteBatch(), "Number of tasks queued in Loader thread: " + Integer.toString(chunkLoader.loaderTasks.size()), 5, graphics.getHeight() - 145);
-		defaultFont.draw(graphics.getSpriteBatch(), "Number of tasks queued in Saver thread: " + Integer.toString(gameSaver.saverTasks.size()), 5, graphics.getHeight() - 165);
+		defaultFont.draw(graphics.getSpriteBatch(), "Number of tasks queued in Saver thread: " + Integer.toString(threadedTasks.saverTasks.size()), 5, graphics.getHeight() - 165);
 
 		defaultFont.setColor(Color.CYAN);
 	}

@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.graphics.WorldRenderer.Depth;
@@ -31,7 +32,7 @@ public class TracerParticle extends Particle {
 	public Vector2 prevPosition;
 	public SerializableColor glowColow;
 
-	public TracerParticle(Vector2 position, Vector2 velocity, Color color, Color glowColor, float radius, int worldId, SerializableFunction<Boolean> removalCondition, float glowIntensity, MovementMode movementMode, Depth depth) {
+	public TracerParticle(final Vector2 position, final Vector2 velocity, final Color color, final Color glowColor, final float radius, final int worldId, final SerializableFunction<Boolean> removalCondition, final float glowIntensity, final MovementMode movementMode, final Depth depth) {
 		super(position, velocity, color, radius, worldId, removalCondition, movementMode, depth);
 		this.prevPosition = position.cpy();
 		this.glowIntensity = glowIntensity;
@@ -40,12 +41,12 @@ public class TracerParticle extends Particle {
 
 
 	@Override
-	public synchronized void render(float delta, TextureRegion texture, Graphics graphics) {
-		Topography topography = Domain.getWorld(worldId).getTopography();
+	public synchronized void render(final float delta, final TextureRegion texture, final Graphics graphics) {
+		final Topography topography = Domain.getWorld(worldId).getTopography();
 		if (topography.hasTile(position.x, position.y, true)) {
 			try {
 				if (topography.getTile(position.x, position.y, true).isPassable()) {
-					Color c = color.getColor();
+					final Color c = color.getColor();
 					Shaders.particleTexture.setUniformf("override", c.r, c.g, c.b, c.a);
 					graphics.getSpriteBatch().draw(
 						texture,
@@ -55,13 +56,13 @@ public class TracerParticle extends Particle {
 						radius * 2
 					);
 				}
-			} catch (NoTileFoundException e) {}
+			} catch (final NoTileFoundException e) {}
 		}
 	}
 
 
 	@Override
-	public synchronized void update(float delta) throws NoTileFoundException {
+	public synchronized void update(final float delta) throws NoTileFoundException {
 		if (doNotUpdate) {
 			return;
 		}
@@ -73,17 +74,18 @@ public class TracerParticle extends Particle {
 
 
 	@Override
-	public synchronized void renderLine(float delta) {
-		Topography topography = Domain.getWorld(worldId).getTopography();
+	public synchronized void renderLine(final float delta) {
+		final WorldRenderer worldRenderer = Wiring.injector().getInstance(WorldRenderer.class);
+		final Topography topography = Domain.getWorld(worldId).getTopography();
 		if (topography.hasTile(position.x, position.y, true) && topography.hasTile(prevPosition.x, prevPosition.y, true)) {
 			try {
 				if (topography.getTile(position.x, position.y, true).isPassable()) {
 					Gdx.gl.glLineWidth(radius == 1f ? 1f : 2 * radius);
-					WorldRenderer.shapeRenderer.setColor(color.getColor());
-					WorldRenderer.shapeRenderer.line(position.x, position.y, prevPosition.x, prevPosition.y);
-					WorldRenderer.shapeRenderer.flush();
+					worldRenderer.getShapeRenderer().setColor(color.getColor());
+					worldRenderer.getShapeRenderer().line(position.x, position.y, prevPosition.x, prevPosition.y);
+					worldRenderer.getShapeRenderer().flush();
 				}
-			} catch (NoTileFoundException e) {}
+			} catch (final NoTileFoundException e) {}
 		}
 	}
 }

@@ -9,7 +9,7 @@ import com.google.inject.Singleton;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
-import bloodandmithril.persistence.GameSaver;
+import bloodandmithril.persistence.PersistenceParameters;
 import bloodandmithril.world.Domain;
 
 /**
@@ -21,13 +21,13 @@ import bloodandmithril.world.Domain;
 @Copyright("Matthew Peck 2014")
 public class IndividualSaver {
 
-	@Inject private GameSaver gameSaver;
+	@Inject private PersistenceParameters persistenceParameters;
 
 	/**
 	 * Saves all {@link Individual}s
 	 */
 	public void saveAll() {
-		final FileHandle individuals = Gdx.files.local(gameSaver.getSavePath() + "/world/individuals.txt");
+		final FileHandle individuals = Gdx.files.local(persistenceParameters.getSavePath() + "/world/individuals.txt");
 		individuals.writeString(encode(Domain.getIndividualsMap()), false);
 	}
 }

@@ -4,7 +4,6 @@ import static bloodandmithril.graphics.Graphics.isOnScreen;
 import static bloodandmithril.graphics.WorldRenderer.Depth.BACKGROUND;
 import static bloodandmithril.graphics.WorldRenderer.Depth.FOREGROUND;
 import static bloodandmithril.graphics.WorldRenderer.Depth.MIDDLEGROUND;
-import static bloodandmithril.util.Logger.generalDebug;
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static com.badlogic.gdx.Gdx.files;
 import static com.badlogic.gdx.Gdx.gl;
@@ -15,11 +14,9 @@ import static com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888;
 import static com.badlogic.gdx.graphics.Texture.TextureFilter.Linear;
 import static com.badlogic.gdx.graphics.Texture.TextureFilter.Nearest;
 import static com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType.Line;
-import static com.google.common.collect.Collections2.filter;
 import static java.lang.Math.round;
 
 import java.io.Serializable;
-import java.util.Comparator;
 
 import org.lwjgl.opengl.GL11;
 
@@ -31,25 +28,17 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.google.common.base.Predicate;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import bloodandmithril.character.faction.FactionControlService;
-import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;
-import bloodandmithril.core.Wiring;
 import bloodandmithril.item.items.Item;
-import bloodandmithril.item.items.equipment.offhand.Torch;
 import bloodandmithril.item.items.equipment.weapon.ranged.Projectile;
-import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.Prop;
-import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.datastructure.Wrapper;
-import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
-import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
 /**
  * Class for rendering {@link World}s
@@ -61,7 +50,10 @@ import bloodandmithril.world.topography.Topography.NoTileFoundException;
 public class WorldRenderer {
 
 	/** {@link WorldRenderer}-specific {@link ShapeRenderer} */
-	public static ShapeRenderer shapeRenderer;
+	private static ShapeRenderer shapeRenderer;
+
+	/** {@link TextureRegion} to use to render a circle */
+	private static TextureRegion circle;
 
 	/** Textures */
 	public static Texture gameWorldTexture;
@@ -76,25 +68,11 @@ public class WorldRenderer {
 	public static FrameBuffer fBufferQuantized;
 	public static FrameBuffer combinedBufferQuantized;
 
-	private static TextureRegion circle;
-	private static Graphics graphics;
-	private static FactionControlService factionControlService;
-	private static GameClientStateTracker gameClientStateTracker;
+	@Inject private Graphics graphics;
+	@Inject private GameClientStateTracker gameClientStateTracker;
+	@Inject private IndividualPlatformFilteringRenderer individualPlatformFilteringRenderer;
 
-	static {
-		if (ClientServerInterface.isClient()) {
-			graphics = Wiring.injector().getInstance(Graphics.class);
-			factionControlService = Wiring.injector().getInstance(FactionControlService.class);
-			gameClientStateTracker = Wiring.injector().getInstance(GameClientStateTracker.class);
-			gameWorldTexture = new Texture(files.internal("data/image/gameWorld.png"));
-			individualTexture = new Texture(files.internal("data/image/character/individual.png"));
-			gameWorldTexture.setFilter(Linear, Linear);
-			individualTexture.setFilter(Nearest, Nearest);
-			circle = new TextureRegion(WorldRenderer.gameWorldTexture, 102, 422, 100, 100);
-		}
-	}
-
-	public static void dispose() {
+	public void dispose() {
 		fBuffer.dispose();
 		mBuffer.dispose();
 		bBuffer.dispose();
@@ -104,7 +82,23 @@ public class WorldRenderer {
 		combinedBufferQuantized.dispose();
 	}
 
-	public static void setup() {
+
+	public void setup() {
+		if (gameWorldTexture == null) {
+			gameWorldTexture 					= new Texture(files.internal("data/image/gameWorld.png"));
+			circle 								= new TextureRegion(WorldRenderer.gameWorldTexture, 102, 422, 100, 100);
+			gameWorldTexture.setFilter(Linear, Linear);
+		}
+
+		if (individualTexture == null) {
+			individualTexture 					= new Texture(files.internal("data/image/character/individual.png"));
+			individualTexture.setFilter(Nearest, Nearest);
+		}
+
+		if (shapeRenderer == null) {
+			shapeRenderer 						= new ShapeRenderer();
+		}
+
 		fBuffer 							= new FrameBuffer(RGBA8888, Graphics.getGdxWidth() + graphics.getCamMarginX(), Graphics.getGdxHeight() + graphics.getCamMarginY(), false);
 		mBuffer 							= new FrameBuffer(RGBA8888, Graphics.getGdxWidth() + graphics.getCamMarginX(), Graphics.getGdxHeight() + graphics.getCamMarginY(), false);
 		bBuffer 							= new FrameBuffer(RGBA8888, Graphics.getGdxWidth() + graphics.getCamMarginX(), Graphics.getGdxHeight() + graphics.getCamMarginY(), false);
@@ -114,31 +108,92 @@ public class WorldRenderer {
 		combinedBufferQuantized 			= new FrameBuffer(RGBA8888, Graphics.getGdxWidth() + graphics.getCamMarginX(), Graphics.getGdxHeight() + graphics.getCamMarginY(), false);
 
 		bBuffer.getColorBufferTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
-		shapeRenderer = new ShapeRenderer();
 	}
 
 
-	public static void render(final World world, final int camX, final int camY) {
+	public void render(final World world, final int camX, final int camY) {
 		final SpriteBatch batch = graphics.getSpriteBatch();
 
 		gameClientStateTracker.setRendering(true);
-		bBuffer.begin();
-		Shaders.invertAlphaSolidColor.begin();
-		world.getTopography().renderBackGround(camX, camY, Shaders.pass, shader -> {}, graphics);
+		renderBackgroundBuffer(world, camX, camY, batch);
+		renderQuantizedBuffersForTileLighting(world, camX, camY, batch);
+		renderMiddleGroundBuffer(world, batch);
+		renderForeGroundBuffer(world, camX, camY, batch);
+
+		// Renders all buffers using the final renderer
+		GaussianLightingRenderer.render(camX, camY, world);
+		gameClientStateTracker.setRendering(false);
+	}
+
+	private void renderForeGroundBuffer(final World world, final int camX, final int camY, final SpriteBatch batch) {
+		fBuffer.begin();
+		gl20.glClear(GL_COLOR_BUFFER_BIT);
+		individualTexture.setFilter(Linear, Linear);
 		batch.begin();
 		batch.setShader(Shaders.filter);
-		Shaders.pass.setUniformMatrix("u_projTrans", graphics.getCam().combined);
+		Shaders.filter.setUniformMatrix("u_projTrans", graphics.getCam().combined);
 		for (final Prop prop : world.props().getProps()) {
-			if (prop.depth == BACKGROUND) {
+			if (prop.depth == FOREGROUND) {
 				Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
+				prop.preRender();
 				prop.render(graphics);
 				batch.flush();
 			}
 		}
-		renderParticles(Depth.BACKGROUND, world);
+		for (final Item item : world.items().getItems()) {
+			Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
+			item.render(graphics);
+			batch.flush();
+		}
 		batch.end();
-		bBuffer.end();
+		individualTexture.setFilter(Nearest, Nearest);
+		individualPlatformFilteringRenderer.renderIndividuals(world.getWorldId());
+		batch.begin();
+		batch.setShader(Shaders.filter);
+		Shaders.filter.setUniformMatrix("u_projTrans", graphics.getCam().combined);
+		for (final Projectile projectile : world.projectiles().getProjectiles()) {
+			Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
+			projectile.render(batch);
+			batch.flush();
+		}
+		renderParticles(Depth.FOREGROUND, world);
+		batch.end();
+		world.getTopography().renderForeGround(camX, camY, Shaders.pass, shader -> {}, graphics);
+		batch.begin();
+		batch.setShader(Shaders.filter);
+		Shaders.filter.setUniformMatrix("u_projTrans", graphics.getCam().combined);
+		for (final Prop prop : world.props().getProps()) {
+			if (prop.depth == Depth.FRONT) {
+				Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
+				prop.preRender();
+				prop.render(graphics);
+				batch.flush();
+			}
+		}
+		batch.end();
+		fBuffer.end();
+	}
 
+	private void renderMiddleGroundBuffer(final World world, final SpriteBatch batch) {
+		mBuffer.begin();
+		gl20.glClear(GL_COLOR_BUFFER_BIT);
+		batch.begin();
+		batch.setShader(Shaders.filter);
+		Shaders.filter.setUniformMatrix("u_projTrans", graphics.getCam().combined);
+		for (final Prop prop : world.props().getProps()) {
+			if (prop.depth == MIDDLEGROUND) {
+				Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
+				prop.preRender();
+				prop.render(graphics);
+				batch.flush();
+			}
+		}
+		renderParticles(MIDDLEGROUND, world);
+		batch.end();
+		mBuffer.end();
+	}
+
+	private void renderQuantizedBuffersForTileLighting(final World world, final int camX, final int camY, final SpriteBatch batch) {
 		final int xOffset = round(graphics.getCam().position.x) % TILE_SIZE;
 		final int yOffset = round(graphics.getCam().position.y) % TILE_SIZE;
 
@@ -198,77 +253,29 @@ public class WorldRenderer {
 		);
 		batch.end();
 		combinedBufferQuantized.end();
+	}
 
-		mBuffer.begin();
-		gl20.glClear(GL_COLOR_BUFFER_BIT);
+	private void renderBackgroundBuffer(final World world, final int camX, final int camY, final SpriteBatch batch) {
+		bBuffer.begin();
+		Shaders.invertAlphaSolidColor.begin();
+		world.getTopography().renderBackGround(camX, camY, Shaders.pass, shader -> {}, graphics);
 		batch.begin();
 		batch.setShader(Shaders.filter);
-		Shaders.filter.setUniformMatrix("u_projTrans", graphics.getCam().combined);
+		Shaders.pass.setUniformMatrix("u_projTrans", graphics.getCam().combined);
 		for (final Prop prop : world.props().getProps()) {
-			if (prop.depth == MIDDLEGROUND) {
+			if (prop.depth == BACKGROUND) {
 				Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
-				prop.preRender();
 				prop.render(graphics);
 				batch.flush();
 			}
 		}
-		renderParticles(MIDDLEGROUND, world);
+		renderParticles(Depth.BACKGROUND, world);
 		batch.end();
-		mBuffer.end();
-
-		fBuffer.begin();
-		gl20.glClear(GL_COLOR_BUFFER_BIT);
-		individualTexture.setFilter(Linear, Linear);
-		batch.begin();
-		batch.setShader(Shaders.filter);
-		Shaders.filter.setUniformMatrix("u_projTrans", graphics.getCam().combined);
-		for (final Prop prop : world.props().getProps()) {
-			if (prop.depth == FOREGROUND) {
-				Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
-				prop.preRender();
-				prop.render(graphics);
-				batch.flush();
-			}
-		}
-		for (final Item item : world.items().getItems()) {
-			Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
-			item.render(graphics);
-			batch.flush();
-		}
-		batch.end();
-		individualTexture.setFilter(Nearest, Nearest);
-		IndividualPlatformFilteringRenderer.renderIndividuals(world.getWorldId());
-		batch.begin();
-		batch.setShader(Shaders.filter);
-		Shaders.filter.setUniformMatrix("u_projTrans", graphics.getCam().combined);
-		for (final Projectile projectile : world.projectiles().getProjectiles()) {
-			Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
-			projectile.render(batch);
-			batch.flush();
-		}
-		renderParticles(Depth.FOREGROUND, world);
-		batch.end();
-		world.getTopography().renderForeGround(camX, camY, Shaders.pass, shader -> {}, graphics);
-		batch.begin();
-		batch.setShader(Shaders.filter);
-		Shaders.filter.setUniformMatrix("u_projTrans", graphics.getCam().combined);
-		for (final Prop prop : world.props().getProps()) {
-			if (prop.depth == Depth.FRONT) {
-				Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
-				prop.preRender();
-				prop.render(graphics);
-				batch.flush();
-			}
-		}
-		batch.end();
-		fBuffer.end();
-
-		GaussianLightingRenderer.render(camX, camY, world);
-		gameClientStateTracker.setRendering(false);
+		bBuffer.end();
 	}
 
 
-	private static void renderParticles(final Depth depth, final World world) {
+	private void renderParticles(final Depth depth, final World world) {
 		final SpriteBatch batch = graphics.getSpriteBatch();
 
 		gl20.glEnable(GL20.GL_BLEND);
@@ -322,81 +329,14 @@ public class WorldRenderer {
 
 
 	/**
-	 * Class to encapsulate the rendering of {@link Individual}s
-	 *
-	 * @author Matt
+	 * @return the {@link WorldRenderer} specific {@link ShapeRenderer}
 	 */
-	private static class IndividualPlatformFilteringRenderer {
-
-
-		/** {@link Predicate} for filtering out those that are NOT on platforms */
-		private static Predicate<Individual> onPlatform = new Predicate<Individual>() {
-			@Override
-			public boolean apply(final Individual individual) {
-				try {
-					if (Domain.getWorld(individual.getWorldId()).getTopography().getTile(individual.getState().position.x, individual.getState().position.y - TILE_SIZE/2, true).isPlatformTile ||
-						Domain.getWorld(individual.getWorldId()).getTopography().getTile(individual.getState().position.x, individual.getState().position.y - 3 * TILE_SIZE/2, true).isPlatformTile) {
-						return true;
-					} else {
-						return false;
-					}
-				} catch (final NoTileFoundException e) {
-					return false;
-				}
-
-			};
-		};
-
-		/** {@link Predicate} for filtering out those that ARE on platforms */
-		private static Predicate<Individual> offPlatform = new Predicate<Individual>() {
-			@Override
-			public boolean apply(final Individual individual) {
-				try {
-					if (Domain.getWorld(individual.getWorldId()).getTopography().getTile(individual.getState().position.x, individual.getState().position.y - TILE_SIZE/2, true).isPlatformTile ||
-						Domain.getWorld(individual.getWorldId()).getTopography().getTile(individual.getState().position.x, individual.getState().position.y - 3 * TILE_SIZE/2, true).isPlatformTile) {
-						return false;
-					} else {
-						return true;
-					}
-				} catch (final NoTileFoundException e) {
-					return false;
-				}
-			};
-		};
-
-		private static Comparator<Individual> renderPrioritySorter = (i1, i2) -> {
-			return Integer.compare(getIndividualRenderPriority(i1), getIndividualRenderPriority(i2));
-		};
-
-		/** Renders all individuals, ones that are on platforms are rendered first */
-		private static void renderIndividuals(final int worldId) {
-			try {
-				for (final Individual indi : filter(Domain.getSortedIndividualsForWorld(renderPrioritySorter, worldId), offPlatform)) {
-					Renderer.render(indi, graphics);
-				}
-
-				for (final Individual indi : filter(Domain.getSortedIndividualsForWorld(renderPrioritySorter, worldId), onPlatform)) {
-					Renderer.render(indi, graphics);
-				}
-			} catch (final NullPointerException e) {
-				generalDebug("Nullpointer whilst rendering individual", LogLevel.INFO, e);
-			}
-		}
+	public ShapeRenderer getShapeRenderer() {
+		return shapeRenderer;
 	}
 
 
 	public enum Depth implements Serializable {
 		BACKGROUND, FOREGROUND, MIDDLEGROUND, FRONT
-	}
-
-
-	private static int getIndividualRenderPriority(final Individual individual) {
-		for (final Item equipped : individual.getEquipped().keySet()) {
-			if (equipped instanceof Torch) {
-				return 2;
-			}
-		}
-
-		return factionControlService.isControllable(individual) ? 1 : 0;
 	}
 }

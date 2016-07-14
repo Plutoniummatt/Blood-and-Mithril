@@ -15,7 +15,7 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.networking.ClientServerInterface;
-import bloodandmithril.persistence.GameSaver;
+import bloodandmithril.persistence.PersistenceParameters;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.world.Domain;
 
@@ -28,7 +28,7 @@ import bloodandmithril.world.Domain;
 @Copyright("Matthew Peck 2014")
 public class IndividualLoader {
 
-	@Inject private GameSaver gameSaver;
+	@Inject private PersistenceParameters persistenceParameters;
 	@Inject private GameClientStateTracker gameClientStateTracker;
 	@Inject private AddIndividualService addIndividualService;
 
@@ -38,7 +38,7 @@ public class IndividualLoader {
 	@SuppressWarnings("unchecked")
 	public void loadAll() {
 		try {
-			final ConcurrentHashMap<Integer, Individual> decoded = (ConcurrentHashMap<Integer, Individual>) decode(files.local(gameSaver.getSavePath() + "/world/individuals.txt"));
+			final ConcurrentHashMap<Integer, Individual> decoded = (ConcurrentHashMap<Integer, Individual>) decode(files.local(persistenceParameters.getSavePath() + "/world/individuals.txt"));
 
 			decoded.values().stream().forEach(individual -> {
 				addIndividualService.addIndividual(individual, individual.getWorldId());

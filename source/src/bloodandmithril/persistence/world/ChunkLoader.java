@@ -22,7 +22,7 @@ import bloodandmithril.generation.Structure;
 import bloodandmithril.generation.Structures;
 import bloodandmithril.generation.patterns.GlobalLayers;
 import bloodandmithril.graphics.Graphics;
-import bloodandmithril.persistence.GameSaver;
+import bloodandmithril.persistence.PersistenceParameters;
 import bloodandmithril.persistence.ZipHelper;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
@@ -52,7 +52,7 @@ public class ChunkLoader {
 	/** The current chunk coordinates that is in the queue to be loaded/generated */
 	private final ConcurrentDualKeyHashMap<Integer, Integer, Boolean> chunksInQueue = new ConcurrentDualKeyHashMap<>();
 
-	@Inject private GameSaver gameSaver;
+	@Inject private PersistenceParameters persistenceParameters;
 	@Inject private ChunkGenerator chunkGenerator;
 	@Inject private GameClientStateTracker gameClientStateTracker;
 
@@ -122,7 +122,7 @@ public class ChunkLoader {
 
 	public void loadWorlds() {
 		try {
-			final HashMap<Integer, World> worlds = decode(Gdx.files.local(gameSaver.getSavePath() + "/world/worlds.txt"));
+			final HashMap<Integer, World> worlds = decode(Gdx.files.local(persistenceParameters.getSavePath() + "/world/worlds.txt"));
 
 			worlds.values().stream().forEach(world -> {
 				Domain.addWorld(world);
@@ -136,7 +136,7 @@ public class ChunkLoader {
 				world.setTopography(new Topography(world.getWorldId()));
 
 				try {
-					final ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, Integer>> keys = decode(Gdx.files.local(gameSaver.getSavePath() + "/world/world" + Integer.toString(world.getWorldId()) + "/superStructureKeys.txt"));
+					final ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, Integer>> keys = decode(Gdx.files.local(persistenceParameters.getSavePath() + "/world/world" + Integer.toString(world.getWorldId()) + "/superStructureKeys.txt"));
 					world.getTopography().getStructures().setSuperStructureKeys(keys);
 				} catch (final Exception e) {
 					Logger.loaderDebug("Failed to load chunk super structure structure keys", LogLevel.DEBUG);
@@ -145,7 +145,7 @@ public class ChunkLoader {
 				}
 
 				try {
-					final ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, Integer>> keys = decode(Gdx.files.local(gameSaver.getSavePath() + "/world/world" + Integer.toString(world.getWorldId()) + "/subStructureKeys.txt"));
+					final ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, Integer>> keys = decode(Gdx.files.local(persistenceParameters.getSavePath() + "/world/world" + Integer.toString(world.getWorldId()) + "/subStructureKeys.txt"));
 					world.getTopography().getStructures().setSubStructureKeys(keys);
 				} catch (final Exception e) {
 					Logger.loaderDebug("Failed to load chunk sub structure keys", LogLevel.DEBUG);
@@ -161,14 +161,14 @@ public class ChunkLoader {
 	 * @param newGame */
 	public synchronized void loadGenerationData() {
 		try {
-			final ConcurrentHashMap<Integer, Structure> structures = decode(Gdx.files.local(gameSaver.getSavePath() + "/world/structures.txt"));
+			final ConcurrentHashMap<Integer, Structure> structures = decode(Gdx.files.local(persistenceParameters.getSavePath() + "/world/structures.txt"));
 			Structures.setStructures(structures);
 		} catch (final Exception e) {
 			Logger.loaderDebug("Failed to load structures", LogLevel.DEBUG);
 		}
 
 		try {
-			GlobalLayers.layers = decode(Gdx.files.local(gameSaver.getSavePath() + "/world/layers.txt"));
+			GlobalLayers.layers = decode(Gdx.files.local(persistenceParameters.getSavePath() + "/world/layers.txt"));
 		} catch (final Exception e) {
 			Logger.loaderDebug("Failed to load layers", LogLevel.DEBUG);
 		}
@@ -181,7 +181,7 @@ public class ChunkLoader {
 			Logger.loaderDebug("Loading chunk: x=" + chunkX + ", y=" + chunkY, LogLevel.TRACE);
 
 			try {
-				final ZipFile zipFile = new ZipFile(gameSaver.getSavePath() + "/world/world" + Integer.toString(world.getWorldId()) + "/chunkData.zip");
+				final ZipFile zipFile = new ZipFile(persistenceParameters.getSavePath() + "/world/world" + Integer.toString(world.getWorldId()) + "/chunkData.zip");
 
 				final boolean newCol = world.getTopography().getChunkMap().get(chunkX) == null;
 				final HashMap<Integer, Chunk> col = newCol ? new HashMap<Integer, Chunk>() : world.getTopography().getChunkMap().get(chunkX);

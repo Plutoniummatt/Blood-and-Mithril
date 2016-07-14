@@ -78,11 +78,14 @@ public class BloodAndMithrilClient implements ApplicationListener {
 	@Inject	private BloodAndMithrilClientInputProcessor inputProcessor;
 	@Inject	private GameSaver gameSaver;
 	@Inject	private GameClientStateTracker gameClientStateTracker;
+	@Inject	private WorldRenderer worldRenderer;
 
 	@Override
 	public void create() {
 		// Load client-side resources
+		ClientServerInterface.setClient(true);
 		Wiring.setupInjector(new CommonModule());
+		Wiring.injector().injectMembers(this);
 
 		loadResources();
 
@@ -90,7 +93,6 @@ public class BloodAndMithrilClient implements ApplicationListener {
 
 		ClientServerInterface.setServer(true);
 		Domain.addWorld(new World(1200, new Epoch(15.5f, 5, 22, 25), MainMenuBiomeDecider.class));
-		Wiring.injector().injectMembers(this);
 		gameClientStateTracker.setActiveWorldId(1);
 		ClientServerInterface.setServer(false);
 
@@ -103,23 +105,21 @@ public class BloodAndMithrilClient implements ApplicationListener {
 	 * Loads global resources, client side
 	 */
 	private void loadResources() {
-		ClientServerInterface.setClient(true);
-
-		WorldRenderer.setup();
+		worldRenderer.setup();
 		Fonts.setup();
 		Individual.setup();
 		Elf.setup();
 		PrefabricatedComponent.setup();
 		Topography.setup();
 		Shaders.setup();
-		Component.setup();
 		WeatherRenderer.setup();
 		Controls.setup();
 		Equipable.setup();
 		Prop.setup();
 		GaussianLightingRenderer.setup();
-		Item.setup();
 		UserInterface.setup();
+		Item.setup();
+		Component.setup();
 
 		UserInterface.addLayeredComponent(
 			new MainMenuWindow(false)
@@ -158,7 +158,7 @@ public class BloodAndMithrilClient implements ApplicationListener {
 
 			// Rendering --------------------- /
 			if (gameClientStateTracker.getActiveWorld() != null && !gameClientStateTracker.isLoading()) {
-				WorldRenderer.render(gameClientStateTracker.getActiveWorld(), (int) graphics.getCam().position.x, (int) graphics.getCam().position.y);
+				worldRenderer.render(gameClientStateTracker.getActiveWorld(), (int) graphics.getCam().position.x, (int) graphics.getCam().position.y);
 			}
 
 			// Fading --------------------- /

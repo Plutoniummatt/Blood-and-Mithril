@@ -13,12 +13,14 @@ import java.util.zip.ZipFile;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.ThreadedTasks;
 import bloodandmithril.core.Threading;
 import bloodandmithril.generation.Structures;
 import bloodandmithril.generation.patterns.GlobalLayers;
-import bloodandmithril.persistence.GameSaver;
+import bloodandmithril.persistence.PersistenceParameters;
 import bloodandmithril.persistence.PersistenceUtil;
 import bloodandmithril.persistence.ZipHelper;
 import bloodandmithril.util.Logger;
@@ -36,11 +38,13 @@ import bloodandmithril.world.topography.Topography;
  *
  * @author Matt
  */
+@Singleton
 @Copyright("Matthew Peck 2014")
 public class WorldSaver {
 
-	@Inject private GameSaver gameSaver;
+	@Inject private ThreadedTasks threadedTasks;
 	@Inject private Threading threading;
+	@Inject private PersistenceParameters persistenceParameters;
 
 	/** The current chunk coordinates that is in the queue to be saved/flushed */
 	private static final ConcurrentDualKeyHashMap<Integer, Integer, Boolean> chunksInQueue = new ConcurrentDualKeyHashMap<Integer, Integer, Boolean>();
@@ -73,12 +77,12 @@ public class WorldSaver {
 	 * Processes items in the saver thread
 	 */
 	private void processItems(final int n) {
-		if (gameSaver.saverTasks.isEmpty()) {
+		if (threadedTasks.saverTasks.isEmpty()) {
 			if (n != 0) {
 				Logger.saverDebug("Saver thread processed " + n + " items", LogLevel.INFO);
 			}
 		} else {
-			gameSaver.saverTasks.poll().execute();
+			threadedTasks.saverTasks.poll().execute();
 			processItems(n + 1);
 		}
 	}
@@ -91,10 +95,10 @@ public class WorldSaver {
 		setup();
 		persistUnloadedChunks();
 		if (threading.persistenceThread.isAlive()) {
-			gameSaver.saverTasks.add(() -> {
-				final FileHandle structures = Gdx.files.local(gameSaver.getSavePath() + "/world/structures.txt");
-				final FileHandle worlds = Gdx.files.local(gameSaver.getSavePath() + "/world/worlds.txt");
-				final FileHandle layers = Gdx.files.local(gameSaver.getSavePath() + "/world/layers.txt");
+			threadedTasks.saverTasks.add(() -> {
+				final FileHandle structures = Gdx.files.local(persistenceParameters.getSavePath() + "/world/structures.txt");
+				final FileHandle worlds = Gdx.files.local(persistenceParameters.getSavePath() + "/world/worlds.txt");
+				final FileHandle layers = Gdx.files.local(persistenceParameters.getSavePath() + "/world/layers.txt");
 
 				structures.writeString(encode(Structures.getStructures()), false);
 				worlds.writeString(encode(Domain.getWorldMap()), false);
@@ -103,7 +107,7 @@ public class WorldSaver {
 				for (final World world : Domain.getAllWorlds()) {
 					saveStructureData(world);
 
-					final ZipHelper zip = new ZipHelper(gameSaver.getSavePath() + "/world/world" + Integer.toString(world.getWorldId()), "/chunkData.zip");
+					final ZipHelper zip = new ZipHelper(persistenceParameters.getSavePath() + "/world/world" + Integer.toString(world.getWorldId()), "/chunkData.zip");
 					ZipFile zipTemp = null;
 
 					for (final Entry<Integer, HashMap<Integer, Chunk>> columnToSave : world.getTopography().getChunkMap().chunkMap.entrySet()) {
@@ -111,7 +115,7 @@ public class WorldSaver {
 					}
 
 					try {
-						zipTemp = new ZipFile(gameSaver.getSavePath() + "/world/world" + Integer.toString(world.getWorldId()) + "/chunkDataTemp.zip");
+						zipTemp = new ZipFile(persistenceParameters.getSavePath() + "/world/world" + Integer.toString(world.getWorldId()) + "/chunkDataTemp.zip");
 
 						final Enumeration<? extends ZipEntry> allPreviousEntries = ZipHelper.readAllEntries(zipTemp);
 						while(allPreviousEntries.hasMoreElements()) {
@@ -123,7 +127,7 @@ public class WorldSaver {
 						}
 
 						zipTemp.close();
-						final FileHandle toDelete = Gdx.files.local(gameSaver.getSavePath() + "/world/world" + Integer.toString(world.getWorldId()) + "/chunkDataTemp.zip");
+						final FileHandle toDelete = Gdx.files.local(persistenceParameters.getSavePath() + "/world/world" + Integer.toString(world.getWorldId()) + "/chunkDataTemp.zip");
 						toDelete.delete();
 					} catch (final IOException e) {
 						Logger.loaderDebug("No previous chunks", LogLevel.DEBUG);
@@ -142,10 +146,10 @@ public class WorldSaver {
 	 * Persists any unloaded chunks that have been saved from a previous save.
 	 */
 	private void persistUnloadedChunks() {
-		if (gameSaver.mostRecentlyLoaded != null) {
+		if (persistenceParameters.getMostRecentlyLoaded() != null) {
 			for (final Integer world : Domain.getAllWorldIds()) {
-				final FileHandle existingSavedChunks = Gdx.files.local("save/" + gameSaver.mostRecentlyLoaded.name + "/world/world" + Integer.toString(world) + "/chunkData.zip");
-				existingSavedChunks.copyTo(Gdx.files.local(gameSaver.getSavePath() + "/world/world" + Integer.toString(world) + "/chunkDataTemp.zip"));
+				final FileHandle existingSavedChunks = Gdx.files.local("save/" + persistenceParameters.getMostRecentlyLoaded().name + "/world/world" + Integer.toString(world) + "/chunkData.zip");
+				existingSavedChunks.copyTo(Gdx.files.local(persistenceParameters.getSavePath() + "/world/world" + Integer.toString(world) + "/chunkDataTemp.zip"));
 			}
 		}
 	}
@@ -155,8 +159,8 @@ public class WorldSaver {
 	 * Saves the data used for generation
 	 */
 	private void saveStructureData(final World world) {
-		final FileHandle superStructureKeys = Gdx.files.local(gameSaver.getSavePath() + "/world/world" + Integer.toString(world.getWorldId()) + "/superStructureKeys.txt");
-		final FileHandle subStructureKeys = Gdx.files.local(gameSaver.getSavePath() + "/world/world" + Integer.toString(world.getWorldId()) + "/subStructureKeys.txt");
+		final FileHandle superStructureKeys = Gdx.files.local(persistenceParameters.getSavePath() + "/world/world" + Integer.toString(world.getWorldId()) + "/superStructureKeys.txt");
+		final FileHandle subStructureKeys = Gdx.files.local(persistenceParameters.getSavePath() + "/world/world" + Integer.toString(world.getWorldId()) + "/subStructureKeys.txt");
 
 		superStructureKeys.writeString(encode(world.getTopography().getStructures().getSuperStructureKeys()), false);
 		subStructureKeys.writeString(encode(world.getTopography().getStructures().getSubStructureKeys()), false);
@@ -188,8 +192,8 @@ public class WorldSaver {
 	 */
 	public void saveAndFlushChunk(final int x, final int y, final Topography topography) {
 		if (chunksInQueue.get(x, y) == null) {
-			gameSaver.saverTasks.add(() -> {
-				final ZipHelper zip = new ZipHelper(gameSaver.getSavePath() + "/world", "/chunkData.zip");
+			threadedTasks.saverTasks.add(() -> {
+				final ZipHelper zip = new ZipHelper(persistenceParameters.getSavePath() + "/world", "/chunkData.zip");
 				saveChunk(topography.getChunkMap().get(x).get(y), x, y, zip);
 				topography.getChunkMap().get(x).remove(y);
 			});

@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.graphics.WorldRenderer.Depth;
@@ -36,29 +37,30 @@ public class TextureBackedParticle extends Particle {
 	/**
 	 * Constructor
 	 */
-	public TextureBackedParticle(Vector2 position, Vector2 velocity, Color color, float radius, int worldId, SerializableFunction<Boolean> removalCondition, MovementMode movementMode, Depth depth, float scale) {
+	public TextureBackedParticle(final Vector2 position, final Vector2 velocity, final Color color, final float radius, final int worldId, final SerializableFunction<Boolean> removalCondition, final MovementMode movementMode, final Depth depth, final float scale) {
 		super(position, velocity, color, radius, worldId, removalCondition, movementMode, depth);
 		this.scale = scale;
 	}
 
 
 	@Override
-	public void render(float delta, TextureRegion texture, Graphics graphics) {
-		Topography topography = Domain.getWorld(worldId).getTopography();
+	public void render(final float delta, final TextureRegion texture, final Graphics graphics) {
+		final WorldRenderer renderer = Wiring.injector().getInstance(WorldRenderer.class);
+		final Topography topography = Domain.getWorld(worldId).getTopography();
 		if (topography.hasTile(position.x, position.y, true)) {
 			try {
 				if (topography.getTile(position.x, position.y, true).isPassable()) {
-					WorldRenderer.shapeRenderer.setColor(color.getColor());
-					WorldRenderer.shapeRenderer.circle(position.x, position.y, radius <= 0.05f ? 0.05f : radius);
+					renderer.getShapeRenderer().setColor(color.getColor());
+					renderer.getShapeRenderer().circle(position.x, position.y, radius <= 0.05f ? 0.05f : radius);
 				}
-			} catch (NoTileFoundException e) {}
+			} catch (final NoTileFoundException e) {}
 		}
 
 		radius -= 0.02f;
 	}
 
 
-	public void renderLighting(Graphics graphics) {
+	public void renderLighting(final Graphics graphics) {
 		graphics.getSpriteBatch().draw(
 			texture,
 			position.x - graphics.getCam().position.x + graphics.getWidth() / 2 - texture.getRegionWidth() / 2,
@@ -75,6 +77,6 @@ public class TextureBackedParticle extends Particle {
 
 
 	@Override
-	public void renderLine(float delta) {
+	public void renderLine(final float delta) {
 	}
 }

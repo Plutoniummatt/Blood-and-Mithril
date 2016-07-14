@@ -4,8 +4,6 @@ import static bloodandmithril.persistence.PersistenceUtil.encode;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.badlogic.gdx.Gdx;
@@ -16,11 +14,11 @@ import com.google.inject.Singleton;
 import bloodandmithril.character.ai.AIProcessor;
 import bloodandmithril.character.faction.FactionControlService;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.ThreadedTasks;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.persistence.character.IndividualSaver;
 import bloodandmithril.persistence.world.ChunkLoader;
 import bloodandmithril.persistence.world.WorldSaver;
-import bloodandmithril.util.Task;
 import bloodandmithril.world.Domain;
 
 /**
@@ -37,18 +35,8 @@ public class GameSaver {
 	@Inject private ParameterPersistenceService parameterPersistenceService;
 	@Inject private IndividualSaver individualSaver;
 	@Inject private ChunkLoader chunkLoader;
-
-	/** The list of tasks the saver thread must execute */
-	public final BlockingQueue<Task> saverTasks = new ArrayBlockingQueue<Task>(500);
-
-	/** File path for saved games */
-	private String savePath;
-
-	/** Name to use for saved game */
-	private String savedGameName = null;
-
-	/** The meta data of the most recently loaded saved game */
-	public PersistenceMetaData mostRecentlyLoaded;
+	@Inject private PersistenceParameters persistenceParameters;
+	@Inject private ThreadedTasks threadedTasks;
 
 	/** Boolean switches used for processing */
 	private AtomicBoolean pending = new AtomicBoolean(false), saving = new AtomicBoolean(false), andExit = new AtomicBoolean(false), exiting = new AtomicBoolean(false);
@@ -56,21 +44,11 @@ public class GameSaver {
 	/**
 	 * Saves the game
 	 */
-	public synchronized void save(String name, boolean exitAfter) {
-		savedGameName = name;
-		savePath = "save/" + name;
+	public synchronized void save(final String name, final boolean exitAfter) {
+		persistenceParameters.setSavedGameName(name);
+		persistenceParameters.setSavePath("save/" + name);
 		pending.set(true);
 		andExit.set(exitAfter);
-	}
-
-
-	public synchronized void setPersistencePath(String savePath) {
-		this.savePath = savePath;
-	}
-
-
-	public String getSavePath() {
-		return savePath;
 	}
 
 
@@ -85,7 +63,7 @@ public class GameSaver {
 	private void internalSave() {
 
 		// Save parameters
-		saverTasks.add(
+		threadedTasks.saverTasks.add(
 			() -> {
 				parameterPersistenceService.saveParameters();
 			}
@@ -99,7 +77,7 @@ public class GameSaver {
 		saveFactions();
 
 		// Save all individuals
-		saverTasks.add(
+		threadedTasks.saverTasks.add(
 			() -> {
 				individualSaver.saveAll();
 				saveCompleted();
@@ -109,11 +87,11 @@ public class GameSaver {
 
 
 	private void saveFactions() {
-		FileHandle factiondata = Gdx.files.local(this.savePath + "/world/factions.txt");
+		final FileHandle factiondata = Gdx.files.local(persistenceParameters.getSavePath() + "/world/factions.txt");
 		factiondata.writeString(encode(Domain.getFactions()), false);
 
 		if (ClientServerInterface.isClient()) {
-			FileHandle controlled = Gdx.files.local(this.savePath + "/world/controlledfactions.txt");
+			final FileHandle controlled = Gdx.files.local(persistenceParameters.getSavePath() + "/world/controlledfactions.txt");
 			controlled.writeString(encode(factionControlService.getControlledFactions()), false);
 		}
 	}
@@ -121,8 +99,8 @@ public class GameSaver {
 
 	/** Saves metadata */
 	private void saveMetaData() {
-		FileHandle metadata = Gdx.files.local(this.savePath + "/metadata.txt");
-		metadata.writeString(encode(new PersistenceMetaData(savedGameName)), false);
+		final FileHandle metadata = Gdx.files.local(persistenceParameters.getSavePath() + "/metadata.txt");
+		metadata.writeString(encode(new PersistenceMetaData(persistenceParameters.getSavedGameName())), false);
 	}
 
 
@@ -169,7 +147,7 @@ public class GameSaver {
 	public static class PersistenceMetaData implements Serializable {
 		private static final long serialVersionUID = 7818486179446462250L;
 
-		public PersistenceMetaData(String name) {
+		public PersistenceMetaData(final String name) {
 			this.name = name;
 		}
 

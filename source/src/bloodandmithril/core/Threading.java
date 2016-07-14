@@ -50,19 +50,32 @@ public class Threading {
 	/** Update rate multiplier */
 	private float updateRate = 1.0f;
 
-	@Inject private GameSaver gameSaver;
-	@Inject private GameClientStateTracker gameClientStateTracker;
-	@Inject private MissionTracker missionTracker;
-	@Inject private WorldUpdateService worldUpdateService;
+	private final Graphics graphics;
+	private final GameSaver gameSaver;
+	private final GameClientStateTracker gameClientStateTracker;
+	private final MissionTracker missionTracker;
+	private final WorldUpdateService worldUpdateService;
 
 	/**
 	 * Constructor
 	 */
 	@Inject
-	Threading(final Graphics graphics) {
+	Threading(
+		final Graphics graphics,
+		final GameSaver gameSaver,
+		final GameClientStateTracker gameClientStateTracker,
+		final MissionTracker missionTracker,
+		final WorldUpdateService worldUpdateService
+	) {
+		this.graphics = graphics;
+		this.gameSaver = gameSaver;
+		this.gameClientStateTracker = gameClientStateTracker;
+		this.missionTracker = missionTracker;
+		this.worldUpdateService = worldUpdateService;
+
 		setupEventProcessingThread();
 		setupUpdateThread();
-		setupTopographyQueryThread(graphics);
+		setupTopographyQueryThread();
 		setupParticleUpdateThread();
 	}
 
@@ -100,7 +113,7 @@ public class Threading {
 	}
 
 
-	private void setupTopographyQueryThread(final Graphics graphics) {
+	private void setupTopographyQueryThread() {
 		topographyQueryThread = new Thread(() -> {
 			long prevFrame1 = System.currentTimeMillis();
 			long prevFrame2 = System.currentTimeMillis();

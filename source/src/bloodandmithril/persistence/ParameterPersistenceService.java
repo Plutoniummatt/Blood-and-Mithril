@@ -25,7 +25,7 @@ import bloodandmithril.util.Logger.LogLevel;
 @Copyright("Matthew Peck 2014")
 public class ParameterPersistenceService {
 
-	@Inject private GameSaver gameSaver;
+	@Inject private PersistenceParameters persistenceParameters;
 	@Inject private CameraTracker cameraTracker;
 	@Inject private GameClientStateTracker gameClientStateTracker;
 
@@ -41,7 +41,7 @@ public class ParameterPersistenceService {
 	/** Loads and returns persisted parameters from disk */
 	public synchronized Parameters loadParameters() {
 		try {
-			final FileHandle file = Gdx.files.local(gameSaver.getSavePath() + "/parameters.txt");
+			final FileHandle file = Gdx.files.local(persistenceParameters.getSavePath() + "/parameters.txt");
 			parameters = decode(file);
 			return parameters;
 		} catch (final Exception e) {
@@ -54,7 +54,7 @@ public class ParameterPersistenceService {
 
 	/** Saves the {@link Parameters} */
 	public synchronized void saveParameters() {
-		final FileHandle file = Gdx.files.local(gameSaver.getSavePath() + "/parameters.txt");
+		final FileHandle file = Gdx.files.local(persistenceParameters.getSavePath() + "/parameters.txt");
 		parameters.setActiveWorldId(gameClientStateTracker.getActiveWorldId());
 		parameters.setSavedCameraPosition(ClientServerInterface.isClient() ? Maps.newHashMap(cameraTracker.getWorldcamcoordinates()) : Maps.newHashMap());
 		file.writeString(encode(parameters), false);

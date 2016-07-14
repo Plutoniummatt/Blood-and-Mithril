@@ -28,8 +28,8 @@ import bloodandmithril.world.World;
 @Copyright("Matthew Peck 2016")
 public class GameClientStateTracker {
 
-	@Inject private Graphics graphics;
-	@Inject private CameraTracker cameraTracker;
+	@Inject private transient Graphics graphics;
+	@Inject private transient CameraTracker cameraTracker;
 
 	/** The game world */
 	private AtomicBoolean inGame = new AtomicBoolean(false);

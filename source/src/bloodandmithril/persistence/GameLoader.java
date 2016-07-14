@@ -42,7 +42,7 @@ public class GameLoader {
 	@Inject private ParameterPersistenceService parameterPersistenceService;
 	@Inject private ChunkLoader chunkLoader;
 	@Inject private FactionControlService factionControlService;
-	@Inject private GameSaver gameSaver;
+	@Inject private PersistenceParameters persistenceParameters;
 	@Inject private IndividualLoader individualLoader;
 	@Inject private GameClientStateTracker gameClientStateTracker;
 
@@ -50,12 +50,12 @@ public class GameLoader {
 	 * Loads a saved game
 	 */
 	public void load(final PersistenceMetaData metadata, final boolean newGame) {
-		gameSaver.setPersistencePath("save/" + metadata.name);
+		persistenceParameters.setSavePath("save/" + metadata.name);
 
 		if (newGame) {
-			gameSaver.mostRecentlyLoaded = null;
+			persistenceParameters.setMostRecentlyLoaded(null);
 		} else {
-			gameSaver.mostRecentlyLoaded = metadata;
+			persistenceParameters.setMostRecentlyLoaded(metadata);
 			if (ClientServerInterface.isClient()) {
 				loadCameraPosition();
 			}
@@ -72,8 +72,8 @@ public class GameLoader {
 	@SuppressWarnings("unchecked")
 	private void loadFactions() {
 		try {
-			final ConcurrentHashMap<Integer, Faction> decoded = (ConcurrentHashMap<Integer, Faction>) decode(files.local(gameSaver.getSavePath() + "/world/factions.txt"));
-			final HashSet<Integer> controlled = (HashSet<Integer>) decode(files.local(gameSaver.getSavePath() + "/world/controlledfactions.txt"));
+			final ConcurrentHashMap<Integer, Faction> decoded = (ConcurrentHashMap<Integer, Faction>) decode(files.local(persistenceParameters.getSavePath() + "/world/factions.txt"));
+			final HashSet<Integer> controlled = (HashSet<Integer>) decode(files.local(persistenceParameters.getSavePath() + "/world/controlledfactions.txt"));
 
 			decoded.values().stream().forEach(faction -> {
 				Domain.addFaction(faction);

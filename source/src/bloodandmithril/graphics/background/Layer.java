@@ -29,34 +29,39 @@ public abstract class Layer implements Serializable {
 	/**
 	 * Constructor
 	 */
-	protected Layer(TreeMap<Integer, WrapperForTwo<Integer, Integer>> images) {
+	protected Layer(final TreeMap<Integer, WrapperForTwo<Integer, Integer>> images) {
 		this.images = images;
 	}
 
 
-	public static int getScreenHorizonY(Graphics graphics) {
-		return 550 - Math.round((int) graphics.getCam().position.y * (1f - 0.95f));
+	public static int getScreenHorizonY(final Graphics graphics) {
+		final int calculated = 550 - Math.round((int) graphics.getCam().position.y * (1f - 0.95f));
+
+		return pegToHorizon(calculated, graphics, 0);
 	}
 
 
-	public static int getCameraYForHorizonCoord(int horizon) {
-		return Math.round((550f - horizon)/(1f - 0.95f));
+	private static int pegToHorizon(final int y, final Graphics graphics, final int offset) {
+		return Math.max(
+			Math.min(y, graphics.getHeight() * 3 / 4 + offset),
+			graphics.getHeight() / 4
+		);
 	}
 
 
 	/**
 	 * Renders this layer
 	 */
-	public void render(int camX, int camY, Graphics graphics) {
+	public void render(final int camX, final int camY, final Graphics graphics) {
 		int startPositionX = Math.round((camX - graphics.getWidth() / 2) * (1f - getDistanceX()));
-		int startPositionY = Math.round(camY * (1f - getDistanceY()));
+		final int startPositionY = Math.round(camY * (1f - getDistanceY()));
 		int currentPosition = 0;
 
-		Entry<Integer, WrapperForTwo<Integer, Integer>> floorEntry = images.floorEntry(startPositionX);
+		final Entry<Integer, WrapperForTwo<Integer, Integer>> floorEntry = images.floorEntry(startPositionX);
 		if (floorEntry == null) {
 			return;
 		}
-		float startingRenderingPosition = (camX - graphics.getWidth()/2) * (1f - getDistanceX()) - floorEntry.getKey();
+		final float startingRenderingPosition = (camX - graphics.getWidth()/2) * (1f - getDistanceX()) - floorEntry.getKey();
 
 		boolean rendering = true;
 		while(rendering) {
@@ -64,14 +69,14 @@ public abstract class Layer implements Serializable {
 				rendering = false;
 			}
 
-			boolean empty = images.floorEntry(startPositionX + currentPosition).getValue().a == BackgroundImages.EMPTY;
-			TextureRegion toDraw = empty ? null : textures.get(images.floorEntry(startPositionX + currentPosition).getValue().a);
+			final boolean empty = images.floorEntry(startPositionX + currentPosition).getValue().a == BackgroundImages.EMPTY;
+			final TextureRegion toDraw = empty ? null : textures.get(images.floorEntry(startPositionX + currentPosition).getValue().a);
 
 			if (toDraw != null) {
 				graphics.getSpriteBatch().draw(
 					toDraw,
 					currentPosition - startingRenderingPosition,
-					getOffsetY() - startPositionY + images.floorEntry(startPositionX + currentPosition).getValue().b
+					pegToHorizon((int) (getOffsetY() - startPositionY + images.floorEntry(startPositionX + currentPosition).getValue().b), graphics, -10)
 				);
 			}
 
