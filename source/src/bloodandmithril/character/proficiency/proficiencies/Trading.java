@@ -1,5 +1,7 @@
 package bloodandmithril.character.proficiency.proficiencies;
 
+import com.google.inject.Inject;
+
 import bloodandmithril.character.proficiency.Proficiency;
 import bloodandmithril.core.Copyright;
 
@@ -15,11 +17,12 @@ public class Trading extends Proficiency {
 	/**
 	 * Constructor
 	 */
-	public Trading(int level) {
+	@Inject
+	public Trading() {
 		super(
 			"Trading",
 			"The proficiency at trading with others, the better one's trading skill, the more one can gain for less... materialistically speaking.",
-			level
+			0
 		);
 	}
 }

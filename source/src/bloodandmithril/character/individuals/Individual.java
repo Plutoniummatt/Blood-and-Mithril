@@ -87,7 +87,6 @@ import bloodandmithril.util.Task;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.util.datastructure.Commands;
-import bloodandmithril.util.datastructure.TwoInts;
 import bloodandmithril.util.datastructure.WrapperForTwo;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
@@ -137,9 +136,6 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 
 	/** The set of {@link Individual}s currently being attacked by this {@link Individual} */
 	private Set<Integer> individualsToBeAttacked = Sets.newHashSet();
-
-	/** The set of {@link Individual}s currently being attacked by this {@link Individual} */
-	private TwoInts tileToBeMined;
 
 	/** Used to obey attacking periods */
 	private float attackTimer;
@@ -244,7 +240,6 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 		this.interactionBox = other.interactionBox;
 		this.hitBox = other.hitBox;
 		this.individualsToBeAttacked = other.individualsToBeAttacked;
-		this.tileToBeMined = other.tileToBeMined;
 		this.attackTimer = other.attackTimer;
 		this.animationTimer = other.animationTimer;
 		this.setAiReactionTimer(other.getAiReactionTimer());
@@ -485,17 +480,6 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 		} catch (final Throwable a) {
 			a.printStackTrace();
 			throw new RuntimeException(a);
-		}
-	}
-
-	/**
-	 * @param Revive from the dead with specified health
-	 */
-	public final void revive(final float health) {
-		if (dead) {
-			dead = false;
-			heal(health);
-			// TODO revival
 		}
 	}
 
@@ -953,11 +937,6 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 
 	public final void setAttackTimer(final float timer) {
 		this.attackTimer = timer;
-	}
-
-
-	public final TwoInts getTileToBeMined() {
-		return tileToBeMined;
 	}
 
 

@@ -1,5 +1,7 @@
 package bloodandmithril.character.proficiency.proficiencies;
 
+import com.google.inject.Inject;
+
 import bloodandmithril.character.proficiency.Proficiency;
 import bloodandmithril.core.Copyright;
 
@@ -10,11 +12,12 @@ import bloodandmithril.core.Copyright;
 public class Carpentry extends Proficiency {
 	private static final long serialVersionUID = -8405186147243633432L;
 
-	public Carpentry(int level) {
+	@Inject
+	public Carpentry() {
 		super(
 			"Carpentry",
 			"Carpentry allows individuals to work with everything wooden.",
-			level
+			0
 		);
 	}
 }

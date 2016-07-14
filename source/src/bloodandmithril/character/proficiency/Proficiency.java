@@ -1,15 +1,12 @@
 package bloodandmithril.character.proficiency;
 
-import static java.lang.Math.round;
-import static java.lang.Math.sqrt;
-
 import java.io.Serializable;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-import bloodandmithril.core.Copyright;
-
 import com.google.common.collect.Maps;
+
+import bloodandmithril.core.Copyright;
 
 /**
  * Represents a skill
@@ -26,20 +23,20 @@ public abstract class Proficiency implements Serializable {
 	private int level;
 	private float experience;
 
-	private static TreeMap<Integer, Integer> experienceRequiredToLevelUp = Maps.newTreeMap();
+	private static TreeMap<Integer, Long> experienceRequiredToLevelUp = Maps.newTreeMap();
 
 	static {
 		for (int i = 0; i <= MAX_SKILL_LEVEL; i++) {
-			experienceRequiredToLevelUp.put(i, (int) round(sqrt(i + 1) * 1000));
+			experienceRequiredToLevelUp.put(i, (long) (i * 1000 + i * i * 25));
 		}
 
-		experienceRequiredToLevelUp.put(MAX_SKILL_LEVEL, Integer.MAX_VALUE);
+		experienceRequiredToLevelUp.put(MAX_SKILL_LEVEL, Long.MAX_VALUE);
 	}
 
 	/**
 	 * Constructor
 	 */
-	protected Proficiency(String name, String description, int level) {
+	protected Proficiency(final String name, final String description, final int level) {
 		this.name = name;
 		this.description = description;
 		this.level = level;
@@ -67,7 +64,7 @@ public abstract class Proficiency implements Serializable {
 	/**
 	 * Increases experiences, returning true if leveling up
 	 */
-	public boolean increaseExperience(float toIncrease) {
+	public boolean increaseExperience(final float toIncrease) {
 		this.experience = this.experience + toIncrease;
 		return recalculateLevel();
 	}
@@ -80,7 +77,7 @@ public abstract class Proficiency implements Serializable {
 
 	private boolean recalculateLevel() {
 		float e = this.experience;
-		for (Entry<Integer, Integer> entry : experienceRequiredToLevelUp.entrySet()) {
+		for (final Entry<Integer, Long> entry : experienceRequiredToLevelUp.entrySet()) {
 			if (e < entry.getValue()) {
 				boolean levelled = false;
 				if (this.level < entry.getKey()) {
@@ -107,7 +104,7 @@ public abstract class Proficiency implements Serializable {
 
 	private void recalculateExperience() {
 		int minExperience = 0;
-		for (Entry<Integer, Integer> entry : experienceRequiredToLevelUp.entrySet()) {
+		for (final Entry<Integer, Long> entry : experienceRequiredToLevelUp.entrySet()) {
 			if (this.level > entry.getKey()) {
 				minExperience += entry.getValue();
 			} else {
@@ -138,7 +135,7 @@ public abstract class Proficiency implements Serializable {
 	/**
 	 * @return the ratio of a skill level to that of the max skill level
 	 */
-	public static float getRatioToMax(int skillLevel) {
+	public static float getRatioToMax(final int skillLevel) {
 		return skillLevel / (float) Proficiency.MAX_SKILL_LEVEL;
 	}
 }

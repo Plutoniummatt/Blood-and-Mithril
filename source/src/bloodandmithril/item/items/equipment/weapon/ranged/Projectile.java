@@ -22,7 +22,11 @@ import bloodandmithril.networking.ClientServerInterface;
 public abstract class Projectile implements Serializable {
 	private static final long serialVersionUID = -6124242148644632575L;
 
-	public Vector2 position, pPosition, velocity, acceleration;
+	public Vector2 position;
+	public Vector2 pPosition;
+	public Vector2 velocity;
+	public Vector2 acceleration;
+
 	private int worldId, id;
 	protected boolean stuck = false;
 	private Set<Integer> ignoredIndividuals = Sets.newHashSet();
