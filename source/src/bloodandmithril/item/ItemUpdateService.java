@@ -36,14 +36,14 @@ public class ItemUpdateService {
 			return;
 		}
 
-		if (!Domain.getWorld(item.getWorldId()).getTopography().getChunkMap().doesChunkExist(item.getVelocity())) {
+		if (!Domain.getWorld(item.getWorldId()).getTopography().getChunkMap().doesChunkExist(item.getPosition())) {
 			return;
 		}
 
 		final Vector2 previousPosition = item.getPosition().cpy();
 		final Vector2 previousVelocity = item.getVelocity().cpy();
 
-		item.getVelocity().add(item.getVelocity().cpy().scl(delta));
+		item.getPosition().add(item.getVelocity().cpy().scl(delta));
 
 		final float gravity = Domain.getWorld(item.getWorldId()).getGravity();
 		if (item.getVelocity().cpy().scl(delta).len() > TILE_SIZE) {
@@ -52,19 +52,19 @@ public class ItemUpdateService {
 
 		item.getVelocity().y = item.getVelocity().y - delta * gravity;
 
-		final Tile tileUnder = Domain.getWorld(item.getWorldId()).getTopography().getTile(item.getVelocity().x, item.getVelocity().y, true);
+		final Tile tileUnder = Domain.getWorld(item.getWorldId()).getTopography().getTile(item.getPosition().x, item.getPosition().y, true);
 		if (item.rotates() && tileUnder.isPassable()) {
 			item.setAngle(item.getAngle() + item.getAngularVelocity());
 		}
 
 		if (tileUnder.isPlatformTile || !tileUnder.isPassable()) {
-			final Vector2 trial = item.getVelocity().cpy();
-			trial.y += -previousVelocity.y*delta;
+			final Vector2 trial = item.getPosition().cpy();
+			trial.y += -previousVelocity.y * delta;
 
 			if (Domain.getWorld(item.getWorldId()).getTopography().getTile(trial.x, trial.y, true).isPassable()) {
 				if (previousVelocity.y <= 0f) {
 
-					int i = (int)item.getAngle() % 360 - (int) item.getUprightAngle();
+					int i = (int) item.getAngle() % 360 - (int) item.getUprightAngle();
 					if (i < 0) {
 						i = i + 360;
 					}
@@ -82,7 +82,7 @@ public class ItemUpdateService {
 						item.setAngularVelocity(0f);
 						item.getVelocity().x = item.getVelocity().x * 0.3f;
 						item.getVelocity().y = 0f;
-						item.getVelocity().y = Domain.getWorld(item.getWorldId()).getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(item.getVelocity(), true).y;
+						item.getPosition().y = Domain.getWorld(item.getWorldId()).getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(item.getPosition(), true).y;
 					}
 				} else {
 					item.setPosition(previousPosition);
