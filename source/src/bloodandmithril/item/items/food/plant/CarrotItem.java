@@ -159,7 +159,7 @@ public class CarrotItem extends Food {
 	 *
 	 * @author Matt
 	 */
-	@UpdatedBy(updateService = SeedPropUpdateService.class)
+	@UpdatedBy(SeedPropUpdateService.class)
 	public static class CarrotSeedProp extends bloodandmithril.prop.plant.seed.SeedProp {
 		private static final long serialVersionUID = 1761994206485966594L;
 

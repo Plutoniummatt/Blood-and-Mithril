@@ -26,7 +26,7 @@ import bloodandmithril.ui.components.window.MessageWindow;
  * @author Matt
  */
 @Copyright("Matthew Peck 2015")
-@UpdatedBy(updateService = NoOpPropUpdateService.class)
+@UpdatedBy(NoOpPropUpdateService.class)
 public class GreenGrass extends PlantProp {
 	private static final long serialVersionUID = 9061021746445536182L;
 

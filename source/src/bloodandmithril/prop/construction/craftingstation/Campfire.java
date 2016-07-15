@@ -37,7 +37,7 @@ import bloodandmithril.world.topography.Topography.NoTileFoundException;
  */
 @Copyright("Matthew Peck 2014")
 @Name(name = "Campfire")
-@UpdatedBy(updateService = CampfireUpdateService.class)
+@UpdatedBy(CampfireUpdateService.class)
 public class Campfire extends CraftingStation implements Lightable {
 	private static final long serialVersionUID = -8876217926271589078L;
 

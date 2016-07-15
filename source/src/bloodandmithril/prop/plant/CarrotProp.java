@@ -40,7 +40,7 @@ import bloodandmithril.world.topography.tile.tiles.SoilTile;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
-@UpdatedBy(updateService = CarrotPropUpdateService.class)
+@UpdatedBy(CarrotPropUpdateService.class)
 public class CarrotProp extends PlantProp implements Harvestable {
 	private static final long serialVersionUID = -4581900482709094877L;
 

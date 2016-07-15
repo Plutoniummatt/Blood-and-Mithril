@@ -39,7 +39,7 @@ import bloodandmithril.util.Util.Colors;
  */
 @Copyright("Matthew Peck 2014")
 @Name(name = "Furnace")
-@UpdatedBy(updateService = FurnaceUpdateService.class)
+@UpdatedBy(FurnaceUpdateService.class)
 public class Furnace extends CraftingStation implements Container {
 	private static final long serialVersionUID = 7693386784097531328L;
 

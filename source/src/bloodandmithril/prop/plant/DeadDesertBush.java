@@ -42,7 +42,7 @@ import bloodandmithril.world.topography.Topography.NoTileFoundException;
  * @author Matt
  */
 @Copyright("Matthew Peck 2015")
-@UpdatedBy(updateService = NoOpPropUpdateService.class)
+@UpdatedBy(NoOpPropUpdateService.class)
 public class DeadDesertBush extends PlantProp implements Harvestable {
 	private static final long serialVersionUID = -7472982320467390007L;
 

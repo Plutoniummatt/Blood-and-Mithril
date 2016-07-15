@@ -30,7 +30,7 @@ import bloodandmithril.prop.updateservice.CraftingStationUpdateService;
  */
 @Copyright("Matthew Peck 2014")
 @Name(name = "Work bench")
-@UpdatedBy(updateService = CraftingStationUpdateService.class)
+@UpdatedBy(CraftingStationUpdateService.class)
 public class WorkBench extends CraftingStation {
 
 	private static final Map<Item, Integer> craftables = Maps.newHashMap();

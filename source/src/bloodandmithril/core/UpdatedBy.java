@@ -18,5 +18,5 @@ import bloodandmithril.prop.updateservice.PropUpdateService;
 @Target(TYPE)
 @Copyright("Matthew Peck")
 public @interface UpdatedBy {
-	public Class<? extends PropUpdateService> updateService();
+	public Class<? extends PropUpdateService> value();
 }

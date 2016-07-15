@@ -19,6 +19,6 @@ public class PropUpdater {
 	 * Updates the prop using the correct service
 	 */
 	public void update(Prop prop, float delta) {
-		Wiring.injector().getInstance(prop.getClass().getAnnotation(UpdatedBy.class).updateService()).update(prop, delta);
+		Wiring.injector().getInstance(prop.getClass().getAnnotation(UpdatedBy.class).value()).update(prop, delta);
 	}
 }

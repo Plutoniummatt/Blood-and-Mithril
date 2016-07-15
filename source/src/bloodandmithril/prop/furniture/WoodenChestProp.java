@@ -35,7 +35,7 @@ import bloodandmithril.world.topography.Topography.NoTileFoundException;
  * A chest made from wood
  */
 @Copyright("Matthew Peck 2014")
-@UpdatedBy(updateService = NoOpPropUpdateService.class)
+@UpdatedBy(NoOpPropUpdateService.class)
 public class WoodenChestProp extends Furniture implements Container {
 	private static final long serialVersionUID = -8935044324226731703L;
 

@@ -31,7 +31,7 @@ import bloodandmithril.world.topography.tile.Tile.EmptyTile;
  * @author Matt
  */
 @Copyright("Matthew Peck 2016")
-@UpdatedBy(updateService = MedievalWallTorchPropUpdateService.class)
+@UpdatedBy(MedievalWallTorchPropUpdateService.class)
 public class MedievalWallTorchProp extends Furniture implements Lightable {
 	private static final long serialVersionUID = -7830128026417134792L;
 	private static final float BURN_DURATION = 300f;

@@ -34,7 +34,7 @@ import bloodandmithril.world.topography.Topography.NoTileFoundException;
  * A crate made from wood
  */
 @Copyright("Matthew Peck 2015")
-@UpdatedBy(updateService = NoOpPropUpdateService.class)
+@UpdatedBy(NoOpPropUpdateService.class)
 public class SmallWoodenCrateProp extends Furniture implements Container {
 	private static final long serialVersionUID = -7463802693132242218L;
 

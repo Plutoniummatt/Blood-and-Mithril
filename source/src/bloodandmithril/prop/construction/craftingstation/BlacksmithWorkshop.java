@@ -31,7 +31,7 @@ import bloodandmithril.prop.updateservice.BlacksmithWorkshopUpdateService;
  */
 @Copyright("Matthew Peck 2014")
 @Name(name = "Blacksmith Workshop")
-@UpdatedBy(updateService = BlacksmithWorkshopUpdateService.class)
+@UpdatedBy(BlacksmithWorkshopUpdateService.class)
 public class BlacksmithWorkshop extends CraftingStation {
 
 	private static final Map<Item, Integer> craftables = Maps.newHashMap();
