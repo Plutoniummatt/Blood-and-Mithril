@@ -56,7 +56,7 @@ public class WorldRenderer {
 	private static TextureRegion circle;
 
 	/** Textures */
-	public static Texture gameWorldTexture;
+	public static Texture GAME_WORLD_TEXTURE;
 	public static Texture individualTexture;
 
 	/** The frame buffer used for tiles */
@@ -84,10 +84,10 @@ public class WorldRenderer {
 
 
 	public void setup() {
-		if (gameWorldTexture == null) {
-			gameWorldTexture 					= new Texture(files.internal("data/image/gameWorld.png"));
-			circle 								= new TextureRegion(WorldRenderer.gameWorldTexture, 102, 422, 100, 100);
-			gameWorldTexture.setFilter(Linear, Linear);
+		if (GAME_WORLD_TEXTURE == null) {
+			GAME_WORLD_TEXTURE 					= new Texture(files.internal("data/image/gameWorld.png"));
+			circle 								= new TextureRegion(WorldRenderer.GAME_WORLD_TEXTURE, 102, 422, 100, 100);
+			GAME_WORLD_TEXTURE.setFilter(Linear, Linear);
 		}
 
 		if (individualTexture == null) {

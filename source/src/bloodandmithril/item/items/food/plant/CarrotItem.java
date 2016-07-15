@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.UpdatedBy;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
@@ -16,6 +17,7 @@ import bloodandmithril.prop.Growable;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.plant.CarrotProp;
 import bloodandmithril.prop.plant.CarrotProp.SoilTilesOnly;
+import bloodandmithril.prop.updateservice.SeedPropUpdateService;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 
@@ -157,11 +159,12 @@ public class CarrotItem extends Food {
 	 *
 	 * @author Matt
 	 */
+	@UpdatedBy(updateService = SeedPropUpdateService.class)
 	public static class CarrotSeedProp extends bloodandmithril.prop.plant.seed.SeedProp {
 		private static final long serialVersionUID = 1761994206485966594L;
 
 		/** {@link TextureRegion} of this seed */
-		public static TextureRegion carrotSeed;
+		public static TextureRegion CARROT_SEED;
 
 		/**
 		 * Constructor
@@ -173,7 +176,7 @@ public class CarrotItem extends Food {
 
 		@Override
 		public void render(Graphics graphics) {
-			graphics.getSpriteBatch().draw(carrotSeed, position.x - width / 2, position.y);
+			graphics.getSpriteBatch().draw(CARROT_SEED, position.x - width / 2, position.y);
 		}
 
 
@@ -222,7 +225,7 @@ public class CarrotItem extends Food {
 
 
 		@Override
-		protected void growth(float delta) {
+		public void growth(float delta) {
 			setGerminationProgress(getGerminationProgress() + delta / 100f);
 		}
 

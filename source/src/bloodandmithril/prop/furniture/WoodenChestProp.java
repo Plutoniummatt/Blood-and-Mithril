@@ -13,6 +13,7 @@ import bloodandmithril.character.ai.task.TradeWith;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;
+import bloodandmithril.core.UpdatedBy;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.item.items.Item;
@@ -22,6 +23,7 @@ import bloodandmithril.item.material.Material;
 import bloodandmithril.item.material.wood.Wood;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.Prop;
+import bloodandmithril.prop.updateservice.NoOpPropUpdateService;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
@@ -33,13 +35,14 @@ import bloodandmithril.world.topography.Topography.NoTileFoundException;
  * A chest made from wood
  */
 @Copyright("Matthew Peck 2014")
+@UpdatedBy(updateService = NoOpPropUpdateService.class)
 public class WoodenChestProp extends Furniture implements Container {
 	private static final long serialVersionUID = -8935044324226731703L;
 
 	private Class<? extends Wood> wood;
 
 	/** {@link TextureRegion} of the {@link WoodenChestProp} */
-	public static TextureRegion woodenChest;
+	public static TextureRegion WOODEN_CHEST;
 
 	/** The {@link Container} of this {@link WoodenChestProp} */
 	private ContainerImpl container;
@@ -203,12 +206,7 @@ public class WoodenChestProp extends Furniture implements Container {
 
 	@Override
 	public void render(final Graphics graphics) {
-		graphics.getSpriteBatch().draw(woodenChest, position.x - width / 2, position.y);
-	}
-
-
-	@Override
-	public void update(final float delta) {
+		graphics.getSpriteBatch().draw(WOODEN_CHEST, position.x - width / 2, position.y);
 	}
 
 

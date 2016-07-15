@@ -16,7 +16,7 @@ public class RottenWoodenChest extends WoodenChestProp {
 	private static final long serialVersionUID = -8577332391703143295L;
 
 	/** {@link TextureRegion} of the {@link WoodenChestProp} */
-	public static TextureRegion rottenWoodenChest;
+	public static TextureRegion ROTTEN_WOODEN_CHEST;
 
 	/**
 	 * Constructor
@@ -28,6 +28,6 @@ public class RottenWoodenChest extends WoodenChestProp {
 
 	@Override
 	public void render(Graphics graphics) {
-		graphics.getSpriteBatch().draw(rottenWoodenChest, position.x - width / 2, position.y);
+		graphics.getSpriteBatch().draw(ROTTEN_WOODEN_CHEST, position.x - width / 2, position.y);
 	}
 }

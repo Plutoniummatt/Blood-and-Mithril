@@ -33,7 +33,7 @@ public abstract class Projectile implements Serializable {
 
 	static {
 		if (ClientServerInterface.isClient()) {
-			ArrowProjectile.textureRegion = new TextureRegion(WorldRenderer.gameWorldTexture, 619, 176, 50, 3);
+			ArrowProjectile.textureRegion = new TextureRegion(WorldRenderer.GAME_WORLD_TEXTURE, 619, 176, 50, 3);
 		}
 	}
 

@@ -1,13 +1,11 @@
 package bloodandmithril.prop.construction.craftingstation;
 
-import static bloodandmithril.graphics.Graphics.isOnScreen;
 import static bloodandmithril.item.items.material.IngotItem.ingot;
 import static com.google.common.collect.Maps.newHashMap;
 
 import java.util.Map;
 import java.util.TreeMap;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.google.common.collect.Maps;
@@ -15,11 +13,9 @@ import com.google.common.collect.Maps;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
+import bloodandmithril.core.UpdatedBy;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.graphics.WorldRenderer;
-import bloodandmithril.graphics.WorldRenderer.Depth;
-import bloodandmithril.graphics.particles.Particle.MovementMode;
-import bloodandmithril.graphics.particles.ParticleService;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
 import bloodandmithril.item.items.container.GlassBottleItem;
@@ -32,8 +28,8 @@ import bloodandmithril.item.material.metal.Steel;
 import bloodandmithril.item.material.mineral.Mineral;
 import bloodandmithril.item.material.mineral.SandStone;
 import bloodandmithril.networking.ClientServerInterface;
+import bloodandmithril.prop.updateservice.FurnaceUpdateService;
 import bloodandmithril.util.Shaders;
-import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
 
 /**
@@ -43,6 +39,7 @@ import bloodandmithril.util.Util.Colors;
  */
 @Copyright("Matthew Peck 2014")
 @Name(name = "Furnace")
+@UpdatedBy(updateService = FurnaceUpdateService.class)
 public class Furnace extends CraftingStation implements Container {
 	private static final long serialVersionUID = 7693386784097531328L;
 
@@ -63,11 +60,11 @@ public class Furnace extends CraftingStation implements Container {
 		craftables.put(ingot(Steel.class), 1);
 
 		if (ClientServerInterface.isClient()) {
-			Furnace.FURNACE1 = new TextureRegion(WorldRenderer.gameWorldTexture, 1, 1, 95, 56);
-			Furnace.FURNACE2 = new TextureRegion(WorldRenderer.gameWorldTexture, 1, 58, 95, 56);
-			Furnace.FURNACE3 = new TextureRegion(WorldRenderer.gameWorldTexture, 1, 115, 95, 56);
-			Furnace.FURNACE4 = new TextureRegion(WorldRenderer.gameWorldTexture, 1, 172, 95, 56);
-			Furnace.FURNACE5 = new TextureRegion(WorldRenderer.gameWorldTexture, 1, 229, 95, 56);
+			Furnace.FURNACE1 = new TextureRegion(WorldRenderer.GAME_WORLD_TEXTURE, 1, 1, 95, 56);
+			Furnace.FURNACE2 = new TextureRegion(WorldRenderer.GAME_WORLD_TEXTURE, 1, 58, 95, 56);
+			Furnace.FURNACE3 = new TextureRegion(WorldRenderer.GAME_WORLD_TEXTURE, 1, 115, 95, 56);
+			Furnace.FURNACE4 = new TextureRegion(WorldRenderer.GAME_WORLD_TEXTURE, 1, 172, 95, 56);
+			Furnace.FURNACE5 = new TextureRegion(WorldRenderer.GAME_WORLD_TEXTURE, 1, 229, 95, 56);
 
 			inProgressTextures.put(0f/5f, FURNACE1);
 			inProgressTextures.put(1f/5f, FURNACE2);
@@ -99,20 +96,6 @@ public class Furnace extends CraftingStation implements Container {
 			}
 		} else {
 			batch.draw(inProgressTextures.floorEntry(getConstructionProgress()).getValue(), position.x - width / 2, position.y);
-		}
-	}
-
-
-	@Override
-	public synchronized void update(float delta) {
-		super.update(delta);
-
-		if (isOccupied()) {
-			if (isOnScreen(position, 50f)) {
-				ParticleService.randomVelocityDiminishing(position.cpy().add(0, height - 38), 6f, 30f, Color.ORANGE, Color.ORANGE, 2f, 8f, MovementMode.EMBER, Util.getRandom().nextInt(600), Depth.MIDDLEGROUND, false, Color.RED);
-				ParticleService.randomVelocityDiminishing(position.cpy().add(0, height - 38), 6f, 30f, Color.ORANGE, Color.ORANGE, 1f, 6f, MovementMode.EMBER, Util.getRandom().nextInt(1000), Depth.MIDDLEGROUND, false, Color.RED);
-				ParticleService.randomVelocityDiminishing(position.cpy().add(0, height - 38), 30f, 10f, Colors.LIGHT_SMOKE, Colors.LIGHT_SMOKE, 10f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(3000), Depth.BACKGROUND, false, null);
-			}
 		}
 	}
 

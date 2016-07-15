@@ -2,40 +2,42 @@ package bloodandmithril.prop.furniture;
 
 import static bloodandmithril.control.InputUtilities.getMouseScreenX;
 import static bloodandmithril.control.InputUtilities.getMouseScreenY;
-import static bloodandmithril.graphics.Graphics.isOnScreen;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
 
 import bloodandmithril.character.ai.task.LightLightable;
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;
+import bloodandmithril.core.UpdatedBy;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
-import bloodandmithril.graphics.WorldRenderer.Depth;
-import bloodandmithril.graphics.particles.Particle.MovementMode;
-import bloodandmithril.graphics.particles.ParticleService;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.Lightable;
 import bloodandmithril.prop.Prop;
+import bloodandmithril.prop.updateservice.MedievalWallTorchPropUpdateService;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.util.SerializableMappingFunction;
-import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 
+/**
+ * @author Matt
+ */
+@Copyright("Matthew Peck 2016")
+@UpdatedBy(updateService = MedievalWallTorchPropUpdateService.class)
 public class MedievalWallTorchProp extends Furniture implements Lightable {
 	private static final long serialVersionUID = -7830128026417134792L;
 	private static final float BURN_DURATION = 300f;
 
 	/** {@link TextureRegion} of the {@link MedievalWallTorchProp} */
-	public static TextureRegion medievalWallTorch;
+	public static TextureRegion MEDIEVAL_WALL_TORCH;
 	private boolean lit = false;
 	private float burnDurationRemaining = BURN_DURATION;
 
@@ -63,7 +65,7 @@ public class MedievalWallTorchProp extends Furniture implements Lightable {
 
 	@Override
 	public void render(final Graphics graphics) {
-		graphics.getSpriteBatch().draw(medievalWallTorch, position.x - width / 2, position.y);
+		graphics.getSpriteBatch().draw(MEDIEVAL_WALL_TORCH, position.x - width / 2, position.y);
 	}
 
 
@@ -145,24 +147,6 @@ public class MedievalWallTorchProp extends Furniture implements Lightable {
 	}
 
 
-	@Override
-	public void update(final float delta) {
-		if (lit) {
-
-			if (isOnScreen(position, 50f)) {
-				final Vector2 firePosition = position.cpy().add(0, 23);
-				ParticleService.randomVelocityDiminishing(firePosition, 3f, 15f, Colors.FIRE_START, Colors.FIRE_START, Util.getRandom().nextFloat() * 3f, 14f, MovementMode.EMBER, Util.getRandom().nextInt(800), Depth.MIDDLEGROUND, false, Colors.FIRE_END);
-				ParticleService.randomVelocityDiminishing(firePosition, 3f, 10f, Colors.LIGHT_SMOKE, Colors.LIGHT_SMOKE, 8f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(3000), Depth.BACKGROUND, false, null);
-			}
-			burnDurationRemaining -= delta;
-
-			if (burnDurationRemaining <= 0f) {
-				lit = false;
-			}
-		}
-	}
-
-
 	public String description() {
 		return "A torch placed on a wall.";
 	}
@@ -187,14 +171,14 @@ public class MedievalWallTorchProp extends Furniture implements Lightable {
 
 	@Override
 	public void light() {
-		this.burnDurationRemaining = BURN_DURATION;
-		this.lit = true;
+		this.setBurnDurationRemaining(BURN_DURATION);
+		this.setLit(true);
 	}
 
 
 	@Override
 	public void extinguish() {
-		this.lit = false;
+		this.setLit(false);
 	}
 
 
@@ -207,5 +191,20 @@ public class MedievalWallTorchProp extends Furniture implements Lightable {
 	@Override
 	public boolean canLight() {
 		return true;
+	}
+
+
+	public float getBurnDurationRemaining() {
+		return burnDurationRemaining;
+	}
+
+
+	public void setBurnDurationRemaining(float burnDurationRemaining) {
+		this.burnDurationRemaining = burnDurationRemaining;
+	}
+
+
+	public void setLit(boolean lit) {
+		this.lit = lit;
 	}
 }

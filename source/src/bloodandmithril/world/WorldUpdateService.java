@@ -10,6 +10,7 @@ import bloodandmithril.item.ProjectileUpdateService;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.weapon.ranged.Projectile;
 import bloodandmithril.prop.Prop;
+import bloodandmithril.prop.PropUpdater;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
 /**
@@ -29,6 +30,8 @@ public class WorldUpdateService {
 	private IndividualUpdateService individualUpdateService;
 	@Inject
 	private ProjectileUpdateService projectileUpdateService;
+	@Inject
+	private PropUpdater propUpdater;
 
 	/**
 	 * Updates a {@link World}
@@ -43,7 +46,7 @@ public class WorldUpdateService {
 		}
 
 		for (final Prop prop : world.props().getProps()) {
-			prop.update(UPDATE_TICK);
+			propUpdater.update(prop, UPDATE_TICK);
 		}
 
 		for (final Projectile projectile : world.projectiles().getProjectiles()) {

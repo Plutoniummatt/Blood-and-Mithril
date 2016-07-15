@@ -29,7 +29,7 @@ public class TextureBackedParticle extends Particle {
 
 	static {
 		if (ClientServerInterface.isClient()) {
-			texture =  new TextureRegion(WorldRenderer.gameWorldTexture, 453, 276, 64, 64);
+			texture =  new TextureRegion(WorldRenderer.GAME_WORLD_TEXTURE, 453, 276, 64, 64);
 		}
 	}
 

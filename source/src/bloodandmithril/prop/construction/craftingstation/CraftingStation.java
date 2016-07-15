@@ -191,14 +191,6 @@ public abstract class CraftingStation extends Construction {
 	}
 
 
-	@Override
-	public void update(final float delta) {
-		if (currentlyBeingCrafted != null && occupiedBy != null) {
-			occupiedBy = Domain.getIndividual(occupiedBy).getAI().getCurrentTask() instanceof Craft ? occupiedBy : null;
-		}
-	}
-
-
 	public float getCraftingProgress() {
 		return craftingProgress;
 	}
@@ -338,6 +330,16 @@ public abstract class CraftingStation extends Construction {
 
 	public boolean isOccupied() {
 		return occupiedBy != null;
+	}
+	
+	
+	public Integer getOccupier() {
+		return occupiedBy;
+	}
+	
+	
+	public void setOccupier(Integer occupier) {
+		this.occupiedBy = occupier;
 	}
 
 

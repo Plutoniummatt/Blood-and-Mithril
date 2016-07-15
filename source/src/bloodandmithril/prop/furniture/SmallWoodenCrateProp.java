@@ -7,38 +7,34 @@ import java.util.function.Function;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
 
 import bloodandmithril.character.ai.task.LockUnlockContainer;
 import bloodandmithril.character.ai.task.TradeWith;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;
+import bloodandmithril.core.UpdatedBy;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
-import bloodandmithril.graphics.WorldRenderer.Depth;
-import bloodandmithril.graphics.particles.Particle.MovementMode;
-import bloodandmithril.graphics.particles.RandomParticle;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
 import bloodandmithril.item.items.container.ContainerImpl;
 import bloodandmithril.item.material.wood.Wood;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.Prop;
+import bloodandmithril.prop.updateservice.NoOpPropUpdateService;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.ui.components.window.MessageWindow;
-import bloodandmithril.util.RepeatingCountdown;
-import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
-import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
 /**
  * A crate made from wood
  */
 @Copyright("Matthew Peck 2015")
+@UpdatedBy(updateService = NoOpPropUpdateService.class)
 public class SmallWoodenCrateProp extends Furniture implements Container {
 	private static final long serialVersionUID = -7463802693132242218L;
 
@@ -46,7 +42,7 @@ public class SmallWoodenCrateProp extends Furniture implements Container {
 	private Class<? extends Wood> wood;
 
 	/** {@link TextureRegion} of the {@link WoodenChestProp} */
-	public static TextureRegion woodenCrate;
+	public static TextureRegion WOODEN_CRATE;
 
 	/** The {@link Container} of this {@link WoodenChestProp} */
 	private ContainerImpl container;
@@ -210,37 +206,10 @@ public class SmallWoodenCrateProp extends Furniture implements Container {
 
 	@Override
 	public void render(final Graphics graphics) {
-		graphics.getSpriteBatch().draw(woodenCrate, position.x - width / 2, position.y);
+		graphics.getSpriteBatch().draw(WOODEN_CRATE, position.x - width / 2, position.y);
 	}
 
-
-	@Override
-	public void update(final float delta) {
-		if (Util.roll(0.95f)) {
-			return;
-		}
-
-		Domain.getWorld(getWorldId()).getClientParticles().add(
-			new RandomParticle(
-				position.cpy().add(0, 10),
-				new Vector2(),
-				Color.WHITE,
-				Color.RED,
-				2f,
-				Wiring.injector().getInstance(GameClientStateTracker.class).getActiveWorldId(),
-				4f,
-				MovementMode.EMBER,
-				Depth.FOREGROUND,
-				1000 + Util.getRandom().nextInt(2000),
-				() -> {
-					return new Vector2(150, 0).rotate(Util.getRandom().nextFloat() * 360f);
-				},
-				new RepeatingCountdown(10)
-			)
-		);
-	}
-
-
+	
 	@Override
 	public Container getContainerImpl() {
 		return container;

@@ -163,14 +163,14 @@ public final class WeatherRenderer {
 		final int source = graphics.getSpriteBatch().getBlendSrcFunc();
 		final int destination = graphics.getSpriteBatch().getBlendDstFunc();
 		graphics.getSpriteBatch().setBlendFunction(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
-		WorldRenderer.gameWorldTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		WorldRenderer.GAME_WORLD_TEXTURE.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		for (final CelestialBody celestialBody : celestialBodies) {
 			celestialBody.render(world, graphics);
 		}
 		graphics.getSpriteBatch().end();
 		graphics.getSpriteBatch().setBlendFunction(source, destination);
 		toDrawTo.end();
-		WorldRenderer.gameWorldTexture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
+		WorldRenderer.GAME_WORLD_TEXTURE.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 	}
 
 

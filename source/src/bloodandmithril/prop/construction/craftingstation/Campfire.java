@@ -1,6 +1,5 @@
 package bloodandmithril.prop.construction.craftingstation;
 
-import static bloodandmithril.graphics.Graphics.isOnScreen;
 import static com.google.common.collect.Maps.newHashMap;
 
 import java.util.Map;
@@ -15,10 +14,8 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.core.Name;
+import bloodandmithril.core.UpdatedBy;
 import bloodandmithril.core.Wiring;
-import bloodandmithril.graphics.WorldRenderer.Depth;
-import bloodandmithril.graphics.particles.Particle.MovementMode;
-import bloodandmithril.graphics.particles.ParticleService;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.food.animal.ChickenLegItem;
 import bloodandmithril.item.items.material.PlankItem;
@@ -27,19 +24,20 @@ import bloodandmithril.item.material.wood.StandardWood;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.Lightable;
 import bloodandmithril.prop.Prop;
+import bloodandmithril.prop.updateservice.CampfireUpdateService;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
-import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
 /**
- * A campfire, provides light, warm, and something to cook with.
+ * A campfire, provides light, warmth, and something to cook with.
  *
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
 @Name(name = "Campfire")
+@UpdatedBy(updateService = CampfireUpdateService.class)
 public class Campfire extends CraftingStation implements Lightable {
 	private static final long serialVersionUID = -8876217926271589078L;
 
@@ -118,21 +116,6 @@ public class Campfire extends CraftingStation implements Lightable {
 	@Override
 	public boolean customCanCraft() {
 		return lit;
-	}
-
-
-	@Override
-	public void update(final float delta) {
-		super.update(delta);
-
-		if (lit && isOnScreen(position, 50f)) {
-			final float size1 = Util.getRandom().nextFloat();
-			final float size2 = Util.getRandom().nextFloat();
-
-			ParticleService.randomVelocityDiminishing(position.cpy().add(0, 13f), 7f, 30f, Colors.LIGHT_SMOKE, Colors.LIGHT_SMOKE, 10f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(5000), Depth.MIDDLEGROUND, false, null);
-			ParticleService.randomVelocityDiminishing(position.cpy().add(0, 13f), 8f, 15f, Color.WHITE, Colors.FIRE_START, size1 * 3.5f, size1 * 16f + 5f, MovementMode.EMBER, Util.getRandom().nextInt(1000), Depth.MIDDLEGROUND, false, Colors.FIRE_END);
-			ParticleService.randomVelocityDiminishing(position.cpy().add(0, 13f), 8f, 15f, Color.WHITE, Colors.FIRE_START, size2 * 3.5f, size2 * 16f + 5f, MovementMode.EMBER, Util.getRandom().nextInt(1200), Depth.MIDDLEGROUND, false, Colors.FIRE_END);
-		}
 	}
 
 

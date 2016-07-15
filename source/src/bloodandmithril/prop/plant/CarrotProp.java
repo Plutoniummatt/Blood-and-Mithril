@@ -15,6 +15,7 @@ import bloodandmithril.character.ai.task.Trading;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;
+import bloodandmithril.core.UpdatedBy;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.graphics.WorldRenderer.Depth;
@@ -23,6 +24,7 @@ import bloodandmithril.item.items.food.plant.CarrotItem.CarrotSeedItem;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.Harvestable;
 import bloodandmithril.prop.Prop;
+import bloodandmithril.prop.updateservice.CarrotPropUpdateService;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
@@ -38,12 +40,13 @@ import bloodandmithril.world.topography.tile.tiles.SoilTile;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
+@UpdatedBy(updateService = CarrotPropUpdateService.class)
 public class CarrotProp extends PlantProp implements Harvestable {
 	private static final long serialVersionUID = -4581900482709094877L;
 
 	/** {@link TextureRegion} of the {@link CarrotProp} */
-	public static TextureRegion halfCarrot;
-	public static TextureRegion carrot;
+	public static TextureRegion HALF_CARROT;
+	public static TextureRegion CARROT;
 
 	/**
 	 * Constructor
@@ -56,9 +59,9 @@ public class CarrotProp extends PlantProp implements Harvestable {
 	@Override
 	public void render(final Graphics graphics) {
 		if (getGrowthProgress() < 1.0f) {
-			graphics.getSpriteBatch().draw(halfCarrot, position.x - width / 2, position.y);
+			graphics.getSpriteBatch().draw(HALF_CARROT, position.x - width / 2, position.y);
 		} else {
-			graphics.getSpriteBatch().draw(carrot, position.x - width / 2, position.y);
+			graphics.getSpriteBatch().draw(CARROT, position.x - width / 2, position.y);
 		}
 	}
 
@@ -146,13 +149,7 @@ public class CarrotProp extends PlantProp implements Harvestable {
 		return true;
 	}
 
-
-	@Override
-	public void update(final float delta) {
-		grow(delta / 100f);
-	}
-
-
+	
 	@Override
 	public String getContextMenuItemLabel() {
 		return "Carrot";

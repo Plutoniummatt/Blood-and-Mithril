@@ -6,9 +6,13 @@ import static com.google.common.collect.Maps.newHashMap;
 
 import java.util.Map;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.google.common.collect.Maps;
+
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
+import bloodandmithril.core.UpdatedBy;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.WoodenBucketItem;
 import bloodandmithril.item.items.equipment.offhand.Torch;
@@ -17,9 +21,7 @@ import bloodandmithril.item.items.furniture.WoodenChestItem;
 import bloodandmithril.item.items.material.PlankItem;
 import bloodandmithril.item.material.metal.Iron;
 import bloodandmithril.item.material.wood.StandardWood;
-
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.google.common.collect.Maps;
+import bloodandmithril.prop.updateservice.CraftingStationUpdateService;
 
 /**
  * Used to craft various goods.
@@ -28,6 +30,7 @@ import com.google.common.collect.Maps;
  */
 @Copyright("Matthew Peck 2014")
 @Name(name = "Work bench")
+@UpdatedBy(updateService = CraftingStationUpdateService.class)
 public class WorkBench extends CraftingStation {
 
 	private static final Map<Item, Integer> craftables = Maps.newHashMap();
@@ -43,7 +46,7 @@ public class WorkBench extends CraftingStation {
 
 	private static final long serialVersionUID = 3667802131168466770L;
 
-	public static TextureRegion workbench;
+	public static TextureRegion WORKBENCH;
 
 	/**
 	 * Constructor
@@ -56,7 +59,7 @@ public class WorkBench extends CraftingStation {
 
 	@Override
 	protected TextureRegion getTextureRegion() {
-		return workbench;
+		return WORKBENCH;
 	}
 
 

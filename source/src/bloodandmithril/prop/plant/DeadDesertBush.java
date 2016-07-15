@@ -16,6 +16,7 @@ import bloodandmithril.character.ai.task.Harvest;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;
+import bloodandmithril.core.UpdatedBy;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.graphics.WorldRenderer;
@@ -27,6 +28,7 @@ import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.Harvestable;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.furniture.MedievalWallTorchProp.NotEmptyTile;
+import bloodandmithril.prop.updateservice.NoOpPropUpdateService;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
@@ -40,6 +42,7 @@ import bloodandmithril.world.topography.Topography.NoTileFoundException;
  * @author Matt
  */
 @Copyright("Matthew Peck 2015")
+@UpdatedBy(updateService = NoOpPropUpdateService.class)
 public class DeadDesertBush extends PlantProp implements Harvestable {
 	private static final long serialVersionUID = -7472982320467390007L;
 
@@ -51,10 +54,10 @@ public class DeadDesertBush extends PlantProp implements Harvestable {
 		if (ClientServerInterface.isClient()) {
 			textures = Maps.newHashMap();
 
-			textures.put(1, new TextureRegion(WorldRenderer.gameWorldTexture, 870, 51, 69, 80));
-			textures.put(2, new TextureRegion(WorldRenderer.gameWorldTexture, 940, 78, 54, 53));
-			textures.put(3, new TextureRegion(WorldRenderer.gameWorldTexture, 995, 83, 50, 48));
-			textures.put(4, new TextureRegion(WorldRenderer.gameWorldTexture, 1046, 68, 42, 63));
+			textures.put(1, new TextureRegion(WorldRenderer.GAME_WORLD_TEXTURE, 870, 51, 69, 80));
+			textures.put(2, new TextureRegion(WorldRenderer.GAME_WORLD_TEXTURE, 940, 78, 54, 53));
+			textures.put(3, new TextureRegion(WorldRenderer.GAME_WORLD_TEXTURE, 995, 83, 50, 48));
+			textures.put(4, new TextureRegion(WorldRenderer.GAME_WORLD_TEXTURE, 1046, 68, 42, 63));
 		}
 	}
 
@@ -155,11 +158,6 @@ public class DeadDesertBush extends PlantProp implements Harvestable {
 		}
 
 		return menu;
-	}
-
-
-	@Override
-	public void update(final float delta) {
 	}
 
 

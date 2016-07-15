@@ -2,6 +2,9 @@ package bloodandmithril.prop.plant.seed;
 
 import java.util.Collection;
 
+import com.badlogic.gdx.graphics.Color;
+import com.google.common.collect.Lists;
+
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.item.items.Item;
@@ -10,12 +13,8 @@ import bloodandmithril.prop.Growable;
 import bloodandmithril.prop.Harvestable;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.util.SerializableMappingFunction;
-import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.tile.Tile;
-
-import com.badlogic.gdx.graphics.Color;
-import com.google.common.collect.Lists;
 
 /**
  * {@link Prop} representation of a {@link SeedItem}, this will have been planted
@@ -76,21 +75,8 @@ public abstract class SeedProp extends Growable implements Harvestable {
 	}
 
 
-	@Override
-	public void update(float delta) {
-		if (germinationProgress >= 1f) {
-			germinationProgress = 1f;
-			Growable germinate = germinate();
-			Domain.getWorld(getWorldId()).props().removeProp(id);
-			Domain.getWorld(getWorldId()).props().addProp(germinate);
-		} else {
-			growth(delta);
-		}
-	}
-
-
 	/**
 	 * @param seed-specific growth
 	 */
-	protected abstract void growth(float delta);
+	public abstract void growth(float delta);
 }
