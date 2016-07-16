@@ -1,29 +1,17 @@
 package bloodandmithril.world.topography;
 
-import static bloodandmithril.control.InputUtilities.worldToScreenX;
-import static bloodandmithril.control.InputUtilities.worldToScreenY;
 import static bloodandmithril.world.topography.Topography.CHUNK_SIZE;
-import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static bloodandmithril.world.topography.Topography.TEXTURE_COORDINATE_QUANTIZATION;
+import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 
 import java.io.Serializable;
 
-import org.lwjgl.opengl.GL11;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 import bloodandmithril.core.Copyright;
-import bloodandmithril.ui.UserInterface;
-import bloodandmithril.util.Operator;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
@@ -181,40 +169,6 @@ public final class Chunk {
 		}
 
 		return row;
-	}
-
-
-	/**
-	 * Renders this chunk
-	 */
-	public final void render(boolean foreGround, Camera camera, ShaderProgram shader, Operator<ShaderProgram> uniformSettings) {
-		Gdx.gl.glEnable(GL20.GL_BLEND);
-		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-		if (foreGround) {
-			shader.begin();
-			shader.setUniformMatrix("u_projTrans", camera.combined);
-			shader.setUniformi("u_texture", 0);
-			uniformSettings.operate(shader);
-			fMesh.render(shader, GL11.GL_QUADS);
-			shader.end();
-		} else {
-			shader.begin();
-			shader.setUniformMatrix("u_projTrans", camera.combined);
-			shader.setUniformi("u_texture", 0);
-			uniformSettings.operate(shader);
-			bMesh.render(shader, GL11.GL_QUADS);
-			shader.end();
-		}
-
-		if (UserInterface.DEBUG) {
-			UserInterface.shapeRenderer.begin(ShapeType.Line);
-			UserInterface.shapeRenderer.setColor(new Color(1f, 0.5f, 1f, 0.15f));
-			float x = fData.xChunkCoord * Topography.CHUNK_SIZE * Topography.TILE_SIZE;
-			float y = fData.yChunkCoord * Topography.CHUNK_SIZE * Topography.TILE_SIZE;
-			UserInterface.shapeRenderer.rect(worldToScreenX(x), worldToScreenY(y), Topography.CHUNK_SIZE * Topography.TILE_SIZE, Topography.CHUNK_SIZE * Topography.TILE_SIZE);
-			UserInterface.shapeRenderer.end();
-		}
-		Gdx.gl.glDisable(GL20.GL_BLEND);
 	}
 
 
@@ -397,6 +351,26 @@ public final class Chunk {
 		}
 		repopulateTextureCoordinates(tileX, tileY, foreGround);
 		calculateChunkOrientations(foreGround);
+	}
+	
+	
+	public Mesh getFMesh() {
+		return fMesh;
+	}
+	
+	
+	public Mesh getBMesh() {
+		return bMesh;
+	}
+	
+	
+	public ChunkData getFData() {
+		return fData;
+	}
+	
+	
+	public ChunkData getBData() {
+		return bData;
 	}
 
 

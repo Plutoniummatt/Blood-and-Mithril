@@ -35,7 +35,9 @@ import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.character.individuals.IndividualState;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
+import bloodandmithril.graphics.RenderIndividualWith;
 import bloodandmithril.graphics.WorldRenderer;
+import bloodandmithril.graphics.renderers.IndividualRendererImpl;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.construction.Construction;
 import bloodandmithril.util.AnimationHelper;
@@ -55,6 +57,7 @@ import bloodandmithril.util.datastructure.WrapperForTwo;
 @Name(name = "Hares")
 @Copyright("Matthew Peck 2014")
 @SuppressWarnings("unchecked")
+@RenderIndividualWith(IndividualRendererImpl.class)
 public class Hare extends GroundTravellingIndividual implements Listener, Observer, Animal {
 	private static final long serialVersionUID = -1907997976760409204L;
 

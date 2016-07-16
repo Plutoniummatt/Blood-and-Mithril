@@ -14,7 +14,7 @@ import com.badlogic.gdx.math.Vector2;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.Graphics;
-import bloodandmithril.graphics.Renderer;
+import bloodandmithril.graphics.IndividualRenderer;
 import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.Equipable;
@@ -34,10 +34,10 @@ import bloodandmithril.util.datastructure.WrapperForTwo;
  * @author mattp
  */
 @Copyright("Matthew Peck 2015")
-public class IndividualRenderer<T extends Individual> implements Renderer<T> {
+public class IndividualRendererImpl implements IndividualRenderer {
 
 	@Override
-	public void internalRender(T individual, Graphics graphics) {
+	public void internalRender(Individual individual, Graphics graphics) {
 		int animationIndex = 0;
 		SpriteBatch batch = graphics.getSpriteBatch();
 
@@ -82,7 +82,7 @@ public class IndividualRenderer<T extends Individual> implements Renderer<T> {
 	}
 
 
-	private void renderEquipment(T individual, int animationIndex, Graphics graphics) {
+	private void renderEquipment(Individual individual, int animationIndex, Graphics graphics) {
 		graphics.getSpriteBatch().flush();
 		WorldRenderer.individualTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		for (Item equipped : individual.getEquipped().keySet()) {
@@ -159,5 +159,5 @@ public class IndividualRenderer<T extends Individual> implements Renderer<T> {
 	}
 
 
-	protected void renderCustomizations(T individual, int animationIndex, Graphics graphics) {}
+	protected void renderCustomizations(Individual individual, int animationIndex, Graphics graphics) {}
 }

@@ -39,6 +39,7 @@ import bloodandmithril.prop.Prop;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.datastructure.Wrapper;
 import bloodandmithril.world.World;
+import bloodandmithril.world.topography.TopographyRenderer;
 
 /**
  * Class for rendering {@link World}s
@@ -71,6 +72,7 @@ public class WorldRenderer {
 	@Inject private Graphics graphics;
 	@Inject private GameClientStateTracker gameClientStateTracker;
 	@Inject private IndividualPlatformFilteringRenderer individualPlatformFilteringRenderer;
+	@Inject private TopographyRenderer topographyRenderer;
 
 	public void dispose() {
 		fBuffer.dispose();
@@ -158,7 +160,7 @@ public class WorldRenderer {
 		}
 		renderParticles(Depth.FOREGROUND, world);
 		batch.end();
-		world.getTopography().renderForeGround(camX, camY, Shaders.pass, shader -> {}, graphics);
+		topographyRenderer.renderForeGround(world.getTopography(), camX, camY, Shaders.pass, shader -> {}, graphics);
 		batch.begin();
 		batch.setShader(Shaders.filter);
 		Shaders.filter.setUniformMatrix("u_projTrans", graphics.getCam().combined);
@@ -201,7 +203,7 @@ public class WorldRenderer {
 		graphics.getCam().position.x = graphics.getCam().position.x - xOffset;
 		graphics.getCam().position.y = graphics.getCam().position.y - yOffset;
 		graphics.getCam().update();
-		world.getTopography().renderBackGround(camX, camY, Shaders.pass, shader -> {}, graphics);
+		topographyRenderer.renderBackGround(world.getTopography(), camX, camY, Shaders.pass, shader -> {}, graphics);
 		graphics.getCam().position.x = graphics.getCam().position.x + xOffset;
 		graphics.getCam().position.y = graphics.getCam().position.y + yOffset;
 		graphics.getCam().update();
@@ -223,7 +225,7 @@ public class WorldRenderer {
 		graphics.getCam().position.x = graphics.getCam().position.x - xOffset;
 		graphics.getCam().position.y = graphics.getCam().position.y - yOffset;
 		graphics.getCam().update();
-		world.getTopography().renderForeGround(camX, camY, Shaders.pass, shader -> {}, graphics);
+		topographyRenderer.renderForeGround(world.getTopography(), camX, camY, Shaders.pass, shader -> {}, graphics);
 		graphics.getCam().position.x = graphics.getCam().position.x + xOffset;
 		graphics.getCam().position.y = graphics.getCam().position.y + yOffset;
 		graphics.getCam().update();
@@ -258,7 +260,7 @@ public class WorldRenderer {
 	private void renderBackgroundBuffer(final World world, final int camX, final int camY, final SpriteBatch batch) {
 		bBuffer.begin();
 		Shaders.invertAlphaSolidColor.begin();
-		world.getTopography().renderBackGround(camX, camY, Shaders.pass, shader -> {}, graphics);
+		topographyRenderer.renderBackGround(world.getTopography(), camX, camY, Shaders.pass, shader -> {}, graphics);
 		batch.begin();
 		batch.setShader(Shaders.filter);
 		Shaders.pass.setUniformMatrix("u_projTrans", graphics.getCam().combined);

@@ -32,8 +32,10 @@ import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.google.common.collect.Maps;
+import com.google.inject.Singleton;
 
 import bloodandmithril.character.individuals.Humanoid;
+import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.Individual.Action;
 import bloodandmithril.character.individuals.characters.Elf;
 import bloodandmithril.core.Copyright;
@@ -51,9 +53,10 @@ import bloodandmithril.util.datastructure.WrapperForTwo;
  *
  * @author Matt
  */
+@Singleton
 @SuppressWarnings("unchecked")
 @Copyright("Matthew Peck 2015")
-public class ElfRenderer extends IndividualRenderer<Elf> {
+public class ElfRenderer extends IndividualRendererImpl {
 
 	/** Elf female hairstyles */
 	public static Map<Integer, TextureRegion> hairStyleFemale = Maps.newHashMap();
@@ -333,7 +336,9 @@ public class ElfRenderer extends IndividualRenderer<Elf> {
 
 
 	@Override
-	public void internalRender(Elf elf, Graphics graphics) {
+	public void internalRender(Individual indi, Graphics graphics) {
+		Elf elf = (Elf) indi;
+		
 		Shaders.filterIgnoreReplace.begin();
 		Shaders.filterIgnoreReplace.setUniformf("toReplace", Color.RED);
 		Shaders.filterIgnoreReplace.setUniformf("color", elf.getEyeColor().r, elf.getEyeColor().g, elf.getEyeColor().b, elf.getEyeColor().a);
@@ -363,7 +368,9 @@ public class ElfRenderer extends IndividualRenderer<Elf> {
 
 
 	@Override
-	protected void renderCustomizations(Elf elf, int animationIndex, Graphics graphics) {
+	protected void renderCustomizations(Individual indi, int animationIndex, Graphics graphics) {
+		Elf elf = (Elf) indi;
+		
 		TextureRegion hair = hairStyleFemale.get(elf.getHairStyle());
 		SpacialConfiguration helmetConfig = elf.getHelmetSpatialConfigration();
 

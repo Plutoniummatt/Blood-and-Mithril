@@ -17,6 +17,6 @@ import bloodandmithril.prop.renderservice.PropRenderingService;
 @Retention(RUNTIME)
 @Target(TYPE)
 @Copyright("Matthew Peck 2016")
-public @interface RenderWith {
+public @interface RenderPropWith {
 	Class<? extends PropRenderingService> value();
 }

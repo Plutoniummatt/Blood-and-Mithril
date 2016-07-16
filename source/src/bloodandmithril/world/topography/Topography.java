@@ -1,21 +1,16 @@
 package bloodandmithril.world.topography;
 
 import org.apache.commons.lang3.mutable.MutableBoolean;
-import org.lwjgl.opengl.Display;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector2;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.Structures;
-import bloodandmithril.graphics.Graphics;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
-import bloodandmithril.util.Operator;
 import bloodandmithril.util.datastructure.ConcurrentDualKeyHashMap;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
@@ -62,50 +57,6 @@ public final class Topography {
 		this.worldId = worldId;
 		this.chunkMap = new ChunkMap();
 		this.structures = new Structures();
-	}
-
-
-	/**
-	 * Renders the background
-	 */
-	public final void renderBackGround(int camX, int camY, ShaderProgram shader, Operator<ShaderProgram> uniformSettings, Graphics graphics) {
-		int bottomLeftX 	= (camX - Display.getWidth() / 2) / (CHUNK_SIZE * TILE_SIZE);
-		int bottomLeftY 	= (camY - Display.getHeight() / 2) / (CHUNK_SIZE * TILE_SIZE);
-		int topRightX 		= bottomLeftX + Display.getWidth() / (CHUNK_SIZE * TILE_SIZE);
-		int topRightY		= bottomLeftY + Display.getHeight() / (CHUNK_SIZE * TILE_SIZE);
-
-		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
-		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		Topography.TILE_TEXTURE_ATLAS.bind();
-		for (int x = bottomLeftX - 2; x <= topRightX + 2; x++) {
-			for (int y = bottomLeftY - 2; y <= topRightY + 2; y++) {
-				if (getChunkMap().get(x) != null && getChunkMap().get(x).get(y) != null) {
-					getChunkMap().get(x).get(y).checkMesh();
-					getChunkMap().get(x).get(y).render(false, graphics.getCam(), shader, uniformSettings);
-				}
-			}
-		}
-	}
-
-
-	/**
-	 * Renders the foreground
-	 */
-	public final void renderForeGround(int camX, int camY, ShaderProgram shader, Operator<ShaderProgram> uniformSettings, Graphics graphics) {
-		int bottomLeftX 	= (camX - Display.getWidth() / 2) / (CHUNK_SIZE * TILE_SIZE);
-		int bottomLeftY 	= (camY - Display.getHeight() / 2) / (CHUNK_SIZE * TILE_SIZE);
-		int topRightX 		= bottomLeftX + Display.getWidth() / (CHUNK_SIZE * TILE_SIZE);
-		int topRightY		= bottomLeftY + Display.getHeight() / (CHUNK_SIZE * TILE_SIZE);
-
-		Topography.TILE_TEXTURE_ATLAS.bind();
-		for (int x = bottomLeftX - 2; x <= topRightX + 2; x++) {
-			for (int y = bottomLeftY - 2; y <= topRightY + 2; y++) {
-				if (getChunkMap().get(x) != null && getChunkMap().get(x).get(y) != null) {
-					getChunkMap().get(x).get(y).checkMesh();
-					getChunkMap().get(x).get(y).render(true, graphics.getCam(), shader, uniformSettings);
-				}
-			}
-		}
 	}
 
 

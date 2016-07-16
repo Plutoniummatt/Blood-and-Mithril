@@ -27,6 +27,7 @@ import bloodandmithril.character.individuals.IndividualState;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Description;
 import bloodandmithril.core.Name;
+import bloodandmithril.graphics.RenderIndividualWith;
 import bloodandmithril.graphics.particles.ParticleService;
 import bloodandmithril.graphics.renderers.ElfRenderer;
 import bloodandmithril.item.material.mineral.SandStone;
@@ -65,6 +66,7 @@ import bloodandmithril.world.World;
 @Name(name = "Elves")
 @Description(description = "Elves are children of nature, they are nimble creatures with a good grip on magic and excel at archery.")
 @Copyright("Matthew Peck 2014")
+@RenderIndividualWith(ElfRenderer.class)
 public class Elf extends Humanoid implements Observer, Listener {
 	private static final long serialVersionUID = -5566954059579973505L;
 

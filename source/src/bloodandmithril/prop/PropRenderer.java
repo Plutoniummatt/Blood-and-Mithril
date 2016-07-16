@@ -4,7 +4,7 @@ import com.google.inject.Singleton;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Wiring;
-import bloodandmithril.graphics.RenderWith;
+import bloodandmithril.graphics.RenderPropWith;
 
 /**
  * Serice to render {@link Prop}s
@@ -19,6 +19,6 @@ public class PropRenderer {
 	 * Updates the prop using the correct service
 	 */
 	public void render(Prop prop) {
-		Wiring.injector().getInstance(prop.getClass().getAnnotation(RenderWith.class).value()).render(prop);
+		Wiring.injector().getInstance(prop.getClass().getAnnotation(RenderPropWith.class).value()).render(prop);
 	}
 }

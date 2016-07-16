@@ -25,6 +25,7 @@ import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.character.individuals.IndividualState;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
+import bloodandmithril.graphics.RenderIndividualWith;
 import bloodandmithril.graphics.renderers.WolfRenderer;
 import bloodandmithril.prop.construction.Construction;
 import bloodandmithril.util.AnimationHelper.AnimationSwitcher;
@@ -40,6 +41,7 @@ import bloodandmithril.util.datastructure.WrapperForTwo;
  */
 @Name(name = "Wolves")
 @Copyright("Matthew Peck 2015")
+@RenderIndividualWith(WolfRenderer.class)
 public class Wolf extends GroundTravellingIndividual implements Listener, Observer, Sniffer, Animal {
 	private static final long serialVersionUID = 6519740787651279948L;
 

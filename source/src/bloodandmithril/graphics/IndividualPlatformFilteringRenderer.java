@@ -75,11 +75,11 @@ public class IndividualPlatformFilteringRenderer {
 	public void renderIndividuals(final int worldId) {
 		try {
 			for (final Individual indi : filter(Domain.getSortedIndividualsForWorld(renderPrioritySorter, worldId), offPlatform)) {
-				Renderer.render(indi, graphics);
+				IndividualRenderer.render(indi, graphics);
 			}
 
 			for (final Individual indi : filter(Domain.getSortedIndividualsForWorld(renderPrioritySorter, worldId), onPlatform)) {
-				Renderer.render(indi, graphics);
+				IndividualRenderer.render(indi, graphics);
 			}
 		} catch (final NullPointerException e) {
 			generalDebug("Nullpointer whilst rendering individual", LogLevel.INFO, e);

@@ -12,6 +12,7 @@ import java.util.Map;
 
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.google.inject.Singleton;
 
 import bloodandmithril.character.combat.CombatService;
 import bloodandmithril.character.individuals.Individual;
@@ -31,9 +32,10 @@ import bloodandmithril.util.datastructure.WrapperForTwo;
  *
  * @author Matt
  */
+@Singleton
 @SuppressWarnings("unchecked")
 @Copyright("Matthew Peck 2015")
-public class WolfRenderer extends IndividualRenderer<Wolf> {
+public class WolfRenderer extends IndividualRendererImpl {
 
 	/** Wolf-specific animation map */
 	public static Map<Action, List<WrapperForTwo<AnimationSwitcher, ShaderProgram>>> animationMap = newHashMap();
