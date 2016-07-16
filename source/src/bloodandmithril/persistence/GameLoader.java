@@ -4,6 +4,7 @@ import static bloodandmithril.persistence.PersistenceUtil.decode;
 import static bloodandmithril.util.Logger.loaderDebug;
 import static com.badlogic.gdx.Gdx.files;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -22,12 +23,17 @@ import bloodandmithril.control.CameraTracker;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.core.Wiring;
+import bloodandmithril.generation.Structure;
+import bloodandmithril.generation.Structures;
+import bloodandmithril.generation.patterns.GlobalLayers;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.persistence.GameSaver.PersistenceMetaData;
 import bloodandmithril.persistence.character.IndividualLoader;
-import bloodandmithril.persistence.world.ChunkLoader;
+import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.World;
+import bloodandmithril.world.topography.Topography;
 
 
 /**
@@ -40,7 +46,6 @@ import bloodandmithril.world.Domain;
 public class GameLoader {
 
 	@Inject private ParameterPersistenceService parameterPersistenceService;
-	@Inject private ChunkLoader chunkLoader;
 	@Inject private FactionControlService factionControlService;
 	@Inject private PersistenceParameters persistenceParameters;
 	@Inject private IndividualLoader individualLoader;
@@ -61,10 +66,68 @@ public class GameLoader {
 			}
 			parameterPersistenceService.loadParameters();
 			gameClientStateTracker.setActiveWorldId(parameterPersistenceService.getParameters().getActiveWorldId());
-			chunkLoader.loadGenerationData();
-			chunkLoader.loadWorlds();
+			loadGenerationData();
+			loadWorlds();
 			loadFactions();
 			individualLoader.loadAll();
+		}
+	}
+	
+	/**
+	 * Loads generation data
+	 **/
+	public synchronized void loadGenerationData() {
+		try {
+			final ConcurrentHashMap<Integer, Structure> structures = decode(Gdx.files.local(persistenceParameters.getSavePath() + "/world/structures.txt"));
+			Structures.setStructures(structures);
+		} catch (final Exception e) {
+			Logger.loaderDebug("Failed to load structures", LogLevel.DEBUG);
+		}
+
+		try {
+			GlobalLayers.layers = decode(Gdx.files.local(persistenceParameters.getSavePath() + "/world/layers.txt"));
+		} catch (final Exception e) {
+			Logger.loaderDebug("Failed to load layers", LogLevel.DEBUG);
+		}
+	}	
+	
+	
+	/**
+	 * Loads all worlds
+	 */
+	public void loadWorlds() {
+		try {
+			final HashMap<Integer, World> worlds = decode(Gdx.files.local(persistenceParameters.getSavePath() + "/world/worlds.txt"));
+
+			worlds.values().stream().forEach(world -> {
+				Domain.addWorld(world);
+			});
+		} catch (final Exception e) {
+			Logger.loaderDebug("Failed to load worlds", LogLevel.DEBUG);
+		}
+
+		if (!Domain.getAllWorlds().isEmpty()) {
+			for (final World world : Domain.getAllWorlds()) {
+				world.setTopography(new Topography(world.getWorldId()));
+
+				try {
+					final ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, Integer>> keys = decode(Gdx.files.local(persistenceParameters.getSavePath() + "/world/world" + Integer.toString(world.getWorldId()) + "/superStructureKeys.txt"));
+					world.getTopography().getStructures().setSuperStructureKeys(keys);
+				} catch (final Exception e) {
+					Logger.loaderDebug("Failed to load chunk super structure structure keys", LogLevel.DEBUG);
+					final ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, Integer>> map = new ConcurrentHashMap<>();
+					world.getTopography().getStructures().setSuperStructureKeys(map);
+				}
+
+				try {
+					final ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, Integer>> keys = decode(Gdx.files.local(persistenceParameters.getSavePath() + "/world/world" + Integer.toString(world.getWorldId()) + "/subStructureKeys.txt"));
+					world.getTopography().getStructures().setSubStructureKeys(keys);
+				} catch (final Exception e) {
+					Logger.loaderDebug("Failed to load chunk sub structure keys", LogLevel.DEBUG);
+					final ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, Integer>> map = new ConcurrentHashMap<>();
+					world.getTopography().getStructures().setSubStructureKeys(map);
+				}
+			}
 		}
 	}
 

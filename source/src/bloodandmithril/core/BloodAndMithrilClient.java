@@ -36,6 +36,7 @@ import bloodandmithril.world.Domain;
 import bloodandmithril.world.Epoch;
 import bloodandmithril.world.World;
 import bloodandmithril.world.topography.Topography;
+import bloodandmithril.world.topography.TopographyTaskExecutor;
 import bloodandmithril.world.weather.WeatherRenderer;
 
 /**
@@ -79,6 +80,7 @@ public class BloodAndMithrilClient implements ApplicationListener {
 	@Inject	private GameSaver gameSaver;
 	@Inject	private GameClientStateTracker gameClientStateTracker;
 	@Inject	private WorldRenderer worldRenderer;
+	@Inject private TopographyTaskExecutor topographyTaskExecutor;
 
 	@Override
 	public void create() {
@@ -142,7 +144,7 @@ public class BloodAndMithrilClient implements ApplicationListener {
 
 			// Topography backlog, must be done in main threadh because chunks rely on graphics ---------- /
 			if (System.currentTimeMillis() - timers.topographyBacklogExecutionTimer > 100) {
-				Topography.executeBackLog();
+				topographyTaskExecutor.executeBackLog();
 				timers.topographyBacklogExecutionTimer = System.currentTimeMillis();
 			}
 

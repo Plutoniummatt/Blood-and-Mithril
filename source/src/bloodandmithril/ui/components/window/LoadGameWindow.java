@@ -23,7 +23,7 @@ import bloodandmithril.graphics.Graphics;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.persistence.GameLoader;
 import bloodandmithril.persistence.GameSaver.PersistenceMetaData;
-import bloodandmithril.persistence.world.ChunkLoader;
+import bloodandmithril.persistence.world.ChunkProvider;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
@@ -45,7 +45,7 @@ public class LoadGameWindow extends Window {
 	@Inject	private Threading threading;
 	@Inject	private Graphics graphics;
 	@Inject	private GameLoader gameLoader;
-	@Inject	private ChunkLoader chunkLoader;
+	@Inject	private ChunkProvider chunkLoader;
 	@Inject private GameSetupService gameSetupService;
 	@Inject private GameClientStateTracker gameClientStateTracker;
 

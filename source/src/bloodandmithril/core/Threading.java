@@ -19,6 +19,7 @@ import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
 import bloodandmithril.world.WorldUpdateService;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
+import bloodandmithril.world.topography.TopographyGenerationService;
 
 /**
  * Threading class
@@ -55,6 +56,7 @@ public class Threading {
 	private final GameClientStateTracker gameClientStateTracker;
 	private final MissionTracker missionTracker;
 	private final WorldUpdateService worldUpdateService;
+	private final TopographyGenerationService topographyGenerationService;
 
 	/**
 	 * Constructor
@@ -65,13 +67,15 @@ public class Threading {
 		final GameSaver gameSaver,
 		final GameClientStateTracker gameClientStateTracker,
 		final MissionTracker missionTracker,
-		final WorldUpdateService worldUpdateService
+		final WorldUpdateService worldUpdateService,
+		final TopographyGenerationService topographyGenerationService
 	) {
 		this.graphics = graphics;
 		this.gameSaver = gameSaver;
 		this.gameClientStateTracker = gameClientStateTracker;
 		this.missionTracker = missionTracker;
 		this.worldUpdateService = worldUpdateService;
+		this.topographyGenerationService = topographyGenerationService;
 
 		setupEventProcessingThread();
 		setupUpdateThread();
@@ -131,7 +135,8 @@ public class Threading {
 
 				if (System.currentTimeMillis() - prevFrame1 > 16) {
 					if (gameClientStateTracker.getActiveWorld() != null) {
-						gameClientStateTracker.getActiveWorld().getTopography().loadOrGenerateNullChunksAccordingToPosition(
+						topographyGenerationService.loadOrGenerateNullChunksAccordingToPosition(
+							gameClientStateTracker.getActiveWorld(),
 							(int) graphics.getCam().position.x,
 							(int) graphics.getCam().position.y
 						);
@@ -142,7 +147,8 @@ public class Threading {
 				if (System.currentTimeMillis() - prevFrame2 > 200) {
 					if (gameClientStateTracker.getActiveWorld() != null) {
 						Domain.getIndividuals().stream().forEach(individual -> {
-							gameClientStateTracker.getActiveWorld().getTopography().loadOrGenerateNullChunksAccordingToPosition(
+							topographyGenerationService.loadOrGenerateNullChunksAccordingToPosition(
+								gameClientStateTracker.getActiveWorld(),
 								(int) individual.getState().position.x,
 								(int) individual.getState().position.y
 							);

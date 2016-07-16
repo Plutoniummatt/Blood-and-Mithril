@@ -1,7 +1,5 @@
 package bloodandmithril.character.ai.pathfinding.implementations;
 
-import static bloodandmithril.networking.ClientServerInterface.isClient;
-import static bloodandmithril.networking.ClientServerInterface.isServer;
 import static bloodandmithril.util.Logger.aiDebug;
 import static bloodandmithril.util.Logger.LogLevel.DEBUG;
 import static bloodandmithril.util.Logger.LogLevel.INFO;
@@ -25,10 +23,8 @@ import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.datastructure.DualKeyHashMap;
 import bloodandmithril.util.datastructure.DualKeyHashMap.DualKeyEntry;
 import bloodandmithril.world.World;
-import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile;
-import bloodandmithril.world.topography.tile.Tile.DebugTile;
 import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 
 /**
@@ -283,27 +279,22 @@ public final class AStarPathFinder extends PathFinder {
 			// If the tile is empty, we check if all tiles above it (within specified height) are also empty, if not, we return 2, otherwise, we return the vertical distance
 			// To the empty tile that is above the non-empty tile below the adjascent tile
 			if (tile instanceof EmptyTile) {
-				changeToDebugTile(to.x, to.y, world);
 				for (int i = 1; i <= height; i++) {
-					changeToDebugTile(to.x, to.y + i * TILE_SIZE, world);
 					if (!world.getTopography().getTile(to.x, (float)to.y + i * TILE_SIZE, true).isPassable()) {
 						return 2;
 					}
 				}
 				cascadeDownAndProcessPlatforms(to.x, to.y - TILE_SIZE, parent, destination, height, safeHeight, world);
-				changeToDebugTile(to.x, world.getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(to.x, to.y, false).y, world);
 				return -round(to.y - world.getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(to.x, to.y, false).y) / TILE_SIZE;
 
 			// If the tile is not empty and not a platform, we check that all tiles above it (within specified height) are also empty, if so, we return 1, otherwise we return 2.
 			} else if (!tile.isPlatformTile) {
 				// Note we're using height + 1 because we're stepping up
 				for (int i = 1; i <= height + 1; i++) {
-					changeToDebugTile(to.x, to.y + i * TILE_SIZE, world);
 					if (!world.getTopography().getTile(to.x, (float)to.y + i * TILE_SIZE, true).isPassable()) {
 						return 2;
 					}
 				}
-				changeToDebugTile(to.x + (right ? -TILE_SIZE : TILE_SIZE), to.y + (height + 1) * TILE_SIZE, world);
 				if (!world.getTopography().getTile((float)to.x + (float)(right ? -TILE_SIZE : TILE_SIZE), to.y + (height + 1) * TILE_SIZE, true).isPassable()) {
 					return 2;
 				}
@@ -315,13 +306,11 @@ public final class AStarPathFinder extends PathFinder {
 				cascadeDownAndProcessPlatforms(to.x, to.y - TILE_SIZE, parent, destination, height, safeHeight, world);
 
 				for (int i = 1; i <= height + 1; i++) {
-					changeToDebugTile(to.x, to.y + i * TILE_SIZE, world);
 					if (!world.getTopography().getTile(to.x, (float)to.y + i * TILE_SIZE, true).isPassable()) {
 						return 2;
 					}
 				}
 
-				changeToDebugTile(to.x + (right ? -TILE_SIZE : TILE_SIZE), to.y + (height + 1) * TILE_SIZE, world);
 				if (!world.getTopography().getTile((float)to.x + (float)(right ? -TILE_SIZE : TILE_SIZE), to.y + (height + 1) * TILE_SIZE, true).isPassable()) {
 					return 2;
 				}
@@ -338,7 +327,6 @@ public final class AStarPathFinder extends PathFinder {
 		Tile tile;
 		try {
 			tile = world.getTopography().getTile(x, y, true);
-			changeToDebugTile(x, y, world);
 		} catch (NoTileFoundException e) {
 			aiDebug("Null tile encountered, perhaps not yet generated", INFO);
 			return;
@@ -353,7 +341,6 @@ public final class AStarPathFinder extends PathFinder {
 			// nodes.
 			boolean legal = true;
 			for (int i = 1; i <= height + 1; i++) {
-				changeToDebugTile(x, y + i * TILE_SIZE, world);
 				if (!world.getTopography().getTile(x, y + i * TILE_SIZE, true).isPassable()) {
 					legal = false;
 					break;
@@ -373,17 +360,6 @@ public final class AStarPathFinder extends PathFinder {
 
 			// If this non-empty is not a platform, stop.
 		}
-	}
-
-
-	private final void changeToDebugTile(final float x, final float y, final World world) {
-		if (isServer() || isClient()) {
-			return;
-		}
-
-		Topography.addTask(() -> {
-			world.getTopography().changeTile(x, y, false, DebugTile.class);
-		});
 	}
 
 

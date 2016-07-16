@@ -1,11 +1,5 @@
 package bloodandmithril.world.topography;
 
-import static bloodandmithril.graphics.Graphics.getGdxHeight;
-import static bloodandmithril.graphics.Graphics.getGdxWidth;
-
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.lwjgl.opengl.Display;
 
@@ -16,16 +10,12 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector2;
 
 import bloodandmithril.core.Copyright;
-import bloodandmithril.core.Wiring;
 import bloodandmithril.generation.Structures;
 import bloodandmithril.graphics.Graphics;
-import bloodandmithril.networking.ClientServerInterface;
-import bloodandmithril.persistence.world.ChunkLoader;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.Operator;
-import bloodandmithril.util.Task;
 import bloodandmithril.util.datastructure.ConcurrentDualKeyHashMap;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
@@ -41,9 +31,6 @@ import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 @Copyright("Matthew Peck 2014")
 public final class Topography {
 
-	/** Unique ID of the {@link World} that this {@link Topography} lives on */
-	private final int worldId;
-
 	/** The size of a single tile, in pixels (single dimension) */
 	public static final int TILE_SIZE = 16;
 
@@ -51,22 +38,19 @@ public final class Topography {
 	public static final int CHUNK_SIZE = 20;
 
 	/** The texture atlas containing all textures for tiles */
-	public static Texture atlas;
+	public static Texture TILE_TEXTURE_ATLAS;
 
 	/** The texture coordinate increment representing one tile in the texture atlas. (1/128) */
-	public static final float textureCoordinateQuantization = 0.015625f;
+	public static final float TEXTURE_COORDINATE_QUANTIZATION = 0.015625f;
+	
+	/** Unique ID of the {@link World} that this {@link Topography} lives on */
+	private final int worldId;
 
 	/** The chunk map of the topography. */
 	private final ChunkMap chunkMap;
 
 	/** {@link Structures} that exist on this instance of {@link Topography} */
 	private final Structures structures;
-
-	/** The chunk loader. */
-	private static final ChunkLoader chunkLoader = Wiring.injector().getInstance(ChunkLoader.class);
-
-	/** Any non-main thread topography tasks queued here */
-	private static BlockingQueue<Task> topographyTasks = new ArrayBlockingQueue<Task>(500000);
 
 	/** The current chunk coordinates that have already been requested for generation */
 	private final ConcurrentDualKeyHashMap<Integer, Integer, Boolean> requestedForGeneration = new ConcurrentDualKeyHashMap<>();
@@ -81,20 +65,6 @@ public final class Topography {
 	}
 
 
-	/** Adds a task to be processed */
-	public static synchronized final void addTask(Task task) {
-		topographyTasks.add(task);
-	}
-
-
-	/** Executes any tasks queued in {@link #topographyTasks} by other threads */
-	public static synchronized final void executeBackLog() {
-		while (!topographyTasks.isEmpty()) {
-			topographyTasks.poll().execute();
-		}
-	}
-
-
 	/**
 	 * Renders the background
 	 */
@@ -106,7 +76,7 @@ public final class Topography {
 
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		Topography.atlas.bind();
+		Topography.TILE_TEXTURE_ATLAS.bind();
 		for (int x = bottomLeftX - 2; x <= topRightX + 2; x++) {
 			for (int y = bottomLeftY - 2; y <= topRightY + 2; y++) {
 				if (getChunkMap().get(x) != null && getChunkMap().get(x).get(y) != null) {
@@ -127,7 +97,7 @@ public final class Topography {
 		int topRightX 		= bottomLeftX + Display.getWidth() / (CHUNK_SIZE * TILE_SIZE);
 		int topRightY		= bottomLeftY + Display.getHeight() / (CHUNK_SIZE * TILE_SIZE);
 
-		Topography.atlas.bind();
+		Topography.TILE_TEXTURE_ATLAS.bind();
 		for (int x = bottomLeftX - 2; x <= topRightX + 2; x++) {
 			for (int y = bottomLeftY - 2; y <= topRightY + 2; y++) {
 				if (getChunkMap().get(x) != null && getChunkMap().get(x).get(y) != null) {
@@ -357,7 +327,7 @@ public final class Topography {
 
 
 	public static final void setup() {
-		atlas = new Texture(Gdx.files.internal("data/image/textureAtlas.png"));
+		TILE_TEXTURE_ATLAS = new Texture(Gdx.files.internal("data/image/textureAtlas.png"));
 	}
 
 
@@ -422,39 +392,6 @@ public final class Topography {
 	}
 
 
-	/**
-	 * Generates/Loads any missing chunks
-	 */
-	public final void loadOrGenerateNullChunksAccordingToPosition(int x, int y) {
-
-		int bottomLeftX = convertToChunkCoord((float)(x - getGdxWidth() / 2));
-		int bottomLeftY = convertToChunkCoord((float)(y - getGdxHeight() / 2));
-		int topRightX = bottomLeftX + convertToChunkCoord((float)getGdxWidth());
-		int topRightY = bottomLeftY + convertToChunkCoord((float)getGdxHeight());
-
-		for (int chunkX = bottomLeftX - 2; chunkX <= topRightX + 2; chunkX++) {
-			for (int chunkY = bottomLeftY - 2; chunkY <= topRightY + 2; chunkY++) {
-				if (getChunkMap().get(chunkX) == null || getChunkMap().get(chunkX).get(chunkY) == null) {
-					if (ClientServerInterface.isClient() && !ClientServerInterface.isServer()) {
-						if (requestedForGeneration.get(chunkX, chunkY) == null || !requestedForGeneration.get(chunkX, chunkY)) {
-							ClientServerInterface.SendRequest.sendGenerateChunkRequest(chunkX, chunkY, worldId);
-							requestedForGeneration.put(chunkX, chunkY, true);
-						}
-					} else {
-						loadOrGenerateChunk(chunkX, chunkY, true);
-					}
-				}
-			}
-		}
-	}
-
-
-	public final boolean loadOrGenerateChunk(int chunkX, int chunkY, boolean populateChunkMap) {
-		//Attempt to load the chunk from disk - If chunk does not exist, it will be generated
-		return chunkLoader.load(Domain.getWorld(worldId), chunkX, chunkY, populateChunkMap);
-	}
-
-
 	public final ChunkMap getChunkMap() {
 		return chunkMap;
 	}
@@ -462,6 +399,11 @@ public final class Topography {
 
 	public final Structures getStructures() {
 		return structures;
+	}
+
+
+	public ConcurrentDualKeyHashMap<Integer, Integer, Boolean> getRequestedForGeneration() {
+		return requestedForGeneration;
 	}
 
 

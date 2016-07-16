@@ -1,5 +1,7 @@
 package bloodandmithril.networking.requests;
 
+import com.google.inject.Inject;
+
 import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.Request;
 import bloodandmithril.networking.Response;
@@ -10,6 +12,7 @@ import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
 import bloodandmithril.world.topography.Chunk;
 import bloodandmithril.world.topography.Chunk.ChunkData;
+import bloodandmithril.world.topography.TopographyGenerationService;
 
 /**
  * Sends a {@link Request} to generate a {@link Chunk}
@@ -18,6 +21,9 @@ import bloodandmithril.world.topography.Chunk.ChunkData;
  */
 @Copyright("Matthew Peck 2014")
 public class GenerateChunk implements Request {
+	
+	@Inject
+	private transient TopographyGenerationService topographyGenerationService;
 
 	/** Chunk coordinates */
 	private final int x;
@@ -49,7 +55,7 @@ public class GenerateChunk implements Request {
 		} else {
 			// Chunk does not exist on chunk map, attempt to load/generate
 			Response response = null;
-			Domain.getWorld(worldId).getTopography().loadOrGenerateChunk(x, y, true);
+			topographyGenerationService.loadOrGenerateChunk(Domain.getWorld(worldId), x, y, true);
 
 			do {
 				if (Domain.getWorld(worldId).getTopography().getChunkMap().doesChunkExist(x, y)) {

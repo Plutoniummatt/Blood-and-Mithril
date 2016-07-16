@@ -27,12 +27,12 @@ import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.persistence.GameLoader;
 import bloodandmithril.persistence.GameSaver.PersistenceMetaData;
 import bloodandmithril.persistence.ParameterPersistenceService;
-import bloodandmithril.persistence.world.ChunkLoader;
+import bloodandmithril.persistence.world.ChunkProvider;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.util.cursorboundtask.ChooseStartingLocationCursorBoundTask;
 import bloodandmithril.world.Domain;
-import bloodandmithril.world.topography.Topography;
+import bloodandmithril.world.topography.TopographyGenerationService;
 
 /**
  * Service to start a new single player game
@@ -48,9 +48,10 @@ public class StartGameService {
 	@Inject	private ParameterPersistenceService parameterPersistenceService;
 	@Inject	private FactionControlService factionControlService;
 	@Inject	private GameLoader gameLoader;
-	@Inject	private ChunkLoader chunkLoader;
+	@Inject	private ChunkProvider chunkLoader;
 	@Inject private GameSetupService gameSetupService;
 	@Inject private GameClientStateTracker gameClientStateTracker;
+	@Inject private TopographyGenerationService topographyGenerationService;
 
 	/**
 	 * Starts the game
@@ -132,8 +133,7 @@ public class StartGameService {
 		gameSetupService.setup();
 
 		// Generate first chunk
-		final Topography topography = gameClientStateTracker.getActiveWorld().getTopography();
-		topography.loadOrGenerateChunk(0, 0, false);
+		topographyGenerationService.loadOrGenerateChunk(gameClientStateTracker.getActiveWorld(), 0, 0, false);
 	}
 
 

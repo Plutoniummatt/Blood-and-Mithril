@@ -24,6 +24,7 @@ import bloodandmithril.character.ai.task.MineTile;
 import bloodandmithril.character.combat.CombatService;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.offhand.OffhandEquipment;
 import bloodandmithril.item.items.equipment.weapon.Weapon;
@@ -31,6 +32,7 @@ import bloodandmithril.util.ParameterizedTask;
 import bloodandmithril.util.Probablistic;
 import bloodandmithril.util.SpacialConfiguration;
 import bloodandmithril.util.datastructure.Box;
+import bloodandmithril.world.topography.MineTileService;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
@@ -127,7 +129,7 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 
 				MineTile mineTileTask = (MineTile) currentTask;
 				try {
-					MineTile.Mine.mine(individual, Topography.convertToWorldCoord(mineTileTask.tileCoordinate, false));
+					Wiring.injector().getInstance(MineTileService.class).mine(individual, Topography.convertToWorldCoord(mineTileTask.tileCoordinate, false));
 				} catch (NoTileFoundException e) {}
 			}
 		);

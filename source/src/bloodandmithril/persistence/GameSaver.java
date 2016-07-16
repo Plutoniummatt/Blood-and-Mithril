@@ -17,7 +17,7 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.core.ThreadedTasks;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.persistence.character.IndividualSaver;
-import bloodandmithril.persistence.world.ChunkLoader;
+import bloodandmithril.persistence.world.ChunkProvider;
 import bloodandmithril.persistence.world.WorldSaver;
 import bloodandmithril.world.Domain;
 
@@ -34,7 +34,7 @@ public class GameSaver {
 	@Inject private WorldSaver worldSaver;
 	@Inject private ParameterPersistenceService parameterPersistenceService;
 	@Inject private IndividualSaver individualSaver;
-	@Inject private ChunkLoader chunkLoader;
+	@Inject private ChunkProvider chunkLoader;
 	@Inject private PersistenceParameters persistenceParameters;
 	@Inject private ThreadedTasks threadedTasks;
 

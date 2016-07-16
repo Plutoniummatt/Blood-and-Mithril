@@ -11,13 +11,14 @@ import bloodandmithril.networking.Response.Responses;
 import bloodandmithril.networking.requests.DestroyTile.DestroyTileResponse;
 import bloodandmithril.networking.requests.GenerateChunk.GenerateChunkResponse;
 import bloodandmithril.networking.requests.SynchronizeIndividual.SynchronizeIndividualResponse;
-import bloodandmithril.persistence.world.ChunkLoader;
-import bloodandmithril.world.topography.Topography;
+import bloodandmithril.persistence.world.ChunkProvider;
+import bloodandmithril.world.topography.TopographyTaskExecutor;
 
 public class ClientListener extends Listener {
 
-	@Inject private ChunkLoader chunkLoader;
+	@Inject private ChunkProvider chunkLoader;
 	@Inject private Threading threading;
+	@Inject private TopographyTaskExecutor topographyTaskExecutor;
 
 	private Client client;
 
@@ -64,7 +65,7 @@ public class ClientListener extends Listener {
 					}
 				);
 			} else if (response instanceof DestroyTileResponse) {
-				Topography.addTask(() -> {
+				topographyTaskExecutor.addTask(() -> {
 					response.acknowledge();
 				});
 			} else {

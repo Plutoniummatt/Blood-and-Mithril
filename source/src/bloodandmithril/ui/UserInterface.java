@@ -82,7 +82,7 @@ import bloodandmithril.item.items.equipment.EquipperImpl.FalseFunction;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.performance.PositionalIndexMap;
 import bloodandmithril.persistence.GameSaver;
-import bloodandmithril.persistence.world.ChunkLoader;
+import bloodandmithril.persistence.world.ChunkProvider;
 import bloodandmithril.playerinteraction.individual.api.IndividualSelectionService;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.components.Button;
@@ -184,7 +184,7 @@ public class UserInterface {
 	private static Graphics graphics;
 	private static ThreadedTasks threadedTasks;
 	private static GameSaver gameSaver;
-	private static ChunkLoader chunkLoader;
+	private static ChunkProvider chunkLoader;
 	private static FactionControlService factionControlService;
 	private static GameClientStateTracker gameClientStateTracker;
 	private static Threading threading;
@@ -234,7 +234,7 @@ public class UserInterface {
 		controls = Wiring.injector().getInstance(Controls.class);
 		graphics = Wiring.injector().getInstance(Graphics.class);
 		gameSaver = Wiring.injector().getInstance(GameSaver.class);
-		chunkLoader = Wiring.injector().getInstance(ChunkLoader.class);
+		chunkLoader = Wiring.injector().getInstance(ChunkProvider.class);
 		factionControlService = Wiring.injector().getInstance(FactionControlService.class);
 		gameClientStateTracker = Wiring.injector().getInstance(GameClientStateTracker.class);
 		topographyDebugRenderer = Wiring.injector().getInstance(TopographyDebugRenderer.class);

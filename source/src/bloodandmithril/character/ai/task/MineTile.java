@@ -1,6 +1,5 @@
 package bloodandmithril.character.ai.task;
 
-import static bloodandmithril.character.ai.perception.Visible.getVisible;
 import static bloodandmithril.character.ai.task.GoToLocation.goToWithTerminationFunction;
 import static bloodandmithril.character.combat.CombatService.getAttackPeriod;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON_MINE;
@@ -10,7 +9,6 @@ import static bloodandmithril.util.ComparisonUtil.obj;
 import com.badlogic.gdx.math.Vector2;
 import com.google.inject.Inject;
 
-import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.pathfinding.PathFinder;
@@ -19,10 +17,6 @@ import bloodandmithril.character.individuals.Individual.Action;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
-import bloodandmithril.graphics.particles.ParticleService;
-import bloodandmithril.item.items.Item;
-import bloodandmithril.networking.ClientServerInterface;
-import bloodandmithril.ui.UserInterface;
 import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
@@ -34,7 +28,7 @@ import bloodandmithril.world.topography.tile.Tile.EmptyTile;
  * Mine a {@link Tile}, a {@link CompositeAITask} comprising of:
  *
  * {@link GoToLocation} of the tile.
- * {@link Mine} mine the actual tile.
+ * {@link MileTileService} mine the actual tile.
  *
  * @author Matt
  */
@@ -45,7 +39,7 @@ public class MineTile extends CompositeAITask {
 
 	/** Coordinate of the tile to mine */
 	public Vector2 tileCoordinate;
-
+	
 	@Inject
 	MineTile() {
 		super(null, "");
@@ -151,73 +145,6 @@ public class MineTile extends CompositeAITask {
 				host.setCurrentAction(Action.ATTACK_LEFT_ONE_HANDED_WEAPON_MINE);
 			} else {
 				host.setCurrentAction(Action.ATTACK_RIGHT_ONE_HANDED_WEAPON_MINE);
-			}
-		}
-	}
-
-
-	/**
-	 * Actual mining of a tile
-	 *
-	 * @author Matt
-	 */
-	public static class Mine {
-
-		/**
-		 * Mines the tile
-		 */
-		public static void mine(final Individual host, final Vector2 tileCoordinate) {
-			final Topography topography = Domain.getWorld(host.getWorldId()).getTopography();
-
-			if (host.getInteractionBox().isWithinBox(tileCoordinate)) {
-				Topography.addTask(() ->
-					{
-						Tile tileToBeDeleted;
-						try {
-							tileToBeDeleted = topography.getTile(tileCoordinate.x, tileCoordinate.y, true);
-						} catch (final NoTileFoundException e) {
-							return;
-						}
-
-						if (!ClientServerInterface.isServer()) {
-							ClientServerInterface.SendRequest.sendDestroyTileRequest(tileCoordinate.x, tileCoordinate.y, true, host.getWorldId());
-						}
-
-						if (tileToBeDeleted != null && !(tileToBeDeleted instanceof EmptyTile)) {
-							SoundService.play(
-								SoundService.pickAxe,
-								tileCoordinate,
-								true,
-								getVisible(host)
-							);
-
-							final Item mined = tileToBeDeleted.mine();
-							ParticleService.mineExplosion(tileCoordinate, tileToBeDeleted.getMineExplosionColor());
-							if (ClientServerInterface.isServer() && ClientServerInterface.isClient()) {
-								if (topography.deleteTile(tileCoordinate.x, tileCoordinate.y, true, false) != null) {
-									if (host.canReceive(mined)) {
-										host.giveItem(mined);
-									} else {
-										Domain.getWorld(host.getWorldId()).items().addItem(mined, tileCoordinate.cpy(), new Vector2());
-									}
-
-									UserInterface.refreshRefreshableWindows();
-								}
-							} else if (ClientServerInterface.isServer()) {
-								if (topography.deleteTile(tileCoordinate.x, tileCoordinate.y, true, false) != null) {
-									ClientServerInterface.SendNotification.notifyTileMined(-1, tileCoordinate, true, host.getWorldId());
-
-									if (host.canReceive(mined)) {
-										ClientServerInterface.SendNotification.notifyGiveItem(host.getId().getId(), tileToBeDeleted.mine(), tileCoordinate.cpy());
-									} else {
-										Domain.getWorld(host.getWorldId()).items().addItem(mined, tileCoordinate.cpy(), new Vector2());
-										ClientServerInterface.SendNotification.notifySyncItems(host.getWorldId());
-									}
-								}
-							}
-						}
-					}
-				);
 			}
 		}
 	}
