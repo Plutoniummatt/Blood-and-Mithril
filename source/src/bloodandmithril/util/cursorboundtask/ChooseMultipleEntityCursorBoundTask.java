@@ -11,6 +11,7 @@ import java.util.List;
 
 import com.badlogic.gdx.graphics.Color;
 import com.google.common.collect.Lists;
+import com.google.inject.Inject;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;
@@ -28,6 +29,9 @@ import bloodandmithril.util.CursorBoundTask;
  */
 @Copyright("Matthew Peck 2015")
 public abstract class ChooseMultipleEntityCursorBoundTask<F extends MouseOverable, T extends Serializable> extends CursorBoundTask {
+	
+	@Inject
+	private UserInterface userInterface;
 
 	protected List<T> entities = Lists.newLinkedList();
 
@@ -62,8 +66,8 @@ public abstract class ChooseMultipleEntityCursorBoundTask<F extends MouseOverabl
 						)
 					);
 				}
-				UserInterface.contextMenus.clear();
-				UserInterface.contextMenus.add(menu);
+				userInterface.contextMenus.clear();
+				userInterface.contextMenus.add(menu);
 			} else if (availableEntities.size() == 1) {
 				entities.addAll(availableEntities);
 			}

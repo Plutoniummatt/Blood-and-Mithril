@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
+import com.google.inject.Inject;
 
 import bloodandmithril.character.ai.Routine;
 import bloodandmithril.character.ai.routine.DailyRoutine;
@@ -40,6 +41,9 @@ import bloodandmithril.world.Domain;
  */
 @Copyright("Matthew Peck 2015")
 public class AIRoutinesWindow extends ScrollableListingWindow<Routine, String> {
+	
+	@Inject
+	private UserInterface userInterface;
 
 	private Button add;
 
@@ -149,7 +153,7 @@ public class AIRoutinesWindow extends ScrollableListingWindow<Routine, String> {
 		}
 
 
-		add.render(x + 62, y - height + 32, isActive() && UserInterface.contextMenus.isEmpty(), getAlpha(), graphics);
+		add.render(x + 62, y - height + 32, isActive() && userInterface.contextMenus.isEmpty(), getAlpha(), graphics);
 		super.internalWindowRender(graphics);
 	};
 

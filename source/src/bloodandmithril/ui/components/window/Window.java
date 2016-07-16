@@ -16,6 +16,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.google.inject.Inject;
 
 import bloodandmithril.control.Controls;
 import bloodandmithril.core.Copyright;
@@ -35,6 +36,8 @@ import bloodandmithril.util.Shaders;
  */
 @Copyright("Matthew Peck 2014")
 public abstract class Window extends Component {
+	
+	@Inject private UserInterface userInterface;
 
 	/** Colors of this window */
 	public Color borderColor, backGroundColor;
@@ -140,7 +143,7 @@ public abstract class Window extends Component {
 			return false;
 		}
 
-		if (UserInterface.contextMenus.isEmpty()) {
+		if (userInterface.contextMenus.isEmpty()) {
 			if (isMouseWithin()) {
 
 				if (closeButton.click() && closeable) {
@@ -193,7 +196,7 @@ public abstract class Window extends Component {
 			return false;
 		}
 
-		if (UserInterface.contextMenus.isEmpty()) {
+		if (userInterface.contextMenus.isEmpty()) {
 			if (isActive() && isMouseWithin()) {
 				return true;
 			} else if (isMouseWithin()) {

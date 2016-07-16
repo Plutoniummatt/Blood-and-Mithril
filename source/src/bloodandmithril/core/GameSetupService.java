@@ -11,7 +11,6 @@ import bloodandmithril.control.leftclick.CoreInGameLeftClickHandler;
 import bloodandmithril.control.rightclick.CancelCursorBoundTaskRightClickHandler;
 import bloodandmithril.control.rightclick.InGameContextMenuSpawner;
 import bloodandmithril.control.rightclick.IndividualControlRightClickHandler;
-import bloodandmithril.graphics.Graphics;
 import bloodandmithril.performance.PositionalIndexingService;
 import bloodandmithril.ui.UserInterface;
 
@@ -24,16 +23,16 @@ import bloodandmithril.ui.UserInterface;
 @Copyright("Matthew Peck 2016")
 public class GameSetupService {
 
-	@Inject private Graphics graphics;
 	@Inject private InputHandlers inputHandlers;
 	@Inject private PositionalIndexingService positionalIndexingService;
+	@Inject private UserInterface userInterface;
 
 	public void setup() {
 		SoundService.changeMusic(2f, SoundService.desertAmbient);
-		UserInterface.contextMenus.clear();
+		userInterface.contextMenus.clear();
 		positionalIndexingService.reindex();
 		UserInterface.loadBars();
-		graphics.getUi().loadButtons();
+		userInterface.loadButtons();
 		addAdditionalInputHandlers();
 	}
 

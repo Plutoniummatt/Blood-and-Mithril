@@ -49,8 +49,8 @@ public class GoToLocation extends AITask implements NextWaypointProvider {
 	/** Optional termination function */
 	private SerializableFunction<Boolean> function;
 
-	@Inject
-	private transient Controls controls;
+	@Inject	private transient Controls controls;
+	@Inject	private transient UserInterface userInterface;
 
 	/**
 	 * Constructor
@@ -203,7 +203,7 @@ public class GoToLocation extends AITask implements NextWaypointProvider {
 					return;
 				}
 				graphics.getSpriteBatch().setShader(Shaders.pass);
-				Shaders.pass.setUniformMatrix("u_projTrans", graphics.getUi().getUITrackingCamera().combined);
+				Shaders.pass.setUniformMatrix("u_projTrans", userInterface.getUITrackingCamera().combined);
 				graphics.getSpriteBatch().draw(UserInterface.finalWaypointTexture, waypoint.x - UserInterface.finalWaypointTexture.getRegionWidth()/2, waypoint.y);
 			} catch (final NullPointerException e) {
 				// ???

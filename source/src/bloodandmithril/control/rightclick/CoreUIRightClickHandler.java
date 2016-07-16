@@ -53,7 +53,7 @@ public class CoreUIRightClickHandler implements RightClickHandler {
 			return false;
 		}
 
-		UserInterface.contextMenus.clear();
+		ui.contextMenus.clear();
 
 		final Deque<Component> layeredComponents = UserInterface.getLayeredComponents();
 		if (!layeredComponents.isEmpty()) {

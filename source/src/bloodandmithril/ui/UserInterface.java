@@ -129,11 +129,12 @@ public class UserInterface {
 	/** List of {@link Button}s */
 	public HashMap<String, Button> buttons = newHashMap();
 
-	/** Unpause button */
-	public static Button unpauseButton, savingButton;
+	/** Pause/Unpause buttons */
+	public Button unpauseButton;
+	public Button savingButton;
 
 	/** {@link ContextMenu}s */
-	public static List<ContextMenu> contextMenus = new ArrayList<ContextMenu>();
+	public List<ContextMenu> contextMenus = new ArrayList<ContextMenu>();
 
 	/** {@link Window}s */
 	private static ArrayDeque<Component> layeredComponents = new ArrayDeque<Component>();
@@ -718,7 +719,7 @@ public class UserInterface {
 
 
 	/** Darkens the screen by 80% and draws "Saving..." on the screen if the game is being saved */
-	private static void renderSavingScreen() {
+	private void renderSavingScreen() {
 		if (gameSaver.isSaving()) {
 			graphics.getSpriteBatch().begin();
 			gl.glEnable(GL_BLEND);
@@ -735,7 +736,7 @@ public class UserInterface {
 
 
 	/** Darkens the screen by 50% and draws an "unpause" button on the screen if the game is paused */
-	private static void renderPauseScreen() {
+	private void renderPauseScreen() {
 		if (gameClientStateTracker.isPaused()) {
 			graphics.getSpriteBatch().begin();
 			gl.glEnable(GL_BLEND);
@@ -779,7 +780,7 @@ public class UserInterface {
 	/**
 	 * Called when the left click is released
 	 */
-	public static void leftClickRelease(final int screenX, final int screenY) {
+	public void leftClickRelease(final int screenX, final int screenY) {
 
 		if (initialLeftMouseDragCoordinates != null && gameClientStateTracker.isInGame()) {
 			final Vector2 diagCorner1 = initialLeftMouseDragCoordinates.cpy();
@@ -825,7 +826,7 @@ public class UserInterface {
 	}
 
 
-	public static void rightClickRelease(final int screenX, final int screenY) {
+	public void rightClickRelease(final int screenX, final int screenY) {
 		if (initialRightMouseDragCoordinates != null && isKeyPressed(controls.rightClickDragBox.keyCode)) {
 			final Vector2 diagCorner1 = initialRightMouseDragCoordinates.cpy();
 			final Vector2 diagCorner2 = new Vector2(screenX, screenY);
@@ -927,7 +928,7 @@ public class UserInterface {
 	}
 
 
-	private static void renderIndividualUISprites(final Graphics graphics) {
+	private void renderIndividualUISprites(final Graphics graphics) {
 		graphics.getSpriteBatch().begin();
 		for (final Individual indi : Domain.getIndividuals()) {
 			if (gameClientStateTracker.isIndividualSelected(indi)) {
@@ -980,7 +981,7 @@ public class UserInterface {
 					}
 				}
 			}
-			indi.renderUIDecorations(graphics);
+			indi.renderUIDecorations(graphics, this);
 		}
 		graphics.getSpriteBatch().end();
 	}
@@ -1234,7 +1235,7 @@ public class UserInterface {
 
 
 	/** Renders all the context menus */
-	private static void renderContextMenus() {
+	private void renderContextMenus() {
 		final Iterator<ContextMenu> iterator = contextMenus.iterator();
 		while (iterator.hasNext()) {
 			final ContextMenu next = iterator.next();

@@ -338,6 +338,6 @@ public class MainMenuWindow extends Window {
 
 	@Override
 	public boolean isActive() {
-		return super.isActive() && UserInterface.contextMenus.isEmpty();
+		return super.isActive() && userInterface.contextMenus.isEmpty();
 	}
 }

@@ -27,6 +27,8 @@ public class InGameContextMenuSpawner implements RightClickHandler {
 	private GameClientStateTracker gameClientStateTracker;
 	@Inject
 	private IndividualContextMenuService individualContextMenuService;
+	@Inject
+	private UserInterface userInterface;
 
 	@Override
 	public boolean rightClick(final boolean doubleClick) {
@@ -34,7 +36,7 @@ public class InGameContextMenuSpawner implements RightClickHandler {
 			return false;
 		}
 
-		UserInterface.contextMenus.clear();
+		userInterface.contextMenus.clear();
 		final ContextMenu newMenu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
 
 		for (final int indiKey : gameClientStateTracker.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Individual.class, getMouseWorldX(), getMouseWorldY())) {
@@ -98,7 +100,7 @@ public class InGameContextMenuSpawner implements RightClickHandler {
 		}
 
 		if (!newMenu.getMenuItems().isEmpty()) {
-			UserInterface.contextMenus.add(newMenu);
+			userInterface.contextMenus.add(newMenu);
 			return true;
 		}
 

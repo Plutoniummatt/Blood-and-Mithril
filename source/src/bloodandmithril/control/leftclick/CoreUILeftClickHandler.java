@@ -41,13 +41,13 @@ public class CoreUILeftClickHandler implements LeftClickHandler {
 	@Override
 	public boolean leftClick(final boolean doubleClick) {
 		final HashMap<String, Button> buttons = userInterface.buttons;
-		final List<ContextMenu> contextMenus = UserInterface.contextMenus;
+		final List<ContextMenu> contextMenus = userInterface.contextMenus;
 		final Deque<Component> layeredComponents = UserInterface.getLayeredComponents();
 
 		boolean clicked = false;
 		if (gameClientStateTracker.isPaused()) {
-			if (UserInterface.unpauseButton != null) {
-				clicked = UserInterface.unpauseButton.click();
+			if (userInterface.unpauseButton != null) {
+				clicked = userInterface.unpauseButton.click();
 			}
 			return false;
 		}

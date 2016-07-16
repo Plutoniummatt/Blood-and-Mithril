@@ -375,7 +375,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 
 
 	/** Renders any decorations for UI */
-	public final void renderUIDecorations(final Graphics graphics) {
+	public final void renderUIDecorations(final Graphics graphics, UserInterface userInterface) {
 		final SpriteBatch batch = graphics.getSpriteBatch();
 
 		if (Wiring.injector().getInstance(GameClientStateTracker.class).isIndividualSelected(this)) {
@@ -388,7 +388,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 				1f
 			);
 
-			Shaders.filter.setUniformMatrix("u_projTrans", graphics.getUi().getUITrackingCamera().combined);
+			Shaders.filter.setUniformMatrix("u_projTrans", userInterface.getUITrackingCamera().combined);
 			batch.draw(UserInterface.currentArrow, state.position.x - 5, state.position.y + getHeight() + 10);
 		}
 
@@ -417,7 +417,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 		if (isAlive() && isMouseOver() && isKeyPressed(controls.attack.keyCode) && !isKeyPressed(controls.rangedAttack.keyCode)) {
 			if (gameClientStateTracker.getSelectedIndividuals().size() > 0 && (!gameClientStateTracker.isIndividualSelected(this) || gameClientStateTracker.getSelectedIndividuals().size() > 1)) {
 				batch.setShader(Shaders.filter);
-				Shaders.filter.setUniformMatrix("u_projTrans", graphics.getUi().getUICamera().combined);
+				Shaders.filter.setUniformMatrix("u_projTrans", userInterface.getUICamera().combined);
 				Shaders.filter.setUniformf("color", Color.BLACK);
 				Fonts.defaultFont.draw(batch, "Attack Melee", getMouseScreenX() + 14, getMouseScreenY() - 26);
 				batch.flush();

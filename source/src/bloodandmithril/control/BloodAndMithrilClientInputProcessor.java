@@ -33,6 +33,7 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 	@Inject	private GameSaver gameSaver;
 	@Inject	private GameClientStateTracker gameClientStateTracker;
 	@Inject private InputHandlers handlers;
+	@Inject private UserInterface userInterface;
 
 	private CursorBoundTask cursorBoundTask = null;
 	private Function<Vector2> camFollowFunction;
@@ -57,11 +58,11 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 	public boolean touchUp(final int screenX, final int screenY, final int pointer, final int button) {
 		try {
 			if (button == controls.leftClick.keyCode) {
-				UserInterface.leftClickRelease(screenX, graphics.getHeight() - screenY);
+				userInterface.leftClickRelease(screenX, graphics.getHeight() - screenY);
 			}
 
 			if (button == controls.rightClick.keyCode) {
-				UserInterface.rightClickRelease(screenX, graphics.getHeight() - screenY);
+				userInterface.rightClickRelease(screenX, graphics.getHeight() - screenY);
 			}
 		} catch (final Exception e) {
 			e.printStackTrace();

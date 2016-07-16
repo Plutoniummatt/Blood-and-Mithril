@@ -1,6 +1,7 @@
 package bloodandmithril.character.ai.task;
 
 import com.badlogic.gdx.math.Vector2;
+import com.google.inject.Inject;
 
 import bloodandmithril.character.Speech;
 import bloodandmithril.character.ai.AIProcessor.JitGoToLocation;
@@ -25,6 +26,8 @@ import bloodandmithril.util.Util;
 public class Travel extends CompositeAITask implements NextWaypointProvider {
 	private static final long serialVersionUID = -1118542666642761349L;
 
+	@Inject private transient UserInterface userInterface;
+	
 	/**
 	 * Constructor
 	 */
@@ -122,7 +125,7 @@ public class Travel extends CompositeAITask implements NextWaypointProvider {
 
 			final Vector2 waypoint = ((JitGoToLocation) task).getDestination().waypoint.cpy();
 			graphics.getSpriteBatch().setShader(Shaders.pass);
-			Shaders.pass.setUniformMatrix("u_projTrans", graphics.getUi().getUITrackingCamera().combined);
+			Shaders.pass.setUniformMatrix("u_projTrans", userInterface.getUITrackingCamera().combined);
 			graphics.getSpriteBatch().draw(UserInterface.finalWaypointTexture, waypoint.x - UserInterface.finalWaypointTexture.getRegionWidth()/2, waypoint.y + offset * 10f);
 		} else if (task instanceof Jump) {
 			Vector2 start = null;

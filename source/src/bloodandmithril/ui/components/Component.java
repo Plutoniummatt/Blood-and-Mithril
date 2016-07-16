@@ -17,6 +17,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.google.inject.Inject;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Wiring;
@@ -33,6 +34,8 @@ import bloodandmithril.util.Util.Colors;
  */
 @Copyright("Matthew Peck 2014")
 public abstract class Component {
+	
+	@Inject private UserInterface userInterface;
 
 	protected static final TextureRegion topLeft 		= new TextureRegion(uiTexture, 0, 8, 2, 2);
 	protected static final TextureRegion topRight 		= new TextureRegion(uiTexture, 12, 8, 2, 2);
@@ -175,7 +178,7 @@ public abstract class Component {
 	protected void renderRectangle(int renderX, int renderY, int length, int height, boolean active, Color backGroundColor, Graphics graphics) {
 		shapeRenderer.begin(ShapeType.Filled);
 		shapeRenderer.setColor(1f, 0f, 0f, 0.5f * getAlpha());
-		shapeRenderer.setProjectionMatrix(graphics.getUi().getUICamera().combined);
+		shapeRenderer.setProjectionMatrix(userInterface.getUICamera().combined);
 		gl.glEnable(GL_BLEND);
 		gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -206,7 +209,7 @@ public abstract class Component {
 	protected void renderRectangle(int renderX, int renderY, int length, int height, boolean active, Color backGroundColor, float alphaOverride, Graphics graphics) {
 		shapeRenderer.begin(ShapeType.Filled);
 		shapeRenderer.setColor(1f, 0f, 0f, 0.5f * alphaOverride);
-		shapeRenderer.setProjectionMatrix(graphics.getUi().getUICamera().combined);
+		shapeRenderer.setProjectionMatrix(userInterface.getUICamera().combined);
 		gl.glEnable(GL_BLEND);
 		gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 

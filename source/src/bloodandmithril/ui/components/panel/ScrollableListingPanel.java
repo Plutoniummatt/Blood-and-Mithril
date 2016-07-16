@@ -45,8 +45,8 @@ import bloodandmithril.util.Util.Colors;
 @Copyright("Matthew Peck 2014")
 public abstract class ScrollableListingPanel<T, A> extends Panel {
 
-	@Inject
-	private Controls controls;
+	@Inject	private Controls controls;
+	@Inject	private UserInterface userInterface;
 
 	/** Datastructure that backs this listing panel */
 	private List<HashMap<ListingMenuItem<T>, A>> listings = Lists.newArrayList();
@@ -322,7 +322,7 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 				item.getKey().button.render(
 					x + item.getKey().button.width/2 + 6,
 					y - (i - startingIndex + (startingIndex == 0 ? 0 : 1)) * 20 - 25,
-					parent.isActive() && UserInterface.contextMenus.isEmpty(), parent.getAlpha(),
+					parent.isActive() && userInterface.contextMenus.isEmpty(), parent.getAlpha(),
 					width - extraColumnWidth,
 					graphics
 				);

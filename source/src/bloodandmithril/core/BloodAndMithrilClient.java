@@ -20,6 +20,7 @@ import bloodandmithril.generation.biome.MainMenuBiomeDecider;
 import bloodandmithril.generation.component.PrefabricatedComponent;
 import bloodandmithril.graphics.GaussianLightingRenderer;
 import bloodandmithril.graphics.Graphics;
+import bloodandmithril.graphics.ResizeWindowService;
 import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.Equipable;
@@ -76,30 +77,41 @@ public class BloodAndMithrilClient implements ApplicationListener {
 
 	@Inject	private Timers timers;
 	@Inject	private Graphics graphics;
+	@Inject	private ResizeWindowService resizeWindowService;
 	@Inject	private BloodAndMithrilClientInputProcessor inputProcessor;
 	@Inject	private GameSaver gameSaver;
 	@Inject	private GameClientStateTracker gameClientStateTracker;
 	@Inject	private WorldRenderer worldRenderer;
 	@Inject private TopographyTaskExecutor topographyTaskExecutor;
+	@Inject private UserInterface userInterface;
 
 	@Override
 	public void create() {
-		// Load client-side resources
+		setupInjector();
+		loadResources();
+		startMusic();
+		createMainMenuWorld();
+		setInputProcessor(inputProcessor);
+	}
+
+
+	private void setupInjector() {
 		ClientServerInterface.setClient(true);
 		Wiring.setupInjector(new CommonModule());
 		Wiring.injector().injectMembers(this);
+	}
 
-		loadResources();
 
+	private void startMusic() {
 		SoundService.changeMusic(2f, SoundService.mainMenu);
+	}
 
+
+	private void createMainMenuWorld() {
 		ClientServerInterface.setServer(true);
 		Domain.addWorld(new World(1200, new Epoch(15.5f, 5, 22, 25), MainMenuBiomeDecider.class));
 		gameClientStateTracker.setActiveWorldId(1);
 		ClientServerInterface.setServer(false);
-
-
-		setInputProcessor(inputProcessor);
 	}
 
 
@@ -150,7 +162,7 @@ public class BloodAndMithrilClient implements ApplicationListener {
 
 			// Camera --------------------- /
 			graphics.getCam().update();
-			graphics.getUi().update();
+			userInterface.update();
 
 			// Blending --------------------- /
 			Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
@@ -167,7 +179,7 @@ public class BloodAndMithrilClient implements ApplicationListener {
 			fading();
 
 			// UI Rendering --------------------- /
-			graphics.getUi().render();
+			userInterface.render();
 
 			graphics.getCam().position.x = x;
 			graphics.getCam().position.y = y;
@@ -204,7 +216,7 @@ public class BloodAndMithrilClient implements ApplicationListener {
 
 	@Override
 	public void resize(final int width, final int height) {
-		graphics.resize(width, height);
+		resizeWindowService.resize(width, height);
 
 		ConfigPersistenceService.getConfig().setResX(width);
 		ConfigPersistenceService.getConfig().setResY(height);
@@ -214,7 +226,6 @@ public class BloodAndMithrilClient implements ApplicationListener {
 
 	@Override
 	public void resume() {
-		// Not called on PC
 	}
 
 
@@ -225,7 +236,6 @@ public class BloodAndMithrilClient implements ApplicationListener {
 
 	@Override
 	public void pause() {
-		// Not called on PC
 	}
 
 

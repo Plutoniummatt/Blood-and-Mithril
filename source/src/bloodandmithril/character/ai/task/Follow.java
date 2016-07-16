@@ -50,6 +50,8 @@ public class Follow extends CompositeAITask implements RoutineTask {
 
 	@Inject
 	private GameClientStateTracker gameClientStateTracker;
+	@Inject
+	private UserInterface userInterface;
 
 	@Inject
 	Follow() {
@@ -248,10 +250,10 @@ public class Follow extends CompositeAITask implements RoutineTask {
 							}
 						}
 
-						UserInterface.contextMenus.clear();
+						userInterface.contextMenus.clear();
 						toChooseFrom.x = getMouseScreenX();
 						toChooseFrom.y = getMouseScreenY();
-						UserInterface.contextMenus.add(toChooseFrom);
+						userInterface.contextMenus.add(toChooseFrom);
 					}
 				};
 

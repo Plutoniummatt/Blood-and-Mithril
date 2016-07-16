@@ -12,7 +12,6 @@ import com.google.inject.Singleton;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.persistence.ConfigPersistenceService;
-import bloodandmithril.ui.UserInterface;
 import bloodandmithril.world.weather.WeatherRenderer;
 
 /**
@@ -42,7 +41,6 @@ public class Graphics {
 	/** Whether the screen is currently fading */
 	private boolean fading;
 
-	@Inject private UserInterface ui;
 	@Inject private WorldRenderer worldRenderer;
 
 	@Inject
@@ -134,9 +132,6 @@ public class Graphics {
 	 * Processes graphics side of resizing the window
 	 */
 	public void resize(final int newWidth, final int newHeight) {
-		final int oldWidth = width;
-		final int oldHeight = height;
-
 		width = newWidth;
 		height = newHeight;
 
@@ -150,16 +145,8 @@ public class Graphics {
 		cam.position.x = oldCamX;
 		cam.position.y = oldCamY;
 
-		ui.getUICamera().setToOrtho(false, width, height);
-		ui.getUITrackingCamera().setToOrtho(false, width, height);
-
-		UserInterface.shapeRenderer.setProjectionMatrix(ui.getUICamera().projection);
-		UserInterface.shapeRenderer.setTransformMatrix(ui.getUICamera().view);
-
 		worldRenderer.getShapeRenderer().setProjectionMatrix(cam.projection);
 		worldRenderer.getShapeRenderer().setTransformMatrix(cam.view);
-
-		UserInterface.resetWindowPositions(oldWidth, oldHeight);
 
 		worldRenderer.dispose();
 		GaussianLightingRenderer.dispose();
@@ -171,15 +158,6 @@ public class Graphics {
 
 		spriteBatch.getProjectionMatrix().setToOrtho2D(0, 0, width, height);
 	}
-
-
-	/**
-	 * @return the {@link UserInterface}
-	 */
-	public UserInterface getUi() {
-		return ui;
-	}
-
 
 
 	/**
