@@ -112,7 +112,7 @@ public class DeadDesertBush extends PlantProp implements Harvestable {
 			new MenuItem(
 				"Show info",
 				() -> {
-					UserInterface.addLayeredComponent(
+					Wiring.injector().getInstance(UserInterface.class).addLayeredComponent(
 						new MessageWindow(
 							"A rather dead looking bush, a good source of sticks..",
 							Color.ORANGE,

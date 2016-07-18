@@ -32,17 +32,15 @@ import bloodandmithril.ui.components.ContextMenu;
 @Copyright("Matthew Peck 2016")
 public class CoreUILeftClickHandler implements LeftClickHandler {
 
-	@Inject
-	private GameClientStateTracker gameClientStateTracker;
-	@Inject
-	private UserInterface userInterface;
+	@Inject	private GameClientStateTracker gameClientStateTracker;
+	@Inject	private UserInterface userInterface;
 
 
 	@Override
 	public boolean leftClick(final boolean doubleClick) {
 		final HashMap<String, Button> buttons = userInterface.buttons;
 		final List<ContextMenu> contextMenus = userInterface.contextMenus;
-		final Deque<Component> layeredComponents = UserInterface.getLayeredComponents();
+		final Deque<Component> layeredComponents = userInterface.getLayeredComponents();
 
 		boolean clicked = false;
 		if (gameClientStateTracker.isPaused()) {

@@ -10,6 +10,7 @@ import java.util.Deque;
 import java.util.List;
 
 import com.badlogic.gdx.graphics.Color;
+import com.google.inject.Inject;
 
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.Routine;
@@ -42,6 +43,8 @@ import bloodandmithril.world.Epoch;
 @Copyright("Matthew Peck 2015")
 public final class DailyRoutine extends Routine {
 	private static final long serialVersionUID = -255141692263126217L;
+
+	@Inject private transient UserInterface userInterface;
 
 	private Epoch lastExecutedEpoch = null;
 	private Float routineTime;
@@ -135,7 +138,7 @@ public final class DailyRoutine extends Routine {
 				110,
 				16,
 				() -> {
-					UserInterface.addLayeredComponent(
+					userInterface.addLayeredComponent(
 						new TextInputWindow(
 							250,
 							100,
@@ -147,7 +150,7 @@ public final class DailyRoutine extends Routine {
 									final String[] split = ((String) args[0]).split(":");
 									routineTime = Float.parseFloat(split[0]) + Float.parseFloat(split[1])/60f;
 								} catch (final Exception e) {
-									UserInterface.addClientMessage("Error", "Enter time in HH:mm format");
+									userInterface.addClientMessage("Error", "Enter time in HH:mm format");
 								}
 							},
 							"Confirm",
@@ -169,7 +172,7 @@ public final class DailyRoutine extends Routine {
 				150,
 				16,
 				() -> {
-					UserInterface.addLayeredComponent(
+					userInterface.addLayeredComponent(
 						new TextInputWindow(
 							250,
 							100,
@@ -181,7 +184,7 @@ public final class DailyRoutine extends Routine {
 									final String[] split = ((String) args[0]).split(":");
 									toleranceTime = Float.parseFloat(split[0]) + Float.parseFloat(split[1])/60f;
 								} catch (final Exception e) {
-									UserInterface.addClientMessage("Error", "Enter time in HH:mm format");
+									userInterface.addClientMessage("Error", "Enter time in HH:mm format");
 								}
 							},
 							"Confirm",

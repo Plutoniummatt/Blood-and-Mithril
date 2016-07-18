@@ -52,6 +52,7 @@ public class StartGameService {
 	@Inject private GameSetupService gameSetupService;
 	@Inject private GameClientStateTracker gameClientStateTracker;
 	@Inject private TopographyGenerationService topographyGenerationService;
+	@Inject private UserInterface userInterface;
 
 	/**
 	 * Starts the game
@@ -138,7 +139,7 @@ public class StartGameService {
 
 
 	private void closeWindowsAndFadeToBlack() {
-		UserInterface.closeAllWindows();
+		userInterface.closeAllWindows();
 		graphics.setFading(true);
 		threadWait(1500);
 	}

@@ -1,6 +1,7 @@
 package bloodandmithril.control.keydown;
 
 import com.badlogic.gdx.Input.Keys;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import bloodandmithril.control.KeyPressedHandler;
@@ -19,9 +20,11 @@ import bloodandmithril.ui.components.window.MainMenuWindow;
 @Copyright("Matthew Peck 2016")
 public class CoreUIKeyPressedHandler implements KeyPressedHandler {
 
+	@Inject private UserInterface userInterface;
+
 	@Override
 	public boolean handle(final int keycode) {
-		for (final Component component : UserInterface.getLayeredComponents()) {
+		for (final Component component : userInterface.getLayeredComponents()) {
 			boolean pressed = false;
 			if (component.isActive() && !(component instanceof BottomBar)) {
 				pressed = component.keyPressed(keycode) || pressed;
@@ -32,7 +35,7 @@ public class CoreUIKeyPressedHandler implements KeyPressedHandler {
 		}
 
 		if (Keys.ESCAPE == keycode) {
-			UserInterface.addLayeredComponentUnique(
+			userInterface.addLayeredComponentUnique(
 				new MainMenuWindow(true)
 			);
 		}

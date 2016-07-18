@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import com.badlogic.gdx.graphics.Color;
+import com.google.inject.Inject;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.proficiency.Proficiencies;
@@ -35,12 +36,14 @@ import bloodandmithril.world.Domain;
 @Copyright("Matthew Peck 2015")
 public class ProficienciesWindow extends Window {
 
+	@Inject private UserInterface userInterface;
+
 	private ScrollableListingPanel<Proficiency, Integer> skills;
 	private int individualId;
 
 	private static Comparator<Proficiency> sortingComparator = new Comparator<Proficiency>() {
 		@Override
-		public int compare(Proficiency o1, Proficiency o2) {
+		public int compare(final Proficiency o1, final Proficiency o2) {
 			return o1.getName().compareTo(o2.getName());
 		}
 	};
@@ -48,7 +51,7 @@ public class ProficienciesWindow extends Window {
 	/**
 	 * Constructor
 	 */
-	public ProficienciesWindow(Individual individual) {
+	public ProficienciesWindow(final Individual individual) {
 		super(
 			300,
 			500,
@@ -63,7 +66,7 @@ public class ProficienciesWindow extends Window {
 
 		skills = new ScrollableListingPanel<Proficiency, Integer>(this, sortingComparator, false, 80, null) {
 			@Override
-			protected String getExtraString(Entry<ListingMenuItem<Proficiency>, Integer> item) {
+			protected String getExtraString(final Entry<ListingMenuItem<Proficiency>, Integer> item) {
 				return Integer.toString(item.getKey().t.getLevel());
 			}
 
@@ -73,14 +76,14 @@ public class ProficienciesWindow extends Window {
 			}
 
 			@Override
-			protected void populateListings(List<HashMap<ListingMenuItem<Proficiency>, Integer>> listings) {
-				HashMap<ListingMenuItem<Proficiency>, Integer> newHashMap = buildMap(individual);
+			protected void populateListings(final List<HashMap<ListingMenuItem<Proficiency>, Integer>> listings) {
+				final HashMap<ListingMenuItem<Proficiency>, Integer> newHashMap = buildMap(individual);
 
 				listings.add(newHashMap);
 			}
 
 			@Override
-			public boolean keyPressed(int keyCode) {
+			public boolean keyPressed(final int keyCode) {
 				return false;
 			}
 		};
@@ -89,14 +92,14 @@ public class ProficienciesWindow extends Window {
 	}
 
 
-	private HashMap<ListingMenuItem<Proficiency>, Integer> buildMap(Individual individual) {
-		HashMap<ListingMenuItem<Proficiency>, Integer> newHashMap = newHashMap();
+	private HashMap<ListingMenuItem<Proficiency>, Integer> buildMap(final Individual individual) {
+		final HashMap<ListingMenuItem<Proficiency>, Integer> newHashMap = newHashMap();
 
-		for (Proficiency skill : individual.getProficiencies().getAllProficiencies()) {
-			ContextMenu.MenuItem showInfo = new ContextMenu.MenuItem(
+		for (final Proficiency skill : individual.getProficiencies().getAllProficiencies()) {
+			final ContextMenu.MenuItem showInfo = new ContextMenu.MenuItem(
 				"Show info",
 				() -> {
-					UserInterface.addLayeredComponentUnique(
+					userInterface.addLayeredComponentUnique(
 						new MessageWindow(
 							skill.getDescription(),
 							Color.ORANGE,
@@ -147,7 +150,7 @@ public class ProficienciesWindow extends Window {
 
 
 	@Override
-	protected void internalWindowRender(Graphics graphics) {
+	protected void internalWindowRender(final Graphics graphics) {
 		if (!Domain.getIndividual(individualId).isAlive()) {
 			setClosing(true);
 		}
@@ -162,7 +165,7 @@ public class ProficienciesWindow extends Window {
 
 
 	@Override
-	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
+	protected void internalLeftClick(final List<ContextMenu> copy, final Deque<Component> windowsCopy) {
 		skills.leftClick(copy, windowsCopy);
 	}
 
@@ -185,7 +188,7 @@ public class ProficienciesWindow extends Window {
 
 
 	@Override
-	public boolean scrolled(int amount) {
+	public boolean scrolled(final int amount) {
 		return skills.scrolled(amount);
 	}
 }

@@ -9,6 +9,7 @@ import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.UpdatedBy;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
@@ -42,19 +43,19 @@ public class CarrotItem extends Food {
 
 
 	@Override
-	protected String internalGetSingular(boolean firstCap) {
+	protected String internalGetSingular(final boolean firstCap) {
 		return firstCap ? "Carrot" : "carrot";
 	}
 
 
 	@Override
-	protected String internalGetPlural(boolean firstCap) {
+	protected String internalGetPlural(final boolean firstCap) {
 		return firstCap ? "Carrots" : "carrots";
 	}
 
 
 	@Override
-	public boolean consume(Individual consumer) {
+	public boolean consume(final Individual consumer) {
 		SoundService.play(SoundService.crunch, consumer.getState().position, true, getVisible(consumer));
 		consumer.addFloatingText("+5 Hunger", Color.ORANGE);
 		consumer.increaseHunger(0.05f);
@@ -69,7 +70,7 @@ public class CarrotItem extends Food {
 
 
 	@Override
-	protected boolean internalSameAs(Item other) {
+	protected boolean internalSameAs(final Item other) {
 		if (other instanceof CarrotItem) {
 			return true;
 		}
@@ -112,13 +113,13 @@ public class CarrotItem extends Food {
 
 
 		@Override
-		protected String internalGetSingular(boolean firstCap) {
+		protected String internalGetSingular(final boolean firstCap) {
 			return firstCap ? "Carrot seed" : "carrot seed";
 		}
 
 
 		@Override
-		protected String internalGetPlural(boolean firstCap) {
+		protected String internalGetPlural(final boolean firstCap) {
 			return firstCap ? "Carrot seeds" : "carrot seeds";
 		}
 
@@ -169,31 +170,31 @@ public class CarrotItem extends Food {
 		/**
 		 * Constructor
 		 */
-		public CarrotSeedProp(float x, float y, SeedItem seed) {
+		public CarrotSeedProp(final float x, final float y, final SeedItem seed) {
 			super(x, y, seed, new SoilTilesOnly());
 		}
 
 
 		@Override
-		public void render(Graphics graphics) {
+		public void render(final Graphics graphics) {
 			graphics.getSpriteBatch().draw(CARROT_SEED, position.x - width / 2, position.y);
 		}
 
 
 		@Override
-		public void synchronizeProp(Prop other) {
+		public void synchronizeProp(final Prop other) {
 		}
 
 
 		@Override
 		public ContextMenu getContextMenu() {
-			ContextMenu menu = new ContextMenu(0, 0, true);
+			final ContextMenu menu = new ContextMenu(0, 0, true);
 
 			menu.addMenuItem(
 				new ContextMenu.MenuItem(
 					"Show info",
 					() -> {
-						UserInterface.addGlobalMessage("Carrot seed", "The seed of a carrot, plant this to grow carrots.");
+						Wiring.injector().getInstance(UserInterface.class).addGlobalMessage("Carrot seed", "The seed of a carrot, plant this to grow carrots.");
 					},
 					Color.WHITE,
 					Color.GREEN,
@@ -225,7 +226,7 @@ public class CarrotItem extends Food {
 
 
 		@Override
-		public void growth(float delta) {
+		public void growth(final float delta) {
 			setGerminationProgress(getGerminationProgress() + delta / 100f);
 		}
 

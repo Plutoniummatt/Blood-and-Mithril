@@ -22,7 +22,7 @@ public class RequestTransferLiquidBetweenContainers implements Request {
 	/**
 	 * Constructor
 	 */
-	public RequestTransferLiquidBetweenContainers(Individual individual, LiquidContainerItem from, LiquidContainerItem to, float amount) {
+	public RequestTransferLiquidBetweenContainers(final Individual individual, final LiquidContainerItem from, final LiquidContainerItem to, final float amount) {
 		this.individualId = individual.getId().getId();
 		this.from = from;
 		this.to = to;
@@ -39,9 +39,9 @@ public class RequestTransferLiquidBetweenContainers implements Request {
 			amount
 		);
 
-		Responses responses = new Responses(true);
+		final Responses responses = new Responses(true);
 		responses.add(new SynchronizeIndividual.SynchronizeIndividualResponse(individualId, System.currentTimeMillis()));
-		responses.add(new RefreshWindows.RefreshWindowsResponse());
+		responses.add(new RefreshWindowsResponse());
 		return responses;
 	}
 

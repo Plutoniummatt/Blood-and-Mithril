@@ -49,7 +49,7 @@ public abstract class LiquidContainerProp extends Furniture {
 					return;
 				} else {
 					final Individual selected = gameClientStateTracker.getSelectedIndividuals().iterator().next();
-					UserInterface.addLayeredComponentUnique(
+					Wiring.injector().getInstance(UserInterface.class).addLayeredComponentUnique(
 						new TransferLiquidsWindow(selected, prop)
 					);
 				}

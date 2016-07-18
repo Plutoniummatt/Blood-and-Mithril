@@ -97,7 +97,7 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 	@Override
 	public boolean scrolled(final int amount) {
 		try {
-			UserInterface.scrolled(amount);
+			userInterface.scrolled(amount);
 		} catch (final Exception e) {
 			e.printStackTrace();
 			Gdx.app.exit();

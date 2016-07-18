@@ -81,8 +81,8 @@ public class NewGameWindow extends Window {
 		UIRef.BL
 	);
 
-	@Inject
-	private StartGameService startGameService;
+	@Inject	private StartGameService startGameService;
+	@Inject	private UserInterface userInterface;
 
 	private void startGame() {
 		setClosing(true);
@@ -254,7 +254,7 @@ public class NewGameWindow extends Window {
 						final ContextMenu.MenuItem inspect = new ContextMenu.MenuItem(
 							"Inspect",
 							() -> {
-								UserInterface.addLayeredComponentUnique(
+								userInterface.addLayeredComponentUnique(
 									new ContainerInspectionWindow(pack.getContainer(), pack.getName())
 								);
 							},

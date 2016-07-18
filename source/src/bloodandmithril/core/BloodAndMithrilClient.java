@@ -135,7 +135,7 @@ public class BloodAndMithrilClient implements ApplicationListener {
 		Item.setup();
 		Component.setup();
 
-		UserInterface.addLayeredComponent(
+		userInterface.addLayeredComponent(
 			new MainMenuWindow(false)
 		);
 	}

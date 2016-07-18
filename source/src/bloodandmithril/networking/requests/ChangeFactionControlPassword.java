@@ -3,12 +3,8 @@ package bloodandmithril.networking.requests;
 import bloodandmithril.character.faction.Faction;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.Request;
-import bloodandmithril.networking.Response;
 import bloodandmithril.networking.Response.Responses;
 import bloodandmithril.networking.requests.SynchronizeFaction.SynchronizeFactionResponse;
-import bloodandmithril.ui.UserInterface;
-import bloodandmithril.ui.components.Component;
-import bloodandmithril.ui.components.window.FactionsWindow;
 import bloodandmithril.world.Domain;
 
 /**
@@ -53,26 +49,5 @@ public class ChangeFactionControlPassword implements Request {
 	@Override
 	public boolean notifyOthers() {
 		return true;
-	}
-
-
-	public static class RefreshFactionWindow implements Response {
-		@Override
-		public void acknowledge() {
-			for (final Component component : UserInterface.getLayeredComponents()) {
-				if (component instanceof FactionsWindow) {
-					((FactionsWindow) component).refreshWindow();
-				}
-			}
-		}
-
-		@Override
-		public int forClient() {
-			return -1;
-		}
-
-		@Override
-		public void prepare() {
-		}
 	}
 }

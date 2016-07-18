@@ -22,7 +22,7 @@ public class SynchronizeFaction implements Request {
 		for (final Faction faction : Domain.getFactions().values()) {
 			responses.add(new SynchronizeFactionResponse(faction));
 		}
-		responses.add(new ChangeFactionControlPassword.RefreshFactionWindow());
+		responses.add(new RefreshFactionWindow());
 		return responses;
 	}
 

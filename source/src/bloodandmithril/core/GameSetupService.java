@@ -31,7 +31,7 @@ public class GameSetupService {
 		SoundService.changeMusic(2f, SoundService.desertAmbient);
 		userInterface.contextMenus.clear();
 		positionalIndexingService.reindex();
-		UserInterface.loadBars();
+		userInterface.loadBars();
 		userInterface.loadButtons();
 		addAdditionalInputHandlers();
 	}

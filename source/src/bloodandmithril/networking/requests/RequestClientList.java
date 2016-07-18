@@ -3,7 +3,13 @@ package bloodandmithril.networking.requests;
 import java.util.HashMap;
 import java.util.List;
 
+import com.badlogic.gdx.graphics.Color;
+import com.esotericsoftware.kryonet.Connection;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.networking.Request;
 import bloodandmithril.networking.Response;
@@ -16,11 +22,6 @@ import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuIte
 import bloodandmithril.ui.components.window.ChatWindow;
 import bloodandmithril.util.Fonts;
 
-import com.badlogic.gdx.graphics.Color;
-import com.esotericsoftware.kryonet.Connection;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-
 /**
  * {@link Request} for a list of connected clients
  *
@@ -29,13 +30,12 @@ import com.google.common.collect.Maps;
 @Copyright("Matthew Peck 2014")
 public class RequestClientList implements Request {
 
-
 	@Override
 	public Responses respond() {
-		Responses responses = new Responses(false);
+		final Responses responses = new Responses(false);
 
-		List<String> names = Lists.newArrayList();
-		for (Connection connection : ClientServerInterface.server.getConnections()) {
+		final List<String> names = Lists.newArrayList();
+		for (final Connection connection : ClientServerInterface.server.getConnections()) {
 			names.add(ClientServerInterface.connectedPlayers.get(connection.getID()));
 		}
 
@@ -63,20 +63,20 @@ public class RequestClientList implements Request {
 		/**
 		 * Constructor
 		 */
-		public RequestClientListResponse(List<String> names) {
+		public RequestClientListResponse(final List<String> names) {
 			this.names = names;
 		}
 
 		@Override
 		public void acknowledge() {
-			for (Component component : UserInterface.getLayeredComponents()) {
+			for (final Component component : Wiring.injector().getInstance(UserInterface.class).getLayeredComponents()) {
 				if (component instanceof ChatWindow) {
 
 					List<HashMap<ListingMenuItem<String>, Object>> listings;
 					listings = Lists.newArrayList();
 
-					for (String name : names) {
-						ListingMenuItem<String> item = new ListingMenuItem<String>(
+					for (final String name : names) {
+						final ListingMenuItem<String> item = new ListingMenuItem<String>(
 							name,
 							new Button(
 								name,
@@ -94,7 +94,7 @@ public class RequestClientList implements Request {
 							null
 						);
 
-						HashMap<ListingMenuItem<String>, Object> map = Maps.newHashMap();
+						final HashMap<ListingMenuItem<String>, Object> map = Maps.newHashMap();
 						map.put(item, 0);
 						listings.add(map);
 					}

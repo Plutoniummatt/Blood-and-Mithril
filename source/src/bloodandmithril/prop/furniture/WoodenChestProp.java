@@ -81,7 +81,7 @@ public class WoodenChestProp extends Furniture implements Container {
 			new MenuItem(
 				"Show info",
 				() -> {
-					UserInterface.addLayeredComponent(
+					Wiring.injector().getInstance(UserInterface.class).addLayeredComponent(
 						new MessageWindow(
 							description(),
 							Color.ORANGE,

@@ -40,7 +40,9 @@ public class IndividualControlRightClickHandler implements RightClickHandler {
 		try {
 
 			if (isKeyPressed(controls.attack.keyCode) && !isKeyPressed(controls.rangedAttack.keyCode)) {
-				meleeAttack();
+				if (meleeAttack()) {
+					return true;
+				}
 			} else if (isKeyPressed(controls.rangedAttack.keyCode)) {
 				rangedAttack();
 			}
@@ -144,7 +146,7 @@ public class IndividualControlRightClickHandler implements RightClickHandler {
 	}
 
 
-	private void meleeAttack() {
+	private boolean meleeAttack() {
 		if (!gameClientStateTracker.getSelectedIndividuals().isEmpty()) {
 			for (final int indiKey : gameClientStateTracker.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Individual.class, getMouseWorldX(), getMouseWorldY())) {
 				final Individual indi = Domain.getIndividual(indiKey);
@@ -160,10 +162,11 @@ public class IndividualControlRightClickHandler implements RightClickHandler {
 							ClientServerInterface.SendRequest.sendRequestAttack(selected, indi);
 						}
 					}
-					break;
+					return true;
 				}
 			}
 		}
+		return false;
 	}
 
 

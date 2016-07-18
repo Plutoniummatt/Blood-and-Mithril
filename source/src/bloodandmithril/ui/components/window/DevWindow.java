@@ -94,6 +94,7 @@ public class DevWindow extends Window {
 	@Inject private MissionTracker missionTracker;
 	@Inject private GameClientStateTracker gameClientStateTracker;
 	@Inject private AddIndividualService addIndividualService;
+	@Inject private UserInterface userInterface;
 
 	/**
 	 * Constructor
@@ -581,7 +582,7 @@ public class DevWindow extends Window {
 					310,
 					16,
 					() -> {
-						UserInterface.addLayeredComponent(
+						userInterface.addLayeredComponent(
 							new TextInputWindow(
 								250,
 								100,
@@ -692,7 +693,7 @@ public class DevWindow extends Window {
 					310,
 					16,
 					() -> {
-						UserInterface.addLayeredComponent(
+						userInterface.addLayeredComponent(
 							new TextInputWindow(
 								250,
 								100,
@@ -704,7 +705,7 @@ public class DevWindow extends Window {
 									input.replace(" ", "");
 
 									if (StringUtils.isBlank(input)) {
-										UserInterface.addGlobalMessage("Invalid name", "Please enter a valid name.");
+										userInterface.addGlobalMessage("Invalid name", "Please enter a valid name.");
 										return;
 									}
 

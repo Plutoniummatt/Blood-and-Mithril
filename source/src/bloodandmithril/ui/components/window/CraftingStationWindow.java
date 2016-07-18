@@ -51,8 +51,8 @@ import bloodandmithril.util.datastructure.SerializableDoubleWrapper;
 @Copyright("Matthew Peck 2014")
 public class CraftingStationWindow extends Window implements Refreshable {
 
-	@Inject
-	private Controls controls;
+	@Inject	private Controls controls;
+	@Inject	private UserInterface userInterface;
 
 	private final Individual individual;
 	private SerializableDoubleWrapper<Item, Integer> currentlySelectedToCraft;
@@ -112,7 +112,7 @@ public class CraftingStationWindow extends Window implements Refreshable {
 			0,
 			90,
 			16,
-			() -> {UserInterface.addLayeredComponentUnique(currentlySelectedToCraft.t.getInfoWindow());},
+			() -> {userInterface.addLayeredComponentUnique(currentlySelectedToCraft.t.getInfoWindow());},
 			Color.ORANGE,
 			Color.GREEN,
 			Color.WHITE,
@@ -128,7 +128,7 @@ public class CraftingStationWindow extends Window implements Refreshable {
 			16,
 			() -> {
 				if (isKeyPressed(controls.bulkCraft.keyCode)) {
-					UserInterface.addLayeredComponent(
+					userInterface.addLayeredComponent(
 						new TextInputWindow(
 							250,
 							100,
@@ -140,7 +140,7 @@ public class CraftingStationWindow extends Window implements Refreshable {
 									final int quantity = Integer.parseInt(args[0].toString());
 									craft(quantity);
 								} catch (final Exception e) {
-									UserInterface.addGlobalMessage("Error", "Cannot recognise " + args[0].toString() + " as a quantity.");
+									userInterface.addGlobalMessage("Error", "Cannot recognise " + args[0].toString() + " as a quantity.");
 								}
 							},
 							"Confirm",
@@ -191,7 +191,7 @@ public class CraftingStationWindow extends Window implements Refreshable {
 				ClientServerInterface.SendRequest.sendTakeItemFromCraftingStationRequest(craftingStation, individual);
 			}
 		} else {
-			UserInterface.addGlobalMessage(craftingStation.getTitle(), "Item already taken");
+			userInterface.addGlobalMessage(craftingStation.getTitle(), "Item already taken");
 		}
 	}
 

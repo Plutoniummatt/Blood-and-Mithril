@@ -28,12 +28,9 @@ import bloodandmithril.ui.components.window.Window;
 @Copyright("Matthew Peck 2016")
 public class CoreUIRightClickHandler implements RightClickHandler {
 
-	@Inject
-	private GameClientStateTracker gameClientStateTracker;
-	@Inject
-	private GameSaver gameSaver;
-	@Inject
-	private UserInterface ui;
+	@Inject	private GameClientStateTracker gameClientStateTracker;
+	@Inject	private GameSaver gameSaver;
+	@Inject	private UserInterface ui;
 
 	@Override
 	public boolean rightClick(final boolean doubleClick) {
@@ -55,7 +52,7 @@ public class CoreUIRightClickHandler implements RightClickHandler {
 
 		ui.contextMenus.clear();
 
-		final Deque<Component> layeredComponents = UserInterface.getLayeredComponents();
+		final Deque<Component> layeredComponents = ui.getLayeredComponents();
 		if (!layeredComponents.isEmpty()) {
 			final ArrayDeque<Component> windowsCopy = new ArrayDeque<Component>(layeredComponents);
 			final Iterator<Component> iter = layeredComponents.descendingIterator();

@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import com.badlogic.gdx.graphics.Color;
+import com.google.inject.Inject;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.Graphics;
@@ -35,6 +36,8 @@ import bloodandmithril.util.Util.Colors;
 @Copyright("Matthew Peck 2015")
 public class ContainerInspectionWindow extends Window implements Refreshable {
 
+	@Inject private UserInterface userInterface;
+
 	private final Container container;
 	private ScrollableListingPanel<Item, Integer> items;
 
@@ -42,8 +45,8 @@ public class ContainerInspectionWindow extends Window implements Refreshable {
 	 * Constructor
 	 */
 	public ContainerInspectionWindow(
-		Container container,
-		String title
+		final Container container,
+		final String title
 	) {
 		super(
 			600,
@@ -60,8 +63,8 @@ public class ContainerInspectionWindow extends Window implements Refreshable {
 
 		items = new ScrollableListingPanel<Item, Integer>(this, InventoryWindow.inventorySortingOrder, true, 35, null) {
 			@Override
-			protected void populateListings(List<HashMap<ListingMenuItem<Item>, Integer>> listings) {
-				HashMap<ListingMenuItem<Item>, Integer> newHashMap = buildMap(container);
+			protected void populateListings(final List<HashMap<ListingMenuItem<Item>, Integer>> listings) {
+				final HashMap<ListingMenuItem<Item>, Integer> newHashMap = buildMap(container);
 
 				listings.add(newHashMap);
 			}
@@ -72,26 +75,26 @@ public class ContainerInspectionWindow extends Window implements Refreshable {
 			}
 
 			@Override
-			protected String getExtraString(Entry<ListingMenuItem<Item>, Integer> item) {
+			protected String getExtraString(final Entry<ListingMenuItem<Item>, Integer> item) {
 				return Integer.toString(item.getValue());
 			}
 
 			@Override
-			public boolean keyPressed(int keyCode) {
+			public boolean keyPressed(final int keyCode) {
 				return false;
 			}
 		};
 	}
 
 
-	private HashMap<ListingMenuItem<Item>, Integer> buildMap(Container container) {
-		HashMap<ListingMenuItem<Item>, Integer> newHashMap = newHashMap();
+	private HashMap<ListingMenuItem<Item>, Integer> buildMap(final Container container) {
+		final HashMap<ListingMenuItem<Item>, Integer> newHashMap = newHashMap();
 
-		for (Entry<Item, Integer> entry : container.getInventory().entrySet()) {
-			MenuItem showInfo = new MenuItem(
+		for (final Entry<Item, Integer> entry : container.getInventory().entrySet()) {
+			final MenuItem showInfo = new MenuItem(
 				"Show info",
 				() -> {
-					UserInterface.addLayeredComponentUnique(entry.getKey().getInfoWindow());
+					userInterface.addLayeredComponentUnique(entry.getKey().getInfoWindow());
 				},
 				Colors.UI_GRAY,
 				Color.GREEN,
@@ -131,7 +134,7 @@ public class ContainerInspectionWindow extends Window implements Refreshable {
 
 
 	@Override
-	protected void internalWindowRender(Graphics graphics) {
+	protected void internalWindowRender(final Graphics graphics) {
 		items.x = x;
 		items.y = y;
 		items.width = width;
@@ -142,7 +145,7 @@ public class ContainerInspectionWindow extends Window implements Refreshable {
 
 
 	@Override
-	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
+	protected void internalLeftClick(final List<ContextMenu> copy, final Deque<Component> windowsCopy) {
 		items.leftClick(copy, windowsCopy);
 	}
 

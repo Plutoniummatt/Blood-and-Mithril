@@ -22,13 +22,13 @@ import bloodandmithril.ui.components.window.DevWindow;
 @Copyright("Matthew Peck 2016")
 public class DevWindowKeyPressedHandler implements KeyPressedHandler {
 
-	@Inject
-	private Graphics graphics;
+	@Inject	private Graphics graphics;
+	@Inject	private UserInterface userInterface;
 
 	@Override
 	public boolean handle(final int keycode) {
 		if (isKeyPressed(Keys.CONTROL_LEFT) && keycode == Input.Keys.D) {
-			UserInterface.addLayeredComponentUnique(
+			userInterface.addLayeredComponentUnique(
 				new DevWindow(
 					graphics.getWidth(),
 					graphics.getHeight()/2 + 150,

@@ -9,6 +9,7 @@ import com.google.inject.Inject;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.control.Controls;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.Equipable;
@@ -26,8 +27,7 @@ import bloodandmithril.world.Domain;
 @Copyright("Matthew Peck 2015")
 public class ThrowItemCursorBoundTask extends CursorBoundTask {
 
-	@Inject
-	private Controls controls;
+	@Inject	private Controls controls;
 
 	private Individual individual;
 	private Item item;
@@ -44,7 +44,7 @@ public class ThrowItemCursorBoundTask extends CursorBoundTask {
 					}
 
 					if (individual.takeItem(item) == 1) {
-						UserInterface.refreshRefreshableWindows();
+						Wiring.injector().getInstance(UserInterface.class).refreshRefreshableWindows();
 						Domain.getWorld(individual.getWorldId()).items().addItem(
 							item.copy(),
 							individual.getEmissionPosition(),

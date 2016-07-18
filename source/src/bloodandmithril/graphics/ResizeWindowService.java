@@ -14,7 +14,7 @@ import bloodandmithril.ui.UserInterface;
 @Singleton
 @Copyright("Matthew Peck 2016")
 public class ResizeWindowService {
-	
+
 	@Inject private Graphics graphics;
 	@Inject private UserInterface userInterface;
 
@@ -24,11 +24,11 @@ public class ResizeWindowService {
 	public void resize(final int newWidth, final int newHeight) {
 		final int oldWidth = graphics.getWidth();
 		final int oldHeight = graphics.getHeight();
-		
+
 		graphics.resize(newWidth, newHeight);
-		
-		UserInterface.resetWindowPositions(oldWidth, oldHeight);
-		
+
+		userInterface.resetWindowPositions(oldWidth, oldHeight);
+
 		userInterface.getUICamera().setToOrtho(false, graphics.getWidth(), graphics.getHeight());
 		userInterface.getUITrackingCamera().setToOrtho(false, graphics.getWidth(), graphics.getHeight());
 

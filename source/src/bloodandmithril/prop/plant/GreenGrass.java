@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.UpdatedBy;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.graphics.WorldRenderer.Depth;
@@ -41,14 +42,14 @@ public class GreenGrass extends PlantProp {
 
 	private boolean small;
 
-	public GreenGrass(float x, float y, boolean small) {
+	public GreenGrass(final float x, final float y, final boolean small) {
 		super(x, y, small ? 34 : 76, 12, Depth.FRONT, new NotEmptyTile(), false);
 		this.small = small;
 	}
 
 
 	@Override
-	public void render(Graphics graphics) {
+	public void render(final Graphics graphics) {
 		if (small) {
 			graphics.getSpriteBatch().draw(textureRegionSmall, position.x - width / 2, position.y - 5);
 		} else {
@@ -58,19 +59,19 @@ public class GreenGrass extends PlantProp {
 
 
 	@Override
-	public void synchronizeProp(Prop other) {
+	public void synchronizeProp(final Prop other) {
 	}
 
 
 	@Override
 	public ContextMenu getContextMenu() {
-		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+		final ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
 
 		menu.addMenuItem(
 			new MenuItem(
 				"Show info",
 				() -> {
-					UserInterface.addLayeredComponent(
+					Wiring.injector().getInstance(UserInterface.class).addLayeredComponent(
 						new MessageWindow(
 							"Some grass.",
 							Color.ORANGE,

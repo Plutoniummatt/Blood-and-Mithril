@@ -56,6 +56,7 @@ public class TradeWindow extends Window implements Refreshable {
 
 	@Inject private GameClientStateTracker gameClientStateTracker;
 	@Inject private TradeService tradeService;
+	@Inject private UserInterface userInterface;
 	@Inject private Controls controls;
 
 	/** Panels of involved traders */
@@ -225,7 +226,7 @@ public class TradeWindow extends Window implements Refreshable {
 			tradeService.transferItems(proposerItemsToTransfer, proposer, proposeeItemsToTransfer, proposee);
 
 			if (ClientServerInterface.isServer() && ClientServerInterface.isClient()) {
-				UserInterface.refreshRefreshableWindows();
+				userInterface.refreshRefreshableWindows();
 			}
 
 			proposerItemsToTrade.clear();
@@ -442,7 +443,7 @@ public class TradeWindow extends Window implements Refreshable {
 					}
 
 					if (isKeyPressed(controls.bulkTrade.keyCode)) {
-						UserInterface.addLayeredComponent(
+						userInterface.addLayeredComponent(
 							new TextInputWindow(
 								250,
 								100,
@@ -454,7 +455,7 @@ public class TradeWindow extends Window implements Refreshable {
 										changeList(entry.getKey(), Integer.parseInt(args[0].toString()), trading, notTrading, false);
 										setActive(true);
 									} catch (final NumberFormatException e) {
-										UserInterface.addGlobalMessage("Error", "Cannot recognise " + args[0].toString() + " as a quantity.");
+										userInterface.addGlobalMessage("Error", "Cannot recognise " + args[0].toString() + " as a quantity.");
 									}
 								},
 								"Confirm",
@@ -515,7 +516,7 @@ public class TradeWindow extends Window implements Refreshable {
 			16,
 			() -> {
 				if (isKeyPressed(controls.bulkTrade.keyCode)) {
-					UserInterface.addLayeredComponent(
+					userInterface.addLayeredComponent(
 						new TextInputWindow(
 							250,
 							100,
@@ -527,7 +528,7 @@ public class TradeWindow extends Window implements Refreshable {
 									changeList(key, Integer.parseInt(args[0].toString()), transferFrom, transferTo, !toTrade);
 									setActive(true);
 								} catch (final NumberFormatException e) {
-									UserInterface.addGlobalMessage("Error", "Cannot recognise " + args[0].toString() + " as a quantity.");
+									userInterface.addGlobalMessage("Error", "Cannot recognise " + args[0].toString() + " as a quantity.");
 								}
 							},
 							"Confirm",

@@ -2,20 +2,21 @@ package bloodandmithril.item.items.food.animal;
 
 import java.util.Map;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.google.common.collect.Maps;
+
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.characters.Elf;
 import bloodandmithril.character.proficiency.proficiencies.Cooking;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.food.Food;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.window.MessageWindow;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.google.common.collect.Maps;
 
 @Copyright("Matthew Peck 2014")
 public class ChickenLegItem extends Food implements Craftable {
@@ -31,14 +32,14 @@ public class ChickenLegItem extends Food implements Craftable {
 	/**
 	 * Constructor
 	 */
-	public ChickenLegItem(boolean cooked) {
+	public ChickenLegItem(final boolean cooked) {
 		super(0.25f, 3, false, cooked ? ItemValues.CHICKENLEG : ItemValues.COOKEDCHICKENLEG);
 		this.cooked = cooked;
 	}
 
 
 	@Override
-	protected String internalGetSingular(boolean firstCap) {
+	protected String internalGetSingular(final boolean firstCap) {
 		if (cooked) {
 			return firstCap ? "Cooked chicken leg" : "cooked chicken leg";
 		} else {
@@ -48,7 +49,7 @@ public class ChickenLegItem extends Food implements Craftable {
 
 
 	@Override
-	protected String internalGetPlural(boolean firstCap) {
+	protected String internalGetPlural(final boolean firstCap) {
 		if (cooked) {
 			return firstCap ? "Cooked chicken legs" : "cooked chicken legs";
 		} else {
@@ -58,10 +59,10 @@ public class ChickenLegItem extends Food implements Craftable {
 
 
 	@Override
-	public boolean consume(Individual consumer) {
+	public boolean consume(final Individual consumer) {
 		if (consumer instanceof Elf) {
 
-			MessageWindow messageWindow = new MessageWindow(
+			final MessageWindow messageWindow = new MessageWindow(
 				"Elves are vegans, they do not eat meat.",
 				Color.RED,
 				470,
@@ -72,7 +73,7 @@ public class ChickenLegItem extends Food implements Craftable {
 				100
 			);
 
-			UserInterface.addLayeredComponent(messageWindow);
+			Wiring.injector().getInstance(UserInterface.class).addLayeredComponent(messageWindow);
 			return false;
 		}
 		consumer.increaseHunger(0.15f);
@@ -87,7 +88,7 @@ public class ChickenLegItem extends Food implements Craftable {
 
 
 	@Override
-	protected boolean internalSameAs(Item other) {
+	protected boolean internalSameAs(final Item other) {
 		if (other instanceof ChickenLegItem) {
 			return ((ChickenLegItem) other).cooked == this.cooked;
 		}
@@ -114,14 +115,14 @@ public class ChickenLegItem extends Food implements Craftable {
 
 
 	@Override
-	public boolean canBeCraftedBy(Individual individual) {
+	public boolean canBeCraftedBy(final Individual individual) {
 		return individual.getProficiencies().getProficiency(Cooking.class).getLevel() >= 5;
 	}
 
 
 	@Override
 	public Map<Item, Integer> getRequiredMaterials() {
-		Map<Item, Integer> map = Maps.newHashMap();
+		final Map<Item, Integer> map = Maps.newHashMap();
 		map.put(new ChickenLegItem(false), 1);
 		return map;
 	}
@@ -134,7 +135,7 @@ public class ChickenLegItem extends Food implements Craftable {
 
 
 	@Override
-	public void crafterEffects(Individual crafter, float delta) {
+	public void crafterEffects(final Individual crafter, final float delta) {
 		crafter.getProficiencies().getProficiency(Cooking.class).increaseExperience(delta * 3f);
 	}
 }

@@ -28,8 +28,6 @@ import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
-import bloodandmithril.util.Util;
-import bloodandmithril.util.Util.Colors;
 
 /**
  * Window to remap controls
@@ -39,8 +37,8 @@ import bloodandmithril.util.Util.Colors;
 @Copyright("Matthew Peck 2015")
 public class KeyMappingsWindow extends Window implements Refreshable {
 
-	@Inject
-	private Controls controls;
+	@Inject	private Controls controls;
+	@Inject	private UserInterface userInterface;
 
 	private ScrollableListingPanel<MappedKey, String> keyMappings;
 	private Button saveButton = new Button(
@@ -166,7 +164,7 @@ public class KeyMappingsWindow extends Window implements Refreshable {
 				new ContextMenu.MenuItem(
 					"Show info",
 					() -> {
-						UserInterface.addLayeredComponentUnique(
+						userInterface.addLayeredComponentUnique(
 							new MessageWindow(
 								mappedKey.showInfo,
 								Color.ORANGE,
@@ -189,7 +187,7 @@ public class KeyMappingsWindow extends Window implements Refreshable {
 					new ContextMenu.MenuItem(
 						"Change",
 						() -> {
-							UserInterface.addLayeredComponentUnique(
+							userInterface.addLayeredComponentUnique(
 								new ChangeKeyWindow(mappedKey)
 							);
 						},
@@ -232,7 +230,7 @@ public class KeyMappingsWindow extends Window implements Refreshable {
 				new ContextMenu.MenuItem(
 					"Show info",
 					() -> {
-						UserInterface.addLayeredComponentUnique(
+						userInterface.addLayeredComponentUnique(
 							new MessageWindow(
 								mappedKey.showInfo,
 								Color.ORANGE,
@@ -274,70 +272,5 @@ public class KeyMappingsWindow extends Window implements Refreshable {
 		}
 
 		listings.add(map);
-	}
-
-
-	/**
-	 * Window used for changing key binding.
-	 *
-	 * @author Matt
-	 */
-	@Copyright("Matthew Peck 2015")
-	public static class ChangeKeyWindow extends Window {
-		@Inject
-		private Controls controls;
-
-		private MappedKey mappedKey;
-
-		/**
-		 * Constructor
-		 */
-		public ChangeKeyWindow(final MappedKey mappedKey) {
-			super(200, 100, "Change key", true, false, false, true);
-			this.mappedKey = mappedKey;
-		}
-
-		@Override
-		public boolean keyPressed(final int keyCode) {
-			if (Controls.disallowedKeys.contains(keyCode)) {
-				UserInterface.addGlobalMessage("Disallowed", "Can not remap this key.");
-				setClosing(true);
-			} else {
-				if (controls.getFunctionalKeyMappings().containsKey(keyCode)) {
-					UserInterface.addGlobalMessage("Conflict", "Key already mapped to " + controls.getFunctionalKeyMappings().get(keyCode).description);
-				} else {
-					mappedKey.keyCode = keyCode;
-				}
-				setClosing(true);
-			}
-
-			return super.keyPressed(keyCode);
-		}
-
-		@Override
-		protected void internalWindowRender(final Graphics graphics) {
-			defaultFont.setColor(isActive() ? Colors.modulateAlpha(Color.ORANGE, getAlpha()) : Colors.modulateAlpha(Color.ORANGE, 0.6f * getAlpha()));
-			final String messageToDisplay = Util.fitToWindow("Press Key", width, (height - 75) / 25);
-			defaultFont.drawMultiLine(graphics.getSpriteBatch(), messageToDisplay, x + 6, y - 25);
-
-			UserInterface.refreshRefreshableWindows();
-		}
-
-		@Override
-		protected void internalLeftClick(final List<ContextMenu> copy, final Deque<Component> windowsCopy) {
-		}
-
-		@Override
-		protected void uponClose() {
-		}
-
-		@Override
-		public Object getUniqueIdentifier() {
-			return "ChangeKey" + mappedKey.keyCode;
-		}
-
-		@Override
-		public void leftClickReleased() {
-		}
 	}
 }

@@ -137,7 +137,7 @@ public class UserInterface {
 	public List<ContextMenu> contextMenus = new ArrayList<ContextMenu>();
 
 	/** {@link Window}s */
-	private static ArrayDeque<Component> layeredComponents = new ArrayDeque<Component>();
+	private ArrayDeque<Component> layeredComponents = new ArrayDeque<Component>();
 
 	/** {@link TextBubble}s */
 	public static ArrayDeque<TextBubble> textBubbles = new ArrayDeque<TextBubble>();
@@ -246,7 +246,7 @@ public class UserInterface {
 	/**
 	 * Resets window positions when the screen is resized
 	 */
-	public static synchronized void resetWindowPositions(final int oldWidth, final int oldHeight) {
+	public synchronized void resetWindowPositions(final int oldWidth, final int oldHeight) {
 		final float oldW = oldWidth;
 		final float oldH = oldHeight;
 
@@ -262,7 +262,7 @@ public class UserInterface {
 	/**
 	 * @return all components
 	 */
-	public synchronized static Deque<Component> getLayeredComponents() {
+	public Deque<Component> getLayeredComponents() {
 		return new ArrayDeque<Component>(layeredComponents);
 	}
 
@@ -270,7 +270,7 @@ public class UserInterface {
 	/**
 	 * Load the task bar and the status bar
 	 */
-	public static void loadBars() {
+	public void loadBars() {
 		layeredComponents.add(new BottomBar());
 	}
 
@@ -278,12 +278,12 @@ public class UserInterface {
 	/**
 	 * Adds a {@link Task} to the {@link #uiTasks} Deque to be executed in the main thread
 	 */
-	public static void addUITask(final Task task) {
+	public void addUITask(final Task task) {
 		uiTasks.add(task);
 	}
 
 
-	public static void refreshRefreshableWindows() {
+	public void refreshRefreshableWindows() {
 		layeredComponents.stream().filter((component) -> {
 			return component instanceof Refreshable;
 		}).forEach((component) -> {
@@ -292,7 +292,7 @@ public class UserInterface {
 	}
 
 
-	public static void refreshRefreshableWindows(final Class<? extends Window> classToRefresh) {
+	public void refreshRefreshableWindows(final Class<? extends Window> classToRefresh) {
 		layeredComponents.stream().filter((component) -> {
 			return component instanceof Refreshable && component.getClass().equals(classToRefresh);
 		}).forEach((component) -> {
@@ -1202,7 +1202,7 @@ public class UserInterface {
 
 
 	/** Renders layered components, e.g. {@link Window}s */
-	private static synchronized void renderLayeredComponents() {
+	private synchronized void renderLayeredComponents() {
 		final ArrayDeque<Component> copy = new ArrayDeque<>(layeredComponents);
 		for (final Component component : new ArrayDeque<>(layeredComponents)) {
 			if (component instanceof Window) {
@@ -1311,7 +1311,7 @@ public class UserInterface {
 	/**
 	 * Called when the scroll wheel is scrolled.
 	 */
-	public static void scrolled(final int amount) {
+	public void scrolled(final int amount) {
 		for (final Component component : newArrayList(layeredComponents)) {
 			if (component.isActive()) {
 				component.scrolled(amount);
@@ -1323,7 +1323,7 @@ public class UserInterface {
 	/**
 	 * Removes a layered component
 	 */
-	public static void removeLayeredComponent(final Component toRemove) {
+	public void removeLayeredComponent(final Component toRemove) {
 		layeredComponents.remove(toRemove);
 	}
 
@@ -1331,7 +1331,7 @@ public class UserInterface {
 	/**
 	 * Removes a layered component
 	 */
-	public static void removeLayeredComponent(final String title) {
+	public void removeLayeredComponent(final String title) {
 		for (final Component component : layeredComponents) {
 			if (component instanceof Window && ((Window) component).title.equals(title)) {
 				component.setClosing(true);
@@ -1341,7 +1341,7 @@ public class UserInterface {
 
 
 	/** Adds a {@link Component} to {@link #layeredComponents} */
-	public synchronized static void addLayeredComponent(final Component toAdd) {
+	public synchronized void addLayeredComponent(final Component toAdd) {
 		for (final Component component : layeredComponents) {
 			if (component instanceof Window) {
 				((Window)component).setActive(false);
@@ -1352,7 +1352,7 @@ public class UserInterface {
 
 
 	/** Adds a {@link Component} to {@link #layeredComponents}, checking if an existing one with the same title exists */
-	public synchronized static void addLayeredComponentUnique(final Window toAdd) {
+	public synchronized void addLayeredComponentUnique(final Window toAdd) {
 		Window existing = null;
 
 		for (final Component window : layeredComponents) {
@@ -1379,27 +1379,27 @@ public class UserInterface {
 	}
 
 
-	public static void addClientMessage(final String title, final String message) {
+	public void addClientMessage(final String title, final String message) {
 		addGlobalMessage(title, message, -1, new FalseFunction());
 	}
 
 
-	public static void addClientMessage(final String title, final SerializableFunction<String> message) {
+	public void addClientMessage(final String title, final SerializableFunction<String> message) {
 		addGlobalMessage(title, message, -1, new FalseFunction());
 	}
 
 
-	public static void addGlobalMessage(final String title, final String message) {
+	public void addGlobalMessage(final String title, final String message) {
 		addGlobalMessage(title, message, -1, new AlwaysTrueFunction());
 	}
 
 
-	public static void addGlobalMessage(final String title, final String message, final SerializableFunction<Boolean> function) {
+	public void addGlobalMessage(final String title, final String message, final SerializableFunction<Boolean> function) {
 		addGlobalMessage(title, message, -1, function);
 	}
 
 
-	public static void addGlobalMessage(final String title, final SerializableFunction<String> message, final int client, final SerializableFunction<Boolean> function) {
+	public void addGlobalMessage(final String title, final SerializableFunction<String> message, final int client, final SerializableFunction<Boolean> function) {
 		if (ClientServerInterface.isClient()) {
 			addLayeredComponent(
 				new MessageWindow(
@@ -1419,7 +1419,7 @@ public class UserInterface {
 	}
 
 
-	public static void addGlobalMessage(final String title, final String message, final int client, final SerializableFunction<Boolean> function) {
+	public void addGlobalMessage(final String title, final String message, final int client, final SerializableFunction<Boolean> function) {
 		if (ClientServerInterface.isClient()) {
 			addLayeredComponent(
 				new MessageWindow(
@@ -1449,7 +1449,7 @@ public class UserInterface {
 	}
 
 
-	public static void closeAllWindows() {
+	public void closeAllWindows() {
 		for (final Component component : layeredComponents) {
 			component.setClosing(true);
 		}

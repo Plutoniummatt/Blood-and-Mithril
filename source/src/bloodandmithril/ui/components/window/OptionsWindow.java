@@ -8,6 +8,7 @@ import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.google.inject.Inject;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.Graphics;
@@ -27,6 +28,8 @@ import bloodandmithril.util.Fonts;
 @Copyright("Matthew Peck 2014")
 public class OptionsWindow extends Window {
 
+	@Inject private UserInterface userInterface;
+
 	private Button changeRes, fullScreen, controls;
 
 	/**
@@ -43,7 +46,7 @@ public class OptionsWindow extends Window {
 			170,
 			16,
 			() -> {
-				UserInterface.addLayeredComponent(
+				userInterface.addLayeredComponent(
 					new TextInputWindow(
 						250,
 						100,
@@ -52,10 +55,10 @@ public class OptionsWindow extends Window {
 						100,
 						enteredWidth -> {
 							try {
-								int resX = Integer.parseInt(enteredWidth[0].toString());
+								final int resX = Integer.parseInt(enteredWidth[0].toString());
 								ConfigPersistenceService.getConfig().setResX(resX);
-							} catch (Exception e) {
-								UserInterface.addLayeredComponent(
+							} catch (final Exception e) {
+								userInterface.addLayeredComponent(
 									new MessageWindow(
 										"Invalid resolution, enter an integer",
 										Color.RED,
@@ -70,7 +73,7 @@ public class OptionsWindow extends Window {
 								return;
 							}
 
-							UserInterface.addLayeredComponent(
+							userInterface.addLayeredComponent(
 								new TextInputWindow(
 									250,
 									100,
@@ -79,10 +82,10 @@ public class OptionsWindow extends Window {
 									100,
 									enteredHeight -> {
 										try {
-											int resY = Integer.parseInt(enteredHeight[0].toString());
+											final int resY = Integer.parseInt(enteredHeight[0].toString());
 											ConfigPersistenceService.getConfig().setResY(resY);
-										} catch (Exception e) {
-											UserInterface.addLayeredComponent(
+										} catch (final Exception e) {
+											userInterface.addLayeredComponent(
 												new MessageWindow(
 													"Invalid resolution, enter an integer",
 													Color.RED,
@@ -97,7 +100,7 @@ public class OptionsWindow extends Window {
 											return;
 										}
 
-										UserInterface.addLayeredComponent(
+										userInterface.addLayeredComponent(
 											new MessageWindow(
 												"Please restart the game for the changes to take effect",
 												Color.GREEN,
@@ -111,7 +114,7 @@ public class OptionsWindow extends Window {
 										);
 
 										ConfigPersistenceService.saveConfig();
-										UserInterface.removeLayeredComponent("Options");
+										userInterface.removeLayeredComponent("Options");
 									},
 									"Confirm",
 									true,
@@ -142,7 +145,7 @@ public class OptionsWindow extends Window {
 				ConfigPersistenceService.getConfig().setFullScreen(!ConfigPersistenceService.getConfig().isFullScreen());
 				ConfigPersistenceService.saveConfig();
 
-				UserInterface.addLayeredComponent(
+				userInterface.addLayeredComponent(
 					new MessageWindow(
 						"Please restart the game for the changes to take effect",
 						Color.GREEN,
@@ -171,7 +174,7 @@ public class OptionsWindow extends Window {
 			80,
 			16,
 			() -> {
-				UserInterface.addLayeredComponentUnique(
+				userInterface.addLayeredComponentUnique(
 					new KeyMappingsWindow()
 				);
 
@@ -186,7 +189,7 @@ public class OptionsWindow extends Window {
 
 
 	@Override
-	protected void internalWindowRender(Graphics graphics) {
+	protected void internalWindowRender(final Graphics graphics) {
 		changeRes.render(x + width/2, y - 30, isActive() && Gdx.app.getGraphics().isFullscreen(), getAlpha(), graphics);
 		fullScreen.render(x + width/2, y - 50, isActive(), getAlpha(), graphics);
 		controls.render(x + width/2, y - 70, isActive(), getAlpha(), graphics);
@@ -194,7 +197,7 @@ public class OptionsWindow extends Window {
 
 
 	@Override
-	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
+	protected void internalLeftClick(final List<ContextMenu> copy, final Deque<Component> windowsCopy) {
 		if (Gdx.app.getGraphics().isFullscreen()) {
 			changeRes.click();
 		}

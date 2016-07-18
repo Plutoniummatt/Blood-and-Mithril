@@ -4,6 +4,7 @@ import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.Prop.ReturnPropPosition;
 import bloodandmithril.prop.construction.craftingstation.CraftingStation;
@@ -123,7 +124,7 @@ public class OpenCraftingStation extends CompositeAITask {
 
 
 	public static void openCraftingStationWindow(final Individual individual, final CraftingStation craftingStation) {
-		UserInterface.addLayeredComponentUnique(
+		Wiring.injector().getInstance(UserInterface.class).addLayeredComponentUnique(
 			craftingStation.getCraftingStationWindow(individual)
 		);
 	}

@@ -24,11 +24,9 @@ import bloodandmithril.ui.components.window.InventoryWindow;
 @Copyright("Matthew Peck 2016")
 public class IndividualUIKeyPressedHandler implements KeyPressedHandler {
 
-	@Inject
-	private Controls controls;
-
-	@Inject
-	private GameClientStateTracker gameClientStateTracker;
+	@Inject	private Controls controls;
+	@Inject	private GameClientStateTracker gameClientStateTracker;
+	@Inject	private UserInterface userInterface;
 
 	@Override
 	public boolean handle(final int keycode) {
@@ -37,7 +35,7 @@ public class IndividualUIKeyPressedHandler implements KeyPressedHandler {
 				final Individual individual = gameClientStateTracker.getSelectedIndividuals().iterator().next();
 				final String simpleName = individual.getId().getSimpleName();
 
-				UserInterface.addLayeredComponentUnique(
+				userInterface.addLayeredComponentUnique(
 					new InventoryWindow(
 						individual,
 						simpleName + " - Inventory",
@@ -50,7 +48,7 @@ public class IndividualUIKeyPressedHandler implements KeyPressedHandler {
 		if (keycode == controls.openAIRoutines.keyCode) {
 			if (gameClientStateTracker.getSelectedIndividuals().size() == 1) {
 				final Individual individual = gameClientStateTracker.getSelectedIndividuals().iterator().next();
-				UserInterface.addLayeredComponentUnique(
+				userInterface.addLayeredComponentUnique(
 					new AIRoutinesWindow(
 						individual
 					)
@@ -62,7 +60,7 @@ public class IndividualUIKeyPressedHandler implements KeyPressedHandler {
 			if (gameClientStateTracker.getSelectedIndividuals().size() == 1) {
 				final Individual individual = gameClientStateTracker.getSelectedIndividuals().iterator().next();
 
-				UserInterface.addLayeredComponentUnique(
+				userInterface.addLayeredComponentUnique(
 					new BuildWindow(
 						individual,
 						new Function<Construction, String>() {

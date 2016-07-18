@@ -44,7 +44,7 @@ import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.networking.functions.IndividualSelected;
-import bloodandmithril.networking.requests.RefreshWindows;
+import bloodandmithril.networking.requests.RefreshWindowsResponse;
 import bloodandmithril.networking.requests.SynchronizeIndividual;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
@@ -67,6 +67,9 @@ import bloodandmithril.world.topography.Topography.NoTileFoundException;
 @Copyright("Matthew Peck 2014")
 @Name(name = "Take item")
 public class TakeItem extends CompositeAITask implements RoutineTask {
+
+	private transient UserInterface userInterface;
+
 	private static final long serialVersionUID = 1L;
 	private Item item;
 	private Deque<Integer> itemIds = new ArrayDeque<>();
@@ -163,11 +166,11 @@ public class TakeItem extends CompositeAITask implements RoutineTask {
 		@Override
 		public boolean uponCompletion() {
 			if (ClientServerInterface.isClient()) {
-				UserInterface.refreshRefreshableWindows();
+				userInterface.refreshRefreshableWindows();
 			} else {
 				ClientServerInterface.sendNotification(-1, true, true,
 					new SynchronizeIndividual.SynchronizeIndividualResponse(hostId.getId(), System.currentTimeMillis()),
-					new RefreshWindows.RefreshWindowsResponse()
+					new RefreshWindowsResponse()
 				);
 			}
 
@@ -200,7 +203,7 @@ public class TakeItem extends CompositeAITask implements RoutineTask {
 			final Individual individual = Domain.getIndividual(hostId.getId());
 			if (individual.getInteractionBox().overlapsWith(item.getPickupBox())) {
 				if (!individual.canReceive(item)) {
-					UserInterface.addGlobalMessage("Inventory full", "Can not pick up item, inventory is full.", new IndividualSelected(individual.getId().getId()));
+					userInterface.addGlobalMessage("Inventory full", "Can not pick up item, inventory is full.", new IndividualSelected(individual.getId().getId()));
 					inventoryFull = true;
 					return;
 				}

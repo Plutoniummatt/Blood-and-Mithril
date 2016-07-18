@@ -23,8 +23,8 @@ import bloodandmithril.ui.components.window.SelectedIndividualsControlWindow;
 @Copyright("Matthew Peck 2015")
 public class IndividualSelectionServiceServerImpl implements IndividualSelectionService {
 
-	@Inject
-	private GameClientStateTracker gameClientStateTracker;
+	@Inject	private GameClientStateTracker gameClientStateTracker;
+	@Inject	private UserInterface userInterface;
 
 
 	@Override
@@ -40,7 +40,7 @@ public class IndividualSelectionServiceServerImpl implements IndividualSelection
 		indi.getSelectedByClient().add(client);
 
 		if (ClientServerInterface.isClient()) {
-			UserInterface.addLayeredComponentUnique(
+			userInterface.addLayeredComponentUnique(
 				new SelectedIndividualsControlWindow(
 					getGdxWidth() - 170,
 					150,

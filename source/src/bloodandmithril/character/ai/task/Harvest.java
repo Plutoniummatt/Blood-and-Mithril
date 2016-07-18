@@ -81,6 +81,7 @@ public final class Harvest extends CompositeAITask implements RoutineTask {
 	private final Prop harvestable;
 
 	@Inject private GameClientStateTracker gameClientStateTracker;
+	@Inject private UserInterface userInterface;
 
 	@Inject
 	Harvest() {
@@ -176,7 +177,7 @@ public final class Harvest extends CompositeAITask implements RoutineTask {
 							}
 						}
 						taskDone = true;
-						final InventoryWindow existingInventoryWindow = (InventoryWindow) Iterables.find(UserInterface.getLayeredComponents(), new Predicate<Component>() {
+						final InventoryWindow existingInventoryWindow = (InventoryWindow) Iterables.find(userInterface.getLayeredComponents(), new Predicate<Component>() {
 							@Override
 							public boolean apply(final Component input) {
 								if (input instanceof Window) {

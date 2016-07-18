@@ -83,7 +83,7 @@ public class CarrotProp extends PlantProp implements Harvestable {
 			new MenuItem(
 				"Show info",
 				() -> {
-					UserInterface.addLayeredComponent(
+					Wiring.injector().getInstance(UserInterface.class).addLayeredComponent(
 						new MessageWindow(
 							bloodandmithril.item.items.food.plant.CarrotItem.description + (getGrowthProgress() == 1f ? "" : " This carrot is still growing."),
 							Color.ORANGE,
@@ -149,7 +149,7 @@ public class CarrotProp extends PlantProp implements Harvestable {
 		return true;
 	}
 
-	
+
 	@Override
 	public String getContextMenuItemLabel() {
 		return "Carrot";

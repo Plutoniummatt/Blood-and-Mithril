@@ -82,6 +82,7 @@ import bloodandmithril.util.datastructure.WrapperForTwo;
 public class InventoryWindow extends Window implements Refreshable {
 
 	@Inject private GameClientStateTracker gameClientStateTracker;
+	@Inject private UserInterface userInterface;
 	@Inject private Controls controls;
 
 	/** Inventory listing maps */
@@ -601,7 +602,7 @@ public class InventoryWindow extends Window implements Refreshable {
 		}
 
 		if (toReturn == null) {
-			toReturn = new ContextMenu(x, y, true, InventoryItemContextMenuConstructor.showInfo(item));
+			toReturn = new ContextMenu(x, y, true, showInfo(item));
 		}
 
 		if (!equipped) {
@@ -609,7 +610,7 @@ public class InventoryWindow extends Window implements Refreshable {
 				"Discard",
 				() -> {
 					if (isKeyPressed(controls.bulkDiscard.keyCode)) {
-						UserInterface.addLayeredComponent(
+						userInterface.addLayeredComponent(
 							new TextInputWindow(
 								250,
 								100,
@@ -621,9 +622,9 @@ public class InventoryWindow extends Window implements Refreshable {
 										int quantity = 0;
 										quantity = Integer.parseInt(args[0].toString());
 										ContainerImpl.discard((Individual)host, item, quantity);
-										UserInterface.refreshRefreshableWindows();
+										userInterface.refreshRefreshableWindows();
 									} catch (final NumberFormatException e) {
-										UserInterface.addGlobalMessage("Error", "Can not recognise " + args[0].toString() + " as a quantity");
+										userInterface.addGlobalMessage("Error", "Can not recognise " + args[0].toString() + " as a quantity");
 									}
 								},
 								"Confirm",
@@ -633,7 +634,7 @@ public class InventoryWindow extends Window implements Refreshable {
 						);
 					} else {
 						ContainerImpl.discard((Individual)host, item, 1);
-						UserInterface.refreshRefreshableWindows();
+						userInterface.refreshRefreshableWindows();
 					}
 				},
 				Colors.UI_GRAY,
@@ -678,7 +679,7 @@ public class InventoryWindow extends Window implements Refreshable {
 
 		return new ContextMenu(x, y,
 			true,
-			InventoryItemContextMenuConstructor.showInfo(item),
+			showInfo(item),
 			place
 		);
 	}
@@ -700,7 +701,7 @@ public class InventoryWindow extends Window implements Refreshable {
 
 		return new ContextMenu(x, y,
 			true,
-			InventoryItemContextMenuConstructor.showInfo(item),
+			showInfo(item),
 			plant
 		);
 	}
@@ -747,7 +748,7 @@ public class InventoryWindow extends Window implements Refreshable {
 
 		final ContextMenu contextMenu = new ContextMenu(x, y,
 			true,
-			InventoryItemContextMenuConstructor.showInfo(item),
+			showInfo(item),
 			equipUnequip
 		);
 
@@ -775,7 +776,7 @@ public class InventoryWindow extends Window implements Refreshable {
 				new MenuItem(
 					"Refuel",
 					() -> {
-						UserInterface.addLayeredComponent(
+						userInterface.addLayeredComponent(
 							new TextInputWindow(
 								250,
 								100,
@@ -786,7 +787,7 @@ public class InventoryWindow extends Window implements Refreshable {
 									try {
 										final float amount = Util.round2dp(Float.parseFloat(args[0].toString()));
 										if (amount < 0.01f) {
-											UserInterface.addGlobalMessage("Too little to refuel", "Its too little to refuel, enter a larger amount");
+											userInterface.addGlobalMessage("Too little to refuel", "Its too little to refuel, enter a larger amount");
 											return;
 										}
 
@@ -833,7 +834,7 @@ public class InventoryWindow extends Window implements Refreshable {
 										}
 
 									} catch (final NumberFormatException e) {
-										UserInterface.addGlobalMessage("Error", "Cannot recognise " + args[0].toString() + " as an amount.");
+										userInterface.addGlobalMessage("Error", "Cannot recognise " + args[0].toString() + " as an amount.");
 									}
 								},
 								"Refuel",
@@ -904,7 +905,7 @@ public class InventoryWindow extends Window implements Refreshable {
 		final MenuItem drink = new MenuItem(
 			"Drink from",
 			() -> {
-				UserInterface.addLayeredComponent(
+				userInterface.addLayeredComponent(
 					new TextInputWindow(
 						250,
 						100,
@@ -916,7 +917,7 @@ public class InventoryWindow extends Window implements Refreshable {
 								final float amount = Float.parseFloat(String.format("%.2f", Float.parseFloat(args[0].toString())));
 
 								if (amount < 0.01f) {
-									UserInterface.addGlobalMessage("Too little to drink", "It would be a waste of time to drink this little, enter a larger amount");
+									userInterface.addGlobalMessage("Too little to drink", "It would be a waste of time to drink this little, enter a larger amount");
 									return;
 								}
 
@@ -930,7 +931,7 @@ public class InventoryWindow extends Window implements Refreshable {
 									ClientServerInterface.SendRequest.sendDrinkLiquidRequest(((Individual)host).getId().getId(), (LiquidContainerItem)item, Float.parseFloat((String)args[0]));
 								}
 							} catch (final NumberFormatException e) {
-								UserInterface.addGlobalMessage("Error", "Cannot recognise " + args[0].toString() + " as an amount.");
+								userInterface.addGlobalMessage("Error", "Cannot recognise " + args[0].toString() + " as an amount.");
 							}
 						},
 						"Drink",
@@ -948,7 +949,7 @@ public class InventoryWindow extends Window implements Refreshable {
 		final MenuItem emptyContainerContents = new MenuItem(
 			"Discard content",
 			() -> {
-				UserInterface.addLayeredComponent(
+				userInterface.addLayeredComponent(
 					new TextInputWindow(
 						250,
 						100,
@@ -960,7 +961,7 @@ public class InventoryWindow extends Window implements Refreshable {
 								final float amount = Util.round2dp(Float.parseFloat(args[0].toString()));
 
 								if (amount < 0.01f) {
-									UserInterface.addGlobalMessage("Too little to discard", "Its too little to discard, enter a larger amount");
+									userInterface.addGlobalMessage("Too little to discard", "Its too little to discard, enter a larger amount");
 									return;
 								}
 
@@ -970,7 +971,7 @@ public class InventoryWindow extends Window implements Refreshable {
 									ClientServerInterface.SendRequest.sendDiscardLiquidRequest(((Individual)host).getId().getId(), (LiquidContainerItem) item, amount);
 								}
 							} catch (final NumberFormatException e) {
-								UserInterface.addGlobalMessage("Error", "Cannot recognise " + args[0].toString() + " as an amount.");
+								userInterface.addGlobalMessage("Error", "Cannot recognise " + args[0].toString() + " as an amount.");
 							}
 						},
 						"Discard content",
@@ -988,7 +989,7 @@ public class InventoryWindow extends Window implements Refreshable {
 		final MenuItem transferContainerContents = new MenuItem(
 			"Transfer",
 			() -> {
-				UserInterface.addLayeredComponent(
+				userInterface.addLayeredComponent(
 					new TextInputWindow(
 						250,
 						100,
@@ -999,7 +1000,7 @@ public class InventoryWindow extends Window implements Refreshable {
 							try {
 								final float amount = Util.round2dp(Float.parseFloat(args[0].toString()));
 								if (amount < 0.01f) {
-									UserInterface.addGlobalMessage("Too little to transfer", "Its too little to transfer, enter a larger amount");
+									userInterface.addGlobalMessage("Too little to transfer", "Its too little to transfer, enter a larger amount");
 									return;
 								}
 
@@ -1054,7 +1055,7 @@ public class InventoryWindow extends Window implements Refreshable {
 								}
 
 							} catch (final NumberFormatException e) {
-								UserInterface.addGlobalMessage("Error", "Cannot recognise " + args[0].toString() + " as an amount.");
+								userInterface.addGlobalMessage("Error", "Cannot recognise " + args[0].toString() + " as an amount.");
 							}
 						},
 						"Transfer",
@@ -1070,7 +1071,7 @@ public class InventoryWindow extends Window implements Refreshable {
 		);
 
 		final ContextMenu contextMenu = new ContextMenu(x, y, true,
-			InventoryItemContextMenuConstructor.showInfo(item)
+			showInfo(item)
 		);
 
 		if (host instanceof Individual && !((LiquidContainerItem)item).isEmpty()) {
@@ -1103,7 +1104,7 @@ public class InventoryWindow extends Window implements Refreshable {
 		);
 
 		final ContextMenu contextMenu = new ContextMenu(x, y, true,
-			InventoryItemContextMenuConstructor.showInfo(item)
+			showInfo(item)
 		);
 
 		if (host instanceof Individual) {
@@ -1132,19 +1133,17 @@ public class InventoryWindow extends Window implements Refreshable {
 	}
 
 
-	private static class InventoryItemContextMenuConstructor {
-		private static MenuItem showInfo(final Item item) {
-			return new MenuItem(
-				"Show info",
-				() -> {
-					UserInterface.addLayeredComponentUnique(item.getInfoWindow());
-				},
-				Colors.UI_GRAY,
-				Color.GREEN,
-				Color.WHITE,
-				null
-			);
-		}
+	private MenuItem showInfo(final Item item) {
+		return new MenuItem(
+			"Show info",
+			() -> {
+				userInterface.addLayeredComponentUnique(item.getInfoWindow());
+			},
+			Colors.UI_GRAY,
+			Color.GREEN,
+			Color.WHITE,
+			null
+		);
 	}
 
 

@@ -81,7 +81,7 @@ public class SmallWoodenCrateProp extends Furniture implements Container {
 			new MenuItem(
 				"Show info",
 				() -> {
-					UserInterface.addLayeredComponent(
+					Wiring.injector().getInstance(UserInterface.class).addLayeredComponent(
 						new MessageWindow(
 							description(),
 							Color.ORANGE,
@@ -209,7 +209,7 @@ public class SmallWoodenCrateProp extends Furniture implements Container {
 		graphics.getSpriteBatch().draw(WOODEN_CRATE, position.x - width / 2, position.y);
 	}
 
-	
+
 	@Override
 	public Container getContainerImpl() {
 		return container;

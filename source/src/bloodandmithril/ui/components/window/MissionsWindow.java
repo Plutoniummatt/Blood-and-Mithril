@@ -37,7 +37,8 @@ import bloodandmithril.util.SerializableFunction;
 @Copyright("Matthew Peck 2015")
 public class MissionsWindow extends Window implements Refreshable {
 
-	@Inject MissionTracker missionTracker;
+	@Inject private MissionTracker missionTracker;
+	@Inject private UserInterface userInterface;
 
 	private ScrollableListingPanel<Mission, String> activeMissions;
 	private ScrollableListingPanel<Mission, String> completedMissions;
@@ -204,7 +205,7 @@ public class MissionsWindow extends Window implements Refreshable {
 							mission.getTitle().length() * 10,
 							16,
 							() -> {
-								UserInterface.addClientMessage(mission.getTitle(), objectivesFunction);
+								userInterface.addClientMessage(mission.getTitle(), objectivesFunction);
 							},
 							Color.ORANGE,
 							Color.WHITE,

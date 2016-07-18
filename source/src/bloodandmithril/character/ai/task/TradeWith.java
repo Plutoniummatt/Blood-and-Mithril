@@ -10,6 +10,7 @@ import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
 import bloodandmithril.networking.ClientServerInterface;
@@ -31,6 +32,7 @@ import bloodandmithril.world.Domain;
  */
 @Copyright("Matthew Peck 2014")
 public class TradeWith extends CompositeAITask {
+
 	private static final long serialVersionUID = -4098496856332182431L;
 
 	public static Comparator<Item> sortOrder = new Comparator<Item>() {
@@ -198,7 +200,7 @@ public class TradeWith extends CompositeAITask {
 	public static void openTradeWindowWithProp(final Individual proposer, final Container container) {
 		if (container instanceof Prop) {
 			final Prop prop = Domain.getWorld(proposer.getWorldId()).props().getProp(((Prop) container).id);
-				UserInterface.addLayeredComponentUnique(
+				Wiring.injector().getInstance(UserInterface.class).addLayeredComponentUnique(
 				new TradeWindow(
 					proposer.getId().getSimpleName() + " interacting with container",
 					true,
@@ -215,7 +217,7 @@ public class TradeWith extends CompositeAITask {
 	 * Opens a {@link TradeWindow} with another {@link Individual}
 	 */
 	public static void openTradeWindowWithIndividual(final Individual proposer, final Individual proposeeCasted) {
-		UserInterface.addLayeredComponentUnique(
+		Wiring.injector().getInstance(UserInterface.class).addLayeredComponentUnique(
 			new TradeWindow(
 				"Trade between " + proposer.getId().getFirstName() + " and " + proposeeCasted.getId().getFirstName(),
 				true,

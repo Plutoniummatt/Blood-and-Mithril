@@ -6,6 +6,7 @@ import java.util.Deque;
 import java.util.List;
 
 import com.badlogic.gdx.graphics.Color;
+import com.google.inject.Inject;
 
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
@@ -41,10 +42,13 @@ public abstract class Routine extends AITask {
 	protected TaskGenerator aiTaskGenerator;
 	protected AITask task;
 
+	@Inject
+	private transient UserInterface userInterface;
+
 	/**
 	 * Protected constructor
 	 */
-	public Routine(IndividualIdentifier hostId) {
+	public Routine(final IndividualIdentifier hostId) {
 		super(hostId);
 		this.enabled = true;
 	}
@@ -55,7 +59,7 @@ public abstract class Routine extends AITask {
 	}
 
 
-	public void setPriority(int priority) {
+	public void setPriority(final int priority) {
 		this.priority = priority;
 	}
 
@@ -69,7 +73,7 @@ public abstract class Routine extends AITask {
 	/**
 	 * Sets the description
 	 */
-	public void setDescription(String description) {
+	public void setDescription(final String description) {
 		this.description = description;
 	}
 
@@ -117,7 +121,7 @@ public abstract class Routine extends AITask {
 	/**
 	 * @param aiTaskGenerator the task generator to set
 	 */
-	public void setAiTaskGenerator(TaskGenerator aiTaskGenerator) {
+	public void setAiTaskGenerator(final TaskGenerator aiTaskGenerator) {
 		this.aiTaskGenerator = aiTaskGenerator;
 		setEnabled(true);
 	}
@@ -140,7 +144,7 @@ public abstract class Routine extends AITask {
 	/**
 	 * @param see {@link #getTimeBetweenOcurrences()}
 	 */
-	public void setTimeBetweenOcurrences(float timeBetweenOcurrences) {
+	public void setTimeBetweenOcurrences(final float timeBetweenOcurrences) {
 		this.timeBetweenOcurrences = timeBetweenOcurrences;
 	}
 
@@ -150,7 +154,7 @@ public abstract class Routine extends AITask {
 	}
 
 
-	public void setLastOcurrence(Epoch lastOcurrence) {
+	public void setLastOcurrence(final Epoch lastOcurrence) {
 		this.lastOcurrence = lastOcurrence;
 	}
 
@@ -160,11 +164,11 @@ public abstract class Routine extends AITask {
 	}
 
 
-	public void setEnabled(boolean enabled) {
+	public void setEnabled(final boolean enabled) {
 		this.enabled = enabled;
 
 		if (ClientServerInterface.isClient()) {
-			UserInterface.refreshRefreshableWindows(AIRoutinesWindow.class);
+			userInterface.refreshRefreshableWindows(AIRoutinesWindow.class);
 		} else {
 			ClientServerInterface.SendNotification.notifyRefreshWindows();
 		}
@@ -173,7 +177,7 @@ public abstract class Routine extends AITask {
 
 	public abstract class RoutinePanel extends Panel {
 		protected Button changeTaskButton, changeTimeBetweenOcurrences;
-		protected RoutinePanel(Component parent) {
+		protected RoutinePanel(final Component parent) {
 			super(parent);
 
 			this.changeTaskButton = new Button(
@@ -207,16 +211,16 @@ public abstract class Routine extends AITask {
 		}
 
 		@Override
-		public boolean leftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
+		public boolean leftClick(final List<ContextMenu> copy, final Deque<Component> windowsCopy) {
 			if (changeTimeBetweenOcurrences.click()) {
-				UserInterface.addLayeredComponent(
+				userInterface.addLayeredComponent(
 					new TextInputWindow(300, 100, "Change minimum time between ocurrences", 300, 100, args -> {
 						float time = 0f;
 						try {
-							String[] split = ((String) args[0]).split(":");
+							final String[] split = ((String) args[0]).split(":");
 							time = Float.parseFloat(split[0]) + Float.parseFloat(split[1])/60f;
-						} catch (Exception e) {
-							UserInterface.addClientMessage("Error", "Enter time in HH:mm format");
+						} catch (final Exception e) {
+							userInterface.addClientMessage("Error", "Enter time in HH:mm format");
 						}
 
 						setTimeBetweenOcurrences(time);
@@ -232,7 +236,7 @@ public abstract class Routine extends AITask {
 		}
 
 		@Override
-		public void render(Graphics graphics) {
+		public void render(final Graphics graphics) {
 			defaultFont.setColor(parent.isActive() ? Colors.modulateAlpha(Color.ORANGE, parent.getAlpha()) : Colors.modulateAlpha(Color.ORANGE, 0.6f * parent.getAlpha()));
 
 			defaultFont.drawWrapped(
@@ -248,7 +252,7 @@ public abstract class Routine extends AITask {
 		}
 
 		@Override
-		public boolean keyPressed(int keyCode) {
+		public boolean keyPressed(final int keyCode) {
 			return false;
 		}
 	}

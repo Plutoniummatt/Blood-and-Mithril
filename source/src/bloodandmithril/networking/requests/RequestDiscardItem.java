@@ -20,7 +20,7 @@ public class RequestDiscardItem implements Request {
 	private final int quantity;
 	private final int hostId;
 
-	public RequestDiscardItem(Individual host, Item item, int quantity) {
+	public RequestDiscardItem(final Individual host, final Item item, final int quantity) {
 		this.item = item;
 		this.quantity = quantity;
 		this.hostId = host.getId().getId();
@@ -35,10 +35,10 @@ public class RequestDiscardItem implements Request {
 			quantity
 		);
 
-		Responses responses = new Responses(true);
+		final Responses responses = new Responses(true);
 		responses.add(new SynchronizeIndividual.SynchronizeIndividualResponse(hostId, System.currentTimeMillis()));
 		responses.add(new SynchronizeItems(Domain.getIndividual(hostId).getWorldId()));
-		responses.add(new RefreshWindows.RefreshWindowsResponse());
+		responses.add(new RefreshWindowsResponse());
 		return responses;
 	}
 

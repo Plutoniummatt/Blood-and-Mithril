@@ -8,7 +8,6 @@ import static bloodandmithril.control.InputUtilities.getMouseWorldX;
 import static bloodandmithril.control.InputUtilities.getMouseWorldY;
 import static bloodandmithril.control.InputUtilities.worldToScreenX;
 import static bloodandmithril.control.InputUtilities.worldToScreenY;
-import static bloodandmithril.ui.UserInterface.refreshRefreshableWindows;
 import static bloodandmithril.world.Domain.getIndividual;
 import static bloodandmithril.world.Domain.getWorld;
 
@@ -149,7 +148,7 @@ public class PlantSeed extends CompositeAITask implements RoutineTask {
 					individual.giveItem(toPlant.getSeed());
 				}
 			}
-			refreshRefreshableWindows();
+			Wiring.injector().getInstance(UserInterface.class).refreshRefreshableWindows();
 		}
 	}
 

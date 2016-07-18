@@ -1,5 +1,7 @@
 package bloodandmithril.networking.requests;
 
+import com.google.inject.Inject;
+
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.Response;
@@ -15,13 +17,16 @@ import bloodandmithril.world.Domain;
  */
 @Copyright("Matthew Peck 2015")
 public class NotifyOpenConstructionWindow implements Response {
+
+	@Inject private UserInterface userInterface;
+
 	private final int constructionId;
 	private final int constructorId;
 
 	/**
 	 * Constructor
 	 */
-	public NotifyOpenConstructionWindow(int constructorId, int constructionId) {
+	public NotifyOpenConstructionWindow(final int constructorId, final int constructionId) {
 		this.constructorId = constructorId;
 		this.constructionId = constructionId;
 	}
@@ -29,10 +34,10 @@ public class NotifyOpenConstructionWindow implements Response {
 
 	@Override
 	public void acknowledge() {
-		Individual constructor = Domain.getIndividual(constructorId);
-		Construction construction = (Construction) Domain.getWorld(constructor.getWorldId()).props().getProp(constructionId);
+		final Individual constructor = Domain.getIndividual(constructorId);
+		final Construction construction = (Construction) Domain.getWorld(constructor.getWorldId()).props().getProp(constructionId);
 
-		UserInterface.addLayeredComponentUnique(
+		userInterface.addLayeredComponentUnique(
 			new ConstructionWindow(
 				constructor.getId().getSimpleName() + " interacting with " + construction.getTitle(),
 				true,

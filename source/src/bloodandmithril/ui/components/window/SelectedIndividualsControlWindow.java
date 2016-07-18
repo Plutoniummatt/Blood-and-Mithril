@@ -32,10 +32,9 @@ import bloodandmithril.util.Util.Colors;
 @Copyright("Matthew Peck 2014")
 public class SelectedIndividualsControlWindow extends Window {
 
-	@Inject
-	private GameClientStateTracker gameClientStateTracker;
-	@Inject
-	private Controls controls;
+	@Inject	private GameClientStateTracker gameClientStateTracker;
+	@Inject	private Controls controls;
+	@Inject	private UserInterface userInterface;
 
 	HashMap<Integer, Button> buttons = newHashMap();
 
@@ -147,7 +146,7 @@ public class SelectedIndividualsControlWindow extends Window {
 			return individual.isAISuppressed() ? 1 : 0;
 		}).sum() > 0;
 
-		final boolean buttonsActive = UserInterface.getLayeredComponents().isEmpty() ? false : UserInterface.getLayeredComponents().getLast() == this;
+		final boolean buttonsActive = userInterface.getLayeredComponents().isEmpty() ? false : userInterface.getLayeredComponents().getLast() == this;
 		final boolean selected = gameClientStateTracker.getSelectedIndividuals().size() > 0;
 
 		// Run button

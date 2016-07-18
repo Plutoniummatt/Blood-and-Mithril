@@ -54,13 +54,13 @@ public class Torch extends OffhandEquipment implements FireLighter, Craftable {
 
 
 	@Override
-	protected String internalGetSingular(boolean firstCap) {
+	protected String internalGetSingular(final boolean firstCap) {
 		return (firstCap ? "Torch" : "torch") + " (" + String.format("%.2f", durationRemaining) + ")";
 	}
 
 
 	@Override
-	protected String internalGetPlural(boolean firstCap) {
+	protected String internalGetPlural(final boolean firstCap) {
 		return (firstCap ? "Torches" : "torches") + " (" + String.format("%.2f", durationRemaining) + ")";
 	}
 
@@ -72,7 +72,7 @@ public class Torch extends OffhandEquipment implements FireLighter, Craftable {
 
 
 	@Override
-	protected boolean internalSameAs(Item other) {
+	protected boolean internalSameAs(final Item other) {
 		if (other instanceof Torch) {
 			return ((Torch) other).workingId == workingId && ((Torch) other).durationRemaining == durationRemaining && burning == ((Torch) other).burning;
 		}
@@ -95,7 +95,7 @@ public class Torch extends OffhandEquipment implements FireLighter, Craftable {
 
 	@Override
 	protected Item internalCopy() {
-		Torch torch = new Torch();
+		final Torch torch = new Torch();
 		torch.durationRemaining = durationRemaining;
 		torch.burning = burning;
 		return torch;
@@ -127,12 +127,12 @@ public class Torch extends OffhandEquipment implements FireLighter, Craftable {
 
 
 	@Override
-	public void particleEffects(Vector2 position, float angle, boolean flipX) {
+	public void particleEffects(final Vector2 position, final float angle, final boolean flipX) {
 		if (burning) {
-			Vector2 emission = position.cpy().add(new Vector2(flipX ? - 27 : 27, 0).rotate(angle));
+			final Vector2 emission = position.cpy().add(new Vector2(flipX ? - 27 : 27, 0).rotate(angle));
 
-			float size1 = Util.getRandom().nextFloat();
-			float size2 = Util.getRandom().nextFloat();
+			final float size1 = Util.getRandom().nextFloat();
+			final float size2 = Util.getRandom().nextFloat();
 			ParticleService.randomVelocityDiminishing(emission, 3f, 15f, Colors.FIRE_START, Colors.FIRE_START, size1 * 3f, size1 * 8f + 10f, MovementMode.EMBER, Util.getRandom().nextInt(800), Depth.FOREGROUND, false, Colors.FIRE_END);
 			ParticleService.randomVelocityDiminishing(emission, 3f, 15f, Colors.FIRE_START, Colors.FIRE_START, size2 * 3f, size2 * 2f + 6f, MovementMode.EMBER, Util.getRandom().nextInt(800), Depth.MIDDLEGROUND, false, Colors.FIRE_END);
 			ParticleService.randomVelocityDiminishing(emission, 3f, 10f, Colors.LIGHT_SMOKE, Colors.LIGHT_SMOKE, 8f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(3000), Depth.FOREGROUND, false, null);
@@ -141,13 +141,13 @@ public class Torch extends OffhandEquipment implements FireLighter, Craftable {
 
 
 	@Override
-	public void update(Equipper equipper, float delta) {
+	public void update(final Equipper equipper, final float delta) {
 		if (burning) {
 			if (durationRemaining <= 0f) {
 				equipper.unequip(this);
 				equipper.takeItem(this);
 				burning = false;
-				UserInterface.refreshRefreshableWindows();
+				Wiring.injector().getInstance(UserInterface.class).refreshRefreshableWindows();
 			} else {
 				durationRemaining -= delta;
 			}
@@ -156,7 +156,7 @@ public class Torch extends OffhandEquipment implements FireLighter, Craftable {
 
 
 	@Override
-	public void onUnequip(Equipper equipper) {
+	public void onUnequip(final Equipper equipper) {
 		burning = false;
 	}
 
@@ -167,29 +167,29 @@ public class Torch extends OffhandEquipment implements FireLighter, Craftable {
 
 
 	@Override
-	public void onEquip(Equipper equipper) {
+	public void onEquip(final Equipper equipper) {
 		if (workingId == null) {
 			this.workingId = Wiring.injector().getInstance(ParameterPersistenceService.class).getParameters().getNextItemId();
 		}
 
 		if (equipper instanceof Individual) {
-			FireLighter fireLighter = ((Individual) equipper).getFireLighter();
+			final FireLighter fireLighter = ((Individual) equipper).getFireLighter();
 			if (fireLighter != null) {
 				burning = true;
 				return;
 			}
 
-			World world = Domain.getWorld(((Individual) equipper).getWorldId());
-			for (int propId : world.getPositionalIndexMap().getNearbyEntityIds(Prop.class, ((Individual) equipper).getState().position)) {
-				Prop prop = world.props().getProp(propId);
+			final World world = Domain.getWorld(((Individual) equipper).getWorldId());
+			for (final int propId : world.getPositionalIndexMap().getNearbyEntityIds(Prop.class, ((Individual) equipper).getState().position)) {
+				final Prop prop = world.props().getProp(propId);
 				if (prop.canBeUsedAsFireSource() && ((Individual) equipper).getInteractionBox().overlapsWith(new Box(prop.position.cpy().add(0, prop.height/2), prop.width, prop.height))) {
 					burning = true;
 					return;
 				}
 			}
 
-			for (int individualId : world.getPositionalIndexMap().getNearbyEntityIds(Individual.class, ((Individual) equipper).getState().position)) {
-				Individual nearbyIndividual = Domain.getIndividual(individualId);
+			for (final int individualId : world.getPositionalIndexMap().getNearbyEntityIds(Individual.class, ((Individual) equipper).getState().position)) {
+				final Individual nearbyIndividual = Domain.getIndividual(individualId);
 				if (nearbyIndividual.canBeUsedAsFireSource()) {
 					burning = true;
 					return;
@@ -200,7 +200,7 @@ public class Torch extends OffhandEquipment implements FireLighter, Craftable {
 
 
 	@Override
-	public void fireLightingEffect(Prop lightable) {
+	public void fireLightingEffect(final Prop lightable) {
 	}
 
 
@@ -211,21 +211,21 @@ public class Torch extends OffhandEquipment implements FireLighter, Craftable {
 
 
 	@Override
-	public boolean canBeCraftedBy(Individual individual) {
+	public boolean canBeCraftedBy(final Individual individual) {
 		return true;
 	}
 
 
 	@Override
 	public Map<Item, Integer> getRequiredMaterials() {
-		HashMap<Item, Integer> materials = Maps.newHashMap();
+		final HashMap<Item, Integer> materials = Maps.newHashMap();
 		materials.put(StickItem.stick(StandardWood.class), 1);
 		return materials;
 	}
 
 
 	@Override
-	public void crafterEffects(Individual crafter, float delta) {
+	public void crafterEffects(final Individual crafter, final float delta) {
 		crafter.getProficiencies().getProficiency(Carpentry.class).increaseExperience(delta * 2f);
 	}
 

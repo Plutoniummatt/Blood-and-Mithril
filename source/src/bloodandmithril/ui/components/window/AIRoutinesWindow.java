@@ -41,7 +41,7 @@ import bloodandmithril.world.Domain;
  */
 @Copyright("Matthew Peck 2015")
 public class AIRoutinesWindow extends ScrollableListingWindow<Routine, String> {
-	
+
 	@Inject
 	private UserInterface userInterface;
 
@@ -49,14 +49,14 @@ public class AIRoutinesWindow extends ScrollableListingWindow<Routine, String> {
 
 	private static Function<Routine, String> fn = new Function<Routine, String>() {
 		@Override
-		public String apply(Routine r) {
+		public String apply(final Routine r) {
 			return r.getShortDescription();
 		}
 	};
 
 	private static Comparator<Routine> routineComparator = new Comparator<Routine>() {
 		@Override
-		public int compare(Routine o1, Routine o2) {
+		public int compare(final Routine o1, final Routine o2) {
 			return new Integer(o2.getPriority()).compareTo(o1.getPriority());
 		}
 	};
@@ -67,7 +67,7 @@ public class AIRoutinesWindow extends ScrollableListingWindow<Routine, String> {
 	 * Construction
 	 */
 	public AIRoutinesWindow(
-		Individual individual
+		final Individual individual
 	) {
 		super(400, 500, "AI Routines for " + individual.getId().getSimpleName(), true, 400, 500, true, true,
 			buildMap(individual),
@@ -95,9 +95,9 @@ public class AIRoutinesWindow extends ScrollableListingWindow<Routine, String> {
 	}
 
 
-	private static Map<Routine, String> buildMap(Individual individual) {
-		Map<Routine, String> map = Maps.newHashMap();
-		for (Routine r : individual.getAI().getAiRoutines()) {
+	private static Map<Routine, String> buildMap(final Individual individual) {
+		final Map<Routine, String> map = Maps.newHashMap();
+		for (final Routine r : individual.getAI().getAiRoutines()) {
 			map.put(r, Integer.toString(r.getPriority()));
 		}
 
@@ -106,34 +106,34 @@ public class AIRoutinesWindow extends ScrollableListingWindow<Routine, String> {
 
 
 	@Override
-	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
+	protected void internalLeftClick(final List<ContextMenu> copy, final Deque<Component> windowsCopy) {
 		if (add.click()) {
-			Individual individual = Domain.getIndividual(individualId);
+			final Individual individual = Domain.getIndividual(individualId);
 			copy.add(
 				new ContextMenu(
 					getMouseScreenX(),
 					getMouseScreenY(),
 					true,
 					new MenuItem("Daily Routine", () -> {
-						DailyRoutine routine = new DailyRoutine(individual.getId(), null, 0f);
+						final DailyRoutine routine = new DailyRoutine(individual.getId(), null, 0f);
 						routine.setEnabled(false);
 						individual.getAI().addRoutine(routine);
 						refresh();
 					}, Color.GREEN, Color.WHITE, Color.GRAY, null),
 					new MenuItem("Stimulus Driven Routine", () -> {
-						StimulusDrivenRoutine routine = new StimulusDrivenRoutine(individual.getId());
+						final StimulusDrivenRoutine routine = new StimulusDrivenRoutine(individual.getId());
 						routine.setEnabled(false);
 						individual.getAI().addRoutine(routine);
 						refresh();
 					}, Color.GREEN, Color.WHITE, Color.GRAY, null),
 					new MenuItem("Entity Visible Routine", () -> {
-						EntityVisibleRoutine routine = new EntityVisibleRoutine(individual.getId(), null);
+						final EntityVisibleRoutine routine = new EntityVisibleRoutine(individual.getId(), null);
 						routine.setEnabled(false);
 						individual.getAI().addRoutine(routine);
 						refresh();
 					}, Color.GREEN, Color.WHITE, Color.GRAY, null),
 					new MenuItem("Condition Routine", () -> {
-						IndividualConditionRoutine routine = new IndividualConditionRoutine(individual.getId());
+						final IndividualConditionRoutine routine = new IndividualConditionRoutine(individual.getId());
 						routine.setEnabled(false);
 						individual.getAI().addRoutine(routine);
 						refresh();
@@ -147,7 +147,7 @@ public class AIRoutinesWindow extends ScrollableListingWindow<Routine, String> {
 
 
 	@Override
-	protected void internalWindowRender(Graphics graphics) {
+	protected void internalWindowRender(final Graphics graphics) {
 		if (!Domain.getIndividual(individualId).isAlive()) {
 			setClosing(true);
 		}
@@ -184,17 +184,17 @@ public class AIRoutinesWindow extends ScrollableListingWindow<Routine, String> {
 
 
 	@Override
-	protected ContextMenu buttonContextMenu(Entry<Routine, String> tEntry) {
-		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+	protected ContextMenu buttonContextMenu(final Entry<Routine, String> tEntry) {
+		final ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
 
-		bloodandmithril.util.Function<LinkedList<Routine>> routinesFunction = () -> {
+		final bloodandmithril.util.Function<LinkedList<Routine>> routinesFunction = () -> {
 			return Domain.getIndividual(individualId).getAI().getAiRoutines();
 		};
 
-		MenuItem moveUp = new MenuItem(
+		final MenuItem moveUp = new MenuItem(
 			"Move up",
 			() -> {
-				LinkedList<Routine> routines = routinesFunction.call();
+				final LinkedList<Routine> routines = routinesFunction.call();
 
 				if (tEntry.getKey().getPriority() + 1 == routines.size()) {
 					return;
@@ -214,10 +214,10 @@ public class AIRoutinesWindow extends ScrollableListingWindow<Routine, String> {
 			null
 		);
 
-		MenuItem moveDown = new MenuItem(
+		final MenuItem moveDown = new MenuItem(
 			"Move down",
 			() -> {
-				LinkedList<Routine> routines = routinesFunction.call();
+				final LinkedList<Routine> routines = routinesFunction.call();
 
 				if (tEntry.getKey().getPriority() == 0) {
 					return;
@@ -237,10 +237,10 @@ public class AIRoutinesWindow extends ScrollableListingWindow<Routine, String> {
 			null
 		);
 
-		MenuItem edit = new MenuItem(
+		final MenuItem edit = new MenuItem(
 			"Edit",
 			() -> {
-				UserInterface.addLayeredComponentUnique(
+				userInterface.addLayeredComponentUnique(
 					new EditAIRoutineWindow(Domain.getIndividual(individualId).getId(), tEntry.getKey())
 				);
 			},
@@ -250,10 +250,10 @@ public class AIRoutinesWindow extends ScrollableListingWindow<Routine, String> {
 			null
 		);
 
-		MenuItem rename = new MenuItem(
+		final MenuItem rename = new MenuItem(
 			"Rename",
 			() -> {
-				UserInterface.addLayeredComponentUnique(
+				userInterface.addLayeredComponentUnique(
 					new TextInputWindow(500, 100, "Input name", 250, 100, args -> {
 						tEntry.getKey().setDescription((String) args[0]);
 						AIRoutinesWindow.this.refresh();
@@ -266,7 +266,7 @@ public class AIRoutinesWindow extends ScrollableListingWindow<Routine, String> {
 			null
 		);
 
-		MenuItem remove = new MenuItem(
+		final MenuItem remove = new MenuItem(
 			"Remove",
 			() -> {
 				Domain.getIndividual(individualId).getAI().removeRoutine(tEntry.getKey());

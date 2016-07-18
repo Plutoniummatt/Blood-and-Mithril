@@ -26,7 +26,7 @@ import bloodandmithril.graphics.Graphics;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.networking.ClientServerInterface;
-import bloodandmithril.networking.requests.RefreshWindows.RefreshWindowsResponse;
+import bloodandmithril.networking.requests.RefreshWindowsResponse;
 import bloodandmithril.networking.requests.SynchronizePropRequest;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.construction.Construction;
@@ -118,7 +118,7 @@ public abstract class CraftingStation extends Construction {
 			new MenuItem(
 				"Show info",
 				() -> {
-					UserInterface.addLayeredComponent(
+					Wiring.injector().getInstance(UserInterface.class).addLayeredComponent(
 						new MessageWindow(
 							getDescription(),
 							Color.ORANGE,
@@ -238,7 +238,7 @@ public abstract class CraftingStation extends Construction {
 			}
 
 			if (ClientServerInterface.isClient()) {
-				UserInterface.refreshRefreshableWindows();
+				Wiring.injector().getInstance(UserInterface.class).refreshRefreshableWindows();
 			} else {
 				ClientServerInterface.sendNotification(-1, true, true,
 					new SynchronizePropRequest.SynchronizePropResponse(this),
@@ -321,7 +321,7 @@ public abstract class CraftingStation extends Construction {
 		}
 
 		if (ClientServerInterface.isClient()) {
-			UserInterface.refreshRefreshableWindows();
+			Wiring.injector().getInstance(UserInterface.class).refreshRefreshableWindows();
 		} else {
 			ClientServerInterface.SendNotification.notifyRefreshWindows();
 		}
@@ -331,14 +331,14 @@ public abstract class CraftingStation extends Construction {
 	public boolean isOccupied() {
 		return occupiedBy != null;
 	}
-	
-	
+
+
 	public Integer getOccupier() {
 		return occupiedBy;
 	}
-	
-	
-	public void setOccupier(Integer occupier) {
+
+
+	public void setOccupier(final Integer occupier) {
 		this.occupiedBy = occupier;
 	}
 

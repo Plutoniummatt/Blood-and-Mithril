@@ -97,7 +97,7 @@ public class MainMenuWindow extends Window {
 							return;
 						}
 
-						UserInterface.addLayeredComponent(
+						userInterface.addLayeredComponent(
 							new TextInputWindow(
 								250,
 								100,
@@ -108,7 +108,7 @@ public class MainMenuWindow extends Window {
 									final String input = (String)args[0];
 
 									if (StringUtils.isBlank(input.replace(" ", ""))) {
-										UserInterface.addGlobalMessage("Invalid name", "Please enter a valid name.");
+										userInterface.addGlobalMessage("Invalid name", "Please enter a valid name.");
 										return;
 									}
 
@@ -128,7 +128,7 @@ public class MainMenuWindow extends Window {
 				new ContextMenu.MenuItem(
 					"Load game",
 					() -> {
-						UserInterface.addLayeredComponentUnique(
+						userInterface.addLayeredComponentUnique(
 							new LoadGameWindow()
 						);
 					},
@@ -178,7 +178,7 @@ public class MainMenuWindow extends Window {
 					return;
 				}
 
-				UserInterface.addLayeredComponent(
+				userInterface.addLayeredComponent(
 					new TextInputWindow(
 						250,
 						100,
@@ -186,7 +186,7 @@ public class MainMenuWindow extends Window {
 						250,
 						100,
 						args -> {
-							for (final Component component : UserInterface.getLayeredComponents()) {
+							for (final Component component : userInterface.getLayeredComponents()) {
 								if (component instanceof Window && ((Window) component).title.equals("Enter IP") ||
 									component instanceof MainMenuWindow) {
 									component.setClosing(true);
@@ -196,7 +196,7 @@ public class MainMenuWindow extends Window {
 							if (args[0].toString().equals("local")) {
 								singlePlayer();
 							} else {
-								UserInterface.addGlobalMessage("Connecting", "Attemping to connect to " + args[0].toString());
+								userInterface.addGlobalMessage("Connecting", "Attemping to connect to " + args[0].toString());
 								threading.clientProcessingThreadPool.execute(() -> {
 									try {
 										removeWindows();
@@ -217,18 +217,18 @@ public class MainMenuWindow extends Window {
 									} catch (final Exception e) {
 
 										// Deactivate all windows, close the connecting message pop-up.
-										for (final Component component : UserInterface.getLayeredComponents()) {
+										for (final Component component : userInterface.getLayeredComponents()) {
 											component.setActive(false);
 											if (component instanceof Window && ((Window) component).title.equals("Connecting")) {
 												component.setClosing(true);
 											}
 										}
 
-										UserInterface.addLayeredComponent(
+										userInterface.addLayeredComponent(
 											new MainMenuWindow(false)
 										);
 
-										UserInterface.addLayeredComponent(
+										userInterface.addLayeredComponent(
 											new MessageWindow(
 												"Failed to connect",
 												Color.RED,
@@ -239,7 +239,7 @@ public class MainMenuWindow extends Window {
 												300,
 												100,
 												() -> {
-													for (final Component component : UserInterface.getLayeredComponents()) {
+													for (final Component component : userInterface.getLayeredComponents()) {
 														if (component instanceof Window && ((Window) component).title.equals("Error")) {
 															component.setClosing(true);
 														} else if (component instanceof Window && ((Window) component).title.equals("Enter IP")) {
@@ -303,18 +303,19 @@ public class MainMenuWindow extends Window {
 	 * Single player mode was selected
 	 */
 	private void singlePlayer() {
-		for (final Component component : UserInterface.getLayeredComponents()) {
+		for (final Component component : userInterface.getLayeredComponents()) {
 			if (component instanceof MainMenuWindow) {
 				component.setClosing(true);
 			}
 		}
-		UserInterface.addLayeredComponentUnique(new NewGameWindow());
+		userInterface.addLayeredComponentUnique(new NewGameWindow());
 	}
 
 
 	public static void removeWindows() {
-		Wiring.injector().getInstance(UserInterface.class).removeButton("connect");
-		for (final Component component : UserInterface.getLayeredComponents()) {
+		final UserInterface ui = Wiring.injector().getInstance(UserInterface.class);
+		ui.removeButton("connect");
+		for (final Component component : ui.getLayeredComponents()) {
 			if (component instanceof Window && ((Window) component).title.equals("Connecting") ||
 				component instanceof Window && ((Window) component).title.equals("Enter IP") ||
 				component instanceof MainMenuWindow ||

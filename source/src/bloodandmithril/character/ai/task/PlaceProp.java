@@ -3,6 +3,7 @@ package bloodandmithril.character.ai.task;
 import static bloodandmithril.character.ai.task.GoToLocation.goToWithTerminationFunction;
 
 import com.badlogic.gdx.math.Vector2;
+import com.google.inject.Inject;
 
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
@@ -25,6 +26,9 @@ import bloodandmithril.world.topography.Topography.NoTileFoundException;
 @Copyright("Matthew Peck 2015")
 public class PlaceProp extends CompositeAITask {
 	private static final long serialVersionUID = 6459464517158625281L;
+
+	@Inject private UserInterface userInterface;
+
 	private Vector2 position;
 	private PropItem propItem;
 
@@ -97,7 +101,7 @@ public class PlaceProp extends CompositeAITask {
 				prop.position.y = position.y;
 				Domain.getWorld(host.getWorldId()).props().addProp(prop);
 				host.takeItem(propItem);
-				UserInterface.refreshRefreshableWindows();
+				userInterface.refreshRefreshableWindows();
 			}
 
 			placed = true;

@@ -38,6 +38,7 @@ import bloodandmithril.ui.components.window.Window;
 @Copyright("Matthew Peck 2014")
 public class BottomBar extends Component {
 
+	@Inject private UserInterface userInterface;
 	@Inject private GameSaver gameSaver;
 	@Inject private GameClientStateTracker gameClientStateTracker;
 
@@ -117,7 +118,7 @@ public class BottomBar extends Component {
 
 
 	private void missionsClicked() {
-		UserInterface.addLayeredComponentUnique(
+		userInterface.addLayeredComponentUnique(
 			new MissionsWindow()
 		);
 	}
@@ -125,7 +126,7 @@ public class BottomBar extends Component {
 
 	/** Called when the factions button is clicked */
 	private void factionsClicked() {
-		for (final Component component : newArrayList(UserInterface.getLayeredComponents())) {
+		for (final Component component : newArrayList(userInterface.getLayeredComponents())) {
 			if (component instanceof FactionsWindow) {
 				((FactionsWindow) component).x = getGdxWidth()/2 - ((FactionsWindow) component).width/2;
 				((FactionsWindow) component).y = getGdxHeight()/2 + ((FactionsWindow) component).height/2;
@@ -135,7 +136,7 @@ public class BottomBar extends Component {
 			}
 		}
 
-		UserInterface.addLayeredComponentUnique(
+		userInterface.addLayeredComponentUnique(
 			new FactionsWindow(
 				250,
 				300,
@@ -169,7 +170,7 @@ public class BottomBar extends Component {
 				new MenuItem(
 					"Chat",
 					() -> {
-						for (final Component component : newArrayList(UserInterface.getLayeredComponents())) {
+						for (final Component component : newArrayList(userInterface.getLayeredComponents())) {
 							if (component instanceof ChatWindow) {
 								((ChatWindow) component).x = getGdxWidth()/2 - ((ChatWindow) component).width/2;
 								((ChatWindow) component).y = getGdxHeight()/2 + ((ChatWindow) component).height/2;
@@ -178,7 +179,7 @@ public class BottomBar extends Component {
 								break;
 							}
 
-							UserInterface.addLayeredComponent(
+							userInterface.addLayeredComponent(
 								new ChatWindow(
 									500,
 									300,
@@ -209,7 +210,7 @@ public class BottomBar extends Component {
 		copy.clear();
 		int size = 0;
 		final ArrayList<MenuItem> items = new ArrayList<>();
-		for (final Component component : UserInterface.getLayeredComponents()) {
+		for (final Component component : userInterface.getLayeredComponents()) {
 			if (component instanceof Window) {
 				if (((Window) component).minimized) {
 					size++;

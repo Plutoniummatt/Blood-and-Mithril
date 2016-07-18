@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
+import com.google.inject.Inject;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
@@ -32,18 +33,20 @@ import bloodandmithril.util.Fonts;
 @Copyright("Matthew Peck 2014")
 public class RequiredMaterialsPanel extends ScrollableListingPanel<Item, String> {
 
+	@Inject private UserInterface userInterface;
+
 	private Container materialsContainer;
 	private Map<Item, Integer> requiredMaterials;
 
 	/**
 	 * Constructor
 	 */
-	public RequiredMaterialsPanel(Component parent, Container materialsContainer, Map<Item, Integer> requiredMaterials) {
+	public RequiredMaterialsPanel(final Component parent, final Container materialsContainer, final Map<Item, Integer> requiredMaterials) {
 		super(
 			parent,
 			new Comparator<Item>() {
 				@Override
-				public int compare(Item o1, Item o2) {
+				public int compare(final Item o1, final Item o2) {
 					return o1.getSingular(false).compareTo(o2.getSingular(false));
 				}
 			},
@@ -61,15 +64,15 @@ public class RequiredMaterialsPanel extends ScrollableListingPanel<Item, String>
 	/**
 	 * @return the amount of materials currently assigned to this construction, as well as the total required.
 	 */
-	private static HashMap<Item, String> getConstructionMaterialStatus(Container materialsContainer, Map<Item, Integer> requiredMaterials) {
-		HashMap<Item, String> map = newHashMap();
+	private static HashMap<Item, String> getConstructionMaterialStatus(final Container materialsContainer, final Map<Item, Integer> requiredMaterials) {
+		final HashMap<Item, String> map = newHashMap();
 
 		for (final Entry<Item, Integer> entry : requiredMaterials.entrySet()) {
-			Integer numberOfItemsInMaterialContainer = Iterables.find(
+			final Integer numberOfItemsInMaterialContainer = Iterables.find(
 				materialsContainer.getInventory().entrySet(),
 				new Predicate<Entry<Item, Integer>>() {
 					@Override
-					public boolean apply(Entry<Item, Integer> invEntry) {
+					public boolean apply(final Entry<Item, Integer> invEntry) {
 						return entry.getKey().sameAs(invEntry.getKey());
 					}
 				},
@@ -83,7 +86,7 @@ public class RequiredMaterialsPanel extends ScrollableListingPanel<Item, String>
 						return 0;
 					}
 					@Override
-					public Integer setValue(Integer arg0) {
+					public Integer setValue(final Integer arg0) {
 						throw new UnsupportedOperationException();
 					}
 				}
@@ -96,7 +99,7 @@ public class RequiredMaterialsPanel extends ScrollableListingPanel<Item, String>
 
 
 	@Override
-	protected String getExtraString(Entry<ListingMenuItem<Item>, String> item) {
+	protected String getExtraString(final Entry<ListingMenuItem<Item>, String> item) {
 		return item.getValue();
 	}
 
@@ -114,12 +117,12 @@ public class RequiredMaterialsPanel extends ScrollableListingPanel<Item, String>
 
 
 	@Override
-	protected void populateListings(List<HashMap<ListingMenuItem<Item>, String>> listings) {
+	protected void populateListings(final List<HashMap<ListingMenuItem<Item>, String>> listings) {
 	}
 
 
-	private HashMap<ListingMenuItem<Item>, String> constructListing(HashMap<Item, String> constructionMaterialStatus) {
-		HashMap <ListingMenuItem<Item>, String> map = Maps.newHashMap();
+	private HashMap<ListingMenuItem<Item>, String> constructListing(final HashMap<Item, String> constructionMaterialStatus) {
+		final HashMap <ListingMenuItem<Item>, String> map = Maps.newHashMap();
 
 		constructionMaterialStatus.entrySet().stream().forEach(entry -> {
 			map.put(
@@ -144,7 +147,7 @@ public class RequiredMaterialsPanel extends ScrollableListingPanel<Item, String>
 						new MenuItem(
 							"Show info",
 							() -> {
-								UserInterface.addLayeredComponentUnique(entry.getKey().getInfoWindow());
+								userInterface.addLayeredComponentUnique(entry.getKey().getInfoWindow());
 							},
 							Color.WHITE,
 							Color.GREEN,
@@ -162,7 +165,7 @@ public class RequiredMaterialsPanel extends ScrollableListingPanel<Item, String>
 
 
 	@Override
-	public boolean keyPressed(int keyCode) {
+	public boolean keyPressed(final int keyCode) {
 		return false;
 	}
 

@@ -6,7 +6,6 @@ import bloodandmithril.item.Consumable;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.networking.Request;
 import bloodandmithril.networking.Response.Responses;
-import bloodandmithril.networking.requests.RefreshWindows.RefreshWindowsResponse;
 import bloodandmithril.world.Domain;
 
 /**
@@ -23,7 +22,7 @@ public class ConsumeItem implements Request {
 	/**
 	 * Constructor
 	 */
-	public ConsumeItem(Consumable consumable, int individualId) {
+	public ConsumeItem(final Consumable consumable, final int individualId) {
 		this.consumable = consumable;
 		this.individualId = individualId;
 	}
@@ -31,9 +30,9 @@ public class ConsumeItem implements Request {
 
 	@Override
 	public Responses respond() {
-		Responses responses = new Responses(true);
+		final Responses responses = new Responses(true);
 
-		Individual individual = Domain.getIndividual(individualId);
+		final Individual individual = Domain.getIndividual(individualId);
 
 		if (consumable.consume(individual)) {
 			individual.takeItem((Item)consumable);

@@ -54,6 +54,7 @@ public class IndividualContextMenuService {
 	@Inject private IndividualUpdateDescriptionService individualUpdateDescriptionService;
 	@Inject private FactionControlService factionControlService;
 	@Inject private GameClientStateTracker gameClientStateTracker;
+	@Inject private UserInterface userInterface;
 
 	public ContextMenu getContextMenu(final Individual indi) {
 		final MenuItem camFollow = camFollow(indi);
@@ -182,7 +183,7 @@ public class IndividualContextMenuService {
 		return new MenuItem(
 			"Proficiencies",
 			() -> {
-				UserInterface.addLayeredComponentUnique(
+				userInterface.addLayeredComponentUnique(
 					new ProficienciesWindow(indi)
 				);
 			},
@@ -198,7 +199,7 @@ public class IndividualContextMenuService {
 		return new MenuItem(
 			"AI Routines",
 			() -> {
-				UserInterface.addLayeredComponentUnique(
+				userInterface.addLayeredComponentUnique(
 					new AIRoutinesWindow(indi)
 				);
 			},
@@ -228,7 +229,7 @@ public class IndividualContextMenuService {
 		return new MenuItem(
 			"Show status",
 			() -> {
-				UserInterface.addLayeredComponentUnique(
+				userInterface.addLayeredComponentUnique(
 					new IndividualStatusWindow(
 						indi,
 						400,
@@ -326,7 +327,7 @@ public class IndividualContextMenuService {
 					indi.getId().getSimpleName() + " - Inventory",
 					true
 				);
-				UserInterface.addLayeredComponentUnique(inventoryWindow);
+				userInterface.addLayeredComponentUnique(inventoryWindow);
 			},
 			Color.WHITE,
 			indi.getToolTipTextColor(),
@@ -353,7 +354,7 @@ public class IndividualContextMenuService {
 					}
 				);
 
-				UserInterface.addLayeredComponentUnique(window);
+				userInterface.addLayeredComponentUnique(window);
 			},
 			Color.WHITE,
 			indi.getToolTipTextColor(),
@@ -369,7 +370,7 @@ public class IndividualContextMenuService {
 			new MenuItem(
 				"Change nickname",
 				() -> {
-					UserInterface.addLayeredComponent(
+					userInterface.addLayeredComponent(
 						new TextInputWindow(
 							250,
 							100,
@@ -393,7 +394,7 @@ public class IndividualContextMenuService {
 			new MenuItem(
 				"Update biography",
 				() -> {
-					UserInterface.addLayeredComponent(
+					userInterface.addLayeredComponent(
 						new TextInputWindow(
 							250,
 							100,
@@ -450,7 +451,7 @@ public class IndividualContextMenuService {
 					true,
 					250, 200
 				);
-				UserInterface.addLayeredComponentUnique(individualInfoWindow);
+				userInterface.addLayeredComponentUnique(individualInfoWindow);
 			},
 			Color.WHITE,
 			indi.getToolTipTextColor(),

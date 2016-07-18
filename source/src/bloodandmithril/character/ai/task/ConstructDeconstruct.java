@@ -2,6 +2,8 @@ package bloodandmithril.character.ai.task;
 
 import static bloodandmithril.networking.ClientServerInterface.isClient;
 
+import com.google.inject.Inject;
+
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
@@ -19,6 +21,9 @@ import bloodandmithril.ui.components.window.ConstructionWindow;
  */
 @Copyright("Matthew Peck 2015")
 public class ConstructDeconstruct extends CompositeAITask {
+
+	@Inject private transient UserInterface userInterface;
+
 	private static final long serialVersionUID = -5586910244188482156L;
 	private Construction construction;
 	private int connectionId;
@@ -75,7 +80,7 @@ public class ConstructDeconstruct extends CompositeAITask {
 		protected void internalExecute(final float delta) {
 			if (getHost().getInteractionBox().isWithinBox(construction.position)) {
 				if (isClient()) {
-					UserInterface.addLayeredComponentUnique(
+					userInterface.addLayeredComponentUnique(
 						new ConstructionWindow(
 							getHost().getId().getSimpleName() + " interacting with " + construction.getTitle(),
 							true,

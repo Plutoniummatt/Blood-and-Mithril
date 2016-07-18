@@ -45,17 +45,18 @@ public class FactionsWindow extends Window {
 	private final ScrollableListingPanel<String, Object> factionsPanel;
 
 	@Inject private FactionControlService factionControlService;
+	@Inject private UserInterface userInterface;
 
 	/**
 	 * Constructor
 	 */
-	public FactionsWindow(int length, int height, boolean active, int minLength, int minHeight) {
+	public FactionsWindow(final int length, final int height, final boolean active, final int minLength, final int minHeight) {
 		super(length, height, "Factions", active, minLength, minHeight, true, false, true);
 
 		factionsPanel = new ScrollableListingPanel<String, Object>(this, Comparator.<String>naturalOrder(), false, 35, null) {
 
 			@Override
-			protected String getExtraString(Entry<ListingMenuItem<String>, Object> item) {
+			protected String getExtraString(final Entry<ListingMenuItem<String>, Object> item) {
 				return "";
 			}
 
@@ -65,7 +66,7 @@ public class FactionsWindow extends Window {
 			}
 
 			@Override
-			public boolean keyPressed(int keyCode) {
+			public boolean keyPressed(final int keyCode) {
 				return false;
 			}
 
@@ -82,7 +83,7 @@ public class FactionsWindow extends Window {
 
 
 	@Override
-	protected void internalWindowRender(Graphics graphics) {
+	protected void internalWindowRender(final Graphics graphics) {
 		factionsPanel.height = height;
 		factionsPanel.width = width;
 		factionsPanel.x = x;
@@ -93,7 +94,7 @@ public class FactionsWindow extends Window {
 
 
 	@Override
-	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
+	protected void internalLeftClick(final List<ContextMenu> copy, final Deque<Component> windowsCopy) {
 		factionsPanel.leftClick(copy, windowsCopy);
 	}
 
@@ -104,7 +105,7 @@ public class FactionsWindow extends Window {
 
 
 	@Override
-	public boolean scrolled(int amount) {
+	public boolean scrolled(final int amount) {
 		return factionsPanel.scrolled(amount);
 	}
 
@@ -122,28 +123,28 @@ public class FactionsWindow extends Window {
 	}
 
 
-	private HashMap<ListingMenuItem<String>, Object> buildMap(boolean controlled) {
-		HashMap<ListingMenuItem<String>, Object> map = Maps.newHashMap();
+	private HashMap<ListingMenuItem<String>, Object> buildMap(final boolean controlled) {
+		final HashMap<ListingMenuItem<String>, Object> map = Maps.newHashMap();
 
 		Collection<Faction> newList = Lists.newLinkedList(Domain.getFactions().values());
 		if (controlled) {
 			newList = Collections2.filter(newList, new Predicate<Faction>() {
 				@Override
-				public boolean apply(Faction input) {
+				public boolean apply(final Faction input) {
 					return factionControlService.isUnderControl(input.factionId);
 				}
 			});
 		} else {
 			newList = Collections2.filter(newList, new Predicate<Faction>() {
 				@Override
-				public boolean apply(Faction input) {
+				public boolean apply(final Faction input) {
 					return !factionControlService.isUnderControl(input.factionId);
 				}
 			});
 		}
 
 		for (final Faction faction : newList) {
-			ContextMenu.MenuItem control = new ContextMenu.MenuItem(
+			final ContextMenu.MenuItem control = new ContextMenu.MenuItem(
 				"Control",
 				() -> {
 					if (StringUtils.isEmpty(faction.controlPassword)) {
@@ -153,7 +154,7 @@ public class FactionsWindow extends Window {
 						}
 						refreshWindow();
 					} else {
-						UserInterface.addLayeredComponent(
+						userInterface.addLayeredComponent(
 							new TextInputWindow(
 								250,
 								100,
@@ -182,10 +183,10 @@ public class FactionsWindow extends Window {
 				null
 			);
 
-			ContextMenu.MenuItem showUnits = new ContextMenu.MenuItem(
+			final ContextMenu.MenuItem showUnits = new ContextMenu.MenuItem(
 				"Show Units",
 				() -> {
-					UserInterface.addLayeredComponentUnique(
+					userInterface.addLayeredComponentUnique(
 						new UnitsWindow(
 							faction.factionId
 						)
@@ -197,10 +198,10 @@ public class FactionsWindow extends Window {
 				null
 			);
 
-			ContextMenu.MenuItem showInfo = new ContextMenu.MenuItem(
+			final ContextMenu.MenuItem showInfo = new ContextMenu.MenuItem(
 				"Show info",
 				() -> {
-					UserInterface.addLayeredComponentUnique(
+					userInterface.addLayeredComponentUnique(
 						new MessageWindow(
 							faction.description,
 							Color.ORANGE,
@@ -219,10 +220,10 @@ public class FactionsWindow extends Window {
 				null
 			);
 
-			ContextMenu.MenuItem changePassword = new ContextMenu.MenuItem(
+			final ContextMenu.MenuItem changePassword = new ContextMenu.MenuItem(
 				"Change control password",
 				() -> {
-					UserInterface.addLayeredComponent(
+					userInterface.addLayeredComponent(
 						new TextInputWindow(
 							250,
 							100,
@@ -265,7 +266,7 @@ public class FactionsWindow extends Window {
 				menu.addMenuItem(changePassword);
 			}
 
-			ListingMenuItem<String> menuItem = new ListingMenuItem<String>(
+			final ListingMenuItem<String> menuItem = new ListingMenuItem<String>(
 				faction.name,
 				new Button(
 					faction.name,

@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.UpdatedBy;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.graphics.WorldRenderer.Depth;
@@ -38,31 +39,31 @@ public class DryGrass extends PlantProp {
 		}
 	}
 
-	public DryGrass(float x, float y) {
+	public DryGrass(final float x, final float y) {
 		super(x, y, 76, 12, Depth.FRONT, new NotEmptyTile(), false);
 	}
 
 
 	@Override
-	public void render(Graphics graphics) {
+	public void render(final Graphics graphics) {
 		graphics.getSpriteBatch().draw(textureRegion, position.x - width / 2, position.y - 5);
 	}
 
 
 	@Override
-	public void synchronizeProp(Prop other) {
+	public void synchronizeProp(final Prop other) {
 	}
 
 
 	@Override
 	public ContextMenu getContextMenu() {
-		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+		final ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
 
 		menu.addMenuItem(
 			new MenuItem(
 				"Show info",
 				() -> {
-					UserInterface.addLayeredComponent(
+					Wiring.injector().getInstance(UserInterface.class).addLayeredComponent(
 						new MessageWindow(
 							"A patch of dry grass.",
 							Color.ORANGE,

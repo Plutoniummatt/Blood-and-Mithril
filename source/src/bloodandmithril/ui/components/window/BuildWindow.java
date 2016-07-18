@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 import com.badlogic.gdx.graphics.Color;
 import com.google.common.base.Function;
 import com.google.common.collect.Maps;
+import com.google.inject.Inject;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
@@ -29,15 +30,17 @@ import bloodandmithril.util.cursorboundtask.PlaceCursorBoundTask;
 @Copyright("Matthew Peck 2014")
 public class BuildWindow extends ScrollableListingWindow<Construction, String> {
 
+	@Inject private UserInterface userInterface;
+
 	private final Individual builder;
 
 	/**
 	 * Constructor
 	 */
 	public BuildWindow(
-			Individual builder,
-			Function<Construction, String> displayFunction,
-			Comparator<Construction> sortingOrder) {
+			final Individual builder,
+			final Function<Construction, String> displayFunction,
+			final Comparator<Construction> sortingOrder) {
 		super(
 			300,
 			200,
@@ -56,11 +59,11 @@ public class BuildWindow extends ScrollableListingWindow<Construction, String> {
 	}
 
 
-	private static Map<Construction, String> buildMap(Individual builder) {
-		Map<Construction, String> listing = Maps.newHashMap();
+	private static Map<Construction, String> buildMap(final Individual builder) {
+		final Map<Construction, String> listing = Maps.newHashMap();
 
-		for (Construction construction : builder.getConstructables()) {
-			float time = construction.constructionRate == 0f ? 0f : 1f/construction.constructionRate;
+		for (final Construction construction : builder.getConstructables()) {
+			final float time = construction.constructionRate == 0f ? 0f : 1f/construction.constructionRate;
 			listing.put(construction, String.format("%.1f", time) + "s");
 		}
 		return listing;
@@ -79,7 +82,7 @@ public class BuildWindow extends ScrollableListingWindow<Construction, String> {
 
 
 	@Override
-	protected ContextMenu buttonContextMenu(Entry<Construction, String> tEntry) {
+	protected ContextMenu buttonContextMenu(final Entry<Construction, String> tEntry) {
 		return new ContextMenu(
 			getMouseScreenX(),
 			getMouseScreenY(),
@@ -87,7 +90,7 @@ public class BuildWindow extends ScrollableListingWindow<Construction, String> {
 			new ContextMenu.MenuItem(
 				"Show info",
 				() -> {
-					UserInterface.addLayeredComponentUnique(
+					userInterface.addLayeredComponentUnique(
 						tEntry.getKey().getInfoWindow()
 					);
 				},
@@ -99,7 +102,7 @@ public class BuildWindow extends ScrollableListingWindow<Construction, String> {
 			new ContextMenu.MenuItem(
 				"Construct",
 				() -> {
-					Construction toConstruct = tEntry.getKey();
+					final Construction toConstruct = tEntry.getKey();
 					toConstruct.setWorldId(builder.getWorldId());
 					Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).setCursorBoundTask(
 						new PlaceCursorBoundTask(toConstruct, null, null)
@@ -116,7 +119,7 @@ public class BuildWindow extends ScrollableListingWindow<Construction, String> {
 
 
 	@Override
-	protected void internalWindowRender(Graphics graphics) {
+	protected void internalWindowRender(final Graphics graphics) {
 		if (!builder.isAlive()) {
 			setClosing(true);
 		}

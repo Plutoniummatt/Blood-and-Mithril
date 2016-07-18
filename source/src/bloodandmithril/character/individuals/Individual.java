@@ -375,7 +375,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 
 
 	/** Renders any decorations for UI */
-	public final void renderUIDecorations(final Graphics graphics, UserInterface userInterface) {
+	public final void renderUIDecorations(final Graphics graphics, final UserInterface userInterface) {
 		final SpriteBatch batch = graphics.getSpriteBatch();
 
 		if (Wiring.injector().getInstance(GameClientStateTracker.class).isIndividualSelected(this)) {
@@ -506,7 +506,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 		clearCommands();
 		selectedByClient.clear();
 		internalKill();
-		UserInterface.refreshRefreshableWindows();
+		Wiring.injector().getInstance(UserInterface.class).refreshRefreshableWindows();
 	}
 
 	protected abstract void internalKill();
@@ -946,6 +946,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 
 
 	public final void attackRanged(final Vector2 target) {
+		final UserInterface userInterface = Wiring.injector().getInstance(UserInterface.class);
 		final RangedWeapon rangedWeapon = (RangedWeapon) getEquipped().keySet().stream().filter(item -> {return item instanceof RangedWeapon;}).findAny().get();
 		if (rangedWeapon != null) {
 			final Vector2 emissionPosition = getEmissionPosition();
@@ -963,7 +964,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 				if (ammo.sameAs(item)) {
 					hasAmmo = true;
 					takeItem(item);
-					UserInterface.refreshRefreshableWindows();
+					userInterface.refreshRefreshableWindows();
 				}
 			}
 
@@ -988,12 +989,12 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 
 				if (has(ammo) == 0) {
 					rangedWeapon.setAmmo(null);
-					UserInterface.refreshRefreshableWindows();
+					userInterface.refreshRefreshableWindows();
 				}
 			} else {
 				addFloatingText("Out of ammo", Color.ORANGE);
 				rangedWeapon.setAmmo(null);
-				UserInterface.refreshRefreshableWindows();
+				userInterface.refreshRefreshableWindows();
 			}
 		}
 	}

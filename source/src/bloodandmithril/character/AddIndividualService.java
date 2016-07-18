@@ -1,5 +1,6 @@
 package bloodandmithril.character;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import bloodandmithril.character.individuals.Individual;
@@ -19,6 +20,9 @@ import bloodandmithril.world.Domain;
 @Copyright("Matthew Peck 2016")
 public class AddIndividualService {
 
+	@Inject
+	private UserInterface userInterface;
+
 	/**
 	 * Adds an individual to a world
 	 */
@@ -28,7 +32,7 @@ public class AddIndividualService {
 		Domain.addIndividual(indi);
 		Domain.getWorld(worldId).getIndividuals().add(indi.getId().getId());
 		if (ClientServerInterface.isClient()) {
-			for (final Component component : UserInterface.getLayeredComponents()) {
+			for (final Component component : userInterface.getLayeredComponents()) {
 				if (component instanceof UnitsWindow) {
 					((UnitsWindow) component).refresh();
 				}

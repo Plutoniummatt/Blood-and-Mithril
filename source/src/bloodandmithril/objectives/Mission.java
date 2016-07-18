@@ -32,10 +32,10 @@ public abstract class Mission implements Objective {
 	/**
 	 * Constructor
 	 */
-	protected Mission(int worldId) {
+	protected Mission(final int worldId) {
 		this.worldId = worldId;
-		
-		for (Objective o : getNewObjectives()) {
+
+		for (final Objective o : getNewObjectives()) {
 			objectives.put(o, false);
 		}
 
@@ -46,7 +46,7 @@ public abstract class Mission implements Objective {
 
 
 	public void update() {
-		for (Entry<Objective, Boolean> objective : Lists.newLinkedList(objectives.entrySet())) {
+		for (final Entry<Objective, Boolean> objective : Lists.newLinkedList(objectives.entrySet())) {
 			if (objective != null && objective.getKey().getStatus() == ObjectiveStatus.COMPLETE && !objective.getValue()) {
 				objective.getKey().uponCompletion();
 				objective.setValue(true);
@@ -54,22 +54,22 @@ public abstract class Mission implements Objective {
 				Wiring.injector().getInstance(Threading.class).clientProcessingThreadPool.submit(() -> {
 					for (int i = 0; i < 5; i++) {
 						UserInterface.addUIFloatingText(
-							"Objective compelete", 
-							Color.ORANGE, 
+							"Objective compelete",
+							Color.ORANGE,
 							new Vector2(220, 60)
 						);
 						try {
 							Thread.sleep(1000);
-						} catch (Exception e) {}
+						} catch (final Exception e) {}
 					}
 				});
-				UserInterface.refreshRefreshableWindows(MissionsWindow.class);
+				Wiring.injector().getInstance(UserInterface.class).refreshRefreshableWindows(MissionsWindow.class);
 			}
 		}
 	}
 
 
-	public void addObjective(Objective o) {
+	public void addObjective(final Objective o) {
 		objectives.put(o, false);
 	}
 
@@ -81,13 +81,13 @@ public abstract class Mission implements Objective {
 
 	@Override
 	public ObjectiveStatus getStatus() {
-		for (Objective o : objectives.keySet()) {
+		for (final Objective o : objectives.keySet()) {
 			if (o.getStatus() == ObjectiveStatus.FAILED) {
 				return ObjectiveStatus.FAILED;
 			}
 		}
 
-		for (Objective o : objectives.keySet()) {
+		for (final Objective o : objectives.keySet()) {
 			if (o.getStatus() == ObjectiveStatus.ACTIVE) {
 				return ObjectiveStatus.ACTIVE;
 			}
@@ -99,15 +99,15 @@ public abstract class Mission implements Objective {
 
 	@Override
 	public void renderHints() {
-		for (Objective objective : getObjectives()) {
+		for (final Objective objective : getObjectives()) {
 			objective.renderHints();
 		}
 	}
 
 
 	@Override
-	public void listen(Event event) {
-		for (Objective objective : getObjectives()) {
+	public void listen(final Event event) {
+		for (final Objective objective : getObjectives()) {
 			objective.listen(event);
 		}
 		update();

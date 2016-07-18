@@ -84,7 +84,7 @@ public class MedievalWallTorchProp extends Furniture implements Lightable {
 			new MenuItem(
 				"Show info",
 				() -> {
-					UserInterface.addLayeredComponent(
+					Wiring.injector().getInstance(UserInterface.class).addLayeredComponent(
 						new MessageWindow(
 							description(),
 							Color.ORANGE,
@@ -199,12 +199,12 @@ public class MedievalWallTorchProp extends Furniture implements Lightable {
 	}
 
 
-	public void setBurnDurationRemaining(float burnDurationRemaining) {
+	public void setBurnDurationRemaining(final float burnDurationRemaining) {
 		this.burnDurationRemaining = burnDurationRemaining;
 	}
 
 
-	public void setLit(boolean lit) {
+	public void setLit(final boolean lit) {
 		this.lit = lit;
 	}
 }

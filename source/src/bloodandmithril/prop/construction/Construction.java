@@ -22,7 +22,7 @@ import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
 import bloodandmithril.item.items.container.ContainerImpl;
 import bloodandmithril.networking.ClientServerInterface;
-import bloodandmithril.networking.requests.RefreshWindows.RefreshWindowsResponse;
+import bloodandmithril.networking.requests.RefreshWindowsResponse;
 import bloodandmithril.networking.requests.SynchronizeIndividual;
 import bloodandmithril.networking.requests.SynchronizePropRequest;
 import bloodandmithril.prop.Prop;
@@ -109,7 +109,7 @@ public abstract class Construction extends Prop implements Container {
 			}
 
 			if (ClientServerInterface.isClient()) {
-				UserInterface.refreshRefreshableWindows();
+				Wiring.injector().getInstance(UserInterface.class).refreshRefreshableWindows();
 			} else {
 				ClientServerInterface.sendNotification(-1, true, true,
 					new SynchronizePropRequest.SynchronizePropResponse(this),
@@ -322,7 +322,7 @@ public abstract class Construction extends Prop implements Container {
 		} else {
 			materialContainer.giveItem(item);
 			if (ClientServerInterface.isClient()) {
-				UserInterface.getLayeredComponents().stream().filter((component) -> {
+				Wiring.injector().getInstance(UserInterface.class).getLayeredComponents().stream().filter((component) -> {
 					return component instanceof RequiredMaterialsWindow;
 				}).forEach((component) -> {
 					((RequiredMaterialsWindow) component).refresh();

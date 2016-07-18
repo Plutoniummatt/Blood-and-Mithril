@@ -5,7 +5,6 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.networking.Request;
 import bloodandmithril.networking.Response.Responses;
-import bloodandmithril.networking.requests.RefreshWindows.RefreshWindowsResponse;
 import bloodandmithril.world.Domain;
 
 /**
@@ -23,7 +22,7 @@ public class EquipOrUnequipItem implements Request {
 	/**
 	 * Constructor
 	 */
-	public EquipOrUnequipItem(boolean equip, Equipable equipable, int individualId) {
+	public EquipOrUnequipItem(final boolean equip, final Equipable equipable, final int individualId) {
 		this.equip = equip;
 		this.equipable = equipable;
 		this.individualId = individualId;
@@ -32,7 +31,7 @@ public class EquipOrUnequipItem implements Request {
 
 	@Override
 	public Responses respond() {
-		Individual individual = Domain.getIndividual(individualId);
+		final Individual individual = Domain.getIndividual(individualId);
 
 		if (equip) {
 			individual.equip(equipable);
@@ -40,7 +39,7 @@ public class EquipOrUnequipItem implements Request {
 			individual.unequip(equipable);
 		}
 
-		Responses responses = new Responses(true);
+		final Responses responses = new Responses(true);
 		responses.add(new SynchronizeIndividual.SynchronizeIndividualResponse(individual.getId().getId(), System.currentTimeMillis()));
 		responses.add(new RefreshWindowsResponse());
 		return responses;

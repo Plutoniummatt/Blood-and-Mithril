@@ -404,7 +404,7 @@ public abstract class Item implements Serializable, Affixed, MouseOverable, Visi
 			new MenuItem(
 				"Show info",
 				() -> {
-					UserInterface.addLayeredComponentUnique(
+					Wiring.injector().getInstance(UserInterface.class).addLayeredComponentUnique(
 						getInfoWindow()
 					);
 				},

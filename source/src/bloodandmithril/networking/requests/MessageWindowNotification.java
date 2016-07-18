@@ -1,6 +1,7 @@
 package bloodandmithril.networking.requests;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.networking.Response;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.util.SerializableFunction;
@@ -21,7 +22,7 @@ public class MessageWindowNotification implements Response {
 	 * Constructor
 	 * @param function
 	 */
-	public MessageWindowNotification(int client, String title, String message, SerializableFunction<Boolean> function) {
+	public MessageWindowNotification(final int client, final String title, final String message, final SerializableFunction<Boolean> function) {
 		this.client = client;
 		this.title = title;
 		this.message = message;
@@ -32,7 +33,7 @@ public class MessageWindowNotification implements Response {
 	@Override
 	public void acknowledge() {
 		if (function.call()) {
-			UserInterface.addGlobalMessage(title, message);
+			Wiring.injector().getInstance(UserInterface.class).addGlobalMessage(title, message);
 		}
 	}
 

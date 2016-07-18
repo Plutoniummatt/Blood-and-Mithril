@@ -26,9 +26,9 @@ import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 @Copyright("Matthew Peck 2016")
 public class MineTileService {
 
-	@Inject
-	private transient TopographyTaskExecutor topographyTaskExecutor;
-	
+	@Inject	private transient TopographyTaskExecutor topographyTaskExecutor;
+	@Inject	private transient UserInterface userInterface;
+
 	/**
 	 * Mines the tile
 	 */
@@ -67,7 +67,7 @@ public class MineTileService {
 									Domain.getWorld(miner.getWorldId()).items().addItem(mined, tileCoordinate.cpy(), new Vector2());
 								}
 
-								UserInterface.refreshRefreshableWindows();
+								userInterface.refreshRefreshableWindows();
 							}
 						} else if (ClientServerInterface.isServer()) {
 							if (topography.deleteTile(tileCoordinate.x, tileCoordinate.y, true, false) != null) {

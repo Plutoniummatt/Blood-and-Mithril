@@ -29,11 +29,12 @@ import bloodandmithril.ui.UserInterface;
 public class TradeService {
 
 	@Inject private FactionControlService factionControlService;
+	@Inject private UserInterface userInterface;
 
 	/**
 	 * Evaluates a trade proposal
 	 */
-	public boolean evaluate(Individual proposer, HashMap<Item, Integer> tradeThis, Individual proposee, HashMap<Item, Integer> forThis) {
+	public boolean evaluate(final Individual proposer, final HashMap<Item, Integer> tradeThis, final Individual proposee, final HashMap<Item, Integer> forThis) {
 
 		if (factionControlService.isControllable(proposee) || !proposee.isAlive()) {
 			return true;
@@ -41,11 +42,11 @@ public class TradeService {
 
 		float proposerActualValue = 0, proposeeActualValue = 0;
 
-		for (Entry<Item, Integer> entry : tradeThis.entrySet()) {
+		for (final Entry<Item, Integer> entry : tradeThis.entrySet()) {
 			proposerActualValue = proposerActualValue + entry.getValue() * entry.getKey().getValue();
 		}
 
-		for (Entry<Item, Integer> entry : forThis.entrySet()) {
+		for (final Entry<Item, Integer> entry : forThis.entrySet()) {
 			proposeeActualValue = proposeeActualValue + entry.getValue() * entry.getKey().getValue();
 		}
 
@@ -60,9 +61,9 @@ public class TradeService {
 		// ---------
 		// The minimum trade skill required for the trade to work, would be the lowest skill level that makes the effective
 		// value greater or equal to 400g, in this case, 80.
-		float radioToMax = Proficiency.getRatioToMax(proposer.getProficiencies().getProficiency(Trading.class).getLevel());
-		float proposerEffectiveValue = (radioToMax  + 1f) /2f * proposerActualValue;
-		float proposeeEffectiveValue = proposeeActualValue;
+		final float radioToMax = Proficiency.getRatioToMax(proposer.getProficiencies().getProficiency(Trading.class).getLevel());
+		final float proposerEffectiveValue = (radioToMax  + 1f) /2f * proposerActualValue;
+		final float proposeeEffectiveValue = proposeeActualValue;
 
 		if (proposerEffectiveValue >= proposeeEffectiveValue) {
 			return true;
@@ -75,32 +76,32 @@ public class TradeService {
 	/**
 	 * The trade proposal was accepted by the proposee, this method transfers the {@link Item}s and finalizes the trade
 	 */
-	public synchronized void transferItems(HashMap<Item, Integer> proposerItemsToTrade, Container proposer, HashMap<Item, Integer> proposeeItemsToTrade, Container proposee) {
+	public synchronized void transferItems(final HashMap<Item, Integer> proposerItemsToTrade, final Container proposer, final HashMap<Item, Integer> proposeeItemsToTrade, final Container proposee) {
 
-		float proposerItemsToTradeMass = (float) proposerItemsToTrade.entrySet().stream().mapToDouble(entry -> {
+		final float proposerItemsToTradeMass = (float) proposerItemsToTrade.entrySet().stream().mapToDouble(entry -> {
 			return entry.getKey().getMass() * entry.getValue();
 		}).sum();
-		float proposeeItemsToTradeMass = (float) proposeeItemsToTrade.entrySet().stream().mapToDouble(entry -> {
+		final float proposeeItemsToTradeMass = (float) proposeeItemsToTrade.entrySet().stream().mapToDouble(entry -> {
 			return entry.getKey().getMass() * entry.getValue();
 		}).sum();
-		int proposerItemsToTradeVolume = proposerItemsToTrade.entrySet().stream().mapToInt(entry -> {
+		final int proposerItemsToTradeVolume = proposerItemsToTrade.entrySet().stream().mapToInt(entry -> {
 			return entry.getKey().getVolume() * entry.getValue();
 		}).sum();
-		int proposeeItemsToTradeVolume = proposeeItemsToTrade.entrySet().stream().mapToInt(entry -> {
+		final int proposeeItemsToTradeVolume = proposeeItemsToTrade.entrySet().stream().mapToInt(entry -> {
 			return entry.getKey().getVolume() * entry.getValue();
 		}).sum();
 
-		boolean proposerOverWeightLimitPostTrade = proposer.getCurrentLoad() - proposerItemsToTradeMass + proposeeItemsToTradeMass > proposer.getMaxCapacity() && proposer.getWeightLimited();
-		boolean proposeeOverWeightLimitPostTrade = proposee.getCurrentLoad() + proposerItemsToTradeMass - proposeeItemsToTradeMass > proposee.getMaxCapacity() && proposee.getWeightLimited();
+		final boolean proposerOverWeightLimitPostTrade = proposer.getCurrentLoad() - proposerItemsToTradeMass + proposeeItemsToTradeMass > proposer.getMaxCapacity() && proposer.getWeightLimited();
+		final boolean proposeeOverWeightLimitPostTrade = proposee.getCurrentLoad() + proposerItemsToTradeMass - proposeeItemsToTradeMass > proposee.getMaxCapacity() && proposee.getWeightLimited();
 
-		boolean proposerWeightIncreasing = proposeeItemsToTradeMass - proposerItemsToTradeMass > 0;
-		boolean proposeeWeightIncreasing = proposerItemsToTradeMass - proposeeItemsToTradeMass > 0;
+		final boolean proposerWeightIncreasing = proposeeItemsToTradeMass - proposerItemsToTradeMass > 0;
+		final boolean proposeeWeightIncreasing = proposerItemsToTradeMass - proposeeItemsToTradeMass > 0;
 
-		boolean proposerOverVolumeLimitPostTrade = proposer.getCurrentVolume() - proposerItemsToTradeVolume + proposeeItemsToTradeVolume > proposer.getMaxVolume();
-		boolean proposeeOverVolumeLimitPostTrade = proposee.getCurrentVolume() + proposerItemsToTradeVolume - proposeeItemsToTradeVolume > proposee.getMaxVolume();
+		final boolean proposerOverVolumeLimitPostTrade = proposer.getCurrentVolume() - proposerItemsToTradeVolume + proposeeItemsToTradeVolume > proposer.getMaxVolume();
+		final boolean proposeeOverVolumeLimitPostTrade = proposee.getCurrentVolume() + proposerItemsToTradeVolume - proposeeItemsToTradeVolume > proposee.getMaxVolume();
 
-		boolean proposerVolumeIncreasing = proposeeItemsToTradeVolume - proposerItemsToTradeVolume > 0;
-		boolean proposeeVolumeIncreasing = proposerItemsToTradeVolume - proposeeItemsToTradeVolume > 0;
+		final boolean proposerVolumeIncreasing = proposeeItemsToTradeVolume - proposerItemsToTradeVolume > 0;
+		final boolean proposeeVolumeIncreasing = proposerItemsToTradeVolume - proposeeItemsToTradeVolume > 0;
 
 		if (
 			proposerOverWeightLimitPostTrade && proposerWeightIncreasing ||
@@ -108,19 +109,19 @@ public class TradeService {
 			proposerOverVolumeLimitPostTrade && proposerVolumeIncreasing ||
 			proposeeOverVolumeLimitPostTrade && proposeeVolumeIncreasing
 		) {
-			UserInterface.addGlobalMessage("Can not trade", "One or more parties do not have enough inventory space.", new IndividualSelected(((Individual) proposer).getId().getId()));
+			userInterface.addGlobalMessage("Can not trade", "One or more parties do not have enough inventory space.", new IndividualSelected(((Individual) proposer).getId().getId()));
 			return;
 		}
 
 		if (ClientServerInterface.isServer()) {
-			for (Entry<Item, Integer> proposerToTradeItem : proposerItemsToTrade.entrySet()) {
+			for (final Entry<Item, Integer> proposerToTradeItem : proposerItemsToTrade.entrySet()) {
 				for (int i = proposerToTradeItem.getValue(); i > 0; i--) {
 					if (proposer.takeItem(proposerToTradeItem.getKey()) == 1) {
 						proposee.giveItem(proposerToTradeItem.getKey());
 					}
 				}
 			}
-			for (Entry<Item, Integer> proposeeToTradeItem : proposeeItemsToTrade.entrySet()) {
+			for (final Entry<Item, Integer> proposeeToTradeItem : proposeeItemsToTrade.entrySet()) {
 				for (int i = proposeeToTradeItem.getValue(); i > 0; i--) {
 					if (proposee.takeItem(proposeeToTradeItem.getKey()) == 1) {
 						proposer.giveItem(proposeeToTradeItem.getKey());

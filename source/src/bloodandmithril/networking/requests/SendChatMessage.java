@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.networking.Request;
 import bloodandmithril.networking.Response;
 import bloodandmithril.networking.Response.Responses;
@@ -25,14 +26,14 @@ public class SendChatMessage implements Request {
 	/**
 	 * Constructor
 	 */
-	public SendChatMessage(Message message) {
+	public SendChatMessage(final Message message) {
 		this.message = message;
 	}
 
 
 	@Override
 	public Responses respond() {
-		Responses responses = new Responses(false);
+		final Responses responses = new Responses(false);
 		responses.add(new SendChatMessageResponse(message));
 		return responses;
 	}
@@ -57,7 +58,7 @@ public class SendChatMessage implements Request {
 		/**
 		 * Constructor
 		 */
-		public SendChatMessageResponse(Message message) {
+		public SendChatMessageResponse(final Message message) {
 			this.message = message;
 		}
 
@@ -65,7 +66,7 @@ public class SendChatMessage implements Request {
 		public void acknowledge() {
 			ChatWindow.addMessage(message);
 
-			if (!tryFind(UserInterface.getLayeredComponents(), component -> {
+			if (!tryFind(Wiring.injector().getInstance(UserInterface.class).getLayeredComponents(), component -> {
 				return component instanceof ChatWindow;
 			}).isPresent()) {
 				UserInterface.addUIFloatingText("New Message!", Color.ORANGE, new Vector2(83, 50));
@@ -89,7 +90,7 @@ public class SendChatMessage implements Request {
 		/**
 		 * Constructor
 		 */
-		public Message(String sender, String message) {
+		public Message(final String sender, final String message) {
 			this.sender = sender;
 			this.message = message;
 		}

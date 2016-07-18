@@ -5,7 +5,6 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.container.LiquidContainerItem;
 import bloodandmithril.networking.Request;
 import bloodandmithril.networking.Response.Responses;
-import bloodandmithril.networking.requests.RefreshWindows.RefreshWindowsResponse;
 import bloodandmithril.world.Domain;
 
 /**
@@ -23,7 +22,7 @@ public class DiscardLiquid implements Request {
 	/**
 	 * Constructor
 	 */
-	public DiscardLiquid(int individualId, LiquidContainerItem bottleToDiscardFrom, float amount) {
+	public DiscardLiquid(final int individualId, final LiquidContainerItem bottleToDiscardFrom, final float amount) {
 		this.individualId = individualId;
 		this.bottleToDiscardFrom = bottleToDiscardFrom;
 		this.amount = amount;
@@ -33,14 +32,14 @@ public class DiscardLiquid implements Request {
 	@Override
 	public Responses respond() {
 
-		Individual individual = Domain.getIndividual(individualId);
+		final Individual individual = Domain.getIndividual(individualId);
 		if (individual.takeItem(bottleToDiscardFrom) == 1) {
-			LiquidContainerItem newBottle = bottleToDiscardFrom.clone();
+			final LiquidContainerItem newBottle = bottleToDiscardFrom.clone();
 			newBottle.subtract(amount);
 			individual.giveItem(newBottle);
 		}
 
-		Responses responses = new Responses(true);
+		final Responses responses = new Responses(true);
 		responses.add(new SynchronizeIndividual.SynchronizeIndividualResponse(individual.getId().getId(), System.currentTimeMillis()));
 		responses.add(new RefreshWindowsResponse());
 		return responses;

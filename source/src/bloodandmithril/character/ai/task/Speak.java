@@ -36,6 +36,9 @@ import bloodandmithril.world.Domain;
 @Name(name = "Speak")
 public class Speak extends AITask implements RoutineTask {
 	private static final long serialVersionUID = -5210580892146755047L;
+
+	@Inject private transient UserInterface userInterface;
+
 	private String text;
 	private long duration;
 	private boolean spoken = false;
@@ -160,7 +163,7 @@ public class Speak extends AITask implements RoutineTask {
 		return new ContextMenu(getMouseScreenX(), getMouseScreenY(), true, new ContextMenu.MenuItem(
 			"Set text",
 			() -> {
-				UserInterface.addLayeredComponent(
+				userInterface.addLayeredComponent(
 					new TextInputWindow(500, 100, "Input text", 300, 250, args -> {
 						final String text = (String) args[0];
 						routine.setAiTaskGenerator(new SpeakTaskGenerator(host, Math.max(7500, text.length() * 10), text));

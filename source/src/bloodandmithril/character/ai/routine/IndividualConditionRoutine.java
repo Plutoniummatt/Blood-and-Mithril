@@ -10,6 +10,7 @@ import java.util.List;
 
 import com.badlogic.gdx.graphics.Color;
 import com.google.common.collect.Iterables;
+import com.google.inject.Inject;
 
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.Routine;
@@ -43,6 +44,9 @@ import bloodandmithril.util.Util.Colors;
 @Copyright("Matthew Peck 2015")
 public final class IndividualConditionRoutine extends Routine {
 	private static final long serialVersionUID = 6831994593107089893L;
+
+	@Inject
+	private transient UserInterface userInterface;
 
 	private IndividualConditionTriggerFunction executionCondition;
 
@@ -234,7 +238,7 @@ public final class IndividualConditionRoutine extends Routine {
 						Color.GRAY,
 						() -> { return new ContextMenu(0, 0, true,
 							new MenuItem("Less than %", () -> {
-								UserInterface.addLayeredComponent(
+								userInterface.addLayeredComponent(
 									new TextInputWindow(300, 100, "Input %", 200, 100, args -> {
 										try {
 											final float parseFloat = Float.parseFloat((String)args[0]);
@@ -243,13 +247,13 @@ public final class IndividualConditionRoutine extends Routine {
 											}
 											IndividualConditionRoutine.this.setTriggerFunction(new IndividualHealthTriggerFunction(false, parseFloat));
 										} catch (final Exception e) {
-											UserInterface.addClientMessage("Error", "Enter valid value (between 0 and 100)");
+											userInterface.addClientMessage("Error", "Enter valid value (between 0 and 100)");
 										}
 									}, "Confirm", true, "")
 								);
 							}, Color.ORANGE, Color.GREEN, Color.GRAY, null),
 							new MenuItem("Greater than %", () -> {
-								UserInterface.addLayeredComponent(
+								userInterface.addLayeredComponent(
 									new TextInputWindow(300, 100, "Input %", 200, 100, args -> {
 										try {
 											final float parseFloat = Float.parseFloat((String)args[0]);
@@ -258,7 +262,7 @@ public final class IndividualConditionRoutine extends Routine {
 											}
 											IndividualConditionRoutine.this.setTriggerFunction(new IndividualHealthTriggerFunction(true, parseFloat));
 										} catch (final Exception e) {
-											UserInterface.addClientMessage("Error", "Enter valid value (between 0 and 100)");
+											userInterface.addClientMessage("Error", "Enter valid value (between 0 and 100)");
 										}
 									}, "Confirm", true, "")
 								);
