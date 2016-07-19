@@ -68,6 +68,7 @@ import bloodandmithril.world.topography.Topography.NoTileFoundException;
 @Name(name = "Take item")
 public class TakeItem extends CompositeAITask implements RoutineTask {
 
+	@Inject
 	private transient UserInterface userInterface;
 
 	private static final long serialVersionUID = 1L;
