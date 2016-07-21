@@ -1,16 +1,18 @@
 package bloodandmithril.item.items.mineral.earth;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.world.topography.tile.tiles.sedimentary.SandTile;
-
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
  * Sand, obtained as a result of mining {@link SandTile}
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2016")
 public class SandItem extends EarthItem {
 	private static final long serialVersionUID = -7756119539773387265L;
 
@@ -25,7 +27,7 @@ public class SandItem extends EarthItem {
 
 
 	@Override
-	protected String internalGetSingular(boolean firstCap) {
+	protected String internalGetSingular(final boolean firstCap) {
 		if (firstCap) {
 			return "Sand";
 		}
@@ -34,19 +36,19 @@ public class SandItem extends EarthItem {
 
 
 	@Override
-	protected String internalGetPlural(boolean firstCap) {
+	protected String internalGetPlural(final boolean firstCap) {
 		if (firstCap) {
 			return "Sand";
 		}
 		return "sand";
 	}
 
-	
+
 	@Override
 	public boolean throwable() {
 		return false;
 	}
-	
+
 
 	@Override
 	public String getDescription() {
@@ -55,7 +57,7 @@ public class SandItem extends EarthItem {
 
 
 	@Override
-	protected boolean internalSameAs(Item other) {
+	protected boolean internalSameAs(final Item other) {
 		return other instanceof SandItem;
 	}
 
@@ -76,7 +78,7 @@ public class SandItem extends EarthItem {
 	public boolean rotates() {
 		return false;
 	}
-	
+
 
 	@Override
 	public TextureRegion getIconTextureRegion() {

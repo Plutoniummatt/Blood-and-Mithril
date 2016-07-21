@@ -1,5 +1,6 @@
 package bloodandmithril.item.items.food.plant;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.prop.plant.PlantProp;
 
@@ -8,18 +9,19 @@ import bloodandmithril.prop.plant.PlantProp;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2016")
 public abstract class SeedItem extends Item {
 	private static final long serialVersionUID = -9042024316031391240L;
 
 	/**
 	 * Constructor
 	 */
-	protected SeedItem(float mass, long value) {
+	protected SeedItem(final float mass, final long value) {
 		super(mass, 0, false, value);
 	}
 
 	@Override
-	protected boolean internalSameAs(Item other) {
+	protected boolean internalSameAs(final Item other) {
 		return other.getClass().equals(getClass());
 	}
 

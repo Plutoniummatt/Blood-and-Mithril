@@ -4,8 +4,10 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.util.Util;
 
+@Copyright("Matthew Peck 2016")
 public class Speech {
 
 	private static final List<String> randomIdleSpeech = Lists.newArrayList();

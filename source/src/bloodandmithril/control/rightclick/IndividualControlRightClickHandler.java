@@ -16,6 +16,7 @@ import bloodandmithril.character.ai.task.MineTile;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.control.Controls;
 import bloodandmithril.control.RightClickHandler;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.event.events.IndividualMoved;
 import bloodandmithril.networking.ClientServerInterface;
@@ -26,6 +27,7 @@ import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 
+@Copyright("Matthew Peck 2016")
 public class IndividualControlRightClickHandler implements RightClickHandler {
 
 	@Inject

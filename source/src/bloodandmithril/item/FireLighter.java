@@ -1,5 +1,6 @@
 package bloodandmithril.item;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.prop.Prop;
 
 /**
@@ -7,8 +8,9 @@ import bloodandmithril.prop.Prop;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2016")
 public interface FireLighter {
-	
+
 	public void fireLightingEffect(Prop prop);
 	public boolean canLightFire();
 }

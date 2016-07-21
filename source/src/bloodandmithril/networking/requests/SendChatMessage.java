@@ -2,6 +2,8 @@ package bloodandmithril.networking.requests;
 
 import static com.google.common.collect.Iterables.tryFind;
 
+import java.io.Serializable;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 
@@ -20,10 +22,6 @@ import bloodandmithril.ui.components.window.ChatWindow;
  */
 @Copyright("Matthew Peck 2014")
 public class SendChatMessage implements Request {
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1450498638621888780L;
 	private final Message message;
 
@@ -58,7 +56,7 @@ public class SendChatMessage implements Request {
 	public static class SendChatMessageResponse implements Response {
 
 		/**
-		 * 
+		 *
 		 */
 		private static final long serialVersionUID = 6073749771385970169L;
 		private final Message message;
@@ -92,7 +90,9 @@ public class SendChatMessage implements Request {
 	}
 
 
-	public static class Message {
+	public static class Message implements Serializable {
+		private static final long serialVersionUID = 5319531448553892168L;
+
 		public final String sender, message;
 
 		/**

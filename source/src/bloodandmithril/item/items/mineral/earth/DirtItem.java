@@ -1,18 +1,20 @@
 package bloodandmithril.item.items.mineral.earth;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
-
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
  * Just a pile of dirt
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2016")
 public class DirtItem extends EarthItem {
 	private static final long serialVersionUID = 6522655675894787083L;
-	
+
 	/** {@link TextureRegion} of the {@link DirtItem} */
 	public static TextureRegion DIRT_PILE;
 
@@ -25,13 +27,13 @@ public class DirtItem extends EarthItem {
 
 
 	@Override
-	protected String internalGetSingular(boolean firstCap) {
+	protected String internalGetSingular(final boolean firstCap) {
 		return (firstCap ? "D" : "d") + "irt";
 	}
 
 
 	@Override
-	protected String internalGetPlural(boolean firstCap) {
+	protected String internalGetPlural(final boolean firstCap) {
 		return (firstCap ? "D" : "d") + "irt";
 	}
 
@@ -40,8 +42,8 @@ public class DirtItem extends EarthItem {
 	public boolean rotates() {
 		return false;
 	}
-	
-	
+
+
 	@Override
 	public String getDescription() {
 		return "Just a pile of dirt";
@@ -49,11 +51,11 @@ public class DirtItem extends EarthItem {
 
 
 	@Override
-	protected boolean internalSameAs(Item other) {
+	protected boolean internalSameAs(final Item other) {
 		return other instanceof DirtItem;
 	}
-	
-	
+
+
 	@Override
 	public boolean throwable() {
 		return false;

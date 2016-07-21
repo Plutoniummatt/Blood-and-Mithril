@@ -1,5 +1,6 @@
 package bloodandmithril.objectives;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.event.EventListener;
 
 
@@ -8,6 +9,7 @@ import bloodandmithril.event.EventListener;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2016")
 public interface Objective extends EventListener {
 
 	/**
@@ -34,7 +36,7 @@ public interface Objective extends EventListener {
 	public enum ObjectiveStatus {
 		ACTIVE("Active"), COMPLETE("Complete"), FAILED("Failed");
 
-		private ObjectiveStatus(String description) {
+		private ObjectiveStatus(final String description) {
 			this.description = description;
 		}
 

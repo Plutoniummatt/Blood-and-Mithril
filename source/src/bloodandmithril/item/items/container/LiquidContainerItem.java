@@ -10,6 +10,7 @@ import com.google.common.collect.Maps;
 
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.liquid.Liquid;
 import bloodandmithril.prop.furniture.LiquidContainerProp.PropLiquidContainerItem;
@@ -21,6 +22,7 @@ import bloodandmithril.ui.components.window.Window;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2016")
 public abstract class LiquidContainerItem extends Item {
 	private static final long serialVersionUID = 5895479054869624858L;
 
@@ -30,19 +32,19 @@ public abstract class LiquidContainerItem extends Item {
 	/**
 	 * Constructor
 	 */
-	protected LiquidContainerItem(float mass, int volume, float maxAmount, Map<Class<? extends Liquid>, Float> containedLiquids, long value) {
+	protected LiquidContainerItem(final float mass, final int volume, final float maxAmount, final Map<Class<? extends Liquid>, Float> containedLiquids, final long value) {
 		super(mass, volume, false, value);
 		this.maxAmount = maxAmount;
 		this.containedLiquids = Maps.newHashMap(containedLiquids);
 	}
 
 
-	public void drinkFrom(float amount, Individual affected) {
-		float fraction = amount/getTotalAmount();
+	public void drinkFrom(final float amount, final Individual affected) {
+		final float fraction = amount/getTotalAmount();
 
 		try {
 			SoundService.play(SoundService.swallow, affected.getState().position, true, getVisible(affected));
-			for (Entry<Class<? extends Liquid>, Float> entry : Maps.newHashMap(containedLiquids).entrySet()) {
+			for (final Entry<Class<? extends Liquid>, Float> entry : Maps.newHashMap(containedLiquids).entrySet()) {
 				if (fraction >= 1f) {
 					entry.getKey().newInstance().drink(entry.getValue(), affected);
 					containedLiquids.remove(entry.getKey());
@@ -51,7 +53,7 @@ public abstract class LiquidContainerItem extends Item {
 					containedLiquids.put(entry.getKey(), round2dp(entry.getValue() * (1f - fraction)));
 				}
 			}
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -60,12 +62,12 @@ public abstract class LiquidContainerItem extends Item {
 	/**
 	 * Subtract an amount from this {@link LiquidContainerItem}, returning a Map of the fluids subtracted.
 	 */
-	public Map<Class<? extends Liquid>, Float> subtract(float amount) {
-		float fraction = amount/getTotalAmount();
-		Map<Class<? extends Liquid>, Float> subtracted = Maps.newHashMap();
+	public Map<Class<? extends Liquid>, Float> subtract(final float amount) {
+		final float fraction = amount/getTotalAmount();
+		final Map<Class<? extends Liquid>, Float> subtracted = Maps.newHashMap();
 
 		try {
-			for (Entry<Class<? extends Liquid>, Float> entry : Maps.newHashMap(containedLiquids).entrySet()) {
+			for (final Entry<Class<? extends Liquid>, Float> entry : Maps.newHashMap(containedLiquids).entrySet()) {
 				if (fraction >= 1f) {
 					containedLiquids.remove(entry.getKey());
 					subtracted.put(entry.getKey(), round2dp(entry.getValue()));
@@ -75,14 +77,14 @@ public abstract class LiquidContainerItem extends Item {
 				}
 			}
 
-			for (Entry<Class<? extends Liquid>, Float> entry : Maps.newHashMap(subtracted).entrySet()) {
+			for (final Entry<Class<? extends Liquid>, Float> entry : Maps.newHashMap(subtracted).entrySet()) {
 				if (entry.getValue() < 0.01f) {
 					subtracted.remove(entry.getKey());
 				}
 			}
 
 			return subtracted;
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -90,11 +92,11 @@ public abstract class LiquidContainerItem extends Item {
 
 	@Override
 	protected Item internalCopy() {
-		LiquidContainerItem container = copyContainer();
+		final LiquidContainerItem container = copyContainer();
 
-		Map<Class<? extends Liquid>, Float> copy = Maps.newHashMap();
+		final Map<Class<? extends Liquid>, Float> copy = Maps.newHashMap();
 
-		for (Entry<Class<? extends Liquid>, Float> entry : containedLiquids.entrySet()) {
+		for (final Entry<Class<? extends Liquid>, Float> entry : containedLiquids.entrySet()) {
 			copy.put(entry.getKey(), entry.getValue().floatValue());
 		}
 
@@ -157,13 +159,13 @@ public abstract class LiquidContainerItem extends Item {
 	/**
 	 * Adds a map of fluid-amounts to this liquid container, returning the remainder.
 	 */
-	public Map<Class<? extends Liquid>, Float> add(Map<Class<? extends Liquid>, Float> toAdd) {
-		float amountToAdd = (float) toAdd.entrySet().stream().mapToDouble(entry -> {
+	public Map<Class<? extends Liquid>, Float> add(final Map<Class<? extends Liquid>, Float> toAdd) {
+		final float amountToAdd = (float) toAdd.entrySet().stream().mapToDouble(entry -> {
 			return entry.getValue();
 		}).sum();
 
 		if (amountToAdd <= getRemainingCapacity()) {
-			for (Entry<Class<? extends Liquid>, Float> entryToAdd : toAdd.entrySet()) {
+			for (final Entry<Class<? extends Liquid>, Float> entryToAdd : toAdd.entrySet()) {
 				if (containedLiquids.containsKey(entryToAdd.getKey())) {
 					containedLiquids.put(entryToAdd.getKey(), round2dp(containedLiquids.get(entryToAdd.getKey()) + entryToAdd.getValue()));
 				} else {
@@ -173,9 +175,9 @@ public abstract class LiquidContainerItem extends Item {
 
 			return Maps.newHashMap();
 		} else {
-			float fractionOfAmountToAdd = getRemainingCapacity() / amountToAdd;
+			final float fractionOfAmountToAdd = getRemainingCapacity() / amountToAdd;
 
-			for (Entry<Class<? extends Liquid>, Float> entryToAdd : toAdd.entrySet()) {
+			for (final Entry<Class<? extends Liquid>, Float> entryToAdd : toAdd.entrySet()) {
 				if (containedLiquids.containsKey(entryToAdd.getKey())) {
 					containedLiquids.put(entryToAdd.getKey(), round2dp(containedLiquids.get(entryToAdd.getKey()) + fractionOfAmountToAdd * entryToAdd.getValue()));
 				} else {
@@ -183,11 +185,11 @@ public abstract class LiquidContainerItem extends Item {
 				}
 			}
 
-			Map<Class<? extends Liquid>, Float> transformValues = Maps.transformValues(toAdd, value -> {
+			final Map<Class<? extends Liquid>, Float> transformValues = Maps.transformValues(toAdd, value -> {
 				return round2dp(value * (1-fractionOfAmountToAdd));
 			});
 
-			for (Entry<Class<? extends Liquid>, Float> entry : Maps.newHashMap(transformValues).entrySet()) {
+			for (final Entry<Class<? extends Liquid>, Float> entry : Maps.newHashMap(transformValues).entrySet()) {
 				if (entry.getValue() < 0.01f) {
 					transformValues.remove(entry.getKey());
 				}
@@ -199,7 +201,7 @@ public abstract class LiquidContainerItem extends Item {
 
 
 	@Override
-	protected boolean internalSameAs(Item other) {
+	protected boolean internalSameAs(final Item other) {
 		if (other instanceof LiquidContainerItem) {
 			if (!other.getClass().equals(this.getClass())) {
 				return false;
@@ -209,8 +211,8 @@ public abstract class LiquidContainerItem extends Item {
 				return false;
 			}
 
-			for (Entry<Class<? extends Liquid>, Float> entry : containedLiquids.entrySet()) {
-				Float otherAmount = ((LiquidContainerItem) other).containedLiquids.get(entry.getKey());
+			for (final Entry<Class<? extends Liquid>, Float> entry : containedLiquids.entrySet()) {
+				final Float otherAmount = ((LiquidContainerItem) other).containedLiquids.get(entry.getKey());
 				if (otherAmount != null && otherAmount.equals(entry.getValue())) {
 					continue;
 				} else {
@@ -225,12 +227,12 @@ public abstract class LiquidContainerItem extends Item {
 	}
 
 
-	public static void transfer(Individual individual, LiquidContainerItem from, LiquidContainerItem to, float amount) {
+	public static void transfer(final Individual individual, final LiquidContainerItem from, final LiquidContainerItem to, final float amount) {
 		individual.takeItem(from);
 		individual.takeItem(to);
-		LiquidContainerItem newContainer = from.clone();
-		Map<Class<? extends Liquid>, Float> subtracted = newContainer.subtract(amount);
-		Map<Class<? extends Liquid>, Float> remainder = to.add(subtracted);
+		final LiquidContainerItem newContainer = from.clone();
+		final Map<Class<? extends Liquid>, Float> subtracted = newContainer.subtract(amount);
+		final Map<Class<? extends Liquid>, Float> remainder = to.add(subtracted);
 		if (!remainder.isEmpty()) {
 			newContainer.add(remainder);
 		}
@@ -239,17 +241,17 @@ public abstract class LiquidContainerItem extends Item {
 	}
 
 
-	public static void transfer(Individual individual, PropLiquidContainerItem from, LiquidContainerItem to, float amount) {
+	public static void transfer(final Individual individual, final PropLiquidContainerItem from, final LiquidContainerItem to, final float amount) {
 		individual.takeItem(to);
 		if (amount >= 0f) {
-			Map<Class<? extends Liquid>, Float> subtracted = from.subtract(amount);
-			Map<Class<? extends Liquid>, Float> remainder = to.add(subtracted);
+			final Map<Class<? extends Liquid>, Float> subtracted = from.subtract(amount);
+			final Map<Class<? extends Liquid>, Float> remainder = to.add(subtracted);
 			if (!remainder.isEmpty()) {
 				from.add(remainder);
 			}
 		} else {
-			Map<Class<? extends Liquid>, Float> subtracted = to.subtract(amount);
-			Map<Class<? extends Liquid>, Float> remainder = from.add(subtracted);
+			final Map<Class<? extends Liquid>, Float> subtracted = to.subtract(amount);
+			final Map<Class<? extends Liquid>, Float> remainder = from.add(subtracted);
 			if (!remainder.isEmpty()) {
 				to.add(remainder);
 			}

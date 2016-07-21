@@ -5,7 +5,10 @@ import static com.google.common.collect.Maps.newHashMap;
 
 import java.util.Map;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
@@ -14,13 +17,12 @@ import bloodandmithril.item.items.material.RockItem;
 import bloodandmithril.item.liquid.Liquid;
 import bloodandmithril.item.material.mineral.Coal;
 
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-
 /**
  * A {@link Bottle} made from glass
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2016")
 public class GlassBottleItem extends LiquidContainerItem implements Craftable {
 	private static final long serialVersionUID = 3427844446930493119L;
 
@@ -30,13 +32,13 @@ public class GlassBottleItem extends LiquidContainerItem implements Craftable {
 	/**
 	 * Constructor
 	 */
-	public GlassBottleItem(Map<Class<? extends Liquid>, Float> containedLiquids) {
+	public GlassBottleItem(final Map<Class<? extends Liquid>, Float> containedLiquids) {
 		super(0.1f, 4, 2f, containedLiquids, ItemValues.GLASSBOTTLE);
 	}
 
 
 	@Override
-	protected String internalGetSingular(boolean firstCap) {
+	protected String internalGetSingular(final boolean firstCap) {
 		String content = "";
 		if (!containedLiquids.isEmpty()) {
 			content = " of " + getTitle(containedLiquids, getTotalAmount()) + " (" + String.format("%.2f", getTotalAmount()) + "/" + String.format("%.2f", maxAmount) + ")";
@@ -47,7 +49,7 @@ public class GlassBottleItem extends LiquidContainerItem implements Craftable {
 
 
 	@Override
-	protected String internalGetPlural(boolean firstCap) {
+	protected String internalGetPlural(final boolean firstCap) {
 		String content = "";
 		if (!containedLiquids.isEmpty()) {
 			content = " of " + getTitle(containedLiquids, getTotalAmount()) + " (" + String.format("%.2f", getTotalAmount()) + "/" + String.format("%.2f", maxAmount) + ")";
@@ -76,7 +78,7 @@ public class GlassBottleItem extends LiquidContainerItem implements Craftable {
 
 
 	@Override
-	public boolean canBeCraftedBy(Individual individual) {
+	public boolean canBeCraftedBy(final Individual individual) {
 		// TODO
 		return true;
 	}
@@ -84,7 +86,7 @@ public class GlassBottleItem extends LiquidContainerItem implements Craftable {
 
 	@Override
 	public Map<Item, Integer> getRequiredMaterials() {
-		Map<Item, Integer> map = newHashMap();
+		final Map<Item, Integer> map = newHashMap();
 		map.put(new GlassItem(), 1);
 		map.put(RockItem.rock(Coal.class), 1);
 		return map;
@@ -116,6 +118,6 @@ public class GlassBottleItem extends LiquidContainerItem implements Craftable {
 
 
 	@Override
-	public void crafterEffects(Individual crafter, float delta) {
+	public void crafterEffects(final Individual crafter, final float delta) {
 	}
 }

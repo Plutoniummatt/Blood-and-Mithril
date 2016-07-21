@@ -19,6 +19,7 @@ import com.google.inject.Inject;
 import bloodandmithril.character.ai.task.PlaceProp;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.control.Controls;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
@@ -35,6 +36,7 @@ import bloodandmithril.world.topography.Topography.NoTileFoundException;
 /**
  * @author Matt
  */
+@Copyright("Matthew Peck 2016")
 public class PlaceCursorBoundTask extends CursorBoundTask {
 
 		private Prop toPlace;

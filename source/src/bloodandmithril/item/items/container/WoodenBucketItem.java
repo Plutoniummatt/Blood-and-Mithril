@@ -5,8 +5,12 @@ import static com.google.common.collect.Maps.newHashMap;
 
 import java.util.Map;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.google.common.collect.Maps;
+
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.proficiency.proficiencies.Carpentry;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
@@ -15,14 +19,12 @@ import bloodandmithril.item.liquid.Liquid;
 import bloodandmithril.item.material.Material;
 import bloodandmithril.item.material.wood.Wood;
 
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.google.common.collect.Maps;
-
 /**
  * Bucket that can contain {@link Liquid}s
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2016")
 public class WoodenBucketItem extends LiquidContainerItem implements Craftable {
 	private static final long serialVersionUID = -4162891941797527242L;
 
@@ -31,7 +33,7 @@ public class WoodenBucketItem extends LiquidContainerItem implements Craftable {
 	/**
 	 * Constructor
 	 */
-	public WoodenBucketItem(Map<Class<? extends Liquid>, Float> containedLiquids, Class<? extends Wood> wood) {
+	public WoodenBucketItem(final Map<Class<? extends Liquid>, Float> containedLiquids, final Class<? extends Wood> wood) {
 		super(1f, 20, 16f, containedLiquids, ItemValues.WOODENBUCKET);
 		this.wood = wood;
 	}
@@ -40,7 +42,7 @@ public class WoodenBucketItem extends LiquidContainerItem implements Craftable {
 	/**
 	 * Constructor
 	 */
-	public WoodenBucketItem(Class<? extends Wood> wood) {
+	public WoodenBucketItem(final Class<? extends Wood> wood) {
 		super(1f, 20, 16f, Maps.newHashMap(), ItemValues.WOODENBUCKET);
 		this.wood = wood;
 	}
@@ -65,7 +67,7 @@ public class WoodenBucketItem extends LiquidContainerItem implements Craftable {
 
 
 	@Override
-	protected String internalGetSingular(boolean firstCap) {
+	protected String internalGetSingular(final boolean firstCap) {
 		String content = "";
 		if (!containedLiquids.isEmpty()) {
 			content = " of " + getTitle(containedLiquids, getTotalAmount()) + " (" + String.format("%.2f", getTotalAmount()) + "/" + String.format("%.2f", maxAmount) + ")";
@@ -76,7 +78,7 @@ public class WoodenBucketItem extends LiquidContainerItem implements Craftable {
 
 
 	@Override
-	protected String internalGetPlural(boolean firstCap) {
+	protected String internalGetPlural(final boolean firstCap) {
 		String content = "";
 		if (!containedLiquids.isEmpty()) {
 			content = " of " + getTitle(containedLiquids, getTotalAmount()) + " (" + String.format("%.2f", getTotalAmount()) + "/" + String.format("%.2f", maxAmount) + ")";
@@ -87,14 +89,14 @@ public class WoodenBucketItem extends LiquidContainerItem implements Craftable {
 
 
 	@Override
-	public boolean canBeCraftedBy(Individual individual) {
+	public boolean canBeCraftedBy(final Individual individual) {
 		return individual.getProficiencies().getProficiency(Carpentry.class).getLevel() >= 0;
 	}
 
 
 	@Override
 	public Map<Item, Integer> getRequiredMaterials() {
-		Map<Item, Integer> map = Maps.newHashMap();
+		final Map<Item, Integer> map = Maps.newHashMap();
 		map.put(PlankItem.plank(wood), 2);
 		return map;
 	}
@@ -126,7 +128,7 @@ public class WoodenBucketItem extends LiquidContainerItem implements Craftable {
 
 
 	@Override
-	public void crafterEffects(Individual crafter, float delta) {
+	public void crafterEffects(final Individual crafter, final float delta) {
 		crafter.getProficiencies().getProficiency(Carpentry.class).increaseExperience(delta * 5f);
 	}
 }

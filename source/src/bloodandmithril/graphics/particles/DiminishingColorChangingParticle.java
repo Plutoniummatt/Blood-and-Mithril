@@ -1,16 +1,18 @@
 package bloodandmithril.graphics.particles;
 
-import bloodandmithril.graphics.WorldRenderer.Depth;
-import bloodandmithril.world.topography.Topography.NoTileFoundException;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
+
+import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.WorldRenderer.Depth;
+import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
 /**
  * A {@link DiminishingTracerParticle} that does not render the tracer, and changes color
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2016")
 public class DiminishingColorChangingParticle extends DiminishingTracerParticle {
 	private static final long serialVersionUID = 4485079922391112334L;
 
@@ -25,18 +27,18 @@ public class DiminishingColorChangingParticle extends DiminishingTracerParticle 
 	 * Constructor
 	 */
 	public DiminishingColorChangingParticle(
-			Vector2 position,
-			Vector2 velocity,
-			Color color,
-			Color glowColor,
-			Color colorToChangeTo,
-			float radius,
-			int worldId,
-			float glowIntensity,
-			MovementMode movementMode,
-			Depth depth,
-			long diminishingDuration,
-			boolean tracer) {
+			final Vector2 position,
+			final Vector2 velocity,
+			final Color color,
+			final Color glowColor,
+			final Color colorToChangeTo,
+			final float radius,
+			final int worldId,
+			final float glowIntensity,
+			final MovementMode movementMode,
+			final Depth depth,
+			final long diminishingDuration,
+			final boolean tracer) {
 		super(position, velocity, color, glowColor, radius, worldId, glowIntensity, movementMode, depth, diminishingDuration);
 		this.tracer = tracer;
 
@@ -51,9 +53,9 @@ public class DiminishingColorChangingParticle extends DiminishingTracerParticle 
 
 
 	@Override
-	public synchronized void update(float delta) throws NoTileFoundException {
+	public synchronized void update(final float delta) throws NoTileFoundException {
 		super.update(delta);
-		float step = diminishingDuration / 1000f;
+		final float step = diminishingDuration / 1000f;
 
 		if (changeColor) {
 			color.r += rStep * (delta / step);
@@ -65,7 +67,7 @@ public class DiminishingColorChangingParticle extends DiminishingTracerParticle 
 
 
 	@Override
-	public synchronized void renderLine(float delta) {
+	public synchronized void renderLine(final float delta) {
 		if (tracer) {
 			super.renderLine(delta);
 		}

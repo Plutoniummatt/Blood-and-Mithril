@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
 import bloodandmithril.objectives.Mission;
 import bloodandmithril.objectives.Objective;
@@ -23,20 +24,21 @@ import bloodandmithril.world.Domain;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2016")
 public class Tutorial extends Mission {
 	private static final long serialVersionUID = -3942281398077815457L;
 
 	/**
 	 * Constructor
 	 */
-	public Tutorial(int worldId) {
+	public Tutorial(final int worldId) {
 		super(worldId);
 	}
 
 
 	@Override
 	protected List<Objective> getNewObjectives() {
-		List<Objective> objectives = Lists.newLinkedList();
+		final List<Objective> objectives = Lists.newLinkedList();
 
 		objectives.addAll(
 			Lists.newArrayList(

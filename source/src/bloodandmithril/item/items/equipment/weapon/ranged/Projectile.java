@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Sets;
 
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.weapon.ranged.projectile.ArrowProjectile;
@@ -19,6 +20,7 @@ import bloodandmithril.networking.ClientServerInterface;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2016")
 public abstract class Projectile implements Serializable {
 	private static final long serialVersionUID = -6124242148644632575L;
 

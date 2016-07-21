@@ -1,7 +1,9 @@
 package bloodandmithril.character.ai;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.util.SerializableMappingFunction;
 
+@Copyright("Matthew Peck 2016")
 public abstract class TaskGenerator extends SerializableMappingFunction<Object, AITask> {
 	private static final long serialVersionUID = 229150218799462799L;
 

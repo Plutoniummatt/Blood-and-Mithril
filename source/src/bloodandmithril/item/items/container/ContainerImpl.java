@@ -9,20 +9,22 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
+import com.badlogic.gdx.math.Vector2;
+
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.weapon.RangedWeapon;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
 
-import com.badlogic.gdx.math.Vector2;
-
 /**
  * Default implementation of container.
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2016")
 public final class ContainerImpl implements Container {
 	private static final long serialVersionUID = -8874868600941684035L;
 
@@ -45,7 +47,7 @@ public final class ContainerImpl implements Container {
 	/**
 	 * Constructor for non-lockable container.
 	 */
-	public ContainerImpl(float inventoryMassCapacity, int inventoryVolumeCapacity) {
+	public ContainerImpl(final float inventoryMassCapacity, final int inventoryVolumeCapacity) {
 		this.inventoryMassCapacity = inventoryMassCapacity;
 		this.inventoryVolumeCapacity = inventoryVolumeCapacity;
 		this.locked = false;
@@ -56,7 +58,7 @@ public final class ContainerImpl implements Container {
 	/**
 	 * Constructor for a lockable container.
 	 */
-	public ContainerImpl(float inventoryMassCapacity, int inventoryVolumeCapacity, boolean locked, Function<Item, Boolean> unlockingFunction) {
+	public ContainerImpl(final float inventoryMassCapacity, final int inventoryVolumeCapacity, final boolean locked, final Function<Item, Boolean> unlockingFunction) {
 		this.inventoryMassCapacity = inventoryMassCapacity;
 		this.inventoryVolumeCapacity = inventoryVolumeCapacity;
 		this.locked = locked;
@@ -66,7 +68,7 @@ public final class ContainerImpl implements Container {
 
 
 	@Override
-	public void synchronizeContainer(Container other) {
+	public void synchronizeContainer(final Container other) {
 		this.inventory.clear();
 		this.inventory.putAll(other.getInventory());
 
@@ -82,18 +84,18 @@ public final class ContainerImpl implements Container {
 
 
 	@Override
-	public synchronized void giveItem(Item item) {
+	public synchronized void giveItem(final Item item) {
 		if (item instanceof RangedWeapon) {
 			((RangedWeapon) item).setAmmo(null);
 		}
 
-		HashMap<Item, Integer> copy = new HashMap<Item, Integer>(inventory);
+		final HashMap<Item, Integer> copy = new HashMap<Item, Integer>(inventory);
 
 		if (inventory.isEmpty()) {
 			copy.put(item.copy(), 1);
 		} else {
 			boolean stacked = false;
-			for (Entry<Item, Integer> entry : inventory.entrySet()) {
+			for (final Entry<Item, Integer> entry : inventory.entrySet()) {
 				if (item.sameAs(entry.getKey())) {
 					copy.put(entry.getKey(), entry.getValue() + 1);
 					stacked = true;
@@ -112,14 +114,14 @@ public final class ContainerImpl implements Container {
 
 
 	@Override
-	public synchronized int takeItem(Item item) {
+	public synchronized int takeItem(final Item item) {
 		if (item instanceof RangedWeapon) {
 			((RangedWeapon) item).setAmmo(null);
 		}
 
 		int taken = 0;
-		HashMap<Item, Integer> copy = new HashMap<Item, Integer>(inventory);
-		for (Entry<Item, Integer> entry : inventory.entrySet()) {
+		final HashMap<Item, Integer> copy = new HashMap<Item, Integer>(inventory);
+		for (final Entry<Item, Integer> entry : inventory.entrySet()) {
 			if (item.sameAs(entry.getKey())) {
 				if (entry.getValue() - 1 <= 0) {
 					taken = entry.getValue();
@@ -160,7 +162,7 @@ public final class ContainerImpl implements Container {
 	private void refreshCurrentLoadAndVolume() {
 		float weight = 0f;
 		int volume = 0;
-		for (Entry<Item, Integer> entry : inventory.entrySet()) {
+		for (final Entry<Item, Integer> entry : inventory.entrySet()) {
 			weight = weight + entry.getValue() * entry.getKey().getMass();
 			volume = volume + entry.getValue() * entry.getKey().getVolume();
 		}
@@ -182,7 +184,7 @@ public final class ContainerImpl implements Container {
 
 
 	@Override
-	public boolean unlock(Item with) {
+	public boolean unlock(final Item with) {
 		if (getUnlockingFunction().apply(with)) {
 			locked = false;
 			return true;
@@ -193,7 +195,7 @@ public final class ContainerImpl implements Container {
 
 
 	@Override
-	public boolean lock(Item with) {
+	public boolean lock(final Item with) {
 		if (getUnlockingFunction().apply(with)) {
 			locked = true;
 			return true;
@@ -208,7 +210,7 @@ public final class ContainerImpl implements Container {
 	}
 
 
-	public void setUnlockingFunction(Function<Item, Boolean> unlockingFunction) {
+	public void setUnlockingFunction(final Function<Item, Boolean> unlockingFunction) {
 		this.unlockingFunction = unlockingFunction;
 	}
 
@@ -219,14 +221,14 @@ public final class ContainerImpl implements Container {
 	}
 
 
-	public void setLockable(boolean lockable) {
+	public void setLockable(final boolean lockable) {
 		this.lockable = lockable;
 	}
 
 
 	@Override
-	public int has(Item item) {
-		for (Entry<Item, Integer> entry : inventory.entrySet()) {
+	public int has(final Item item) {
+		for (final Entry<Item, Integer> entry : inventory.entrySet()) {
 			if (entry.getKey().sameAs(item)) {
 				return entry.getValue();
 			}
@@ -235,7 +237,7 @@ public final class ContainerImpl implements Container {
 	}
 
 
-	public static void discard(Individual individual, final Item item, int quantity, bloodandmithril.util.Function<Vector2> v) {
+	public static void discard(final Individual individual, final Item item, final int quantity, final bloodandmithril.util.Function<Vector2> v) {
 		if (isServer()) {
 			for (int i = quantity; i !=0; i--) {
 				if (individual.takeItem(item) == 1) {
@@ -254,7 +256,7 @@ public final class ContainerImpl implements Container {
 	}
 
 
-	public static void discard(Individual individual, final Item item, int quantity) {
+	public static void discard(final Individual individual, final Item item, final int quantity) {
 		discard(individual, item, quantity, () -> {
 			return new Vector2(100f, 0).rotate(Util.getRandom().nextFloat() * 180f);
 		});
@@ -274,19 +276,19 @@ public final class ContainerImpl implements Container {
 
 
 	@Override
-	public void setCurrentVolume(int volume) {
+	public void setCurrentVolume(final int volume) {
 		this.currentVolume = volume;
 	}
 
 
 	@Override
-	public void setCurrentLoad(float currentLoad) {
+	public void setCurrentLoad(final float currentLoad) {
 		this.currentLoad = currentLoad;
 	}
 
 
 	@Override
-	public boolean canReceive(Item item) {
+	public boolean canReceive(final Item item) {
 		if (currentLoad + item.getMass() > getMaxCapacity()) {
 			return false;
 		}
@@ -300,11 +302,11 @@ public final class ContainerImpl implements Container {
 
 
 	@Override
-	public boolean canReceive(Collection<Item> items) {
+	public boolean canReceive(final Collection<Item> items) {
 		float totalMass = 0f;
 		float totalVolume = 0;
 
-		for (Item item : items) {
+		for (final Item item : items) {
 			totalMass += item.getMass();
 			totalVolume += item.getVolume();
 		}

@@ -13,6 +13,7 @@ import com.google.inject.Inject;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualContextMenuService;
 import bloodandmithril.control.RightClickHandler;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.prop.Prop;
@@ -21,6 +22,7 @@ import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.world.Domain;
 
+@Copyright("Matthew Peck 2016")
 public class InGameContextMenuSpawner implements RightClickHandler {
 
 	@Inject

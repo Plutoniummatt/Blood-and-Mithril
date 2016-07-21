@@ -1,7 +1,13 @@
 package bloodandmithril.item.items.misc;
 
 import static bloodandmithril.character.ai.perception.Visible.getVisible;
+
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
+
 import bloodandmithril.audio.SoundService;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.graphics.particles.ParticleService;
 import bloodandmithril.item.FireLighter;
@@ -9,15 +15,12 @@ import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.prop.Prop;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
-
 /**
  * Basic firestarter, not good for much else
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2016")
 public class FlintAndFiresteelItem extends MiscItem implements FireLighter {
 	private static final long serialVersionUID = 1209549782426000939L;
 
@@ -30,13 +33,13 @@ public class FlintAndFiresteelItem extends MiscItem implements FireLighter {
 
 
 	@Override
-	protected String internalGetSingular(boolean firstCap) {
+	protected String internalGetSingular(final boolean firstCap) {
 		return firstCap ? "Flint and firesteel" : "flint and firesteel";
 	}
 
 
 	@Override
-	protected String internalGetPlural(boolean firstCap) {
+	protected String internalGetPlural(final boolean firstCap) {
 		return firstCap ? "Flint and firesteel" : "flint and firesteel";
 	}
 
@@ -48,7 +51,7 @@ public class FlintAndFiresteelItem extends MiscItem implements FireLighter {
 
 
 	@Override
-	protected boolean internalSameAs(Item other) {
+	protected boolean internalSameAs(final Item other) {
 		return other instanceof FlintAndFiresteelItem;
 	}
 
@@ -72,7 +75,7 @@ public class FlintAndFiresteelItem extends MiscItem implements FireLighter {
 
 
 	@Override
-	public void fireLightingEffect(Prop lightable) {
+	public void fireLightingEffect(final Prop lightable) {
 		ParticleService.parrySpark(lightable.position.cpy().add(0, 7), new Vector2(), Depth.MIDDLEGROUND, Color.WHITE, Color.WHITE, 100, true, 30, 200f);
 		SoundService.play(SoundService.flint, lightable.position, true, getVisible(lightable));
 	}

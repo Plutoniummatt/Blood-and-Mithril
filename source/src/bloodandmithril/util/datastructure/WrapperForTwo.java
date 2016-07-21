@@ -13,7 +13,7 @@ public class WrapperForTwo<A, B> implements Serializable {
 	public B b;
 
 
-	public static <A, B> WrapperForTwo<A, B> wrap(A a, B b) {
+	public static <A, B> WrapperForTwo<A, B> wrap(final A a, final B b) {
 		return new WrapperForTwo<>(a, b);
 	}
 
@@ -21,7 +21,7 @@ public class WrapperForTwo<A, B> implements Serializable {
 	/**
 	 * Constructor
 	 */
-	public WrapperForTwo(A a, B b) {
+	public WrapperForTwo(final A a, final B b) {
 		this.a = a;
 		this.b = b;
 	}

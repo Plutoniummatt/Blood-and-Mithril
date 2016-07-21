@@ -2,6 +2,7 @@ package bloodandmithril.networking.requests;
 
 import bloodandmithril.character.ai.task.OpenCraftingStation;
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.Request;
 import bloodandmithril.networking.Response;
 import bloodandmithril.networking.Response.Responses;
@@ -12,6 +13,7 @@ import bloodandmithril.world.Domain;
 /**
  * Request to tell the server that an {@link Individual} would like to open a {@link CraftingStation}.
  */
+@Copyright("Matthew Peck 2016")
 public class CSIOpenCraftingStation implements Request {
 	private static final long serialVersionUID = 4115875631842138064L;
 

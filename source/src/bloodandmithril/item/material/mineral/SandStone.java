@@ -2,19 +2,21 @@ package bloodandmithril.item.material.mineral;
 
 import java.util.Map;
 
-import bloodandmithril.item.ItemValues;
-import bloodandmithril.item.items.Item;
-import bloodandmithril.item.items.material.RockItem;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.google.common.collect.Maps;
+
+import bloodandmithril.core.Copyright;
+import bloodandmithril.item.ItemValues;
+import bloodandmithril.item.items.Item;
+import bloodandmithril.item.items.material.RockItem;
 
 /**
  * Sand stone.
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2016")
 public class SandStone extends Mineral {
 	private static final long serialVersionUID = 3697380136082090890L;
 
@@ -47,7 +49,7 @@ public class SandStone extends Mineral {
 
 	@Override
 	public Map<Item, Integer> getRequiredMaterialsToCraftSlab() {
-		Map<Item, Integer> map = Maps.newHashMap();
+		final Map<Item, Integer> map = Maps.newHashMap();
 		map.put(RockItem.rock(SandStone.class), 2);
 		return map;
 	}

@@ -21,6 +21,7 @@ import bloodandmithril.character.ai.task.PlantSeed;
 import bloodandmithril.character.ai.task.PlantSeed.PlantSeedTaskGenerator;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
@@ -38,6 +39,7 @@ import bloodandmithril.world.topography.tile.tiles.SoilTile;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2016")
 public class PlantSeedCursorBoundTask extends CursorBoundTask {
 
 	private final SeedItem toPlant;

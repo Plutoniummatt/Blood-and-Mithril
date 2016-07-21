@@ -7,6 +7,7 @@ import static bloodandmithril.control.InputUtilities.getMouseWorldY;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 import com.badlogic.gdx.graphics.Color;
@@ -33,7 +34,7 @@ public abstract class ChooseMultipleEntityCursorBoundTask<F extends MouseOverabl
 	@Inject
 	private UserInterface userInterface;
 
-	protected List<T> entities = Lists.newLinkedList();
+	protected LinkedList<T> entities = Lists.newLinkedList();
 
 	public ChooseMultipleEntityCursorBoundTask(final boolean isWorldCoordinate, final Class<F> clazz) {
 		super(null, isWorldCoordinate);

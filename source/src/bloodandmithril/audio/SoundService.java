@@ -5,6 +5,7 @@ import static bloodandmithril.networking.ClientServerInterface.isClient;
 import static bloodandmithril.networking.ClientServerInterface.isServer;
 import static bloodandmithril.util.datastructure.WrapperForThree.wrap;
 
+import java.io.Serializable;
 import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
@@ -294,7 +295,7 @@ public class SoundService {
 	}
 
 
-	public static enum SuspicionLevel {
+	public static enum SuspicionLevel implements Serializable {
 		NONE(0), PAUSE(1), INVESTIGATE(2), INVESTIGATE_CAUTION(3), BACKUP(4), FLEE(5);
 		public final int severity;
 

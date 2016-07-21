@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.graphics.particles.DiminishingTracerParticle;
 import bloodandmithril.graphics.particles.Particle;
@@ -19,6 +20,7 @@ import bloodandmithril.util.SerializableColor;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
 
+@Copyright("Matthew Peck 2016")
 public class GlowStickArrowProjectile<T extends Metal> extends ArrowProjectile<T> {
 	private static final long serialVersionUID = -6641284233913835594L;
 	private float lightingDuration;

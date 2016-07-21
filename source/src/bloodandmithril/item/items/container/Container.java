@@ -5,16 +5,18 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.google.common.collect.Maps;
+
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.util.SerializableMappingFunction;
-
-import com.google.common.collect.Maps;
 
 /**
  * A container that contains {@link Item}s
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2016")
 public interface Container extends Serializable {
 
 
@@ -33,7 +35,7 @@ public interface Container extends Serializable {
 	/**
 	 * Synchronizes this container with another
 	 */
-	public default void synchronizeContainer(Container other) {
+	public default void synchronizeContainer(final Container other) {
 		getContainerImpl().synchronizeContainer(other);
 	}
 
@@ -42,7 +44,7 @@ public interface Container extends Serializable {
 	 * @param item to put
 	 * @param quantity of item to put
 	 */
-	public default void giveItem(Item item) {
+	public default void giveItem(final Item item) {
 		getContainerImpl().giveItem(item);
 	}
 
@@ -51,7 +53,7 @@ public interface Container extends Serializable {
 	 * @param item to put
 	 * @param quantity of item to put
 	 */
-	public default void giveItem(Item item, int quantity) {
+	public default void giveItem(final Item item, final int quantity) {
 		for (int i = quantity; i != 0; i--) {
 			getContainerImpl().giveItem(item);
 		}
@@ -62,7 +64,7 @@ public interface Container extends Serializable {
 	 * Takes a number of items
 	 * @return the number of items taken.
 	 */
-	public default int takeItem(Item item) {
+	public default int takeItem(final Item item) {
 		return getContainerImpl().takeItem(item);
 	}
 
@@ -70,7 +72,7 @@ public interface Container extends Serializable {
 	/**
 	 * @return the number of specified items that exists in the container
 	 */
-	public default int has(Item item) {
+	public default int has(final Item item) {
 		return getContainerImpl().has(item);
 	}
 
@@ -83,10 +85,10 @@ public interface Container extends Serializable {
 	}
 
 
-	public default Map<Item, Integer> getItemsSatisfyingPredicate(SerializableMappingFunction<Entry<Item, Integer>, Boolean> predicate) {
-		Map<Item, Integer> toReturn = Maps.newHashMap();
+	public default Map<Item, Integer> getItemsSatisfyingPredicate(final SerializableMappingFunction<Entry<Item, Integer>, Boolean> predicate) {
+		final Map<Item, Integer> toReturn = Maps.newHashMap();
 
-		for (Entry<Item, Integer> entry : getInventory().entrySet()) {
+		for (final Entry<Item, Integer> entry : getInventory().entrySet()) {
 			if (predicate.apply(entry)) {
 				toReturn.put(entry.getKey(), entry.getValue());
 			}
@@ -131,7 +133,7 @@ public interface Container extends Serializable {
 	/**
 	 * @return the current weight that is stored in the {@link ContainerImpl}
 	 */
-	public default void setCurrentVolume(int volume) {
+	public default void setCurrentVolume(final int volume) {
 		getContainerImpl().setCurrentVolume(volume);
 	}
 
@@ -139,7 +141,7 @@ public interface Container extends Serializable {
 	/**
 	 * @return the current weight that is stored in the {@link ContainerImpl}
 	 */
-	public default void setCurrentLoad(float currentLoad) {
+	public default void setCurrentLoad(final float currentLoad) {
 		getContainerImpl().setCurrentLoad(currentLoad);
 	}
 
@@ -171,7 +173,7 @@ public interface Container extends Serializable {
 	/**
 	 * Attempt to unlock this container
 	 */
-	public default boolean unlock(Item with) {
+	public default boolean unlock(final Item with) {
 		return getContainerImpl().unlock(with);
 	}
 
@@ -179,7 +181,7 @@ public interface Container extends Serializable {
 	/**
 	 * Attempt to lock this container
 	 */
-	public default boolean lock(Item with) {
+	public default boolean lock(final Item with) {
 		return getContainerImpl().lock(with);
 	}
 
@@ -187,7 +189,7 @@ public interface Container extends Serializable {
 	/**
 	 * @return whether this {@link Container} can take another item
 	 */
-	public default boolean canReceive(Item item) {
+	public default boolean canReceive(final Item item) {
 		return getContainerImpl().canReceive(item);
 	}
 
@@ -195,7 +197,7 @@ public interface Container extends Serializable {
 	/**
 	 * @return whether this {@link Container} can take a collection of items
 	 */
-	public default boolean canReceive(Collection<Item> items) {
+	public default boolean canReceive(final Collection<Item> items) {
 		return getContainerImpl().canReceive(items);
 	}
 }

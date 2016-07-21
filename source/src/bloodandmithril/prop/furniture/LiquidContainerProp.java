@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.item.items.container.LiquidContainerItem;
@@ -22,6 +23,7 @@ import bloodandmithril.util.Util.Colors;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2016")
 public abstract class LiquidContainerProp extends Furniture {
 	private static final long serialVersionUID = 5555138707601557563L;
 	private final LiquidContainerItem container;

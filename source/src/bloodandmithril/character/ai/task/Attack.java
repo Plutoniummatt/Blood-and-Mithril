@@ -11,6 +11,7 @@ import static bloodandmithril.world.Domain.getIndividual;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -66,7 +67,7 @@ import bloodandmithril.world.Domain;
 public final class Attack extends CompositeAITask implements RoutineTask {
 	private static final long serialVersionUID = 1106295624210596573L;
 
-	private final Set<Integer> toBeAttacked = Sets.newHashSet();
+	private final HashSet<Integer> toBeAttacked = Sets.newHashSet();
 
 	@Inject private transient GameClientStateTracker gameClientStateTracker;
 	@Inject private transient Controls controls;

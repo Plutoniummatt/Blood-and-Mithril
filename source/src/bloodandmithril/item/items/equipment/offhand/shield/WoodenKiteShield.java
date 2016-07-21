@@ -3,8 +3,13 @@ package bloodandmithril.item.items.equipment.offhand.shield;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
+import com.google.common.collect.Maps;
+
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.proficiency.proficiencies.Carpentry;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.offhand.Shield;
@@ -13,10 +18,7 @@ import bloodandmithril.item.items.material.PlankItem;
 import bloodandmithril.item.material.metal.Iron;
 import bloodandmithril.item.material.wood.StandardWood;
 
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
-import com.google.common.collect.Maps;
-
+@Copyright("Matthew Peck 2016")
 public class WoodenKiteShield extends Shield {
 	private static final long serialVersionUID = 5112607606681273075L;
 
@@ -31,13 +33,13 @@ public class WoodenKiteShield extends Shield {
 
 
 	@Override
-	protected String internalGetSingular(boolean firstCap) {
+	protected String internalGetSingular(final boolean firstCap) {
 		return firstCap ? "Wooden kite shield" : "wooden kite shield";
 	}
 
 
 	@Override
-	protected String internalGetPlural(boolean firstCap) {
+	protected String internalGetPlural(final boolean firstCap) {
 		return firstCap ? "Wooden kite shields" : "wooden kite shields";
 	}
 
@@ -49,7 +51,7 @@ public class WoodenKiteShield extends Shield {
 
 
 	@Override
-	protected boolean internalSameAs(Item other) {
+	protected boolean internalSameAs(final Item other) {
 		if (other instanceof WoodenKiteShield) {
 			return true;
 		}
@@ -72,7 +74,7 @@ public class WoodenKiteShield extends Shield {
 
 	@Override
 	protected Item internalCopy() {
-		WoodenKiteShield shield = new WoodenKiteShield();
+		final WoodenKiteShield shield = new WoodenKiteShield();
 		return shield;
 	}
 
@@ -96,14 +98,14 @@ public class WoodenKiteShield extends Shield {
 
 
 	@Override
-	public boolean canBeCraftedBy(Individual individual) {
+	public boolean canBeCraftedBy(final Individual individual) {
 		return individual.getProficiencies().getProficiency(Carpentry.class).getLevel() >= 10;
 	}
 
 
 	@Override
 	public Map<Item, Integer> getRequiredMaterials() {
-		HashMap<Item, Integer> newHashMap = Maps.newHashMap();
+		final HashMap<Item, Integer> newHashMap = Maps.newHashMap();
 		newHashMap.put(PlankItem.plank(StandardWood.class), 15);
 		newHashMap.put(IngotItem.ingot(Iron.class), 1);
 		return newHashMap;
@@ -111,7 +113,7 @@ public class WoodenKiteShield extends Shield {
 
 
 	@Override
-	public void crafterEffects(Individual crafter, float delta) {
+	public void crafterEffects(final Individual crafter, final float delta) {
 		crafter.getProficiencies().getProficiency(Carpentry.class).increaseExperience(delta * 10f);
 	}
 

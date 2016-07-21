@@ -1,14 +1,16 @@
 package bloodandmithril.item.items.mineral.earth;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
 
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-
+@Copyright("Matthew Peck 2016")
 public class AshesItem extends EarthItem {
 	private static final long serialVersionUID = 988154990456038686L;
 	public static final String description = "The residue of combustion, mostly consisting of metal oxides.";
-	
+
 	public static TextureRegion ASHES;
 
 	/**
@@ -20,13 +22,13 @@ public class AshesItem extends EarthItem {
 
 
 	@Override
-	protected String internalGetSingular(boolean firstCap) {
+	protected String internalGetSingular(final boolean firstCap) {
 		return "Ashes";
 	}
 
 
 	@Override
-	protected String internalGetPlural(boolean firstCap) {
+	protected String internalGetPlural(final boolean firstCap) {
 		return "Ashes";
 	}
 
@@ -41,14 +43,14 @@ public class AshesItem extends EarthItem {
 	public boolean throwable() {
 		return false;
 	}
-	
-	
+
+
 	@Override
-	protected boolean internalSameAs(Item other) {
+	protected boolean internalSameAs(final Item other) {
 		return other instanceof AshesItem;
 	}
-	
-	
+
+
 	@Override
 	public boolean rotates() {
 		return false;

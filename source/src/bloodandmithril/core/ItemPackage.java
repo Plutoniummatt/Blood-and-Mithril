@@ -10,6 +10,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
 import bloodandmithril.item.items.container.GlassBottleItem;
@@ -55,15 +59,12 @@ import bloodandmithril.persistence.PersistenceUtil;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
 
-import com.google.common.collect.Collections2;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-
 /**
  * An {@link ItemPackage} is essentially a {@link Container} that contains {@link Item}s that can be used to deploy into the game world.
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2016")
 public class ItemPackage implements Serializable {
 	private static final long serialVersionUID = -801321038681883210L;
 
@@ -77,9 +78,9 @@ public class ItemPackage implements Serializable {
 			availableItemPackages.addAll(
 				decode(readFile("packages.txt"))
 			);
-		} catch (FileNotFoundException e) {
+		} catch (final FileNotFoundException e) {
 			save();
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			Logger.generalDebug("Failed to load item packages", LogLevel.OVERRIDE, e);
 		}
 	}
@@ -87,7 +88,7 @@ public class ItemPackage implements Serializable {
 	/**
 	 * Constructor
 	 */
-	public ItemPackage(Container container, String name, boolean standardPackage) {
+	public ItemPackage(final Container container, final String name, final boolean standardPackage) {
 		this.container = container;
 		this.name = name;
 		this.standardPackage = standardPackage;
@@ -97,7 +98,7 @@ public class ItemPackage implements Serializable {
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 
@@ -112,7 +113,7 @@ public class ItemPackage implements Serializable {
 	}
 
 	private static void addDefaults() {
-		Container prop = (Container) new SmallWoodenCrateItem(StandardWood.class).getProp();
+		final Container prop = (Container) new SmallWoodenCrateItem(StandardWood.class).getProp();
 		prop.giveItem(new FlintAndFiresteelItem(), 1);
 		prop.giveItem(PlankItem.plank(StandardWood.class), 20);
 		prop.giveItem(StickItem.stick(StandardWood.class), 20);
@@ -120,7 +121,7 @@ public class ItemPackage implements Serializable {
 		prop.giveItem(new ChickenLegItem(false), 5);
 		prop.giveItem(new BushKnife(), 2);
 
-		HashMap<Class<? extends Liquid>, Float> newHashMap = Maps.newHashMap();
+		final HashMap<Class<? extends Liquid>, Float> newHashMap = Maps.newHashMap();
 		newHashMap.put(Water.class, 2f);
 		prop.giveItem(new GlassBottleItem(newHashMap), 5);
 
@@ -131,9 +132,9 @@ public class ItemPackage implements Serializable {
 				true
 			)
 		);
-		
+
 		if (BloodAndMithrilClient.devMode) {
-			Container chest = (Container) new WoodenChestItem(StandardWood.class).getProp();
+			final Container chest = (Container) new WoodenChestItem(StandardWood.class).getProp();
 			chest.giveItem(new WoodenKiteShield(), 10);
 			chest.giveItem(new WoodenBuckler(), 10);
 			chest.giveItem(new FlintAndFiresteelItem(), 10);
@@ -159,9 +160,9 @@ public class ItemPackage implements Serializable {
 			chest.giveItem(LogItem.log(StandardWood.class), 500);
 			chest.giveItem(PlankItem.plank(StandardWood.class), 500);
 			chest.giveItem(new Torch(), 10);
-			HashMap<Class<? extends Liquid>, Float> map = Maps.newHashMap();
+			final HashMap<Class<? extends Liquid>, Float> map = Maps.newHashMap();
 			map.put(Water.class, 2f);
-			HashMap<Class<? extends Liquid>, Float> map2 = Maps.newHashMap();
+			final HashMap<Class<? extends Liquid>, Float> map2 = Maps.newHashMap();
 			map2.put(Oil.class, 2f);
 			chest.giveItem(new GlassBottleItem(map), 5);
 			chest.giveItem(new GlassBottleItem(map2), 5);
@@ -175,7 +176,7 @@ public class ItemPackage implements Serializable {
 			chest.giveItem(new MedievalWallTorchItem(), 1000);
 			chest.giveItem(new CarrotItem.CarrotSeedItem(), 1000);
 			chest.giveItem(ArrowHeadItem.arrowHead(Steel.class), 1000);
-			
+
 			availableItemPackages.add(
 				new ItemPackage(
 					chest,
@@ -192,7 +193,7 @@ public class ItemPackage implements Serializable {
 	}
 
 	private static void filter() {
-		List<ItemPackage> toKeep = Lists.newArrayList(Collections2.filter(availableItemPackages, itemPackage -> {
+		final List<ItemPackage> toKeep = Lists.newArrayList(Collections2.filter(availableItemPackages, itemPackage -> {
 			return !itemPackage.isDefault();
 		}));
 

@@ -1,5 +1,6 @@
 package bloodandmithril.objectives.objective;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.event.Event;
 import bloodandmithril.event.events.IndividualMoved;
 import bloodandmithril.objectives.Objective;
@@ -9,6 +10,7 @@ import bloodandmithril.objectives.Objective;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2016")
 public class MoveIndividualObjective implements Objective {
 	private static final long serialVersionUID = -8400481940506283262L;
 
@@ -49,7 +51,7 @@ public class MoveIndividualObjective implements Objective {
 
 
 	@Override
-	public void listen(Event event) {
+	public void listen(final Event event) {
 		if (event instanceof IndividualMoved) {
 			individualMoved = true;
 		}

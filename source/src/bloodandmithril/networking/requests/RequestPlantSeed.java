@@ -2,6 +2,7 @@ package bloodandmithril.networking.requests;
 
 import bloodandmithril.character.ai.task.PlantSeed;
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.Request;
 import bloodandmithril.networking.Response.Responses;
 import bloodandmithril.prop.plant.seed.SeedProp;
@@ -13,10 +14,11 @@ import bloodandmithril.world.topography.Topography.NoTileFoundException;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2016")
 public class RequestPlantSeed implements Request {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -5041237335745201360L;
 	int planterId;
@@ -25,7 +27,7 @@ public class RequestPlantSeed implements Request {
 	/**
 	 * Constructor
 	 */
-	public RequestPlantSeed(Individual planter, SeedProp seed) {
+	public RequestPlantSeed(final Individual planter, final SeedProp seed) {
 		this.planterId = planter.getId().getId();
 		this.toPlant = seed;
 	}
@@ -33,10 +35,10 @@ public class RequestPlantSeed implements Request {
 
 	@Override
 	public Responses respond() {
-		Individual planter = Domain.getIndividual(planterId);
+		final Individual planter = Domain.getIndividual(planterId);
 		try {
 			planter.getAI().setCurrentTask(new PlantSeed(planter, toPlant));
-		} catch (NoTileFoundException e) {}
+		} catch (final NoTileFoundException e) {}
 
 		return new Responses(false);
 	}
