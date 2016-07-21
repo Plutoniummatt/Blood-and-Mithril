@@ -24,6 +24,7 @@ import bloodandmithril.control.Controls;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.networking.ClientServerInterface;
+import bloodandmithril.ui.FloatingTextService;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
 import bloodandmithril.world.topography.Topography;
@@ -155,7 +156,7 @@ public interface Kinematics {
 		if (individual.isAlive()) {
 			final float amount = (data.distanceFallen - 400f) / 20f;
 			individual.damage(amount);
-			individual.addFloatingText(String.format("%.2f", amount), Color.RED);
+			Wiring.injector().getInstance(FloatingTextService.class).addFloatingTextToIndividual(individual, String.format("%.2f", amount), Color.RED);
 		}
 	}
 

@@ -11,6 +11,7 @@ import com.google.common.collect.Maps;
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.particles.ParticleService;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.ItemValues;
@@ -21,6 +22,7 @@ import bloodandmithril.item.items.material.StickItem;
 import bloodandmithril.item.material.Material;
 import bloodandmithril.item.material.metal.Metal;
 import bloodandmithril.item.material.wood.StandardWood;
+import bloodandmithril.ui.FloatingTextService;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
@@ -94,7 +96,7 @@ public class ArrowProjectile<T extends Metal> extends Projectile {
 	public void hit(final Individual victim) {
 		final float damage = velocity.len() / getTerminalVelocity() * (5f + 5f * Util.getRandom().nextFloat()) * Metal.getMaterial(arrowTipMaterial).getCombatMultiplier();
 		victim.damage(damage);
-		victim.addFloatingText(String.format("%.2f", damage), Color.RED);
+		Wiring.injector().getInstance(FloatingTextService.class).addFloatingTextToIndividual(victim, String.format("%.2f", damage), Color.RED);
 		ParticleService.bloodSplat(victim.getEmissionPosition(), new Vector2());
 	}
 

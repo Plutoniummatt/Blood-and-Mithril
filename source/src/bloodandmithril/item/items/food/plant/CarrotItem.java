@@ -19,6 +19,7 @@ import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.plant.CarrotProp;
 import bloodandmithril.prop.plant.CarrotProp.SoilTilesOnly;
 import bloodandmithril.prop.updateservice.SeedPropUpdateService;
+import bloodandmithril.ui.FloatingTextService;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 
@@ -57,7 +58,7 @@ public class CarrotItem extends Food {
 	@Override
 	public boolean consume(final Individual consumer) {
 		SoundService.play(SoundService.crunch, consumer.getState().position, true, getVisible(consumer));
-		consumer.addFloatingText("+5 Hunger", Color.ORANGE);
+		Wiring.injector().getInstance(FloatingTextService.class).addFloatingTextToIndividual(consumer, "+5 Hunger", Color.ORANGE);
 		consumer.increaseHunger(0.05f);
 		return true;
 	}

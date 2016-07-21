@@ -44,6 +44,7 @@ import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.core.Name;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
+import bloodandmithril.ui.FloatingTextService;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
@@ -69,6 +70,7 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 
 	@Inject private transient GameClientStateTracker gameClientStateTracker;
 	@Inject private transient Controls controls;
+	@Inject private transient FloatingTextService floatingTextService;
 
 	@Inject
 	Attack() {
@@ -104,7 +106,7 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 
 				appendTask(new AttackTarget(host.getId(), alive.getId().getId()));
 			} else {
-				host.addFloatingText("Waiting...", Color.ORANGE);
+				floatingTextService.addFloatingTextToIndividual(host, "Waiting...", Color.ORANGE);
 				appendTask(new Follow(host, alive, 8, new Countdown(3000)));
 				appendTask(new ReevaluateAttack(hostId));
 			}

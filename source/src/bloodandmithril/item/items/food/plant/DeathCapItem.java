@@ -1,16 +1,19 @@
 package bloodandmithril.item.items.food.plant;
 
 import static bloodandmithril.character.ai.perception.Visible.getVisible;
+
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.conditions.Poison;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.food.Food;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import bloodandmithril.ui.FloatingTextService;
 
 
 /**
@@ -28,34 +31,36 @@ public class DeathCapItem extends Food {
 	/**
 	 * Constructor
 	 */
-	public DeathCapItem(boolean cooked) {
+	public DeathCapItem(final boolean cooked) {
 		super(0.01f, 1, false, ItemValues.DEATHCAP);
 		this.cooked = cooked;
 	}
 
 
 	@Override
-	public boolean consume(Individual consumer) {
+	public boolean consume(final Individual consumer) {
+		final FloatingTextService floatingTextService = Wiring.injector().getInstance(FloatingTextService.class);
+
 		SoundService.play(SoundService.crunch, consumer.getState().position, true, getVisible(consumer));
 		if (cooked) {
 			consumer.increaseHunger(0.1f);
-			consumer.addFloatingText("+10 Hunger", Color.ORANGE);
+			floatingTextService.addFloatingTextToIndividual(consumer, "+10 Hunger", Color.ORANGE);
 		} else {
 			consumer.addCondition(new Poison(0.1f, 0.001f));
-			consumer.addFloatingText("Poisoned!", Color.GREEN);
+			floatingTextService.addFloatingTextToIndividual(consumer, "Poisoned!", Color.GREEN);
 		}
 		return true;
 	}
 
 
 	@Override
-	protected String internalGetSingular(boolean firstCap) {
+	protected String internalGetSingular(final boolean firstCap) {
 		return (firstCap ? "Death cap" : "death cap") + (cooked ? " (Cooked)" : " (Raw)");
 	}
 
 
 	@Override
-	protected String internalGetPlural(boolean firstCap) {
+	protected String internalGetPlural(final boolean firstCap) {
 		return (firstCap ? "Death caps" : "death caps") + (cooked ? " (Cooked)" : " (Raw)");
 	}
 
@@ -67,7 +72,7 @@ public class DeathCapItem extends Food {
 
 
 	@Override
-	protected boolean internalSameAs(Item other) {
+	protected boolean internalSameAs(final Item other) {
 		if (other instanceof DeathCapItem) {
 			return cooked == ((DeathCapItem)other).cooked;
 		}

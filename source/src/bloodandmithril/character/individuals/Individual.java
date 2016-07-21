@@ -76,6 +76,7 @@ import bloodandmithril.item.items.equipment.weapon.TwoHandedMeleeWeapon;
 import bloodandmithril.item.items.equipment.weapon.ranged.Projectile;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.construction.Construction;
+import bloodandmithril.ui.FloatingTextService;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.util.AnimationHelper.AnimationSwitcher;
 import bloodandmithril.util.Fonts;
@@ -83,7 +84,6 @@ import bloodandmithril.util.ParameterizedTask;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.SpacialConfiguration;
 import bloodandmithril.util.Task;
-import bloodandmithril.util.Util;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.util.datastructure.Commands;
 import bloodandmithril.util.datastructure.WrapperForTwo;
@@ -307,19 +307,6 @@ public abstract class Individual implements Equipper, Visible, MouseOverable, Sp
 	 * @return Implementation-specific copy method of this {@link Individual}
 	 */
 	public abstract Individual copy();
-
-	/**
-	 * Adds a floating text at close proximity to this individual
-	 */
-	public void addFloatingText(final String text, final Color color) {
-		Wiring.injector().getInstance(UserInterface.class).addFloatingText(
-			text,
-			color,
-			getState().position.cpy().add(0f, getHeight()).add(new Vector2(0, 15f).rotate(Util.getRandom().nextFloat() * 360f)),
-			false,
-			getWorldId()
-		);
-	}
 
 
 	/** Returns the {@link ArtificialIntelligence} implementation of this {@link Individual} */
@@ -946,6 +933,7 @@ public abstract class Individual implements Equipper, Visible, MouseOverable, Sp
 
 	public final void attackRanged(final Vector2 target) {
 		final UserInterface userInterface = Wiring.injector().getInstance(UserInterface.class);
+		final FloatingTextService floatingTextService = Wiring.injector().getInstance(FloatingTextService.class);
 		final RangedWeapon rangedWeapon = (RangedWeapon) getEquipped().keySet().stream().filter(item -> {return item instanceof RangedWeapon;}).findAny().get();
 		if (rangedWeapon != null) {
 			final Vector2 emissionPosition = getEmissionPosition();
@@ -955,7 +943,7 @@ public abstract class Individual implements Equipper, Visible, MouseOverable, Sp
 			final Item ammo = rangedWeapon.getAmmo();
 
 			if (ammo == null) {
-				addFloatingText("No ammo selected", Color.ORANGE);
+				floatingTextService.addFloatingTextToIndividual(this, "No ammo selected", Color.ORANGE);
 				return;
 			}
 
@@ -979,7 +967,7 @@ public abstract class Individual implements Equipper, Visible, MouseOverable, Sp
 				);
 
 				if (fired == null) {
-					addFloatingText("No ammo selected", Color.ORANGE);
+					floatingTextService.addFloatingTextToIndividual(this, "No ammo selected", Color.ORANGE);
 				} else {
 					fired.preFireDecorate(this);
 					fired.ignoreIndividual(this);
@@ -991,7 +979,7 @@ public abstract class Individual implements Equipper, Visible, MouseOverable, Sp
 					userInterface.refreshRefreshableWindows();
 				}
 			} else {
-				addFloatingText("Out of ammo", Color.ORANGE);
+				floatingTextService.addFloatingTextToIndividual(this, "Out of ammo", Color.ORANGE);
 				rangedWeapon.setAmmo(null);
 				userInterface.refreshRefreshableWindows();
 			}

@@ -2,23 +2,26 @@ package bloodandmithril.character.combat;
 
 import static bloodandmithril.character.ai.perception.Visible.getVisible;
 import static bloodandmithril.character.combat.CombatService.getParryChanceIgnored;
+
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector2;
+import com.google.common.base.Optional;
+import com.google.common.collect.Iterables;
+
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.individuals.Humanoid.HumanoidCombatBodyParts;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.graphics.particles.ParticleService;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.offhand.Shield;
 import bloodandmithril.item.items.equipment.weapon.Weapon;
 import bloodandmithril.networking.ClientServerInterface;
+import bloodandmithril.ui.FloatingTextService;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.datastructure.Wrapper;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.Vector2;
-import com.google.common.base.Optional;
-import com.google.common.collect.Iterables;
 
 /**
  * Class for combat related calculations
@@ -33,42 +36,37 @@ public class CombatChain {
 	private Individual target;
 	private Weapon weapon;
 
-	public CombatChain(Individual attacker) {
+	public CombatChain(final Individual attacker) {
 		this.attacker = attacker;
 
-		Optional<Item> weaponOptional = Iterables.tryFind(attacker.getEquipped().keySet(), equipped -> {
+		final Optional<Item> weaponOptional = Iterables.tryFind(attacker.getEquipped().keySet(), equipped -> {
 			return equipped instanceof Weapon;
 		});
 
 		this.weapon = weaponOptional.isPresent() ? (Weapon)weaponOptional.get() : null;
 	}
 
-	public CombatChain target(Individual target) {
+	public CombatChain target(final Individual target) {
 		this.target = target;
 
 		return this;
 	}
 
 	public String execute() {
+		final FloatingTextService floatingTextService = Wiring.injector().getInstance(FloatingTextService.class);
 		String text = "";
 		float knockbackStrength = 50f;
 		if (weapon != null) {
 			knockbackStrength = weapon.getKnockbackStrength();
 		}
 
-		Vector2 knockbackVector = target.getState().position.cpy().sub(attacker.getState().position.cpy()).nor().scl(knockbackStrength);
+		final Vector2 knockbackVector = target.getState().position.cpy().sub(attacker.getState().position.cpy()).nor().scl(knockbackStrength);
 
 		if (parry(knockbackVector)) {
-			target.addFloatingText(
-				"Parried!",
-				Color.GREEN
-			);
+			floatingTextService.addFloatingTextToIndividual(target, "Parried!", Color.GREEN);
 			return text;
 		} else if (block(knockbackVector)) {
-			target.addFloatingText(
-				"Blocked!",
-				Color.GREEN
-			);
+			floatingTextService.addFloatingTextToIndividual(target, "Blocked!", Color.GREEN);
 			return text;
 		}
 
@@ -83,8 +81,8 @@ public class CombatChain {
 	}
 
 
-	private boolean block(Vector2 knockbackVector) {
-		Optional<Item> shield = Iterables.tryFind(target.getEquipped().keySet(), item -> {
+	private boolean block(final Vector2 knockbackVector) {
+		final Optional<Item> shield = Iterables.tryFind(target.getEquipped().keySet(), item -> {
 			return item instanceof Shield;
 		});
 
@@ -96,14 +94,14 @@ public class CombatChain {
 	}
 
 
-	private boolean parry(Vector2 knockbackVector) {
-		boolean parried = Util.roll(
+	private boolean parry(final Vector2 knockbackVector) {
+		final boolean parried = Util.roll(
 			CombatService.getParryChance(target) * (1f - getParryChanceIgnored(attacker))
 		);
 
 		if (parried) {
 			if (ClientServerInterface.isServer()) {
-				int blockSound = CombatService.getBlockSound(target);
+				final int blockSound = CombatService.getBlockSound(target);
 				if (blockSound != 0) {
 					SoundService.play(
 						blockSound,
@@ -129,11 +127,11 @@ public class CombatChain {
 		}
 
 		disarmVector.rotate(90f * (Util.getRandom().nextFloat() - 0.5f));
-		float f = Util.getRandom().nextFloat();
+		final float f = Util.getRandom().nextFloat();
 		float t = 0f;
 		final Wrapper<HumanoidCombatBodyParts> hit = new Wrapper(null);
 
-		for (HumanoidCombatBodyParts p : HumanoidCombatBodyParts.values()) {
+		for (final HumanoidCombatBodyParts p : HumanoidCombatBodyParts.values()) {
 			if (f >= t && f < t + p.getProbability()) {
 				hit.t = p;
 			}
@@ -145,7 +143,7 @@ public class CombatChain {
 		if (weapon == null) {
 			damage = attacker.getUnarmedMaxDamage() - Util.getRandom().nextFloat() * (attacker.getUnarmedMaxDamage() - attacker.getUnarmedMinDamage());
 		} else {
-			float weaponDamage = weapon.getBaseMinDamage() + (weapon.getBaseMaxDamage() - weapon.getBaseMinDamage()) * Util.getRandom().nextFloat();
+			final float weaponDamage = weapon.getBaseMinDamage() + (weapon.getBaseMaxDamage() - weapon.getBaseMinDamage()) * Util.getRandom().nextFloat();
 			if (Util.roll(weapon.getBaseCritChance())) {
 				crit = true;
 				damage = weaponDamage * weapon.getCritDamageMultiplier();
@@ -155,7 +153,7 @@ public class CombatChain {
 			weapon.specialEffect(target);
 		}
 
-		int hitSound = CombatService.getHitSound(attacker);
+		final int hitSound = CombatService.getHitSound(attacker);
 		if (hitSound != 0) {
 			SoundService.play(
 				hitSound,
