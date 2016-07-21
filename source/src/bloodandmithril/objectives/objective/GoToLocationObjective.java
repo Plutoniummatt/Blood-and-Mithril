@@ -1,5 +1,7 @@
 package bloodandmithril.objectives.objective;
 
+import com.badlogic.gdx.math.Vector2;
+
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.event.Event;
@@ -7,8 +9,6 @@ import bloodandmithril.objectives.Objective;
 import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.util.SerializableMappingFunction;
 import bloodandmithril.world.Domain;
-
-import com.badlogic.gdx.math.Vector2;
 
 /**
  * An {@link Objective} for an {@link Individual} to go to a location, within tolerance
@@ -30,12 +30,12 @@ public class GoToLocationObjective implements Objective {
 	 * Constructor
 	 */
 	public GoToLocationObjective(
-			SerializableMappingFunction<Individual, Boolean> individualIdentificationFunction,
-			SerializableFunction<Vector2> location,
-			float tolerance,
-			int worldId,
-			SerializableFunction<Boolean> failureFunction,
-			String title) {
+			final SerializableMappingFunction<Individual, Boolean> individualIdentificationFunction,
+			final SerializableFunction<Vector2> location,
+			final float tolerance,
+			final int worldId,
+			final SerializableFunction<Boolean> failureFunction,
+			final String title) {
 		this.individualIdentificationFunction = individualIdentificationFunction;
 		this.location = location;
 		this.tolerance = tolerance;
@@ -68,7 +68,7 @@ public class GoToLocationObjective implements Objective {
 			return ObjectiveStatus.FAILED;
 		}
 
-		for (Individual individual : Domain.getWorld(worldId).getPositionalIndexMap().getNearbyEntities(Individual.class, location.call())) {
+		for (final Individual individual : Domain.getWorld(worldId).getPositionalIndexMap().getNearbyEntities(Individual.class, location.call())) {
 			if (individualIdentificationFunction.apply(individual)) {
 				if (individual.getState().position.cpy().sub(location.call().cpy()).len() <= tolerance) {
 					return ObjectiveStatus.COMPLETE;
@@ -81,7 +81,7 @@ public class GoToLocationObjective implements Objective {
 
 
 	@Override
-	public void listen(Event event) {
+	public void listen(final Event event) {
 	}
 
 

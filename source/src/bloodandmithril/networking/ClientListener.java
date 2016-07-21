@@ -29,9 +29,6 @@ public class ClientListener extends Listener {
 
 	@Override
 	public void received(final Connection connection, final Object object) {
-		// Sadface...
-		Wiring.injector().injectMembers(object);
-
 		if (!(object instanceof Responses)) {
 			return;
 		}
@@ -40,6 +37,9 @@ public class ClientListener extends Listener {
 
 		if (resp.executeInSingleThread()) {
 			for (final Response response : resp.getResponses()) {
+				// Sadface...
+				Wiring.injector().injectMembers(response);
+
 				if (response.forClient() != -1 && response.forClient() != client.getID()) {
 					continue;
 				}
@@ -49,6 +49,9 @@ public class ClientListener extends Listener {
 		}
 
 		for (final Response response : resp.getResponses()) {
+			// Sadface...
+			Wiring.injector().injectMembers(response);
+
 			if (response.forClient() != -1 && response.forClient() != client.getID()) {
 				continue;
 			}

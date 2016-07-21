@@ -13,6 +13,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.google.inject.Inject;
 
+import bloodandmithril.core.ClientModule;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.core.GameSetupService;
@@ -213,6 +214,13 @@ public class MainMenuWindow extends Window {
 
 										gameClientStateTracker.setActiveWorldId(Domain.getAllWorldIds().iterator().next().intValue());
 										gameClientStateTracker.setInGame(true);
+
+										// Multiplayer game
+										ClientServerInterface.setServer(false);
+
+										// "Install" the ClientModule
+										Wiring.reconfigure(new ClientModule());
+
 										gameSetupService.setup();
 									} catch (final Exception e) {
 

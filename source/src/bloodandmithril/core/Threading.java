@@ -10,7 +10,6 @@ import com.google.inject.Singleton;
 
 import bloodandmithril.event.Event;
 import bloodandmithril.event.EventListener;
-import bloodandmithril.graphics.Graphics;
 import bloodandmithril.graphics.particles.Particle;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.objectives.Mission;
@@ -51,7 +50,6 @@ public class Threading {
 	/** Update rate multiplier */
 	private float updateRate = 1.0f;
 
-	private final Graphics graphics;
 	private final GameSaver gameSaver;
 	private final GameClientStateTracker gameClientStateTracker;
 	private final MissionTracker missionTracker;
@@ -63,14 +61,12 @@ public class Threading {
 	 */
 	@Inject
 	Threading(
-		final Graphics graphics,
 		final GameSaver gameSaver,
 		final GameClientStateTracker gameClientStateTracker,
 		final MissionTracker missionTracker,
 		final WorldUpdateService worldUpdateService,
 		final TopographyGenerationService topographyGenerationService
 	) {
-		this.graphics = graphics;
 		this.gameSaver = gameSaver;
 		this.gameClientStateTracker = gameClientStateTracker;
 		this.missionTracker = missionTracker;
@@ -136,9 +132,7 @@ public class Threading {
 				if (System.currentTimeMillis() - prevFrame1 > 16) {
 					if (gameClientStateTracker.getActiveWorld() != null) {
 						topographyGenerationService.loadOrGenerateNullChunksAccordingToPosition(
-							gameClientStateTracker.getActiveWorld(),
-							(int) graphics.getCam().position.x,
-							(int) graphics.getCam().position.y
+							gameClientStateTracker.getActiveWorld()
 						);
 					}
 					prevFrame1 = System.currentTimeMillis();
@@ -148,9 +142,7 @@ public class Threading {
 					if (gameClientStateTracker.getActiveWorld() != null) {
 						Domain.getIndividuals().stream().forEach(individual -> {
 							topographyGenerationService.loadOrGenerateNullChunksAccordingToPosition(
-								gameClientStateTracker.getActiveWorld(),
-								(int) individual.getState().position.x,
-								(int) individual.getState().position.y
+								gameClientStateTracker.getActiveWorld()
 							);
 						});
 					}

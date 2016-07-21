@@ -16,10 +16,6 @@ import bloodandmithril.util.SerializableFunction;
  */
 @Copyright("Matthew Peck 2015")
 public class NotifyTextBubble implements Response {
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 3718843397631863398L;
 
 	@Inject private transient UserInterface userInterface;

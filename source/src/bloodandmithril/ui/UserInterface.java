@@ -71,7 +71,6 @@ import bloodandmithril.control.Controls;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.core.ThreadedTasks;
-import bloodandmithril.core.Threading;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.generation.Structure;
 import bloodandmithril.generation.Structures;
@@ -201,7 +200,6 @@ public class UserInterface {
 	@Inject private ChunkProvider chunkLoader;
 	@Inject private FactionControlService factionControlService;
 	@Inject private GameClientStateTracker gameClientStateTracker;
-	@Inject private Threading threading;
 	@Inject private TopographyDebugRenderer topographyDebugRenderer;
 
 
@@ -1058,7 +1056,6 @@ public class UserInterface {
 		}
 
 		defaultFont.draw(graphics.getSpriteBatch(), "Framerate: " + fpsDisplayed, 5, graphics.getHeight() - 65);
-		defaultFont.draw(graphics.getSpriteBatch(), "Game speed: " + threading.getUpdateRate() + "x", graphics.getWidth() - 165, 20);
 		renderMouseText();
 	}
 
