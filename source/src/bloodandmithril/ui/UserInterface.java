@@ -10,6 +10,8 @@ import static bloodandmithril.control.InputUtilities.screenToWorldX;
 import static bloodandmithril.control.InputUtilities.screenToWorldY;
 import static bloodandmithril.control.InputUtilities.worldToScreenX;
 import static bloodandmithril.control.InputUtilities.worldToScreenY;
+import static bloodandmithril.graphics.Graphics.getGdxHeight;
+import static bloodandmithril.graphics.Graphics.getGdxWidth;
 import static bloodandmithril.item.items.equipment.weapon.RangedWeapon.rangeControl;
 import static bloodandmithril.networking.ClientServerInterface.isClient;
 import static bloodandmithril.networking.ClientServerInterface.isServer;
@@ -207,6 +209,11 @@ public class UserInterface {
 	 * @return a Camera that is used to display UI elements, but the coordiantes move with the main game camera
 	 */
 	public OrthographicCamera getUITrackingCamera() {
+		if (UICameraTrackingCam == null) {
+			UICameraTrackingCam = new OrthographicCamera(getGdxWidth(), getGdxHeight());
+			UICameraTrackingCam.setToOrtho(false, getGdxWidth(), getGdxHeight());
+		}
+
 		return UICameraTrackingCam;
 	}
 
@@ -215,6 +222,11 @@ public class UserInterface {
 	 * @return a Camera that is fixed to the game window
 	 */
 	public OrthographicCamera getUICamera() {
+		if (UICamera == null) {
+			UICamera = new OrthographicCamera(getGdxWidth(), getGdxHeight());
+			UICamera.setToOrtho(false, getGdxWidth(), getGdxHeight());
+		}
+
 		return UICamera;
 	}
 
