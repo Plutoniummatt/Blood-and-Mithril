@@ -2,6 +2,7 @@ package bloodandmithril.character.ai.task;
 
 import static bloodandmithril.control.InputUtilities.worldToScreenX;
 import static bloodandmithril.control.InputUtilities.worldToScreenY;
+import static java.lang.Math.abs;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -136,7 +137,7 @@ public class GoToLocation extends AITask implements NextWaypointProvider {
 								break;
 							}
 							counter++;
-							if (getHost().getState().position.dst(w.waypoint) < Topography.TILE_SIZE * 2 && w.waypoint.y < getHost().getState().position.y) {
+							if (abs(w.waypoint.x - getHost().getState().position.x) <= Topography.TILE_SIZE/2 && getHost().getState().position.dst(w.waypoint) < Topography.TILE_SIZE && w.waypoint.y < getHost().getState().position.y) {
 								path.getAndRemoveNextWayPoint();
 								for (int i = 0; i < toRemove; i++) {
 									path.getAndRemoveNextWayPoint();

@@ -2,12 +2,12 @@ package bloodandmithril.character.individuals;
 
 import java.io.Serializable;
 
-import bloodandmithril.core.Copyright;
-
 import com.badlogic.gdx.math.Vector2;
 
+import bloodandmithril.core.Copyright;
+
 /**
- * Data used for {@link Kinematics} processing
+ * Data used for {@link IndividualKinematicsUpdater} processing
  *
  * @author Matt
  */
@@ -26,7 +26,7 @@ public class IndividualKineticsProcessingData implements Serializable {
 
 	/** Part of the step-up processing */
 	public int steps = 0;
-	
+
 	/** Determines fall damage */
 	public float distanceFallen = 0f;
 }

@@ -36,8 +36,8 @@ import bloodandmithril.world.topography.Topography.NoTileFoundException;
 @Copyright("Matthew Peck 2015")
 public class IndividualUpdateService {
 
-	@Inject
-	private PositionalIndexingService positionalIndexingService;
+	@Inject	private PositionalIndexingService positionalIndexingService;
+	@Inject	private IndividualKinematicsUpdater individualKinematicsUpdater;
 
 	/**
 	 * Updates the individual
@@ -111,8 +111,10 @@ public class IndividualUpdateService {
 		}
 
 		try {
-			Kinematics.kinetics(delta, Domain.getWorld(indi.getWorldId()), indi);
-		} catch (final NoTileFoundException e) {}
+			individualKinematicsUpdater.update(delta, Domain.getWorld(indi.getWorldId()), indi);
+		} catch (final NoTileFoundException e) {
+
+		}
 
 		updateConditions(indi, delta);
 		positionalIndexingService.indexInvidivual(indi);

@@ -132,7 +132,7 @@ public abstract class GroundTravellingIndividual extends Individual {
 				final float runSpeed = getRunSpeed();
 				final int accel = 2000;
 
-				if (!attacking && isCommandActive(controls.moveLeft.keyCode) && (Kinematics.canStepUp(-2, topography, getState(), getHeight(), getAI(), getKinematicsData()) || !Kinematics.obstructed(-2, topography, getState(), getHeight(), getAI(), getKinematicsData()))) {
+				if (!attacking && isCommandActive(controls.moveLeft.keyCode) && (LegacyIndividualKinematicsUpdater.canStepUp(-2, topography, getState(), getHeight(), getAI(), getKinematicsData()) || !LegacyIndividualKinematicsUpdater.obstructed(-2, topography, getState(), getHeight(), getAI(), getKinematicsData()))) {
 					if (isCommandActive(controls.walk.keyCode)) {
 						if (getState().velocity.x > -walkSpeed) {
 							getState().acceleration.x = -accel;
@@ -146,7 +146,7 @@ public abstract class GroundTravellingIndividual extends Individual {
 							getState().acceleration.x = accel;
 						}
 					}
-				} else if (!attacking && isCommandActive(controls.moveRight.keyCode) && (Kinematics.canStepUp(2, topography, getState(), getHeight(), getAI(), getKinematicsData()) || !Kinematics.obstructed(2, topography, getState(), getHeight(), getAI(), getKinematicsData()))) {
+				} else if (!attacking && isCommandActive(controls.moveRight.keyCode) && (LegacyIndividualKinematicsUpdater.canStepUp(2, topography, getState(), getHeight(), getAI(), getKinematicsData()) || !LegacyIndividualKinematicsUpdater.obstructed(2, topography, getState(), getHeight(), getAI(), getKinematicsData()))) {
 					if (isCommandActive(controls.walk.keyCode)) {
 						if (getState().velocity.x < walkSpeed) {
 							getState().acceleration.x = accel;
@@ -164,7 +164,7 @@ public abstract class GroundTravellingIndividual extends Individual {
 					getState().acceleration.x = 0f;
 
 					final int offset = isCommandActive(controls.moveRight.keyCode) ? 2 : isCommandActive(controls.moveLeft.keyCode) ? -2 : 0;
-					if (Kinematics.obstructed(offset, topography, getState(), getHeight(), getAI(), getKinematicsData()) && !Kinematics.canStepUp(offset, topography, getState(), getHeight(), getAI(), getKinematicsData()) && !(getAI().getCurrentTask() instanceof Idle)) {
+					if (LegacyIndividualKinematicsUpdater.obstructed(offset, topography, getState(), getHeight(), getAI(), getKinematicsData()) && !LegacyIndividualKinematicsUpdater.canStepUp(offset, topography, getState(), getHeight(), getAI(), getKinematicsData()) && !(getAI().getCurrentTask() instanceof Idle)) {
 						getAI().setCurrentTask(new Idle());
 					}
 

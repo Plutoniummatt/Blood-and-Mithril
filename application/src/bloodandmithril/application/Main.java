@@ -29,6 +29,7 @@ public class Main {
 		cfg.resizable = true;
 		cfg.addIcon("data/image/smallIcon.png", FileType.Internal);
 		cfg.addIcon("data/image/icon.png", FileType.Internal);
+		cfg.allowSoftwareMode = false;
 
 		BloodAndMithrilClient.devMode = true;
 		client = new BloodAndMithrilClient();

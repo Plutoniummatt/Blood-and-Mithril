@@ -24,14 +24,10 @@ public class WorldUpdateService {
 
 	private static final float UPDATE_TICK = 1/60f;
 
-	@Inject
-	private ItemUpdateService itemUpdateService;
-	@Inject
-	private IndividualUpdateService individualUpdateService;
-	@Inject
-	private ProjectileUpdateService projectileUpdateService;
-	@Inject
-	private PropUpdater propUpdater;
+	@Inject	private ItemUpdateService itemUpdateService;
+	@Inject	private IndividualUpdateService individualUpdateService;
+	@Inject	private ProjectileUpdateService projectileUpdateService;
+	@Inject	private PropUpdater propUpdater;
 
 	/**
 	 * Updates a {@link World}

@@ -124,7 +124,7 @@ public abstract class Individual implements Equipper, Visible, MouseOverable, Sp
 	/** Holds state of the equipment and inventory */
 	private EquipperImpl equipperImpl;
 
-	/** Data used for {@link Kinematics} */
+	/** Data used for {@link IndividualKinematicsUpdater} */
 	private IndividualKineticsProcessingData kinematicsData = new IndividualKineticsProcessingData();
 
 	/** The defined area such that the individual can interact with objects */
