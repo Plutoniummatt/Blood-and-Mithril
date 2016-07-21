@@ -18,6 +18,10 @@ import bloodandmithril.world.topography.Topography.NoTileFoundException;
 @Copyright("Matthew Peck 2014")
 public class SendHarvestRequest implements Request {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3643861312380535218L;
 	private final int individualId;
 	private final int propId;
 

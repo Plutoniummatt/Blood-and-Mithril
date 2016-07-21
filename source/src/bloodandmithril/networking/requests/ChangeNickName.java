@@ -14,6 +14,7 @@ import bloodandmithril.world.Domain;
  */
 @Copyright("Matthew Peck 2014")
 public class ChangeNickName implements Request {
+	private static final long serialVersionUID = -6771333499463684351L;
 
 	/** ID of the {@link Individual} to change name nick for */
 	private final int individualId;
@@ -22,7 +23,7 @@ public class ChangeNickName implements Request {
 	/**
 	 * Constructor
 	 */
-	public ChangeNickName(int individualId, String toChangeTo) {
+	public ChangeNickName(final int individualId, final String toChangeTo) {
 		this.individualId = individualId;
 		this.toChangeTo = toChangeTo;
 	}
@@ -30,12 +31,12 @@ public class ChangeNickName implements Request {
 
 	@Override
 	public Responses respond() {
-		Individual individual = Domain.getIndividual(individualId);
+		final Individual individual = Domain.getIndividual(individualId);
 		if (individual != null) {
 			individual.getId().setNickName(toChangeTo);
 		}
 
-		Responses responses = new Responses(false);
+		final Responses responses = new Responses(false);
 		responses.add(new ChangeNickNameResponse());
 		return responses;
 	}
@@ -54,6 +55,11 @@ public class ChangeNickName implements Request {
 
 
 	public static class ChangeNickNameResponse implements Response {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -9134585463412362348L;
+
 		@Override
 		public void acknowledge() {
 			// Do nothing

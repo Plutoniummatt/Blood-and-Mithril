@@ -17,6 +17,10 @@ import com.badlogic.gdx.math.Vector2;
 @Copyright("Matthew Peck 2014")
 public class CSIMineTile implements Request {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3777591600703104727L;
 	private final int individualId;
 	private final Vector2 location;
 

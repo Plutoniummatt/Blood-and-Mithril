@@ -18,6 +18,12 @@ import bloodandmithril.world.Domain;
 @Copyright("Matthew Peck 2015")
 public class RequestSuppressAI implements Request {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4833298254701897539L;
+
+
 	@Inject
 	private transient IndividualAISupressionService individualAISupressionService;
 

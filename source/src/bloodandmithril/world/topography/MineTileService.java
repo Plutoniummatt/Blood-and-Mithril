@@ -26,8 +26,8 @@ import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 @Copyright("Matthew Peck 2016")
 public class MineTileService {
 
-	@Inject	private transient TopographyTaskExecutor topographyTaskExecutor;
-	@Inject	private transient UserInterface userInterface;
+	@Inject	private TopographyTaskExecutor topographyTaskExecutor;
+	@Inject	private UserInterface userInterface;
 
 	/**
 	 * Mines the tile

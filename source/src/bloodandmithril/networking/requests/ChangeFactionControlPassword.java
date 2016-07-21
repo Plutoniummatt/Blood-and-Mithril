@@ -14,6 +14,7 @@ import bloodandmithril.world.Domain;
  */
 @Copyright("Matthew Peck 2014")
 public class ChangeFactionControlPassword implements Request {
+	private static final long serialVersionUID = 8651577318551438579L;
 
 	private final String newPassword;
 	private final int factionId;

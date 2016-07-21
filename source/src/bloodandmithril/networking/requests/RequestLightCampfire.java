@@ -18,6 +18,10 @@ import bloodandmithril.world.topography.Topography.NoTileFoundException;
 @Copyright("Matthew Peck 2014")
 public class RequestLightCampfire implements Request {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8062237410833232514L;
 	private final int individualId, lightable;
 
 	/**

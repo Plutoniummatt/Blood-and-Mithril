@@ -14,6 +14,10 @@ import bloodandmithril.util.SerializableFunction;
 @Copyright("Matthew Peck 2014")
 public class MessageWindowNotification implements Response {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7646722704883165408L;
 	private int client;
 	private String title, message;
 	private SerializableFunction<Boolean> function;

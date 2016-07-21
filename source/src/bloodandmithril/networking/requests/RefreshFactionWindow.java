@@ -16,6 +16,10 @@ import bloodandmithril.ui.components.window.FactionsWindow;
 @Copyright("Matthew Peck 2016")
 public class RefreshFactionWindow implements Response {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4654163362033906388L;
 	@Inject private transient UserInterface userInterface;
 
 	@Override

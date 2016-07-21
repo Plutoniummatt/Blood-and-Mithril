@@ -13,6 +13,11 @@ import bloodandmithril.ui.Refreshable;
 @Copyright("Matthew Peck 2014")
 public class RefreshWindows implements Request {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8472945642300077771L;
+
 	@Override
 	public Responses respond() {
 		final Responses responses = new Responses(false);

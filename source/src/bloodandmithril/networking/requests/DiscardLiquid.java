@@ -15,6 +15,10 @@ import bloodandmithril.world.Domain;
 @Copyright("Matthew Peck 2014")
 public class DiscardLiquid implements Request {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4148066790493235937L;
 	private final int individualId;
 	private final LiquidContainerItem bottleToDiscardFrom;
 	private final float amount;

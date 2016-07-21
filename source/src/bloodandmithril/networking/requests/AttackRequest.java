@@ -19,6 +19,7 @@ import bloodandmithril.world.Domain;
  */
 @Copyright("Matthew Peck 2014")
 public class AttackRequest implements Request {
+	private static final long serialVersionUID = -6580583556083047964L;
 
 	@Inject
 	private transient IndividualAttackOtherService individualAttackOtherService;

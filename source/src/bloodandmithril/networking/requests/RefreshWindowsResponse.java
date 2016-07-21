@@ -14,6 +14,10 @@ import bloodandmithril.ui.UserInterface;
 @Copyright("Matthew Peck")
 public class RefreshWindowsResponse implements Response {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 898090512872543483L;
 	@Inject private transient UserInterface userInterface;
 
 	@Override

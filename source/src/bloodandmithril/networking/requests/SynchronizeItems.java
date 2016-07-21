@@ -17,6 +17,10 @@ import com.google.common.collect.Maps;
 @Copyright("Matthew Peck 2014")
 public class SynchronizeItems implements Response {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1260091097982289461L;
 	private HashMap<Integer, Item> items;
 	private int worldId;
 

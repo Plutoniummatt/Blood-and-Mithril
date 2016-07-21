@@ -17,6 +17,10 @@ import bloodandmithril.world.Domain;
 @Copyright("Matthew Peck 2014")
 public class OpenTradeWindow implements Request {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 9173133908475415714L;
 	private final int proposerId;
 	private final TradeEntity proposee;
 	private final int proposeeId;
@@ -81,6 +85,10 @@ public class OpenTradeWindow implements Request {
 
 	public static class OpenTradeWindowResponse implements Response {
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 4563938302580135709L;
 		private final int proposerId;
 		private final TradeEntity proposeeEntity;
 		private final int proposeeId;

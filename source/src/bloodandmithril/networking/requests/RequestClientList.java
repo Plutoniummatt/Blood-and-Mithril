@@ -30,6 +30,12 @@ import bloodandmithril.util.Fonts;
 @Copyright("Matthew Peck 2014")
 public class RequestClientList implements Request {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1450489699671611155L;
+
+
 	@Override
 	public Responses respond() {
 		final Responses responses = new Responses(false);
@@ -58,6 +64,10 @@ public class RequestClientList implements Request {
 
 	public static class RequestClientListResponse implements Response {
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 310367693027429488L;
 		private final List<String> names;
 
 		/**

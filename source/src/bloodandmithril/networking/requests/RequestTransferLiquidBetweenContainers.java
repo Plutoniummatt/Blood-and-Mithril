@@ -15,6 +15,10 @@ import bloodandmithril.world.Domain;
 @Copyright("Matthew Peck 2014")
 public class RequestTransferLiquidBetweenContainers implements Request {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7770197659549255695L;
 	private final int individualId;
 	private final LiquidContainerItem from, to;
 	private final float amount;

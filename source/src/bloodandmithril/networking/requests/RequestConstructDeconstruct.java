@@ -9,6 +9,10 @@ import bloodandmithril.world.Domain;
 
 public class RequestConstructDeconstruct implements Request {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -299313925434137465L;
 	private final int individualId;
 	private final int propId;
 	private final int connectionId;

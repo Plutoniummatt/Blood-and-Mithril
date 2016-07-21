@@ -17,6 +17,10 @@ import bloodandmithril.world.Domain;
 @Copyright("Matthew Peck 2014")
 public class SynchronizePropRequest implements Request {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3006451944759307548L;
 	private final int propId;
 	private final int worldId;
 
@@ -49,6 +53,10 @@ public class SynchronizePropRequest implements Request {
 
 	public static class SynchronizePropResponse implements Response {
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1882634540580465303L;
 		private final Prop prop;
 
 		public SynchronizePropResponse(final Prop prop) {

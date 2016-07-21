@@ -17,6 +17,10 @@ import bloodandmithril.world.Domain;
 @Copyright("Matthew Peck 2015")
 public class RequestSetAmmo implements Request {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7286517647480079231L;
 	private final int individualId;
 	private final RangedWeapon weapon;
 	private final Item ammo;

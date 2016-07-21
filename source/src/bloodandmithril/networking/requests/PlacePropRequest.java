@@ -19,6 +19,10 @@ import com.badlogic.gdx.math.Vector2;
 @Copyright("Matthew Peck")
 public class PlacePropRequest implements Request {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3329786910978246100L;
 	private final Prop prop;
 	private final int worldId;
 	private final float x;

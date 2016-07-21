@@ -17,6 +17,10 @@ import com.badlogic.gdx.math.Vector2;
 @Copyright("Matthew Peck 2014")
 public class DestroyTile implements Request {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3447787166708764634L;
 	public final float worldX, worldY;
 	public final boolean foreground;
 	private int worldId;
@@ -50,6 +54,10 @@ public class DestroyTile implements Request {
 
 	public static class DestroyTileResponse implements Response {
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 4100572243042514921L;
 		public final float worldX, worldY;
 		public final boolean foreground;
 		private int worldId;

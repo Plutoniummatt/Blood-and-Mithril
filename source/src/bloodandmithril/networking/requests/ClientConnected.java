@@ -13,6 +13,10 @@ import bloodandmithril.networking.Response.Responses;
 @Copyright("Matthew Peck 2014")
 public class ClientConnected implements Request {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 9156118240030879962L;
 	private final int id;
 	private final String name;
 

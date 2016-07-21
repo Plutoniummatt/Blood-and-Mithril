@@ -19,6 +19,11 @@ import bloodandmithril.world.Domain;
 @Copyright("Matthew Peck 2014")
 public class MoveIndividual implements Request {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3018948370620961122L;
+
 	/** id of the {@link Individual} to be moved */
 	public final int individualId;
 

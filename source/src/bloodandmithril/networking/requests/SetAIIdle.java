@@ -16,6 +16,10 @@ import bloodandmithril.world.Domain;
 @Copyright("Matthew Peck 2014")
 public class SetAIIdle implements Request {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 332923437220376737L;
 	private final int individualId;
 
 	/**

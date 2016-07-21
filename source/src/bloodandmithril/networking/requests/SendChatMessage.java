@@ -21,6 +21,10 @@ import bloodandmithril.ui.components.window.ChatWindow;
 @Copyright("Matthew Peck 2014")
 public class SendChatMessage implements Request {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1450498638621888780L;
 	private final Message message;
 
 	/**
@@ -53,6 +57,10 @@ public class SendChatMessage implements Request {
 
 	public static class SendChatMessageResponse implements Response {
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 6073749771385970169L;
 		private final Message message;
 
 		/**

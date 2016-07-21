@@ -13,6 +13,10 @@ import bloodandmithril.world.Domain;
 @Copyright("Matthew Peck 2014")
 public class ToggleWalkRun implements Request {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3361191917549334543L;
 	private final boolean walk;
 	private final int individualId;
 

@@ -13,6 +13,10 @@ import bloodandmithril.world.Domain;
 @Copyright("Matthew Peck 2014")
 public class RequestStartCrafting implements Request {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5312066031108712263L;
 	private final int individualId;
 	private final int craftingStationId;
 	private final SerializableDoubleWrapper<Item, Integer> item;

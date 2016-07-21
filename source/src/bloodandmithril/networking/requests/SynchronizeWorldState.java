@@ -12,6 +12,12 @@ import bloodandmithril.world.World;
 @Copyright("Matthew Peck 2014")
 public class SynchronizeWorldState implements Request {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3436328783410906576L;
+
+
 	@Override
 	public Responses respond() {
 		final Responses responses = new Responses(false);
@@ -38,6 +44,10 @@ public class SynchronizeWorldState implements Request {
 
 	public static class SynchronizeWorldStateResponse implements Response {
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 4694224818215818773L;
 		private final float gravity;
 		private final Epoch currentEpoch;
 		private final int worldId;

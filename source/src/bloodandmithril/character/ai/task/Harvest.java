@@ -80,8 +80,8 @@ public final class Harvest extends CompositeAITask implements RoutineTask {
 	/** Coordinate of the {@link Harvestable} to harvest */
 	private final Prop harvestable;
 
-	@Inject private GameClientStateTracker gameClientStateTracker;
-	@Inject private UserInterface userInterface;
+	@Inject private transient GameClientStateTracker gameClientStateTracker;
+	@Inject private transient UserInterface userInterface;
 
 	@Inject
 	Harvest() {

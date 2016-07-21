@@ -12,6 +12,10 @@ import bloodandmithril.world.Domain;
 @Copyright("Matthew Peck 2014")
 public class DestroyPropNotification implements Response {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5387337418293298104L;
 	private final int propId;
 	private final int worldId;
 

@@ -9,6 +9,10 @@ import com.badlogic.gdx.math.Vector2;
 @Copyright("Matthew Peck 2014")
 public class PlaySound implements Response {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6383519222619451664L;
 	private final int client;
 	private final int soundId;
 	private final Vector2 location;

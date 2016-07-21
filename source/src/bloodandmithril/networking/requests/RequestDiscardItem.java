@@ -16,6 +16,10 @@ import bloodandmithril.world.Domain;
 @Copyright("Matthew Peck 2014")
 public class RequestDiscardItem implements Request {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3424940918130526953L;
 	private final Item item;
 	private final int quantity;
 	private final int hostId;

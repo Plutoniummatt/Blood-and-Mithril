@@ -16,6 +16,10 @@ import bloodandmithril.world.Domain;
 @Copyright("Matthew Peck 2014")
 public class ConsumeItem implements Request {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1880847101299030896L;
 	private final int individualId;
 	private final Consumable consumable;
 

@@ -15,6 +15,10 @@ import bloodandmithril.world.topography.Topography.NoTileFoundException;
  */
 public class RequestPlantSeed implements Request {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5041237335745201360L;
 	int planterId;
 	SeedProp toPlant;
 

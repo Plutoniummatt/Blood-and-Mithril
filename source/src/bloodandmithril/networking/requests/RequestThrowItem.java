@@ -19,8 +19,9 @@ import bloodandmithril.world.Domain;
  */
 @Copyright("Matthew Peck 2015")
 public class RequestThrowItem implements Request {
+	private static final long serialVersionUID = -2754885729555328305L;
 
-	@Inject private UserInterface userInterface;
+	@Inject private transient UserInterface userInterface;
 
 	private int individualId;
 	private Item toThrow;

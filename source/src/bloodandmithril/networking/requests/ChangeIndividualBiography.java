@@ -13,6 +13,7 @@ import bloodandmithril.world.Domain;
  */
 @Copyright("Matthew Peck 2014")
 public class ChangeIndividualBiography implements Request {
+	private static final long serialVersionUID = 8011893675258562599L;
 
 	private final int individualId;
 	private final String description;
@@ -20,7 +21,7 @@ public class ChangeIndividualBiography implements Request {
 	/**
 	 * Construction
 	 */
-	public ChangeIndividualBiography(Individual individual, String description) {
+	public ChangeIndividualBiography(final Individual individual, final String description) {
 		this.individualId = individual.getId().getId();
 		this.description = description;
 	}
@@ -29,7 +30,7 @@ public class ChangeIndividualBiography implements Request {
 	@Override
 	public Responses respond() {
 		Domain.getIndividual(individualId).updateDescription(description);
-		Responses responses = new Responses(false);
+		final Responses responses = new Responses(false);
 		responses.add(new SynchronizeIndividual.SynchronizeIndividualResponse(individualId, System.currentTimeMillis()));
 		return responses;
 	}

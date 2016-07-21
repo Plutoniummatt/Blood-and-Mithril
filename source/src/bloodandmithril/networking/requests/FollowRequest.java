@@ -16,6 +16,10 @@ import bloodandmithril.world.Domain;
 @Copyright("Matthew Peck 2014")
 public class FollowRequest implements Request {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6303059176298455708L;
 	private final int followerId;
 	private final int followeeId;
 	private final int distance;

@@ -14,6 +14,10 @@ import bloodandmithril.world.WorldProjectiles;
 @Copyright("Matthew Peck 2015")
 public class SynchronizeProjectiles implements Response {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7646256470317154496L;
 	private final WorldProjectiles projectiles;
 	private final int worldId;
 

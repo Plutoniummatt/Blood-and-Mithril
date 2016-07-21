@@ -128,7 +128,6 @@ import bloodandmithril.character.proficiency.proficiencies.Carpentry;
 import bloodandmithril.character.proficiency.proficiencies.Cooking;
 import bloodandmithril.character.proficiency.proficiencies.Smithing;
 import bloodandmithril.core.Copyright;
-import bloodandmithril.generation.ChunkGenerator;
 import bloodandmithril.generation.biome.BiomeDecider;
 import bloodandmithril.generation.biome.DefaultBiomeDecider;
 import bloodandmithril.graphics.WorldRenderer.Depth;
@@ -493,7 +492,6 @@ public class ClientServerInterface {
 		kryo.register(Behaviour.class);
 		kryo.register(DefaultBiomeDecider.class);
 		kryo.register(BiomeDecider.class);
-		kryo.register(ChunkGenerator.class);
 		kryo.register(DryGrass.class);
 		kryo.register(Lantern.class);
 		kryo.register(RequestSuppressAI.class);

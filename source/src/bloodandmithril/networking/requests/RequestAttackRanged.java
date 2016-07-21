@@ -18,6 +18,10 @@ import bloodandmithril.world.Domain;
 @Copyright("Matthew Peck 2015")
 public class RequestAttackRanged implements Request {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1811765430701225537L;
 	private final int individualId;
 	private final Vector2 direction;
 

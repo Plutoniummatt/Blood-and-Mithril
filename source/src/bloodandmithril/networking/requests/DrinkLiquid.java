@@ -16,6 +16,10 @@ import bloodandmithril.world.Domain;
 @Copyright("Matthew Peck 2014")
 public class DrinkLiquid implements Request {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2905754432354532299L;
 	private final int individualId;
 	private final LiquidContainerItem bottleToDrinkFrom;
 	private final float amount;

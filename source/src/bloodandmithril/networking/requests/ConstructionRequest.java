@@ -15,6 +15,7 @@ import bloodandmithril.world.Domain;
  */
 @Copyright("Matthew Peck 2014")
 public class ConstructionRequest implements Request {
+	private static final long serialVersionUID = 7191403413062601744L;
 
 	private int individualId, constructionId;
 	private final boolean deconstruct;
@@ -22,7 +23,7 @@ public class ConstructionRequest implements Request {
 	/**
 	 * Constructor
 	 */
-	public ConstructionRequest(int individualId, int constructionId, boolean deconstruct) {
+	public ConstructionRequest(final int individualId, final int constructionId, final boolean deconstruct) {
 		this.individualId = individualId;
 		this.constructionId = constructionId;
 		this.deconstruct = deconstruct;
@@ -31,7 +32,7 @@ public class ConstructionRequest implements Request {
 
 	@Override
 	public Responses respond() {
-		Individual individual = Domain.getIndividual(individualId);
+		final Individual individual = Domain.getIndividual(individualId);
 		individual.getAI().setCurrentTask(new Construct(individual, (Construction)Domain.getWorld(individual.getWorldId()).props().getProp(constructionId), deconstruct));
 		return new Responses(false);
 	}

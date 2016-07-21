@@ -18,6 +18,10 @@ import bloodandmithril.world.topography.Topography.NoTileFoundException;
 @Copyright("Matthew Peck 2014")
 public class LockUnlockContainerRequest implements Request {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4618215967321196264L;
 	private int individualId;
 	private int containerId;
 	private boolean lock;

@@ -28,6 +28,10 @@ import bloodandmithril.world.Domain;
 @Copyright("Matthew Peck 2014")
 public class SynchronizeIndividual implements Request {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5517704725260813610L;
 	/** ID of the individual to sync */
 	private final int id;
 
@@ -68,6 +72,11 @@ public class SynchronizeIndividual implements Request {
 	 * @author Matt
 	 */
 	public static class SynchronizeIndividualResponse implements Response {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -3908110267978057038L;
 
 		private Individual individual;
 

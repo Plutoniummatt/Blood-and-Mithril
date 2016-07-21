@@ -1,7 +1,5 @@
 package bloodandmithril.generation;
 
-import java.io.Serializable;
-
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -21,8 +19,7 @@ import bloodandmithril.world.topography.tile.Tile;
  */
 @Singleton
 @Copyright("Matthew Peck 2014")
-public class ChunkGenerator implements Serializable {
-	private static final long serialVersionUID = -2526181045653733253L;
+public class ChunkGenerator {
 
 	@Inject private UserInterface userInterface;
 

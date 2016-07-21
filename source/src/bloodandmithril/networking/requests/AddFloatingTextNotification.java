@@ -10,6 +10,11 @@ import bloodandmithril.ui.UserInterface;
 @Copyright("Matthew Peck 2014")
 public class AddFloatingTextNotification implements Response {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6927299424717181238L;
+
 	@Inject private transient UserInterface userInterface;
 
 	private final FloatingText floatingText;

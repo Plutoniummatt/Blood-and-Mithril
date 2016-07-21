@@ -15,6 +15,10 @@ import bloodandmithril.world.Domain;
 @Copyright("Matthew Peck 2015")
 public class SynchronizeParticles implements Response {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 279415632035348595L;
 	private final int worldId;
 	private final ConcurrentHashMap<Long, Particle> particles;
 

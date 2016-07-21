@@ -1,5 +1,7 @@
 package bloodandmithril.networking;
 
+import java.io.Serializable;
+
 import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.Response.Responses;
 
@@ -10,7 +12,7 @@ import bloodandmithril.networking.Response.Responses;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
-public interface Request {
+public interface Request extends Serializable {
 
 	/** Respond to the request */
 	public Responses respond();

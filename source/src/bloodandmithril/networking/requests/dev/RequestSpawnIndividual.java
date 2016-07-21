@@ -16,6 +16,11 @@ import bloodandmithril.networking.Response.Responses;
 @Copyright("Matthew Peck 2015")
 public class RequestSpawnIndividual implements Request {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5363526506365938095L;
+
 	private Individual individual;
 
 	@Inject

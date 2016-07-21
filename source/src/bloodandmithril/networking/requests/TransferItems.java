@@ -22,6 +22,11 @@ import bloodandmithril.world.Domain;
 @Copyright("Matthew Peck 2014")
 public class TransferItems implements Request {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5352080040358472583L;
+
 	@Inject
 	private transient TradeService tradeService;
 
@@ -94,6 +99,10 @@ public class TransferItems implements Request {
 
 
 	public static class TransferItemsResponse implements Response {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 2197983833708810099L;
 		public final int client;
 
 		/**

@@ -16,6 +16,12 @@ import bloodandmithril.world.Domain;
 public class SynchronizeFaction implements Request {
 
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2558227980802524539L;
+
+
 	@Override
 	public Responses respond() {
 		final Responses responses = new Responses(true);
@@ -40,6 +46,10 @@ public class SynchronizeFaction implements Request {
 
 
 	public static class SynchronizeFactionResponse implements Response {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 3730736299252453948L;
 		private final Faction faction;
 
 		/** Constructor */

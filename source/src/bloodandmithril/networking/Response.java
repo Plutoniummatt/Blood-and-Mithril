@@ -1,5 +1,6 @@
 package bloodandmithril.networking;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -12,7 +13,7 @@ import bloodandmithril.core.Copyright;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
-public interface Response {
+public interface Response extends Serializable {
 
 	/** Acknowledges the response */
 	public void acknowledge();
@@ -27,7 +28,7 @@ public interface Response {
 		private LinkedList<Response> responses;
 		private boolean executeInSingleThread;
 
-		public Responses(boolean executeInSingleThread) {
+		public Responses(final boolean executeInSingleThread) {
 			this.executeInSingleThread = executeInSingleThread;
 			this.responses = new LinkedList<Response>();
 		}
@@ -40,7 +41,7 @@ public interface Response {
 			return responses;
 		}
 
-		public void add(Response response) {
+		public void add(final Response response) {
 			responses.add(response);
 		}
 	}

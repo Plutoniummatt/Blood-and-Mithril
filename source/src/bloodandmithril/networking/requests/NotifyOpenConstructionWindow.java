@@ -17,8 +17,9 @@ import bloodandmithril.world.Domain;
  */
 @Copyright("Matthew Peck 2015")
 public class NotifyOpenConstructionWindow implements Response {
+	private static final long serialVersionUID = 5622673656804734492L;
 
-	@Inject private UserInterface userInterface;
+	@Inject private transient UserInterface userInterface;
 
 	private final int constructionId;
 	private final int constructorId;

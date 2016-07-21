@@ -21,6 +21,10 @@ import com.google.common.collect.Lists;
 @Copyright("Matthew Peck 2014")
 public class RequestTakeItem implements Request {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8363552086788838650L;
 	private final int individualId;
 	private Collection<Integer> items = Lists.newArrayList();
 

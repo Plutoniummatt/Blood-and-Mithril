@@ -22,6 +22,11 @@ import bloodandmithril.world.topography.TopographyGenerationService;
 @Copyright("Matthew Peck 2014")
 public class GenerateChunk implements Request {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8231460313083269664L;
+
 	@Inject
 	private transient TopographyGenerationService topographyGenerationService;
 
@@ -80,6 +85,10 @@ public class GenerateChunk implements Request {
 
 	public static class GenerateChunkResponse implements Response {
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -589460079755742400L;
 		/** Chunk coordinates */
 		private final ChunkData fData;
 		private final ChunkData bData;

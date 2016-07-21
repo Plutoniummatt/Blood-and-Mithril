@@ -17,6 +17,11 @@ import bloodandmithril.world.Domain;
 @Copyright("Matthew Peck 2014")
 public class IndividualSelection implements Request {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3728843334859621341L;
+
 	/** id of the {@link Individual} to be selected or deselected */
 	public final int individualId;
 
@@ -72,6 +77,11 @@ public class IndividualSelection implements Request {
 
 
 	public static class SelectIndividualResponse implements Response {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -1925198284609584297L;
 
 		@Inject
 		private transient GameClientStateTracker gameClientStateTracker;

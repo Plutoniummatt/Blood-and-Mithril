@@ -13,6 +13,7 @@ import bloodandmithril.world.Domain;
  * Request to tell the server that an {@link Individual} would like to open a {@link CraftingStation}.
  */
 public class CSIOpenCraftingStation implements Request {
+	private static final long serialVersionUID = 4115875631842138064L;
 
 	private final int craftingStationId;
 	private final int individualId;
@@ -22,7 +23,7 @@ public class CSIOpenCraftingStation implements Request {
 	/**
 	 * Constructor
 	 */
-	public CSIOpenCraftingStation(int individualId, int craftingStationId, int connectionId, int worldId) {
+	public CSIOpenCraftingStation(final int individualId, final int craftingStationId, final int connectionId, final int worldId) {
 		this.individualId = individualId;
 		this.craftingStationId = craftingStationId;
 		this.connectionId = connectionId;
@@ -32,10 +33,10 @@ public class CSIOpenCraftingStation implements Request {
 
 	@Override
 	public Responses respond() {
-		Responses response = new Response.Responses(false);
+		final Responses response = new Response.Responses(false);
 
-		Individual individual = Domain.getIndividual(individualId);
-		Prop prop = Domain.getWorld(worldId).props().getProp(craftingStationId);
+		final Individual individual = Domain.getIndividual(individualId);
+		final Prop prop = Domain.getWorld(worldId).props().getProp(craftingStationId);
 		if (prop instanceof CraftingStation) {
 			individual.getAI().setCurrentTask(
 				new OpenCraftingStation(individual, (CraftingStation) prop, connectionId)
@@ -60,11 +61,15 @@ public class CSIOpenCraftingStation implements Request {
 
 	public static class NotifyOpenCraftingStationWindow implements Response {
 
+		/**
+		 *
+		 */
+		private static final long serialVersionUID = 6302983218575053744L;
 		private final int individualId;
 		private final int craftingStationId;
 		private final int worldId;
 
-		public NotifyOpenCraftingStationWindow(int individualId, int craftingStationId, int worldId) {
+		public NotifyOpenCraftingStationWindow(final int individualId, final int craftingStationId, final int worldId) {
 			this.individualId = individualId;
 			this.craftingStationId = craftingStationId;
 			this.worldId = worldId;
@@ -72,7 +77,7 @@ public class CSIOpenCraftingStation implements Request {
 
 		@Override
 		public void acknowledge() {
-			Prop prop = Domain.getWorld(worldId).props().getProp(craftingStationId);
+			final Prop prop = Domain.getWorld(worldId).props().getProp(craftingStationId);
 			if (prop instanceof CraftingStation) {
 				OpenCraftingStation.openCraftingStationWindow(Domain.getIndividual(individualId), (CraftingStation)prop);
 			}

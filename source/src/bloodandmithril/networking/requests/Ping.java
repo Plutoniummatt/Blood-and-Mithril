@@ -14,6 +14,10 @@ import bloodandmithril.networking.Response.Responses;
 @Copyright("Matthew Peck 2014")
 public class Ping implements Request {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5289185610724387833L;
 	/** The ping */
 	public final long ping;
 
@@ -41,6 +45,10 @@ public class Ping implements Request {
 	 */
 	public static class Pong implements Response {
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 2190657732582696073L;
 		/** The ping */
 		public long ping;
 

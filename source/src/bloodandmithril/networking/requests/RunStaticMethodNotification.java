@@ -4,6 +4,10 @@ import bloodandmithril.networking.Response;
 
 public class RunStaticMethodNotification implements Response {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8888652753964554643L;
 	private Runnable staticMethod;
 	private int client;
 

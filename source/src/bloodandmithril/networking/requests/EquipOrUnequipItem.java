@@ -15,6 +15,10 @@ import bloodandmithril.world.Domain;
 @Copyright("Matthew Peck 2014")
 public class EquipOrUnequipItem implements Request {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7660653489722832397L;
 	private final int individualId;
 	private final Equipable equipable;
 	private final boolean equip;

@@ -27,7 +27,7 @@ import bloodandmithril.world.topography.Topography.NoTileFoundException;
 public class PlaceProp extends CompositeAITask {
 	private static final long serialVersionUID = 6459464517158625281L;
 
-	@Inject private UserInterface userInterface;
+	@Inject private transient UserInterface userInterface;
 
 	private Vector2 position;
 	private PropItem propItem;

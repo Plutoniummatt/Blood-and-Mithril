@@ -17,6 +17,10 @@ import bloodandmithril.world.Domain;
 @Copyright("Matthew Peck 2014")
 public class CSITradeWith implements Request {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -973354206062930233L;
 	private final int proposerId;
 	private final TradeEntity proposee;
 	private final int proposeeId;

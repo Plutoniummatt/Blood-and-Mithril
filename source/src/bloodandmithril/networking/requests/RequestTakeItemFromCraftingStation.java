@@ -15,6 +15,10 @@ import bloodandmithril.world.Domain;
 @Copyright("Matthew Peck 2014")
 public class RequestTakeItemFromCraftingStation implements Request {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3172926961949806871L;
 	private final int individualId;
 	private final int craftingStationId;
 
