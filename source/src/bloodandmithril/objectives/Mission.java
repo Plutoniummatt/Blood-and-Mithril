@@ -53,7 +53,7 @@ public abstract class Mission implements Objective {
 				SoundService.play(SoundService.achievement);
 				Wiring.injector().getInstance(Threading.class).clientProcessingThreadPool.submit(() -> {
 					for (int i = 0; i < 5; i++) {
-						UserInterface.addUIFloatingText(
+						Wiring.injector().getInstance(UserInterface.class).addUIFloatingText(
 							"Objective compelete",
 							Color.ORANGE,
 							new Vector2(220, 60)

@@ -29,7 +29,7 @@ public class GameSetupService {
 
 	public void setup() {
 		SoundService.changeMusic(2f, SoundService.desertAmbient);
-		userInterface.contextMenus.clear();
+		userInterface.getContextMenus().clear();
 		positionalIndexingService.reindex();
 		userInterface.loadBars();
 		userInterface.loadButtons();

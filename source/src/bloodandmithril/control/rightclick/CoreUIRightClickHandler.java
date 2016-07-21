@@ -35,7 +35,7 @@ public class CoreUIRightClickHandler implements RightClickHandler {
 	@Override
 	public boolean rightClick(final boolean doubleClick) {
 		if (!isKeyPressed(Keys.ANY_KEY)) {
-			UserInterface.initialRightMouseDragCoordinates = new Vector2(getMouseScreenX(), getMouseScreenY());
+			ui.initialRightMouseDragCoordinates = new Vector2(getMouseScreenX(), getMouseScreenY());
 			return rightClick();
 		}
 
@@ -50,7 +50,7 @@ public class CoreUIRightClickHandler implements RightClickHandler {
 			return false;
 		}
 
-		ui.contextMenus.clear();
+		ui.getContextMenus().clear();
 
 		final Deque<Component> layeredComponents = ui.getLayeredComponents();
 		if (!layeredComponents.isEmpty()) {

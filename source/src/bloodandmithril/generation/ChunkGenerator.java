@@ -2,6 +2,7 @@ package bloodandmithril.generation;
 
 import java.io.Serializable;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import bloodandmithril.core.Copyright;
@@ -23,8 +24,9 @@ import bloodandmithril.world.topography.tile.Tile;
 public class ChunkGenerator implements Serializable {
 	private static final long serialVersionUID = -2526181045653733253L;
 
-	public static final int maxSurfaceHeightInChunks = 50;
+	@Inject private UserInterface userInterface;
 
+	public static final int maxSurfaceHeightInChunks = 50;
 
 	/**
 	 * Generates a chunk, based on passed in chunk coordinates
@@ -119,7 +121,7 @@ public class ChunkGenerator implements Serializable {
 
 	/** Handles a {@link NullPointerException} during generation */
 	private void handleNPE(final Tile[][] bTiles, final int tileX, final int tileY, final NullPointerException e) {
-		if (!ClientServerInterface.isClient() && UserInterface.DEBUG) {
+		if (!ClientServerInterface.isClient() && userInterface.DEBUG) {
 			bTiles[tileX][tileY] = new Tile.DebugTile();
 		} else {
 			throw new RuntimeException("Got an NPE during generation", e);

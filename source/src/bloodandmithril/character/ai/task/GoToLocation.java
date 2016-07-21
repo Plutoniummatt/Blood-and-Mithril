@@ -170,22 +170,22 @@ public class GoToLocation extends AITask implements NextWaypointProvider {
 		final WayPoint nextPoint = path.getNextPoint();
 
 		if (nextPoint != null && nextPoint.waypoint != null) {
-			UserInterface.shapeRenderer.begin(ShapeType.Line);
-			UserInterface.shapeRenderer.setColor(Color.WHITE);
+			userInterface.getShapeRenderer().begin(ShapeType.Line);
+			userInterface.getShapeRenderer().setColor(Color.WHITE);
 			Gdx.gl.glLineWidth(3f);
 			final float startX = Domain.getIndividual(hostId.getId()).getState().position.x;
 			final float startY = Domain.getIndividual(hostId.getId()).getState().position.y;
 			final float endX = nextPoint.waypoint.x;
 			final float endY = nextPoint.waypoint.y;
 
-			UserInterface.shapeRenderer.line(
+			userInterface.getShapeRenderer().line(
 				worldToScreenX(startX),
 				worldToScreenY(startY),
 				worldToScreenX(endX),
 				worldToScreenY(endY)
 			);
 
-			UserInterface.shapeRenderer.end();
+			userInterface.getShapeRenderer().end();
 
 			path.render();
 		}

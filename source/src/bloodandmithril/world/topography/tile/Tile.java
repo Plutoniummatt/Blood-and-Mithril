@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.Color;
 import bloodandmithril.character.ai.task.MineTile;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
-import bloodandmithril.ui.UserInterface;
 import bloodandmithril.util.datastructure.BinaryTree;
 import bloodandmithril.world.topography.ChunkMap;
 import bloodandmithril.world.topography.Topography;
@@ -61,10 +60,10 @@ public abstract class Tile implements Serializable {
 	/**
 	 * Protected constructor
 	 */
-	protected Tile(boolean isPlatformTile) {
+	protected Tile(final boolean isPlatformTile) {
 		this.isPlatformTile = isPlatformTile;
 	}
-	
+
 	/**
 	 * The color of the particles emitted when this is mined
 	 */
@@ -73,7 +72,7 @@ public abstract class Tile implements Serializable {
 	/**
 	 * Returns the x component of the texture coordinate of the top left vertex
 	 */
-	public final float getTexCoordX(boolean foreGround) {
+	public final float getTexCoordX(final boolean foreGround) {
 
 		int texX = 0;
 		if (orientation != null) {
@@ -204,7 +203,7 @@ public abstract class Tile implements Serializable {
 	 * @param chunkX - the chunk x-coordinate
 	 * @param chunkY - the chunk y-coordinate
 	 */
-	public final void calculateOrientation(int chunkX, int chunkY, int x, int y, boolean foreGround, ChunkMap map) {
+	public final void calculateOrientation(final int chunkX, final int chunkY, final int x, final int y, final boolean foreGround, final ChunkMap map) {
 
 		Tile left;
 		Tile right;
@@ -255,10 +254,10 @@ public abstract class Tile implements Serializable {
 			below = map.get(chunkX).get(chunkY).getTile(x, y - 1, foreGround);
 		}
 
-		boolean aboveSame = above.getClass().equals(this.getClass());
-		boolean belowSame = below.getClass().equals(this.getClass());
-		boolean leftSame = left.getClass().equals(this.getClass());
-		boolean rightSame = right.getClass().equals(this.getClass());
+		final boolean aboveSame = above.getClass().equals(this.getClass());
+		final boolean belowSame = below.getClass().equals(this.getClass());
+		final boolean leftSame = left.getClass().equals(this.getClass());
+		final boolean rightSame = right.getClass().equals(this.getClass());
 
 		orientation = orientationTree.get(aboveSame, belowSame, leftSame, rightSame);
 	}
@@ -277,9 +276,6 @@ public abstract class Tile implements Serializable {
 		 */
 		public DebugTile() {
 			super(false);
-			if (!UserInterface.DEBUG) {
-				throw new RuntimeException("Attemping to create a debug tile, but debug mode is off");
-			}
 		}
 
 

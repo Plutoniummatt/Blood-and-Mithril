@@ -27,7 +27,7 @@ public class Travel extends CompositeAITask implements NextWaypointProvider {
 	private static final long serialVersionUID = -1118542666642761349L;
 
 	@Inject private transient UserInterface userInterface;
-	
+
 	/**
 	 * Constructor
 	 */
@@ -116,7 +116,7 @@ public class Travel extends CompositeAITask implements NextWaypointProvider {
 				offset = (float) Math.cos(getHost().getTravelIconTimer() + Math.PI) + 1f;
 			}
 
-			if (UserInterface.DEBUG) {
+			if (userInterface.DEBUG) {
 				final GoToLocation goToLocation = (GoToLocation)((JitGoToLocation)task).getTask();
 				if (goToLocation != null) {
 					goToLocation.renderPath();
@@ -141,7 +141,7 @@ public class Travel extends CompositeAITask implements NextWaypointProvider {
 
 			if (start != null) {
 				final Vector2 waypoint = ((Jump) task).getDestination();
-				UserInterface.renderJumpArrow(
+				userInterface.renderJumpArrow(
 					start,
 					waypoint
 				);

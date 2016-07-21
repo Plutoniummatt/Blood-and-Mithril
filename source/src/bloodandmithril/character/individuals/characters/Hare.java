@@ -67,26 +67,26 @@ public class Hare extends GroundTravellingIndividual implements Listener, Observ
 	private static Map<Action, List<WrapperForTwo<AnimationSwitcher, ShaderProgram>>> animationMap = newHashMap();
 
 	static {
-		boolean server = !ClientServerInterface.isClient();
+		final boolean server = !ClientServerInterface.isClient();
 
-		AnimationSwitcher walk = new AnimationSwitcher();
+		final AnimationSwitcher walk = new AnimationSwitcher();
 		walk.animations.put(individual -> {return true;}, AnimationHelper.animation(WorldRenderer.individualTexture, 0, 899, 48, 48, 4, 0.07f, PlayMode.LOOP));
 
-		ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> walkSequence = newArrayList(
+		final ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> walkSequence = newArrayList(
 			wrap(walk, server ? null : Shaders.pass)
 		);
 
-		AnimationSwitcher run = new AnimationSwitcher();
+		final AnimationSwitcher run = new AnimationSwitcher();
 		run.animations.put(individual -> {return true;}, AnimationHelper.animation(WorldRenderer.individualTexture, 0, 899, 48, 48, 4, 0.05f, PlayMode.LOOP));
 
-		ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> runSequence = newArrayList(
+		final ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> runSequence = newArrayList(
 			wrap(run, server ? null : Shaders.pass)
 		);
 
-		AnimationSwitcher stand = new AnimationSwitcher();
+		final AnimationSwitcher stand = new AnimationSwitcher();
 		stand.animations.put(individual -> {return true;}, AnimationHelper.animation(WorldRenderer.individualTexture, 0, 899, 48, 48, 1, 1f, PlayMode.LOOP));
 
-		ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> standSequence = newArrayList(
+		final ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> standSequence = newArrayList(
 			wrap(stand, server ? null : Shaders.pass)
 		);
 
@@ -104,10 +104,10 @@ public class Hare extends GroundTravellingIndividual implements Listener, Observ
 	 * Constructor
 	 */
 	public Hare(
-			IndividualIdentifier id,
-			IndividualState state,
-			int factionId,
-			int worldId) {
+			final IndividualIdentifier id,
+			final IndividualState state,
+			final int factionId,
+			final int worldId) {
 		super(
 			id,
 			state,
@@ -179,14 +179,14 @@ public class Hare extends GroundTravellingIndividual implements Listener, Observ
 
 	@Override
 	public Individual copy() {
-		Hare hare = new Hare(getId(), getState(), getFactionId(), getWorldId());
+		final Hare hare = new Hare(getId(), getState(), getFactionId(), getWorldId());
 		hare.copyFrom(this);
 		return hare;
 	}
 
 
 	@Override
-	protected void internalCopyFrom(Individual other) {
+	protected void internalCopyFrom(final Individual other) {
 	}
 
 
@@ -238,7 +238,7 @@ public class Hare extends GroundTravellingIndividual implements Listener, Observ
 
 
 	@Override
-	public void updateDescription(String updated) {
+	public void updateDescription(final String updated) {
 	}
 
 
@@ -268,7 +268,7 @@ public class Hare extends GroundTravellingIndividual implements Listener, Observ
 
 	@Override
 	public Collection<Vector2> getVisibleLocations() {
-		LinkedList<Vector2> locations = Lists.newLinkedList();
+		final LinkedList<Vector2> locations = Lists.newLinkedList();
 		locations.add(getState().position.cpy().add(0f, 10f));
 		locations.add(getState().position.cpy().add(0f, 30f));
 		return locations;
@@ -282,9 +282,9 @@ public class Hare extends GroundTravellingIndividual implements Listener, Observ
 
 
 	@Override
-	public void listen(SoundStimulus stimulus) {
+	public void listen(final SoundStimulus stimulus) {
 		if (stimulus instanceof SuspiciousSound) {
-			SuspicionLevel suspicionLevel = ((SuspiciousSound) stimulus).getSuspicionLevel();
+			final SuspicionLevel suspicionLevel = ((SuspiciousSound) stimulus).getSuspicionLevel();
 			if (suspicionLevel.severity >= SuspicionLevel.INVESTIGATE.severity) {
 				speak(" !", 1000);
 				if (getState().position.x > stimulus.getEmissionPosition().x) {
@@ -322,7 +322,7 @@ public class Hare extends GroundTravellingIndividual implements Listener, Observ
 
 
 	@Override
-	public boolean reactIfVisible(SoundStimulus stimulus) {
+	public boolean reactIfVisible(final SoundStimulus stimulus) {
 		return true;
 	}
 
@@ -339,7 +339,7 @@ public class Hare extends GroundTravellingIndividual implements Listener, Observ
 
 
 	@Override
-	public boolean sameAs(Visible other) {
+	public boolean sameAs(final Visible other) {
 		if (other instanceof Hare) {
 			return ((Hare) other).getId().getId() == getId().getId();
 		}

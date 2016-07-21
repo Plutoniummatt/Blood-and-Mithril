@@ -131,7 +131,7 @@ public class BloodAndMithrilClient implements ApplicationListener {
 		Equipable.setup();
 		Prop.setup();
 		GaussianLightingRenderer.setup();
-		UserInterface.setup();
+		userInterface.setup();
 		Item.setup();
 		Component.setup();
 
@@ -206,10 +206,10 @@ public class BloodAndMithrilClient implements ApplicationListener {
 		}
 
 		Gdx.gl20.glEnable(GL20.GL_BLEND);
-		UserInterface.shapeRenderer.begin(ShapeType.Filled);
-		UserInterface.shapeRenderer.setColor(0, 0, 0, graphics.getFadeAlpha());
-		UserInterface.shapeRenderer.rect(0, 0, graphics.getWidth(), graphics.getHeight());
-		UserInterface.shapeRenderer.end();
+		userInterface.getShapeRenderer().begin(ShapeType.Filled);
+		userInterface.getShapeRenderer().setColor(0, 0, 0, graphics.getFadeAlpha());
+		userInterface.getShapeRenderer().rect(0, 0, graphics.getWidth(), graphics.getHeight());
+		userInterface.getShapeRenderer().end();
 		Gdx.gl20.glDisable(GL20.GL_BLEND);
 	}
 

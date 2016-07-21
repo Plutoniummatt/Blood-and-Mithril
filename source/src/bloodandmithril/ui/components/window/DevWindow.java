@@ -536,9 +536,9 @@ public class DevWindow extends Window {
 					310,
 					16,
 					() -> {
-						UserInterface.renderComponentBoundaries = !UserInterface.renderComponentBoundaries;
+						userInterface.renderComponentBoundaries = !userInterface.renderComponentBoundaries;
 					},
-					UserInterface.renderComponentBoundaries ? Color.GREEN : Color.RED,
+					userInterface.renderComponentBoundaries ? Color.GREEN : Color.RED,
 					Color.WHITE,
 					Color.GREEN,
 					UIRef.BL
@@ -559,9 +559,9 @@ public class DevWindow extends Window {
 					310,
 					16,
 					() -> {
-						UserInterface.renderAvailableInterfaces = !UserInterface.renderAvailableInterfaces;
+						userInterface.renderAvailableInterfaces = !userInterface.renderAvailableInterfaces;
 					},
-					UserInterface.renderAvailableInterfaces ? Color.GREEN : Color.RED,
+					userInterface.renderAvailableInterfaces ? Color.GREEN : Color.RED,
 					Color.WHITE,
 					Color.GREEN,
 					UIRef.BL
@@ -647,9 +647,9 @@ public class DevWindow extends Window {
 					310,
 					16,
 					() -> {
-						UserInterface.DEBUG = !UserInterface.DEBUG;
+						userInterface.DEBUG = !userInterface.DEBUG;
 					},
-					UserInterface.DEBUG ? Color.GREEN : Color.RED,
+					userInterface.DEBUG ? Color.GREEN : Color.RED,
 					Color.WHITE,
 					Color.GREEN,
 					UIRef.BL
@@ -670,9 +670,9 @@ public class DevWindow extends Window {
 					310,
 					16,
 					() -> {
-						UserInterface.RENDER_TOPOGRAPHY = !UserInterface.RENDER_TOPOGRAPHY;
+						userInterface.RENDER_TOPOGRAPHY = !userInterface.RENDER_TOPOGRAPHY;
 					},
-					UserInterface.RENDER_TOPOGRAPHY ? Color.GREEN : Color.RED,
+					userInterface.RENDER_TOPOGRAPHY ? Color.GREEN : Color.RED,
 					Color.WHITE,
 					Color.GREEN,
 					UIRef.BL

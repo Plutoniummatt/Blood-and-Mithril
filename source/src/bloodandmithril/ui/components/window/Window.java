@@ -36,7 +36,7 @@ import bloodandmithril.util.Shaders;
  */
 @Copyright("Matthew Peck 2014")
 public abstract class Window extends Component {
-	
+
 	@Inject private UserInterface userInterface;
 
 	/** Colors of this window */
@@ -143,7 +143,7 @@ public abstract class Window extends Component {
 			return false;
 		}
 
-		if (userInterface.contextMenus.isEmpty()) {
+		if (userInterface.getContextMenus().isEmpty()) {
 			if (isMouseWithin()) {
 
 				if (closeButton.click() && closeable) {
@@ -196,7 +196,7 @@ public abstract class Window extends Component {
 			return false;
 		}
 
-		if (userInterface.contextMenus.isEmpty()) {
+		if (userInterface.getContextMenus().isEmpty()) {
 			if (isActive() && isMouseWithin()) {
 				return true;
 			} else if (isMouseWithin()) {

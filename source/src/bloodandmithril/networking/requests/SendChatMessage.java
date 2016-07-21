@@ -69,7 +69,7 @@ public class SendChatMessage implements Request {
 			if (!tryFind(Wiring.injector().getInstance(UserInterface.class).getLayeredComponents(), component -> {
 				return component instanceof ChatWindow;
 			}).isPresent()) {
-				UserInterface.addUIFloatingText("New Message!", Color.ORANGE, new Vector2(83, 50));
+				Wiring.injector().getInstance(UserInterface.class).addUIFloatingText("New Message!", Color.ORANGE, new Vector2(83, 50));
 			}
 		}
 

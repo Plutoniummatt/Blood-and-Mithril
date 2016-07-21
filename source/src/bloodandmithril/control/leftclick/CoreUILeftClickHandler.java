@@ -39,7 +39,7 @@ public class CoreUILeftClickHandler implements LeftClickHandler {
 	@Override
 	public boolean leftClick(final boolean doubleClick) {
 		final HashMap<String, Button> buttons = userInterface.buttons;
-		final List<ContextMenu> contextMenus = userInterface.contextMenus;
+		final List<ContextMenu> contextMenus = userInterface.getContextMenus();
 		final Deque<Component> layeredComponents = userInterface.getLayeredComponents();
 
 		boolean clicked = false;
@@ -93,9 +93,9 @@ public class CoreUILeftClickHandler implements LeftClickHandler {
 		contextMenus.addAll(contextMenuCopy);
 
 		if (!clicked) {
-			UserInterface.initialLeftMouseDragCoordinates = new Vector2(getMouseScreenX(), getMouseScreenY());
+			userInterface.initialLeftMouseDragCoordinates = new Vector2(getMouseScreenX(), getMouseScreenY());
 		} else {
-			UserInterface.initialLeftMouseDragCoordinates = null;
+			userInterface.initialLeftMouseDragCoordinates = null;
 		}
 
 		return clicked;

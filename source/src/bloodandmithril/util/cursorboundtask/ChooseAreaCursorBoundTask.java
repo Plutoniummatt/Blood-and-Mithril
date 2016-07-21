@@ -8,6 +8,7 @@ import static bloodandmithril.control.InputUtilities.worldToScreenY;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
+import com.google.inject.Inject;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.Graphics;
@@ -23,18 +24,20 @@ import bloodandmithril.util.JITTask;
 @Copyright("Matthew Peck 2015")
 public abstract class ChooseAreaCursorBoundTask extends CursorBoundTask {
 
+	@Inject private UserInterface userInterface;
+
 	private Vector2 start, finish;
 
 	/**
 	 * Constructor
 	 */
-	public ChooseAreaCursorBoundTask(JITTask task, boolean isWorldCoordinate) {
+	public ChooseAreaCursorBoundTask(final JITTask task, final boolean isWorldCoordinate) {
 		super(task, isWorldCoordinate);
 	}
 
 
 	@Override
-	public CursorBoundTask execute(int x, int y) {
+	public CursorBoundTask execute(final int x, final int y) {
 		if (start == null) {
 			start = new Vector2(getMouseWorldX(), getMouseWorldY());
 			return this;
@@ -48,25 +51,25 @@ public abstract class ChooseAreaCursorBoundTask extends CursorBoundTask {
 
 
 	@Override
-	public void renderUIGuide(Graphics graphics) {
+	public void renderUIGuide(final Graphics graphics) {
 		if (start == null) {
 			return;
 		} else {
 			Gdx.gl20.glLineWidth(2f);
-			UserInterface.shapeRenderer.setColor(
+			userInterface.getShapeRenderer().setColor(
 				executionConditionMet() ? 0f : 1f,
 				executionConditionMet() ? 1f : 0f,
 				0f,
 				0.8f
 			);
-			UserInterface.shapeRenderer.begin(ShapeType.Line);
-			UserInterface.shapeRenderer.rect(
+			userInterface.getShapeRenderer().begin(ShapeType.Line);
+			userInterface.getShapeRenderer().rect(
 				worldToScreenX(start.x),
 				worldToScreenY(start.y),
 				getMouseWorldX() - start.x,
 				getMouseWorldY() - start.y
 			);
-			UserInterface.shapeRenderer.end();
+			userInterface.getShapeRenderer().end();
 		}
 	}
 }

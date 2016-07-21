@@ -1,5 +1,7 @@
 package bloodandmithril.networking.requests;
 
+import com.google.inject.Inject;
+
 import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.Response;
 import bloodandmithril.ui.FloatingText;
@@ -7,6 +9,8 @@ import bloodandmithril.ui.UserInterface;
 
 @Copyright("Matthew Peck 2014")
 public class AddFloatingTextNotification implements Response {
+
+	@Inject private transient UserInterface userInterface;
 
 	private final FloatingText floatingText;
 	private final int worldId;
@@ -22,7 +26,7 @@ public class AddFloatingTextNotification implements Response {
 
 	@Override
 	public void acknowledge() {
-		UserInterface.addFloatingText(floatingText, worldId, true);
+		userInterface.addFloatingText(floatingText, worldId, true);
 	}
 
 

@@ -29,7 +29,7 @@ import bloodandmithril.util.CursorBoundTask;
  */
 @Copyright("Matthew Peck 2015")
 public abstract class ChooseMultipleEntityCursorBoundTask<F extends MouseOverable, T extends Serializable> extends CursorBoundTask {
-	
+
 	@Inject
 	private UserInterface userInterface;
 
@@ -66,8 +66,8 @@ public abstract class ChooseMultipleEntityCursorBoundTask<F extends MouseOverabl
 						)
 					);
 				}
-				userInterface.contextMenus.clear();
-				userInterface.contextMenus.add(menu);
+				userInterface.getContextMenus().clear();
+				userInterface.getContextMenus().add(menu);
 			} else if (availableEntities.size() == 1) {
 				entities.addAll(availableEntities);
 			}

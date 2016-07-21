@@ -48,10 +48,8 @@ public class Follow extends CompositeAITask implements RoutineTask {
 	private Individual followee;
 	private int distance;
 
-	@Inject
-	private GameClientStateTracker gameClientStateTracker;
-	@Inject
-	private UserInterface userInterface;
+	@Inject	private transient GameClientStateTracker gameClientStateTracker;
+	@Inject	private transient UserInterface userInterface;
 
 	@Inject
 	Follow() {
@@ -199,26 +197,27 @@ public class Follow extends CompositeAITask implements RoutineTask {
 		}
 		@Override
 		public void render() {
-			UserInterface.shapeRenderer.begin(ShapeType.Line);
+			final UserInterface userInterface = Wiring.injector().getInstance(UserInterface.class);
+			userInterface.getShapeRenderer().begin(ShapeType.Line);
 			Gdx.gl20.glLineWidth(2f);
-			UserInterface.shapeRenderer.setColor(Color.GREEN);
+			userInterface.getShapeRenderer().setColor(Color.GREEN);
 			final Individual attacker = Domain.getIndividual(followerId);
-			UserInterface.shapeRenderer.rect(
+			userInterface.getShapeRenderer().rect(
 				worldToScreenX(attacker.getState().position.x) - attacker.getWidth()/2,
 				worldToScreenY(attacker.getState().position.y),
 				attacker.getWidth(),
 				attacker.getHeight()
 			);
 
-			UserInterface.shapeRenderer.setColor(Color.RED);
+			userInterface.getShapeRenderer().setColor(Color.RED);
 			final Individual followee = Domain.getIndividual(followeeId.call());
-			UserInterface.shapeRenderer.rect(
+			userInterface.getShapeRenderer().rect(
 				worldToScreenX(followee.getState().position.x) - followee.getWidth()/2,
 				worldToScreenY(followee.getState().position.y),
 				followee.getWidth(),
 				followee.getHeight()
 			);
-			UserInterface.shapeRenderer.end();
+			userInterface.getShapeRenderer().end();
 		}
 	}
 
@@ -250,10 +249,10 @@ public class Follow extends CompositeAITask implements RoutineTask {
 							}
 						}
 
-						userInterface.contextMenus.clear();
+						userInterface.getContextMenus().clear();
 						toChooseFrom.x = getMouseScreenX();
 						toChooseFrom.y = getMouseScreenY();
-						userInterface.contextMenus.add(toChooseFrom);
+						userInterface.getContextMenus().add(toChooseFrom);
 					}
 				};
 

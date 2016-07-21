@@ -384,6 +384,8 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 
 		@Override
 		public void render() {
+			final UserInterface userInterface = Wiring.injector().getInstance(UserInterface.class);
+
 			final List<Integer> validVictims = Lists.newLinkedList();
 			for (final int id : victimIds) {
 				final Individual victim = Domain.getIndividual(id);
@@ -392,14 +394,14 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 				}
 			}
 
-			UserInterface.shapeRenderer.begin(ShapeType.Line);
-			UserInterface.shapeRenderer.setColor(Color.RED);
+			userInterface.getShapeRenderer().begin(ShapeType.Line);
+			userInterface.getShapeRenderer().setColor(Color.RED);
 			Gdx.gl20.glLineWidth(2f);
 			for (final int i : validVictims) {
 				final Individual individual = Domain.getIndividual(i);
 				final Vector2 position = individual.getState().position;
 
-				UserInterface.shapeRenderer.rect(
+				userInterface.getShapeRenderer().rect(
 					worldToScreenX(position.x) - individual.getWidth()/2,
 					worldToScreenY(position.y),
 					individual.getWidth(),
@@ -408,16 +410,16 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 
 			}
 
-			UserInterface.shapeRenderer.setColor(Color.GREEN);
+			userInterface.getShapeRenderer().setColor(Color.GREEN);
 			final Individual attacker = Domain.getIndividual(attackerId);
-			UserInterface.shapeRenderer.rect(
+			userInterface.getShapeRenderer().rect(
 				worldToScreenX(attacker.getState().position.x) - attacker.getWidth()/2,
 				worldToScreenY(attacker.getState().position.y),
 				attacker.getWidth(),
 				attacker.getHeight()
 			);
 
-			UserInterface.shapeRenderer.end();
+			userInterface.getShapeRenderer().end();
 		}
 	}
 
@@ -480,18 +482,19 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 
 		@Override
 		public void render() {
-			UserInterface.shapeRenderer.begin(ShapeType.Line);
-			UserInterface.shapeRenderer.setColor(Color.GREEN);
+			final UserInterface userInterface = Wiring.injector().getInstance(UserInterface.class);
+			userInterface.getShapeRenderer().begin(ShapeType.Line);
+			userInterface.getShapeRenderer().setColor(Color.GREEN);
 			Gdx.gl20.glLineWidth(2f);
 			final Individual attacker = Domain.getIndividual(attackerId);
-			UserInterface.shapeRenderer.rect(
+			userInterface.getShapeRenderer().rect(
 				worldToScreenX(attacker.getState().position.x) - attacker.getWidth()/2,
 				worldToScreenY(attacker.getState().position.y),
 				attacker.getWidth(),
 				attacker.getHeight()
 			);
 
-			UserInterface.shapeRenderer.end();
+			userInterface.getShapeRenderer().end();
 		}
 	}
 
@@ -527,14 +530,16 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 						}
 						@Override
 						public void renderUIGuide(final Graphics graphics) {
-							UserInterface.shapeRenderer.begin(ShapeType.Line);
-							UserInterface.shapeRenderer.setColor(Color.RED);
+							final UserInterface userInterface = Wiring.injector().getInstance(UserInterface.class);
+
+							userInterface.getShapeRenderer().begin(ShapeType.Line);
+							userInterface.getShapeRenderer().setColor(Color.RED);
 							Gdx.gl20.glLineWidth(2f);
 							for (final int i : entities) {
 								final Individual individual = Domain.getIndividual(i);
 								final Vector2 position = individual.getState().position;
 
-								UserInterface.shapeRenderer.rect(
+								userInterface.getShapeRenderer().rect(
 									worldToScreenX(position.x) - individual.getWidth()/2,
 									worldToScreenY(position.y),
 									individual.getWidth(),
@@ -542,7 +547,7 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 								);
 
 							}
-							UserInterface.shapeRenderer.end();
+							userInterface.getShapeRenderer().end();
 						}
 						@Override
 						public boolean executionConditionMet() {

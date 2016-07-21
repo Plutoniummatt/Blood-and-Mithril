@@ -180,8 +180,9 @@ public class Button {
 	public void render(final boolean active, final float alpha, final int maxWidth, final Graphics graphics) {
 		if (popup != null) {
 			final InfoPopup p = popup.call();
-			if (!p.expiryFunction.call() && UserInterface.getInfoPopup() == null) {
-				UserInterface.setInfoPopup(popup.call());
+			final UserInterface userInterface = Wiring.injector().getInstance(UserInterface.class);
+			if (!p.expiryFunction.call() && userInterface.getInfoPopup() == null) {
+				userInterface.setInfoPopup(popup.call());
 			}
 		}
 

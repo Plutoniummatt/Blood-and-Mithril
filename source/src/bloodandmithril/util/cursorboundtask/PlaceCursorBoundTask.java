@@ -121,12 +121,14 @@ public class PlaceCursorBoundTask extends CursorBoundTask {
 			propToPlace.position.x = coords.x;
 			propToPlace.position.y = coords.y;
 
+			final UserInterface userInterface = Wiring.injector().getInstance(UserInterface.class);
+
 			gl.glEnable(GL_BLEND);
 			gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-			UserInterface.shapeRenderer.begin(ShapeType.Line);
-			UserInterface.shapeRenderer.setColor(canBuild ? Color.GREEN : Color.RED);
-			UserInterface.shapeRenderer.rect(x - propToPlace.width/2, y, propToPlace.width, propToPlace.height);
-			UserInterface.shapeRenderer.end();
+			userInterface.getShapeRenderer().begin(ShapeType.Line);
+			userInterface.getShapeRenderer().setColor(canBuild ? Color.GREEN : Color.RED);
+			userInterface.getShapeRenderer().rect(x - propToPlace.width/2, y, propToPlace.width, propToPlace.height);
+			userInterface.getShapeRenderer().end();
 			gl.glDisable(GL_BLEND);
 		}
 

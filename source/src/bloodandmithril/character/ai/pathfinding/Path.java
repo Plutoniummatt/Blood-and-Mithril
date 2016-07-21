@@ -14,6 +14,7 @@ import com.google.common.collect.Lists;
 
 import bloodandmithril.character.ai.ArtificialIntelligence;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.util.Performance;
 import bloodandmithril.world.topography.Topography;
@@ -35,13 +36,13 @@ public final class Path implements Serializable {
 	/**
 	 * True if location is part of this {@link Path}
 	 */
-	public synchronized final boolean isPartOfPathGroundAndIsNext(Vector2 location) {
+	public synchronized final boolean isPartOfPathGroundAndIsNext(final Vector2 location) {
 		try {
-			Vector2 flooredCoords = Topography.convertToWorldCoord(location, true);
+			final Vector2 flooredCoords = Topography.convertToWorldCoord(location, true);
 			if (!waypoints.isEmpty() && waypoints.getFirst().waypoint.equals(flooredCoords)) {
 				return true;
 			}
-		} catch (NoTileFoundException e) {
+		} catch (final NoTileFoundException e) {
 			return false;
 		}
 		return false;
@@ -51,7 +52,7 @@ public final class Path implements Serializable {
 	/**
 	 * True if location is directly above the next waypoint in the {@link Path}
 	 */
-	public synchronized final boolean isDirectlyAboveNext(Vector2 location) {
+	public synchronized final boolean isDirectlyAboveNext(final Vector2 location) {
 		try {
 			Vector2 flooredCoords = Topography.convertToWorldCoord(location, true);
 			if (location.y < 0) {
@@ -62,7 +63,7 @@ public final class Path implements Serializable {
 					waypoints.getFirst().waypoint.y < flooredCoords.y) {
 				return true;
 			}
-		} catch (NoTileFoundException e) {
+		} catch (final NoTileFoundException e) {
 			return false;
 		}
 		return false;
@@ -76,7 +77,7 @@ public final class Path implements Serializable {
 
 
 	/** Private constructor, see {@link #copy()} */
-	private Path(ConcurrentLinkedDeque<WayPoint> waypoints){
+	private Path(final ConcurrentLinkedDeque<WayPoint> waypoints){
 		this.waypoints = waypoints;
 	}
 
@@ -88,7 +89,7 @@ public final class Path implements Serializable {
 
 
 	/** Adds a {@link WayPoint} to this {@link Path} at the beginning */
-	public synchronized final void addWayPointReversed(WayPoint wayPoint) {
+	public synchronized final void addWayPointReversed(final WayPoint wayPoint) {
 		waypoints.addFirst(wayPoint);
 	}
 
@@ -104,8 +105,9 @@ public final class Path implements Serializable {
 	 */
 	@Performance(explanation = "Renders a dot for each waypoint, inefficient if path contains many waypoints")
 	public final void render() {
-		LinkedList<WayPoint> waypointsCopy = Lists.newLinkedList(waypoints);
-		Iterator<WayPoint> waypointsIterator = waypointsCopy.iterator();
+		final UserInterface userInterface = Wiring.injector().getInstance(UserInterface.class);
+		final LinkedList<WayPoint> waypointsCopy = Lists.newLinkedList(waypoints);
+		final Iterator<WayPoint> waypointsIterator = waypointsCopy.iterator();
 
 		WayPoint current;
 		if (waypointsIterator.hasNext()) {
@@ -117,9 +119,9 @@ public final class Path implements Serializable {
 		float x = worldToScreenX(current.waypoint.x);
 		float y = worldToScreenY(current.waypoint.y);
 
-		UserInterface.shapeRenderer.begin(ShapeType.Filled);
-		UserInterface.shapeRenderer.circle(x, y, 3);
-		UserInterface.shapeRenderer.end();
+		userInterface.getShapeRenderer().begin(ShapeType.Filled);
+		userInterface.getShapeRenderer().circle(x, y, 3);
+		userInterface.getShapeRenderer().end();
 
 		do {
 			x = worldToScreenX(current.waypoint.x);
@@ -128,16 +130,16 @@ public final class Path implements Serializable {
 			if (waypointsIterator.hasNext()) {
 				current = waypointsIterator.next();
 
-				float x2 = worldToScreenX(current.waypoint.x);
-				float y2 = worldToScreenY(current.waypoint.y);
+				final float x2 = worldToScreenX(current.waypoint.x);
+				final float y2 = worldToScreenY(current.waypoint.y);
 
-				UserInterface.shapeRenderer.begin(ShapeType.Line);
-				UserInterface.shapeRenderer.line(x, y, x2, y2);
-				UserInterface.shapeRenderer.end();
+				userInterface.getShapeRenderer().begin(ShapeType.Line);
+				userInterface.getShapeRenderer().line(x, y, x2, y2);
+				userInterface.getShapeRenderer().end();
 
-				UserInterface.shapeRenderer.begin(ShapeType.Filled);
-				UserInterface.shapeRenderer.circle(x2, y2, 3);
-				UserInterface.shapeRenderer.end();
+				userInterface.getShapeRenderer().begin(ShapeType.Filled);
+				userInterface.getShapeRenderer().circle(x2, y2, 3);
+				userInterface.getShapeRenderer().end();
 			}
 		} while (waypointsIterator.hasNext());
 	}
@@ -207,7 +209,7 @@ public final class Path implements Serializable {
 		/**
 		 * Constructor
 		 */
-		public WayPoint(Vector2 waypoint, float tolerance) {
+		public WayPoint(final Vector2 waypoint, final float tolerance) {
 			this.waypoint = waypoint;
 			this.tolerance = tolerance;
 		}
@@ -215,7 +217,7 @@ public final class Path implements Serializable {
 		/**
 		 * Constructor that sets {@link #tolerance} to 0
 		 */
-		public WayPoint(Vector2 waypoint) {
+		public WayPoint(final Vector2 waypoint) {
 			this.waypoint = waypoint;
 			this.tolerance = 0f;
 		}

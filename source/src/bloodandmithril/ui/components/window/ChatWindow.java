@@ -37,8 +37,8 @@ import bloodandmithril.util.Util.Colors;
 @Copyright("Matthew Peck 2014")
 public class ChatWindow extends Window {
 
-	@Inject
-	private Controls controls;
+	@Inject	private Controls controls;
+	@Inject	private UserInterface userInterface;
 
 	public final ScrollableListingPanel<String, Object> participants;
 
@@ -158,8 +158,8 @@ public class ChatWindow extends Window {
 
 	private void renderSeparator() {
 		final Color color = isActive() ? Colors.modulateAlpha(borderColor, getAlpha()) : Colors.modulateAlpha(borderColor, 0.4f * getAlpha());
-		UserInterface.shapeRenderer.begin(ShapeType.Filled);
-		UserInterface.shapeRenderer.rect(
+		userInterface.getShapeRenderer().begin(ShapeType.Filled);
+		userInterface.getShapeRenderer().rect(
 			x + width - 170,
 			y - height,
 			2,
@@ -169,7 +169,7 @@ public class ChatWindow extends Window {
 			color,
 			color
 		);
-		UserInterface.shapeRenderer.end();
+		userInterface.getShapeRenderer().end();
 	}
 
 

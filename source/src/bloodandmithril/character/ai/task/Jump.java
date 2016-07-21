@@ -5,6 +5,7 @@ import static bloodandmithril.world.Domain.getIndividual;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
+import com.google.inject.Inject;
 
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.individuals.GroundTravellingIndividual;
@@ -23,6 +24,8 @@ import bloodandmithril.util.SerializableFunction;
 @Copyright("Matthew Peck 2014")
 public class Jump extends AITask {
 	private static final long serialVersionUID = -3954194589753060040L;
+
+	@Inject private transient UserInterface userInterface;
 
 	private final SerializableFunction<Vector2> from;
 	private final Vector2 to;
@@ -74,7 +77,7 @@ public class Jump extends AITask {
 
 		if (host instanceof GroundTravellingIndividual) {
 			if (host.getState().stamina < 0.1f) {
-				UserInterface.addFloatingText("Not enough stamina", Color.ORANGE, host.getEmissionPosition().cpy(), false, host.getWorldId());
+				userInterface.addFloatingText("Not enough stamina", Color.ORANGE, host.getEmissionPosition().cpy(), false, host.getWorldId());
 				jumped = true;
 				return;
 			}

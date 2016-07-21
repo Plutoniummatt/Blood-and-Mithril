@@ -5,6 +5,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import bloodandmithril.audio.SoundService;
@@ -21,9 +22,10 @@ import bloodandmithril.ui.UserInterface;
 @Copyright("Matthew Peck 2016")
 public class MissionTracker {
 
+	@Inject private UserInterface userInterface;
+
 	/** Current camera coordinates for each world */
 	private final Collection<Mission> missions = new ConcurrentLinkedDeque<Mission>();
-
 
 	public void addMission(final Mission m) {
 		missions.add(m);
@@ -31,7 +33,7 @@ public class MissionTracker {
 		SoundService.play(SoundService.newMission);
 		Wiring.injector().getInstance(Threading.class).clientProcessingThreadPool.submit(() -> {
 			for (int i = 0; i < 5; i++) {
-				UserInterface.addUIFloatingText(
+				userInterface.addUIFloatingText(
 					"New mission!",
 					Color.ORANGE,
 					new Vector2(220, 60)

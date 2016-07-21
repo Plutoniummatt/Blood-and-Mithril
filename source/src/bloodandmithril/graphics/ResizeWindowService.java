@@ -32,7 +32,7 @@ public class ResizeWindowService {
 		userInterface.getUICamera().setToOrtho(false, graphics.getWidth(), graphics.getHeight());
 		userInterface.getUITrackingCamera().setToOrtho(false, graphics.getWidth(), graphics.getHeight());
 
-		UserInterface.shapeRenderer.setProjectionMatrix(userInterface.getUICamera().projection);
-		UserInterface.shapeRenderer.setTransformMatrix(userInterface.getUICamera().view);
+		userInterface.getShapeRenderer().setProjectionMatrix(userInterface.getUICamera().projection);
+		userInterface.getShapeRenderer().setTransformMatrix(userInterface.getUICamera().view);
 	}
 }

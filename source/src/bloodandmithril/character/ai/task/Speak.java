@@ -21,6 +21,7 @@ import bloodandmithril.character.ai.routine.StimulusDrivenRoutine;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.window.TextInputWindow;
@@ -143,17 +144,18 @@ public class Speak extends AITask implements RoutineTask {
 
 		@Override
 		public void render() {
-			UserInterface.shapeRenderer.begin(ShapeType.Line);
-			UserInterface.shapeRenderer.setColor(Color.GREEN);
+			final UserInterface userInterface = Wiring.injector().getInstance(UserInterface.class);
+			userInterface.getShapeRenderer().begin(ShapeType.Line);
+			userInterface.getShapeRenderer().setColor(Color.GREEN);
 			Gdx.gl20.glLineWidth(2f);
 			final Individual attacker = Domain.getIndividual(hostId);
-			UserInterface.shapeRenderer.rect(
+			userInterface.getShapeRenderer().rect(
 				worldToScreenX(attacker.getState().position.x) - attacker.getWidth()/2,
 				worldToScreenY(attacker.getState().position.y),
 				attacker.getWidth(),
 				attacker.getHeight()
 			);
-			UserInterface.shapeRenderer.end();
+			userInterface.getShapeRenderer().end();
 		}
 
 	}

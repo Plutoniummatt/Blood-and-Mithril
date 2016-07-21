@@ -226,22 +226,23 @@ public class PlantSeed extends CompositeAITask implements RoutineTask {
 		}
 		@Override
 		public void render() {
-			UserInterface.shapeRenderer.begin(ShapeType.Line);
-			UserInterface.shapeRenderer.setColor(Color.GREEN);
+			final UserInterface userInterface = Wiring.injector().getInstance(UserInterface.class);
+			userInterface.getShapeRenderer().begin(ShapeType.Line);
+			userInterface.getShapeRenderer().setColor(Color.GREEN);
 			Gdx.gl20.glLineWidth(2f);
 			final Individual attacker = Domain.getIndividual(hostId);
-			UserInterface.shapeRenderer.rect(
+			userInterface.getShapeRenderer().rect(
 				worldToScreenX(attacker.getState().position.x) - attacker.getWidth()/2,
 				worldToScreenY(attacker.getState().position.y),
 				attacker.getWidth(),
 				attacker.getHeight()
 			);
 
-			UserInterface.shapeRenderer.setColor(Color.RED);
+			userInterface.getShapeRenderer().setColor(Color.RED);
 			for (final Vector2 location : locations) {
-				UserInterface.shapeRenderer.circle(worldToScreenX(location.x), worldToScreenY(location.y), 3f);
+				userInterface.getShapeRenderer().circle(worldToScreenX(location.x), worldToScreenY(location.y), 3f);
 			}
-			UserInterface.shapeRenderer.end();
+			userInterface.getShapeRenderer().end();
 		}
 	}
 

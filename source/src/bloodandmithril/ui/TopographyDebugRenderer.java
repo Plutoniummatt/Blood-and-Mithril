@@ -41,12 +41,13 @@ public class TopographyDebugRenderer {
 	private int topoX, topoY;
 
 	@Inject private GameClientStateTracker gameClientStateTracker;
+	@Inject private UserInterface userInterface;
 
 	/**
 	 * Renders the topography map
 	 */
 	public void render(final Graphics graphics) {
-		UserInterface.shapeRenderer.begin(ShapeType.Line);
+		userInterface.getShapeRenderer().begin(ShapeType.Line);
 		graphics.getSpriteBatch().begin();
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		for (final Structure struct : Structures.getStructures().values()) {
@@ -54,12 +55,12 @@ public class TopographyDebugRenderer {
 				continue;
 			}
 
-			UserInterface.shapeRenderer.setColor(Color.GREEN);
+			userInterface.getShapeRenderer().setColor(Color.GREEN);
 			if (struct instanceof SuperStructure) {
 				final Boundaries boundaries = ((SuperStructure) struct).getBoundaries();
 				Fonts.defaultFont.draw(graphics.getSpriteBatch(), Integer.toString(struct.getStructureKey()), boundaries.left * Topography.CHUNK_SIZE - topoX + 5, boundaries.top * Topography.CHUNK_SIZE - topoY + 10);
 				Fonts.defaultFont.draw(graphics.getSpriteBatch(), struct.getClass().getSimpleName(), boundaries.left * Topography.CHUNK_SIZE - topoX + 5, boundaries.top * Topography.CHUNK_SIZE - topoY - 15);
-				UserInterface.shapeRenderer.rect(
+				userInterface.getShapeRenderer().rect(
 					boundaries.left * Topography.CHUNK_SIZE - topoX,
 					boundaries.bottom * Topography.CHUNK_SIZE - topoY,
 					boundaries.getWidth() * Topography.CHUNK_SIZE,
@@ -68,17 +69,17 @@ public class TopographyDebugRenderer {
 
 				for (int x = convertToWorldTileCoord(((SuperStructure) struct).getBoundaries().left, 0); x <= convertToWorldTileCoord(((SuperStructure) struct).getBoundaries().right, Topography.CHUNK_SIZE - 1); x++) {
 					try {
-						UserInterface.shapeRenderer.circle(x - topoX + 0.5f, ((SuperStructure) struct).getSurfaceHeight().apply(x) - topoY, 1);
+						userInterface.getShapeRenderer().circle(x - topoX + 0.5f, ((SuperStructure) struct).getSurfaceHeight().apply(x) - topoY, 1);
 					} catch (final NullPointerException e) {
 						// Whatever
 					}
 				}
 			}
 
-			UserInterface.shapeRenderer.setColor(Color.RED);
+			userInterface.getShapeRenderer().setColor(Color.RED);
 			for (final bloodandmithril.generation.component.Component component : struct.getComponents()) {
 				final Boundaries boundaries = component.getBoundaries();
-				UserInterface.shapeRenderer.rect(
+				userInterface.getShapeRenderer().rect(
 					boundaries.left - topoX,
 					boundaries.bottom - topoY,
 					boundaries.getWidth(),
@@ -89,10 +90,10 @@ public class TopographyDebugRenderer {
 		graphics.getSpriteBatch().end();
 
 		Gdx.gl.glEnable(GL20.GL_BLEND);
-		UserInterface.shapeRenderer.setColor(Colors.modulateAlpha(Color.CYAN, 0.2f));
+		userInterface.getShapeRenderer().setColor(Colors.modulateAlpha(Color.CYAN, 0.2f));
 		for (final Entry<Integer, HashMap<Integer, Chunk>> outerEntry : gameClientStateTracker.getActiveWorld().getTopography().getChunkMap().getChunkMap().entrySet()) {
 			for (final Entry<Integer, Chunk> innerEntry : outerEntry.getValue().entrySet()) {
-				UserInterface.shapeRenderer.rect(
+				userInterface.getShapeRenderer().rect(
 					outerEntry.getKey() * Topography.CHUNK_SIZE - topoX,
 					innerEntry.getKey() * Topography.CHUNK_SIZE - topoY,
 					Topography.CHUNK_SIZE,
@@ -101,15 +102,15 @@ public class TopographyDebugRenderer {
 			}
 		}
 
-		UserInterface.shapeRenderer.setColor(Color.ORANGE);
-		UserInterface.shapeRenderer.rect(
+		userInterface.getShapeRenderer().setColor(Color.ORANGE);
+		userInterface.getShapeRenderer().rect(
 			(graphics.getCam().position.x - graphics.getWidth() / 2) / Topography.TILE_SIZE - topoX,
 			(graphics.getCam().position.y - graphics.getHeight() / 2) / Topography.TILE_SIZE - topoY,
 			graphics.getWidth() / Topography.TILE_SIZE,
 			graphics.getHeight() / Topography.TILE_SIZE
 		);
 
-		UserInterface.shapeRenderer.end();
+		userInterface.getShapeRenderer().end();
 
 		if (isKeyPressed(Keys.CONTROL_LEFT) && BloodAndMithrilClient.devMode) {
 			if (isKeyPressed(Input.Keys.LEFT)) {

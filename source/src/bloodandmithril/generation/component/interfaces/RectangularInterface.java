@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.generation.component.Component;
 import bloodandmithril.generation.component.Component.ComponentCreationCustomization;
 import bloodandmithril.generation.component.components.Corridor;
@@ -36,13 +37,13 @@ public class RectangularInterface extends Interface {
 	/**
 	 * Constructor
 	 */
-	public RectangularInterface(Boundaries boundaries) {
+	public RectangularInterface(final Boundaries boundaries) {
 		this.boundaries = boundaries;
 	}
 
 
 	@Override
-	public <T extends Component> Component createComponent(Class<T> type, ComponentCreationCustomization<T> custom, int structureKey) {
+	public <T extends Component> Component createComponent(final Class<T> type, final ComponentCreationCustomization<T> custom, final int structureKey) {
 		if (type.equals(Corridor.class)) {
 			return createCorridor(custom, structureKey);
 		}
@@ -63,8 +64,8 @@ public class RectangularInterface extends Interface {
 	 * Create {@link Stairs} from this {@link RectangularInterface}
 	 */
 	@SuppressWarnings("rawtypes")
-	private Component createStairs(ComponentCreationCustomization custom, int structureKey) {
-		StairsCreationCustomization customization = (StairsCreationCustomization) custom;
+	private Component createStairs(final ComponentCreationCustomization custom, final int structureKey) {
+		final StairsCreationCustomization customization = (StairsCreationCustomization) custom;
 
 		int slopeConstant;
 		if (customization.stemRight == customization.slopeGradient > 0) {
@@ -174,10 +175,10 @@ public class RectangularInterface extends Interface {
 	 * Create a {@link Room} from this {@link RectangularInterface}
 	 */
 	@SuppressWarnings("rawtypes")
-	private Component createRoom(ComponentCreationCustomization custom, int structureKey) {
-		RoomCreationCustomization customization = (RoomCreationCustomization) custom;
+	private Component createRoom(final ComponentCreationCustomization custom, final int structureKey) {
+		final RoomCreationCustomization customization = (RoomCreationCustomization) custom;
 
-		int wallThickness = customization.wallThickness - 1;
+		final int wallThickness = customization.wallThickness - 1;
 		return new Room(
 			new Boundaries(
 				boundaries.top + customization.height + wallThickness,
@@ -200,8 +201,8 @@ public class RectangularInterface extends Interface {
 	 * Create a {@link Corridor} from this {@link RectangularInterface}
 	 */
 	@SuppressWarnings("rawtypes")
-	private Component createCorridor(ComponentCreationCustomization custom, int structureKey) {
-		CorridorCreationCustomization customization = (CorridorCreationCustomization) custom;
+	private Component createCorridor(final ComponentCreationCustomization custom, final int structureKey) {
+		final CorridorCreationCustomization customization = (CorridorCreationCustomization) custom;
 
 		return new Corridor(
 			new Boundaries(
@@ -219,22 +220,22 @@ public class RectangularInterface extends Interface {
 
 
 	@Override
-	public Interface createConnectedInterface(InterfaceCustomization customization) {
+	public Interface createConnectedInterface(final InterfaceCustomization customization) {
 		if (!(customization instanceof RectangularInterfaceCustomization)) {
 			throw new RuntimeException("Can not customize " + this.getClass().getSimpleName() + " with " + customization.getClass().getSimpleName());
 		} else {
 
-			RectangularInterfaceCustomization custom = (RectangularInterfaceCustomization) customization;
+			final RectangularInterfaceCustomization custom = (RectangularInterfaceCustomization) customization;
 
-			int topAttempt = boundaries.bottom + custom.verticalOffset + custom.verticalConstraint;
-			int top = topAttempt > boundaries.top ? boundaries.top : topAttempt;
+			final int topAttempt = boundaries.bottom + custom.verticalOffset + custom.verticalConstraint;
+			final int top = topAttempt > boundaries.top ? boundaries.top : topAttempt;
 
-			int bottom = boundaries.bottom + custom.verticalOffset;
+			final int bottom = boundaries.bottom + custom.verticalOffset;
 
-			int left = boundaries.left + custom.horizontalOffset;
+			final int left = boundaries.left + custom.horizontalOffset;
 
-			int rightAttempt = boundaries.left + custom.horizontalOffset + custom.horizontalConstraint;
-			int right = rightAttempt > boundaries.right ? boundaries.right : rightAttempt;
+			final int rightAttempt = boundaries.left + custom.horizontalOffset + custom.horizontalConstraint;
+			final int right = rightAttempt > boundaries.right ? boundaries.right : rightAttempt;
 
 			return new RectangularInterface(
 				new Boundaries(
@@ -265,18 +266,19 @@ public class RectangularInterface extends Interface {
 
 
 	@Override
-	public void render(Color color) {
-		UserInterface.shapeRenderer.begin(ShapeType.Line);
-		UserInterface.shapeRenderer.setColor(color);
+	public void render(final Color color) {
+		final UserInterface userInterface = Wiring.injector().getInstance(UserInterface.class);
+		userInterface.getShapeRenderer().begin(ShapeType.Line);
+		userInterface.getShapeRenderer().setColor(color);
 
-		UserInterface.shapeRenderer.rect(
+		userInterface.getShapeRenderer().rect(
 			worldToScreenX(boundaries.left * Topography.TILE_SIZE),
 			worldToScreenY(boundaries.bottom * Topography.TILE_SIZE),
 			(boundaries.right - boundaries.left + 1) * Topography.TILE_SIZE,
 			(boundaries.top - boundaries.bottom + 1) * Topography.TILE_SIZE
 		);
 
-		UserInterface.shapeRenderer.end();
+		userInterface.getShapeRenderer().end();
 	}
 
 
@@ -293,7 +295,7 @@ public class RectangularInterface extends Interface {
 		/**
 		 * Constructor
 		 */
-		public RectangularInterfaceCustomization(int verticalConstraint, int horizontalConstraint, int verticalOffset, int horizontalOffset) {
+		public RectangularInterfaceCustomization(final int verticalConstraint, final int horizontalConstraint, final int verticalOffset, final int horizontalOffset) {
 			this.verticalConstraint = verticalConstraint;
 			this.horizontalConstraint = horizontalConstraint;
 			this.verticalOffset = verticalOffset;

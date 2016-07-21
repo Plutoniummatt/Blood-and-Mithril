@@ -89,14 +89,14 @@ public class Elf extends Humanoid implements Observer, Listener {
 	 * Constructor
 	 */
 	public Elf(
-			IndividualIdentifier id,
-			IndividualState state,
-			int factionId,
-			boolean female,
-			World world,
-			Color hairColor,
-			Color eyeColor,
-			Color skinColor) {
+			final IndividualIdentifier id,
+			final IndividualState state,
+			final int factionId,
+			final boolean female,
+			final World world,
+			final Color hairColor,
+			final Color eyeColor,
+			final Color skinColor) {
 		super(
 			id,
 			state,
@@ -133,15 +133,15 @@ public class Elf extends Humanoid implements Observer, Listener {
 	 * Constructor
 	 */
 	private Elf(
-			IndividualIdentifier id,
-			IndividualState state,
-			int factionId,
-			boolean female,
-			float capacity,
-			int worldId,
-			Color hairColor,
-			Color eyeColor,
-			Color skinColor) {
+			final IndividualIdentifier id,
+			final IndividualState state,
+			final int factionId,
+			final boolean female,
+			final float capacity,
+			final int worldId,
+			final Color hairColor,
+			final Color eyeColor,
+			final Color skinColor) {
 		super(id, state, factionId, Behaviour.NEUTRAL, capacity, 100, 10, 40, 95, 30, new Box(new Vector2(state.position.x, state.position.y), 120, 120), worldId, 2);
 
 		this.setHairStyle(Util.getRandom().nextInt(3) + 1);
@@ -166,13 +166,13 @@ public class Elf extends Humanoid implements Observer, Listener {
 
 
 	@Override
-	public void updateDescription(String updated) {
+	public void updateDescription(final String updated) {
 		biography = updated;
 	}
 
 
 	@Override
-	protected void internalCopyFrom(Individual other) {
+	protected void internalCopyFrom(final Individual other) {
 		if (!(other instanceof Elf)) {
 			throw new RuntimeException("Cannot cast " + other.getClass().getSimpleName() + " to Elf.");
 		}
@@ -187,7 +187,7 @@ public class Elf extends Humanoid implements Observer, Listener {
 
 	@Override
 	public Individual copy() {
-		Elf elf = new Elf(
+		final Elf elf = new Elf(
 			getId(),
 			getState(),
 			getFactionId(),
@@ -330,7 +330,7 @@ public class Elf extends Humanoid implements Observer, Listener {
 
 	@Override
 	public Collection<Vector2> getVisibleLocations() {
-		LinkedList<Vector2> locations = Lists.newLinkedList();
+		final LinkedList<Vector2> locations = Lists.newLinkedList();
 		for (int i = 10; i < getHeight() - 10 ; i += 10) {
 			locations.add(getState().position.cpy().add(0f, i));
 		}
@@ -339,7 +339,7 @@ public class Elf extends Humanoid implements Observer, Listener {
 
 
 	@Override
-	public void listen(SoundStimulus stimulus) {
+	public void listen(final SoundStimulus stimulus) {
 	}
 
 
@@ -356,7 +356,7 @@ public class Elf extends Humanoid implements Observer, Listener {
 
 
 	@Override
-	public boolean reactIfVisible(SoundStimulus stimulus) {
+	public boolean reactIfVisible(final SoundStimulus stimulus) {
 		return false;
 	}
 
@@ -368,7 +368,7 @@ public class Elf extends Humanoid implements Observer, Listener {
 
 
 	@Override
-	public void setAnimationTimer(float animationTimer) {
+	public void setAnimationTimer(final float animationTimer) {
 		if (isAlive()) {
 			super.setAnimationTimer(animationTimer);
 		} else {
@@ -391,7 +391,7 @@ public class Elf extends Humanoid implements Observer, Listener {
 	}
 
 
-	public void setHairColor(SerializableColor hairColor) {
+	public void setHairColor(final SerializableColor hairColor) {
 		this.hairColor = hairColor;
 	}
 
@@ -401,7 +401,7 @@ public class Elf extends Humanoid implements Observer, Listener {
 	}
 
 
-	public void setEyeColor(SerializableColor eyeColor) {
+	public void setEyeColor(final SerializableColor eyeColor) {
 		this.eyeColor = eyeColor;
 	}
 
@@ -411,7 +411,7 @@ public class Elf extends Humanoid implements Observer, Listener {
 	}
 
 
-	public void setSkinColor(SerializableColor skinColor) {
+	public void setSkinColor(final SerializableColor skinColor) {
 		this.skinColor = skinColor;
 	}
 
@@ -421,7 +421,7 @@ public class Elf extends Humanoid implements Observer, Listener {
 	}
 
 
-	public void setDeathAlpha(float deathAlpha) {
+	public void setDeathAlpha(final float deathAlpha) {
 		this.deathAlpha = deathAlpha;
 	}
 
@@ -431,13 +431,13 @@ public class Elf extends Humanoid implements Observer, Listener {
 	}
 
 
-	public void setHairStyle(int hairStyle) {
+	public void setHairStyle(final int hairStyle) {
 		this.hairStyle = hairStyle;
 	}
 
 
 	@Override
-	public boolean sameAs(Visible other) {
+	public boolean sameAs(final Visible other) {
 		if (other instanceof Hare) {
 			return ((Elf) other).getId().getId() == getId().getId();
 		}

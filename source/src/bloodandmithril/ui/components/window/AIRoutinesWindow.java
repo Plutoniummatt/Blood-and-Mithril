@@ -153,7 +153,7 @@ public class AIRoutinesWindow extends ScrollableListingWindow<Routine, String> {
 		}
 
 
-		add.render(x + 62, y - height + 32, isActive() && userInterface.contextMenus.isEmpty(), getAlpha(), graphics);
+		add.render(x + 62, y - height + 32, isActive() && userInterface.getContextMenus().isEmpty(), getAlpha(), graphics);
 		super.internalWindowRender(graphics);
 	};
 

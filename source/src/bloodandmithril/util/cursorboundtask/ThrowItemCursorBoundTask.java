@@ -28,6 +28,7 @@ import bloodandmithril.world.Domain;
 public class ThrowItemCursorBoundTask extends CursorBoundTask {
 
 	@Inject	private Controls controls;
+	@Inject	private UserInterface userInterface;
 
 	private Individual individual;
 	private Item item;
@@ -64,7 +65,7 @@ public class ThrowItemCursorBoundTask extends CursorBoundTask {
 
 	@Override
 	public void renderUIGuide(final Graphics graphics) {
-		UserInterface.renderArrow(individual.getEmissionPosition(), getMouseWorldCoords(), new Color(0f, 1f, 0f, 0.65f), 3f, 0f, 300f);
+		userInterface.renderArrow(individual.getEmissionPosition(), getMouseWorldCoords(), new Color(0f, 1f, 0f, 0.65f), 3f, 0f, 300f);
 	}
 
 

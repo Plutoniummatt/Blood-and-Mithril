@@ -36,7 +36,7 @@ public class InGameContextMenuSpawner implements RightClickHandler {
 			return false;
 		}
 
-		userInterface.contextMenus.clear();
+		userInterface.getContextMenus().clear();
 		final ContextMenu newMenu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
 
 		for (final int indiKey : gameClientStateTracker.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Individual.class, getMouseWorldX(), getMouseWorldY())) {
@@ -100,7 +100,7 @@ public class InGameContextMenuSpawner implements RightClickHandler {
 		}
 
 		if (!newMenu.getMenuItems().isEmpty()) {
-			userInterface.contextMenus.add(newMenu);
+			userInterface.getContextMenus().add(newMenu);
 			return true;
 		}
 

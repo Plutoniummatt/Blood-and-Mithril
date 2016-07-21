@@ -322,7 +322,7 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 				item.getKey().button.render(
 					x + item.getKey().button.width/2 + 6,
 					y - (i - startingIndex + (startingIndex == 0 ? 0 : 1)) * 20 - 25,
-					parent.isActive() && userInterface.contextMenus.isEmpty(), parent.getAlpha(),
+					parent.isActive() && userInterface.getContextMenus().isEmpty(), parent.getAlpha(),
 					width - extraColumnWidth,
 					graphics
 				);

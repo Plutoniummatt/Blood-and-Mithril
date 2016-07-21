@@ -1,12 +1,13 @@
 package bloodandmithril.networking.requests;
 
+import com.badlogic.gdx.math.Vector2;
+import com.google.inject.Inject;
+
 import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.Response;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.TextBubble;
 import bloodandmithril.util.SerializableFunction;
-
-import com.badlogic.gdx.math.Vector2;
 
 /**
  * {@link Response} to notify clients to add {@link TextBubble}s
@@ -15,6 +16,9 @@ import com.badlogic.gdx.math.Vector2;
  */
 @Copyright("Matthew Peck 2015")
 public class NotifyTextBubble implements Response {
+
+	@Inject private transient UserInterface userInterface;
+
 	private SerializableFunction<Vector2> position;
 	private int xOffset;
 	private int yOffset;
@@ -25,7 +29,7 @@ public class NotifyTextBubble implements Response {
 	/**
 	 * Constructor
 	 */
-	public NotifyTextBubble(SerializableFunction<Vector2> position, String text, long duration, int xOffset, int yOffset) {
+	public NotifyTextBubble(final SerializableFunction<Vector2> position, final String text, final long duration, final int xOffset, final int yOffset) {
 		this.position = position;
 		this.text = text;
 		this.duration = duration;
@@ -36,7 +40,7 @@ public class NotifyTextBubble implements Response {
 
 	@Override
 	public void acknowledge() {
-		UserInterface.addTextBubble(
+		userInterface.addTextBubble(
 			text,
 			position,
 			duration,

@@ -301,20 +301,21 @@ public final class Harvest extends CompositeAITask implements RoutineTask {
 					}
 				}
 			}
+			final UserInterface userInterface = Wiring.injector().getInstance(UserInterface.class);
 
-			UserInterface.shapeRenderer.begin(ShapeType.Line);
-			UserInterface.shapeRenderer.setColor(Color.GREEN);
+			userInterface.getShapeRenderer().begin(ShapeType.Line);
+			userInterface.getShapeRenderer().setColor(Color.GREEN);
 			final Individual harvestable = Domain.getIndividual(hostId);
-			UserInterface.shapeRenderer.rect(
+			userInterface.getShapeRenderer().rect(
 				worldToScreenX(harvestable.getState().position.x) - harvestable.getWidth()/2,
 				worldToScreenY(harvestable.getState().position.y),
 				harvestable.getWidth(),
 				harvestable.getHeight()
 			);
-			UserInterface.shapeRenderer.setColor(Color.RED);
+			userInterface.getShapeRenderer().setColor(Color.RED);
 			Gdx.gl20.glLineWidth(2f);
 			for (final Prop p : validEntities) {
-				UserInterface.shapeRenderer.rect(
+				userInterface.getShapeRenderer().rect(
 					worldToScreenX(p.position.x) - p.width/2,
 					worldToScreenY(p.position.y),
 					p.width,
@@ -322,7 +323,7 @@ public final class Harvest extends CompositeAITask implements RoutineTask {
 				);
 
 			}
-			UserInterface.shapeRenderer.end();
+			userInterface.getShapeRenderer().end();
 		}
 	}
 
@@ -397,25 +398,26 @@ public final class Harvest extends CompositeAITask implements RoutineTask {
 		}
 		@Override
 		public void render() {
-			UserInterface.shapeRenderer.begin(ShapeType.Line);
-			UserInterface.shapeRenderer.setColor(Color.GREEN);
+			final UserInterface userInterface = Wiring.injector().getInstance(UserInterface.class);
+			userInterface.getShapeRenderer().begin(ShapeType.Line);
+			userInterface.getShapeRenderer().setColor(Color.GREEN);
 			final Individual harvester = Domain.getIndividual(hostId);
-			UserInterface.shapeRenderer.rect(
+			userInterface.getShapeRenderer().rect(
 				worldToScreenX(harvester.getState().position.x) - harvester.getWidth()/2,
 				worldToScreenY(harvester.getState().position.y),
 				harvester.getWidth(),
 				harvester.getHeight()
 			);
 
-			UserInterface.shapeRenderer.setColor(Color.RED);
-			UserInterface.shapeRenderer.rect(
+			userInterface.getShapeRenderer().setColor(Color.RED);
+			userInterface.getShapeRenderer().rect(
 				worldToScreenX(left),
 				worldToScreenY(bottom),
 				right - left,
 				top - bottom
 			);
 
-			UserInterface.shapeRenderer.end();
+			userInterface.getShapeRenderer().end();
 		}
 	}
 
@@ -474,14 +476,15 @@ public final class Harvest extends CompositeAITask implements RoutineTask {
 							}
 							@Override
 							public void renderUIGuide(final Graphics graphics) {
-								UserInterface.shapeRenderer.begin(ShapeType.Line);
-								UserInterface.shapeRenderer.setColor(Color.RED);
+								final UserInterface userInterface = Wiring.injector().getInstance(UserInterface.class);
+								userInterface.getShapeRenderer().begin(ShapeType.Line);
+								userInterface.getShapeRenderer().setColor(Color.RED);
 								Gdx.gl20.glLineWidth(2f);
 								for (final int i : entities) {
 									final Prop p = gameClientStateTracker.getActiveWorld().props().getProp(i);
 									final Vector2 position = p.position;
 
-									UserInterface.shapeRenderer.rect(
+									userInterface.getShapeRenderer().rect(
 										worldToScreenX(position.x) - p.width/2,
 										worldToScreenY(position.y),
 										p.width,
@@ -489,7 +492,7 @@ public final class Harvest extends CompositeAITask implements RoutineTask {
 									);
 
 								}
-								UserInterface.shapeRenderer.end();
+								userInterface.getShapeRenderer().end();
 							}
 							@Override
 							public boolean executionConditionMet() {
@@ -580,18 +583,19 @@ public final class Harvest extends CompositeAITask implements RoutineTask {
 
 		@Override
 		public void render() {
-			UserInterface.shapeRenderer.begin(ShapeType.Line);
-			UserInterface.shapeRenderer.setColor(Color.GREEN);
+			final UserInterface userInterface = Wiring.injector().getInstance(UserInterface.class);
+			userInterface.getShapeRenderer().begin(ShapeType.Line);
+			userInterface.getShapeRenderer().setColor(Color.GREEN);
 			Gdx.gl20.glLineWidth(2f);
 			final Individual attacker = Domain.getIndividual(hostId);
-			UserInterface.shapeRenderer.rect(
+			userInterface.getShapeRenderer().rect(
 				worldToScreenX(attacker.getState().position.x) - attacker.getWidth()/2,
 				worldToScreenY(attacker.getState().position.y),
 				attacker.getWidth(),
 				attacker.getHeight()
 			);
 
-			UserInterface.shapeRenderer.end();
+			userInterface.getShapeRenderer().end();
 		}
 	}
 

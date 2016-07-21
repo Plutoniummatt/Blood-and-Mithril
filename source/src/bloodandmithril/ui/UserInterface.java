@@ -10,8 +10,6 @@ import static bloodandmithril.control.InputUtilities.screenToWorldX;
 import static bloodandmithril.control.InputUtilities.screenToWorldY;
 import static bloodandmithril.control.InputUtilities.worldToScreenX;
 import static bloodandmithril.control.InputUtilities.worldToScreenY;
-import static bloodandmithril.graphics.Graphics.getGdxHeight;
-import static bloodandmithril.graphics.Graphics.getGdxWidth;
 import static bloodandmithril.item.items.equipment.weapon.RangedWeapon.rangeControl;
 import static bloodandmithril.networking.ClientServerInterface.isClient;
 import static bloodandmithril.networking.ClientServerInterface.isServer;
@@ -55,6 +53,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import bloodandmithril.character.ai.AIProcessor;
@@ -116,6 +115,17 @@ import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 @Copyright("Matthew Peck 2014")
 public class UserInterface {
 
+	/** The texture atlas for other UI elements */
+	public static Texture uiTexture;
+	public static Texture iconTexture;
+
+	/** Texture regions */
+	public static TextureRegion finalWaypointTexture;
+	public static TextureRegion jumpWaypointTexture;
+	public static TextureRegion currentArrow;
+	public static TextureRegion followArrow;
+
+	/** UI colors */
 	private static final Color DARK_SCREEN_COLOR = new Color(0f, 0f, 0f, 0.8f);
 	private static final Color EXISTING_INTERFACE_COLOR = new Color(1f, 0.2f, 0f, 0.5f);
 	private static final Color AVAILABLE_INTERFACE_COLOR = new Color(0.2f, 1f, 0f, 0.5f);
@@ -126,6 +136,18 @@ public class UserInterface {
 	private OrthographicCamera UICamera;
 	private OrthographicCamera UICameraTrackingCam;
 
+	//---DEBUG----------------------------------------------------------------------
+	/** A flag to indicate whether we should render the available interfaces or existing interfaces */
+	public boolean renderAvailableInterfaces = true;
+	public boolean renderComponentBoundaries = true;
+
+	/** Whether to render debug UI */
+	public boolean DEBUG = false;
+
+	/** Whether to render debug UI */
+	public boolean RENDER_TOPOGRAPHY = false;
+	//---DEBUG----------------------------------------------------------------------
+
 	/** List of {@link Button}s */
 	public HashMap<String, Button> buttons = newHashMap();
 
@@ -134,70 +156,51 @@ public class UserInterface {
 	public Button savingButton;
 
 	/** {@link ContextMenu}s */
-	public List<ContextMenu> contextMenus = new ArrayList<ContextMenu>();
+	private List<ContextMenu> contextMenus = new ArrayList<ContextMenu>();
 
 	/** {@link Window}s */
 	private ArrayDeque<Component> layeredComponents = new ArrayDeque<Component>();
 
 	/** {@link TextBubble}s */
-	public static ArrayDeque<TextBubble> textBubbles = new ArrayDeque<TextBubble>();
+	private ArrayDeque<TextBubble> textBubbles = new ArrayDeque<TextBubble>();
+
+	/** Floating texts per world */
+	private Map<Integer, List<FloatingText>> worldFloatingTexts = Maps.newHashMap();
+
+	/** UI-related tasks that must be executed here */
+	private Deque<Task> uiTasks = new ConcurrentLinkedDeque<>();
 
 	/** Shape renderer */
-	public static ShapeRenderer shapeRenderer;
-
-	/** The texture atlas for other UI elements */
-	public static Texture uiTexture;
-	public static Texture iconTexture;
+	private ShapeRenderer shapeRenderer = new ShapeRenderer();
 
 	/** Initial coordinates for the drag box, see {@link #renderDragBox()} */
-	public static Vector2 initialLeftMouseDragCoordinates = null;
-	public static Vector2 initialRightMouseDragCoordinates = null;
-
-	/** A flag to indicate whether we should render the available interfaces or existing interfaces */
-	public static boolean renderAvailableInterfaces = true, renderComponentBoundaries = true;
-
-	/** Whether to render debug UI */
-	public static boolean DEBUG = false;
-
-	/** Whether to render debug UI */
-	public static boolean RENDER_TOPOGRAPHY = false;
+	public Vector2 initialLeftMouseDragCoordinates = null;
+	public Vector2 initialRightMouseDragCoordinates = null;
 
 	/** FPS should be updated twice per second */
-	private static int fpsTimer, fps, fpsDisplayed;
+	private int fpsTimer, fps, fpsDisplayed;
 
 	/** The mouse-over info popup */
-	private static InfoPopup infoPopup;
+	private InfoPopup infoPopup;
 
-	private static float averageBarAlpha = 0f, maxHealth = 0f, totalHealth = 0, maxStamina = 0f, totalStamina = 0f, maxMana = 0f, totalMana = 0;
+	private float averageBarAlpha = 0f;
+	private float maxHealth = 0f;
+	private float totalHealth = 0;
+	private float maxStamina = 0f;
+	private float totalStamina = 0f;
+	private float maxMana = 0f;
+	private float totalMana = 0;
 
-	/** Texture regions */
-	public static TextureRegion finalWaypointTexture;
-	public static TextureRegion jumpWaypointTexture;
-	public static TextureRegion currentArrow;
-	public static TextureRegion followArrow;
-
-	private static Map<Integer, List<FloatingText>> worldFloatingTexts;
-
-	private static Deque<Task> uiTasks;
-
-	private static BloodAndMithrilClientInputProcessor inputProcessor;
-	private static Controls controls;
-	private static Graphics graphics;
-	private static ThreadedTasks threadedTasks;
-	private static GameSaver gameSaver;
-	private static ChunkProvider chunkLoader;
-	private static FactionControlService factionControlService;
-	private static GameClientStateTracker gameClientStateTracker;
-	private static Threading threading;
-	private static TopographyDebugRenderer topographyDebugRenderer;
-
-
-	public UserInterface() {
-		UICamera = new OrthographicCamera(getGdxWidth(), getGdxHeight());
-		UICamera.setToOrtho(false, getGdxWidth(), getGdxHeight());
-		UICameraTrackingCam = new OrthographicCamera(getGdxWidth(), getGdxHeight());
-		UICameraTrackingCam.setToOrtho(false, getGdxWidth(), getGdxHeight());
-	}
+	@Inject private BloodAndMithrilClientInputProcessor inputProcessor;
+	@Inject private Controls controls;
+	@Inject private Graphics graphics;
+	@Inject private ThreadedTasks threadedTasks;
+	@Inject private GameSaver gameSaver;
+	@Inject private ChunkProvider chunkLoader;
+	@Inject private FactionControlService factionControlService;
+	@Inject private GameClientStateTracker gameClientStateTracker;
+	@Inject private Threading threading;
+	@Inject private TopographyDebugRenderer topographyDebugRenderer;
 
 
 	/**
@@ -219,7 +222,7 @@ public class UserInterface {
 	/**
 	 * Setup for UI, makes everything it needs.
 	 */
-	public static synchronized void setup() {
+	public synchronized void setup() {
 		uiTexture = new Texture(files.internal("data/image/ui.png"));
 		iconTexture = new Texture(files.internal("data/image/icons.png"));
 
@@ -227,19 +230,6 @@ public class UserInterface {
 		jumpWaypointTexture = new TextureRegion(UserInterface.uiTexture, 0, 59, 39, 29);
 		currentArrow = new TextureRegion(UserInterface.uiTexture, 500, 1, 11, 8);
 		followArrow = new TextureRegion(UserInterface.uiTexture, 500, 10, 11, 8);
-		uiTasks = new ConcurrentLinkedDeque<>();
-		worldFloatingTexts = Maps.newHashMap();
-		shapeRenderer = new ShapeRenderer();
-
-		inputProcessor = Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class);
-		controls = Wiring.injector().getInstance(Controls.class);
-		graphics = Wiring.injector().getInstance(Graphics.class);
-		gameSaver = Wiring.injector().getInstance(GameSaver.class);
-		chunkLoader = Wiring.injector().getInstance(ChunkProvider.class);
-		factionControlService = Wiring.injector().getInstance(FactionControlService.class);
-		gameClientStateTracker = Wiring.injector().getInstance(GameClientStateTracker.class);
-		topographyDebugRenderer = Wiring.injector().getInstance(TopographyDebugRenderer.class);
-		threading = Wiring.injector().getInstance(Threading.class);
 	}
 
 
@@ -432,7 +422,7 @@ public class UserInterface {
 	}
 
 
-	private static void renderAverageBars() {
+	private void renderAverageBars() {
 		if (averageBarAlpha != 0f || !gameClientStateTracker.getSelectedIndividuals().isEmpty()) {
 			if (gameClientStateTracker.getSelectedIndividuals().isEmpty()) {
 				averageBarAlpha = averageBarAlpha - 0.04f < 0f ? 0f : averageBarAlpha - 0.04f;
@@ -460,24 +450,24 @@ public class UserInterface {
 
 			Gdx.gl.glEnable(GL_BLEND);
 			Gdx.gl.glLineWidth(1f);
-			shapeRenderer.begin(ShapeType.Filled);
-			shapeRenderer.setColor(1f, 1f, 1f, averageBarAlpha);
-			shapeRenderer.rect(graphics.getWidth() / 2 - 200, 65, 400 * totalHealth / maxHealth, 5);
-			shapeRenderer.rect(graphics.getWidth() / 2 - 200, 55, 400 * totalStamina / maxStamina, 5);
-			shapeRenderer.rect(graphics.getWidth() / 2 - 200, 45, 400 * totalMana / maxMana, 5);
-			shapeRenderer.end();
-			shapeRenderer.begin(ShapeType.Line);
-			shapeRenderer.setColor(1f, 1f, 1f, averageBarAlpha);
-			shapeRenderer.rect(graphics.getWidth() / 2 - 200, 65, 400, 5);
-			shapeRenderer.rect(graphics.getWidth() / 2 - 200, 55, 400, 5);
-			shapeRenderer.rect(graphics.getWidth() / 2 - 200, 45, 400, 5);
-			shapeRenderer.end();
+			getShapeRenderer().begin(ShapeType.Filled);
+			getShapeRenderer().setColor(1f, 1f, 1f, averageBarAlpha);
+			getShapeRenderer().rect(graphics.getWidth() / 2 - 200, 65, 400 * totalHealth / maxHealth, 5);
+			getShapeRenderer().rect(graphics.getWidth() / 2 - 200, 55, 400 * totalStamina / maxStamina, 5);
+			getShapeRenderer().rect(graphics.getWidth() / 2 - 200, 45, 400 * totalMana / maxMana, 5);
+			getShapeRenderer().end();
+			getShapeRenderer().begin(ShapeType.Line);
+			getShapeRenderer().setColor(1f, 1f, 1f, averageBarAlpha);
+			getShapeRenderer().rect(graphics.getWidth() / 2 - 200, 65, 400, 5);
+			getShapeRenderer().rect(graphics.getWidth() / 2 - 200, 55, 400, 5);
+			getShapeRenderer().rect(graphics.getWidth() / 2 - 200, 45, 400, 5);
+			getShapeRenderer().end();
 			Gdx.gl.glDisable(GL_BLEND);
 		}
 	}
 
 
-	private static synchronized void renderTextBubbles() {
+	private synchronized void renderTextBubbles() {
 		graphics.getSpriteBatch().begin();
 
 		final ArrayDeque<TextBubble> newBubbles = new ArrayDeque<>();
@@ -497,7 +487,7 @@ public class UserInterface {
 	}
 
 
-	public static synchronized void addTextBubble(final String text, final SerializableFunction<Vector2> position, final long duration, final int xOffset, final int yOffset) {
+	public synchronized void addTextBubble(final String text, final SerializableFunction<Vector2> position, final long duration, final int xOffset, final int yOffset) {
 		if (ClientServerInterface.isClient()) {
 			textBubbles.add(
 				new TextBubble(
@@ -561,7 +551,7 @@ public class UserInterface {
 	}
 
 
-	private static void renderPositionalIndexes() {
+	private void renderPositionalIndexes() {
 		defaultFont.setColor(Color.YELLOW);
 		final Collection<Object> nearbyEntities = Lists.newLinkedList();
 
@@ -633,31 +623,31 @@ public class UserInterface {
 	/**
 	 * Renders the {@link Boundaries} of all {@link bloodandmithril.generation.component.Component}s
 	 */
-	private static void renderComponentBoundaries() {
+	private void renderComponentBoundaries() {
 		gl.glEnable(GL_BLEND);
 		Gdx.gl20.glLineWidth(2f);
 		gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		for (final Structure struct : Structures.getStructures().values()) {
 			for (final bloodandmithril.generation.component.Component component : newArrayList(struct.getComponents())) {
-				shapeRenderer.begin(Filled);
-				shapeRenderer.setColor(COMPONENT_FILL_COLOR);
-				shapeRenderer.rect(
+				getShapeRenderer().begin(Filled);
+				getShapeRenderer().setColor(COMPONENT_FILL_COLOR);
+				getShapeRenderer().rect(
 					worldToScreenX(component.getBoundaries().left * TILE_SIZE),
 					worldToScreenY(component.getBoundaries().bottom * TILE_SIZE),
 					(component.getBoundaries().right - component.getBoundaries().left + 1) * TILE_SIZE,
 					(component.getBoundaries().top - component.getBoundaries().bottom + 1) * TILE_SIZE
 				);
-				shapeRenderer.end();
+				getShapeRenderer().end();
 
-				shapeRenderer.begin(ShapeType.Line);
-				shapeRenderer.setColor(COMPONENT_BOUNDARY_COLOR);
-				shapeRenderer.rect(
+				getShapeRenderer().begin(ShapeType.Line);
+				getShapeRenderer().setColor(COMPONENT_BOUNDARY_COLOR);
+				getShapeRenderer().rect(
 					worldToScreenX(component.getBoundaries().left * TILE_SIZE),
 					worldToScreenY(component.getBoundaries().bottom * TILE_SIZE),
 					(component.getBoundaries().right - component.getBoundaries().left + 1) * TILE_SIZE,
 					(component.getBoundaries().top - component.getBoundaries().bottom + 1) * TILE_SIZE
 				);
-				shapeRenderer.end();
+				getShapeRenderer().end();
 			}
 		}
 		gl.glDisable(GL_BLEND);
@@ -667,7 +657,7 @@ public class UserInterface {
 	/**
 	 * Renders a small rectangle to indicate the current tile the mouse is over
 	 */
-	private static boolean renderMouseOverTileHighlightBox(final boolean nonEmptyTilesOnly) {
+	private boolean renderMouseOverTileHighlightBox(final boolean nonEmptyTilesOnly) {
 		try {
 			if (nonEmptyTilesOnly && gameClientStateTracker.getActiveWorld().getTopography().getTile(getMouseWorldX(), getMouseWorldY(), true) instanceof EmptyTile) {
 				return false;
@@ -682,17 +672,17 @@ public class UserInterface {
 		gl.glEnable(GL_BLEND);
 		gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		Gdx.gl20.glLineWidth(2f);
-		shapeRenderer.begin(ShapeType.Line);
-		shapeRenderer.setColor(Color.GREEN);
-		shapeRenderer.rect(x, y, TILE_SIZE, TILE_SIZE);
-		shapeRenderer.end();
+		getShapeRenderer().begin(ShapeType.Line);
+		getShapeRenderer().setColor(Color.GREEN);
+		getShapeRenderer().rect(x, y, TILE_SIZE, TILE_SIZE);
+		getShapeRenderer().end();
 		gl.glDisable(GL_BLEND);
 
 		return true;
 	}
 
 
-	private static void renderComponentInterfaces() {
+	private void renderComponentInterfaces() {
 		gl.glEnable(GL_BLEND);
 		gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		Gdx.gl20.glLineWidth(2f);
@@ -724,10 +714,10 @@ public class UserInterface {
 			graphics.getSpriteBatch().begin();
 			gl.glEnable(GL_BLEND);
 			gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-			shapeRenderer.begin(ShapeType.Filled);
-			shapeRenderer.setColor(DARK_SCREEN_COLOR);
-			shapeRenderer.rect(0, 0, graphics.getWidth(), graphics.getHeight());
-			shapeRenderer.end();
+			getShapeRenderer().begin(ShapeType.Filled);
+			getShapeRenderer().setColor(DARK_SCREEN_COLOR);
+			getShapeRenderer().rect(0, 0, graphics.getWidth(), graphics.getHeight());
+			getShapeRenderer().end();
 			savingButton.render(true, 1f, graphics);
 			gl.glDisable(GL_BLEND);
 			graphics.getSpriteBatch().end();
@@ -741,10 +731,10 @@ public class UserInterface {
 			graphics.getSpriteBatch().begin();
 			gl.glEnable(GL_BLEND);
 			gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-			shapeRenderer.begin(ShapeType.Filled);
-			shapeRenderer.setColor(DARK_SCREEN_COLOR);
-			shapeRenderer.rect(0, 0, graphics.getWidth(), graphics.getHeight());
-			shapeRenderer.end();
+			getShapeRenderer().begin(ShapeType.Filled);
+			getShapeRenderer().setColor(DARK_SCREEN_COLOR);
+			getShapeRenderer().rect(0, 0, graphics.getWidth(), graphics.getHeight());
+			getShapeRenderer().end();
 
 			if (unpauseButton != null) {
 				unpauseButton.render(true, 1f, graphics);
@@ -757,15 +747,15 @@ public class UserInterface {
 
 
 	/** Draws the loading screen */
-	private static void renderLoadingScreen() {
+	private void renderLoadingScreen() {
 		if (gameClientStateTracker.isLoading()) {
 			graphics.getSpriteBatch().begin();
 			gl.glEnable(GL_BLEND);
 			gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-			shapeRenderer.begin(ShapeType.Filled);
-			shapeRenderer.setColor(Color.BLACK);
-			shapeRenderer.rect(0, 0, graphics.getWidth(), graphics.getHeight());
-			shapeRenderer.end();
+			getShapeRenderer().begin(ShapeType.Filled);
+			getShapeRenderer().setColor(Color.BLACK);
+			getShapeRenderer().rect(0, 0, graphics.getWidth(), graphics.getHeight());
+			getShapeRenderer().end();
 
 			graphics.getSpriteBatch().setShader(Shaders.text);
 			defaultFont.setColor(Color.YELLOW);
@@ -907,23 +897,23 @@ public class UserInterface {
 	/**
 	 * Renders the drag-box
 	 */
-	private static void renderDragBox() {
+	private void renderDragBox() {
 		if (isButtonPressed(controls.leftClick.keyCode) && initialLeftMouseDragCoordinates != null) {
-			shapeRenderer.begin(ShapeType.Line);
-			shapeRenderer.setColor(Color.GREEN);
+			getShapeRenderer().begin(ShapeType.Line);
+			getShapeRenderer().setColor(Color.GREEN);
 			final float width = getMouseScreenX() - initialLeftMouseDragCoordinates.x;
 			final float height = getMouseScreenY() - initialLeftMouseDragCoordinates.y;
-			shapeRenderer.rect(initialLeftMouseDragCoordinates.x, initialLeftMouseDragCoordinates.y, width, height);
-			shapeRenderer.end();
+			getShapeRenderer().rect(initialLeftMouseDragCoordinates.x, initialLeftMouseDragCoordinates.y, width, height);
+			getShapeRenderer().end();
 		}
 
 		if (isButtonPressed(controls.rightClick.keyCode) && initialRightMouseDragCoordinates != null && isKeyPressed(controls.rightClickDragBox.keyCode)) {
-			shapeRenderer.begin(ShapeType.Line);
-			shapeRenderer.setColor(Color.RED);
+			getShapeRenderer().begin(ShapeType.Line);
+			getShapeRenderer().setColor(Color.RED);
 			final float width = getMouseScreenX() - initialRightMouseDragCoordinates.x;
 			final float height = getMouseScreenY() - initialRightMouseDragCoordinates.y;
-			shapeRenderer.rect(initialRightMouseDragCoordinates.x, initialRightMouseDragCoordinates.y, width, height);
-			shapeRenderer.end();
+			getShapeRenderer().rect(initialRightMouseDragCoordinates.x, initialRightMouseDragCoordinates.y, width, height);
+			getShapeRenderer().end();
 		}
 	}
 
@@ -934,7 +924,7 @@ public class UserInterface {
 			if (gameClientStateTracker.isIndividualSelected(indi)) {
 				final AITask currentTask = indi.getAI().getCurrentTask();
 				if (currentTask instanceof GoToLocation) {
-					shapeRenderer.setColor(Color.WHITE);
+					getShapeRenderer().setColor(Color.WHITE);
 					 ((GoToLocation)currentTask).renderPath();
 					((GoToLocation)currentTask).renderFinalWayPoint(graphics);
 				} else if (currentTask instanceof Travel) {
@@ -987,7 +977,7 @@ public class UserInterface {
 	}
 
 
-	public static void renderJumpArrow(final Vector2 start, final Vector2 finish) {
+	public void renderJumpArrow(final Vector2 start, final Vector2 finish) {
 		if (!isKeyPressed(controls.attack.keyCode) && !isKeyPressed(controls.rangedAttack.keyCode)) {
 			renderArrow(start, finish, new Color(0f, 1f, 0f, 0.65f), 3f, 0f, 75f);
 		}
@@ -997,7 +987,7 @@ public class UserInterface {
 	/**
 	 * Renders the jump arrow, coordinates are world coordinates
 	 */
-	public static void renderArrow(final Vector2 start, final Vector2 finish, final Color color, final float lineWidth, final float arrowSize, final float maxLength) {
+	public void renderArrow(final Vector2 start, final Vector2 finish, final Color color, final float lineWidth, final float arrowSize, final float maxLength) {
 		final Vector2 difference = finish.cpy().sub(start);
 		final Vector2 arrowHead = start.cpy().add(
 			difference.cpy().nor().scl(Math.min(difference.len(), maxLength))
@@ -1008,26 +998,26 @@ public class UserInterface {
 		);
 
 		graphics.getSpriteBatch().flush();
-		shapeRenderer.begin(ShapeType.Line);
+		getShapeRenderer().begin(ShapeType.Line);
 		Gdx.gl20.glLineWidth(lineWidth);
 		Gdx.gl20.glEnable(GL20.GL_BLEND);
-		shapeRenderer.setColor(color);
-		shapeRenderer.line(
+		getShapeRenderer().setColor(color);
+		getShapeRenderer().line(
 			worldToScreenX(start.x),
 			worldToScreenY(start.y),
 			worldToScreenX(fin.x),
 			worldToScreenY(fin.y)
 		);
-		shapeRenderer.end();
+		getShapeRenderer().end();
 
-		shapeRenderer.begin(ShapeType.Filled);
-		shapeRenderer.setColor(color);
+		getShapeRenderer().begin(ShapeType.Filled);
+		getShapeRenderer().setColor(color);
 
 		final Vector2 point = arrowHead.cpy().add(difference.cpy().nor().scl(5f + arrowSize));
 		final Vector2 corner1 = arrowHead.cpy().sub(difference.cpy().nor().rotate(25f).scl(15f + arrowSize / 2f));
 		final Vector2 corner2 = arrowHead.cpy().sub(difference.cpy().nor().rotate(-25f).scl(15f + arrowSize / 2f));
 
-		shapeRenderer.triangle(
+		getShapeRenderer().triangle(
 			worldToScreenX(point.x),
 			worldToScreenY(point.y),
 			worldToScreenX(corner1.x),
@@ -1035,7 +1025,7 @@ public class UserInterface {
 			worldToScreenX(corner2.x),
 			worldToScreenY(corner2.y)
 		);
-		shapeRenderer.end();
+		getShapeRenderer().end();
 		Gdx.gl20.glDisable(GL20.GL_BLEND);
 		Gdx.gl20.glLineWidth(1f);
 	}
@@ -1134,7 +1124,7 @@ public class UserInterface {
 	}
 
 
-	private static void renderFloatingText(final int worldId) {
+	private void renderFloatingText(final int worldId) {
 		graphics.getSpriteBatch().begin();
 
 		final List<FloatingText> elements = worldFloatingTexts.get(worldId);
@@ -1178,7 +1168,7 @@ public class UserInterface {
 	}
 
 	/** Debug text */
-	private static void renderDebugText() {
+	private void renderDebugText() {
 		defaultFont.setColor(Color.YELLOW);
 		defaultFont.draw(graphics.getSpriteBatch(), Integer.toString(convertToWorldTileCoord(getMouseWorldX())) + ", " + Float.toString(convertToWorldTileCoord(getMouseWorldY())), getMouseScreenX() - 35, getMouseScreenY() - 35);
 		defaultFont.draw(graphics.getSpriteBatch(), "Mouse World Coords: " + getMouseWorldX() + ", " + getMouseWorldY(), 5, 72);
@@ -1250,6 +1240,11 @@ public class UserInterface {
 	}
 
 
+	public List<ContextMenu> getContextMenus() {
+		return contextMenus;
+	}
+
+
 	/**
 	 * Renders all buttons
 	 */
@@ -1271,12 +1266,12 @@ public class UserInterface {
 	}
 
 
-	public static void addFloatingText(final String text, final Color color, final Vector2 position, final boolean ui, final int worldId) {
+	public void addFloatingText(final String text, final Color color, final Vector2 position, final boolean ui, final int worldId) {
 		addFloatingText(floatingText(text, color, position, ui), worldId, false);
 	}
 
 
-	public static void addFloatingText(final FloatingText floatingText, final int worldId, final boolean csi) {
+	public void addFloatingText(final FloatingText floatingText, final int worldId, final boolean csi) {
 		if (isServer()) {
 			if (isClient()) {
 				synchronized(worldFloatingTexts) {
@@ -1303,7 +1298,7 @@ public class UserInterface {
 	}
 
 
-	public static void addUIFloatingText(final String text, final Color color, final Vector2 position) {
+	public void addUIFloatingText(final String text, final Color color, final Vector2 position) {
 		addFloatingText(floatingText(text, color, position, true), gameClientStateTracker.getActiveWorldId(), false);
 	}
 
@@ -1456,13 +1451,13 @@ public class UserInterface {
 	}
 
 
-	public static InfoPopup getInfoPopup() {
+	public InfoPopup getInfoPopup() {
 		return infoPopup;
 	}
 
 
-	public static void setInfoPopup(final InfoPopup infoPopup) {
-		UserInterface.infoPopup = infoPopup;
+	public void setInfoPopup(final InfoPopup infoPopup) {
+		this.infoPopup = infoPopup;
 	}
 
 
@@ -1483,5 +1478,10 @@ public class UserInterface {
 
 	public void addLayeredComponents(final Collection<Component> toAdd) {
 		layeredComponents.addAll(toAdd);
+	}
+
+
+	public ShapeRenderer getShapeRenderer() {
+		return shapeRenderer;
 	}
 }

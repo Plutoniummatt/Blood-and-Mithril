@@ -21,7 +21,6 @@ import static bloodandmithril.control.InputUtilities.isKeyPressed;
 import static bloodandmithril.control.InputUtilities.worldToScreenX;
 import static bloodandmithril.control.InputUtilities.worldToScreenY;
 import static bloodandmithril.item.items.equipment.weapon.RangedWeapon.rangeControl;
-import static bloodandmithril.ui.UserInterface.shapeRenderer;
 import static bloodandmithril.util.ComparisonUtil.obj;
 import static com.google.common.collect.Sets.newHashSet;
 import static java.lang.Math.PI;
@@ -45,7 +44,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-import bloodandmithril.character.ai.AIProcessor.ReturnIndividualPosition;
+import bloodandmithril.character.Speaker;
 import bloodandmithril.character.ai.ArtificialIntelligence;
 import bloodandmithril.character.ai.perception.Visible;
 import bloodandmithril.character.ai.task.Travel;
@@ -98,7 +97,7 @@ import bloodandmithril.world.World;
  */
 @Copyright("Matthew Peck 2014")
 @Name(name = "Individuals")
-public abstract class Individual implements Equipper, Serializable, Kinematics, Visible, MouseOverable {
+public abstract class Individual implements Equipper, Visible, MouseOverable, Speaker, Serializable {
 	private static final long serialVersionUID = 2821835360311044658L;
 
 	/** The current action of this individual */
@@ -313,7 +312,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 	 * Adds a floating text at close proximity to this individual
 	 */
 	public void addFloatingText(final String text, final Color color) {
-		UserInterface.addFloatingText(
+		Wiring.injector().getInstance(UserInterface.class).addFloatingText(
 			text,
 			color,
 			getState().position.cpy().add(0f, getHeight()).add(new Vector2(0, 15f).rotate(Util.getRandom().nextFloat() * 360f)),
@@ -392,23 +391,23 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 			batch.draw(UserInterface.currentArrow, state.position.x - 5, state.position.y + getHeight() + 10);
 		}
 
-		if (UserInterface.DEBUG) {
-			shapeRenderer.begin(ShapeType.Line);
-			shapeRenderer.setColor(Color.ORANGE);
-			shapeRenderer.rect(
+		if (userInterface.DEBUG) {
+			userInterface.getShapeRenderer().begin(ShapeType.Line);
+			userInterface.getShapeRenderer().setColor(Color.ORANGE);
+			userInterface.getShapeRenderer().rect(
 				worldToScreenX(interactionBox.position.x - interactionBox.width / 2),
 				worldToScreenY(interactionBox.position.y - interactionBox.height / 2),
 				interactionBox.width,
 				interactionBox.height
 			);
-			shapeRenderer.setColor(Color.RED);
-			shapeRenderer.rect(
+			userInterface.getShapeRenderer().setColor(Color.RED);
+			userInterface.getShapeRenderer().rect(
 				worldToScreenX(getHitBox().position.x - getHitBox().width / 2),
 				worldToScreenY(getHitBox().position.y - getHitBox().height / 2),
 				getHitBox().width,
 				getHitBox().height
 			);
-			shapeRenderer.end();
+			userInterface.getShapeRenderer().end();
 		}
 
 		final Controls controls = Wiring.injector().getInstance(Controls.class);
@@ -1024,24 +1023,6 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 	 * Plays the audio that signals an "affirmative"
 	 */
 	public abstract void playAffirmativeSound();
-
-
-	public final void speak(final String text, final long duration) {
-		if (dead || shutup || getSpeakTimer() > 0f) {
-			return;
-		}
-
-		if (ClientServerInterface.isServer()) {
-			UserInterface.addTextBubble(
-				text,
-				new ReturnIndividualPosition(this),
-				duration,
-				0,
-				(int) (getHeight() * 1.3f)
-			);
-			setSpeakTimer(duration / 1000f);
-		}
-	}
 
 
 	public void sayStuck() {}
