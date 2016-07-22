@@ -1,8 +1,9 @@
-package bloodandmithril.character.ai.task;
+package bloodandmithril.character.ai.task.compositeaitask;
 
 import java.util.ArrayDeque;
 
 import bloodandmithril.character.ai.AITask;
+import bloodandmithril.character.ai.ExecutedBy;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
 
@@ -12,6 +13,7 @@ import bloodandmithril.core.Copyright;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
+@ExecutedBy(CompositeAITaskExecutor.class)
 public class CompositeAITask extends AITask {
 	private static final long serialVersionUID = -3769737563309697525L;
 
@@ -40,7 +42,7 @@ public class CompositeAITask extends AITask {
 
 
 	/** Adds a task to the end of the queue */
-	protected final void appendTask(final AITask taskToAdd) {
+	public final void appendTask(final AITask taskToAdd) {
 		tasks.addLast(taskToAdd);
 
 		if (getCurrentTask() == null) {
@@ -55,44 +57,9 @@ public class CompositeAITask extends AITask {
 	}
 
 
-	/**
-	 * @see bloodandmithril.character.ai.AITask#isComplete()
-	 */
-	@Override
-	public boolean isComplete() {
-		return getCurrentTask() == null;
-	}
-
-
-	/**
-	 * @see bloodandmithril.character.ai.AITask#execute()
-	 */
-	@Override
-	protected void internalExecute(final float delta) {
-		if (getCurrentTask() == null) {
-			return;
-		}
-
-		if (getCurrentTask().isComplete()) {
-			getCurrentTask().uponCompletion();
-			setCurrentTask(tasks.poll());
-		}
-
-		if (getCurrentTask() != null) {
-			getCurrentTask().executeTask(delta);
-		}
-	}
-
-
 	@Override
 	public String getShortDescription() {
 		return description;
-	}
-
-
-	@Override
-	public boolean uponCompletion() {
-		return false;
 	}
 
 

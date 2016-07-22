@@ -13,7 +13,7 @@ import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.task.GoToLocation;
 import bloodandmithril.character.ai.task.JitAITask;
 import bloodandmithril.character.ai.task.Jump;
-import bloodandmithril.character.ai.task.Travel;
+import bloodandmithril.character.ai.task.travel.Travel;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;

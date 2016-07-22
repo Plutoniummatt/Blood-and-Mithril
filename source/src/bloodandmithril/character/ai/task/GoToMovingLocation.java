@@ -25,10 +25,10 @@ import bloodandmithril.character.ai.RoutineTask;
 import bloodandmithril.character.ai.TaskGenerator;
 import bloodandmithril.character.ai.pathfinding.Path;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
-import bloodandmithril.character.ai.routine.DailyRoutine;
-import bloodandmithril.character.ai.routine.EntityVisibleRoutine;
-import bloodandmithril.character.ai.routine.IndividualConditionRoutine;
-import bloodandmithril.character.ai.routine.StimulusDrivenRoutine;
+import bloodandmithril.character.ai.routine.daily.DailyRoutine;
+import bloodandmithril.character.ai.routine.entityvisible.EntityVisibleRoutine;
+import bloodandmithril.character.ai.routine.individualcondition.IndividualConditionRoutine;
+import bloodandmithril.character.ai.routine.stimulusdriven.StimulusDrivenRoutine;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
@@ -77,7 +77,7 @@ public class GoToMovingLocation extends AITask implements RoutineTask, NextWaypo
 	/**
 	 * Constructor
 	 */
-	protected GoToMovingLocation(final IndividualIdentifier hostId, final SerializableFunction<Vector2> destination, final float tolerance) {
+	public GoToMovingLocation(final IndividualIdentifier hostId, final SerializableFunction<Vector2> destination, final float tolerance) {
 		super(hostId);
 		this.destination = destination;
 		this.tolerance = tolerance;
@@ -97,7 +97,7 @@ public class GoToMovingLocation extends AITask implements RoutineTask, NextWaypo
 	/**
 	 * Constructor
 	 */
-	protected GoToMovingLocation(final IndividualIdentifier hostId, final SerializableFunction<Vector2> destination, final SerializableFunction<Boolean> terminationCondition) {
+	public GoToMovingLocation(final IndividualIdentifier hostId, final SerializableFunction<Vector2> destination, final SerializableFunction<Boolean> terminationCondition) {
 		super(hostId);
 		this.destination = destination;
 		this.terminationCondition = terminationCondition;
@@ -118,7 +118,7 @@ public class GoToMovingLocation extends AITask implements RoutineTask, NextWaypo
 	/**
 	 * Constructor
 	 */
-	protected GoToMovingLocation(final IndividualIdentifier hostId, final SerializableFunction<Vector2> destination, final SerializableFunction<Boolean> terminationCondition, final SerializableFunction<Boolean> repathCondition) {
+	public GoToMovingLocation(final IndividualIdentifier hostId, final SerializableFunction<Vector2> destination, final SerializableFunction<Boolean> terminationCondition, final SerializableFunction<Boolean> repathCondition) {
 		super(hostId);
 		this.destination = destination;
 		this.terminationCondition = terminationCondition;

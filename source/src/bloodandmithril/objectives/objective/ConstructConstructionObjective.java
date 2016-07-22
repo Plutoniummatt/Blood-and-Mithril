@@ -1,6 +1,6 @@
 package bloodandmithril.objectives.objective;
 
-import bloodandmithril.character.ai.task.Construct;
+import bloodandmithril.character.ai.task.construct.Construct;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
 import bloodandmithril.event.Event;

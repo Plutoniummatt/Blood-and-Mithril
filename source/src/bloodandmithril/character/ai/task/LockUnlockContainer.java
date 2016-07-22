@@ -4,6 +4,7 @@ import static bloodandmithril.character.ai.task.GoToLocation.goTo;
 
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
+import bloodandmithril.character.ai.task.compositeaitask.CompositeAITask;
 import bloodandmithril.character.ai.pathfinding.PathFinder;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;

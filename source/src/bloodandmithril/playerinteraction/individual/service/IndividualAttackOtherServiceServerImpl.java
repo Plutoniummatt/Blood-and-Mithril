@@ -2,7 +2,7 @@ package bloodandmithril.playerinteraction.individual.service;
 
 import com.google.inject.Singleton;
 
-import bloodandmithril.character.ai.task.Attack;
+import bloodandmithril.character.ai.task.attack.Attack;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.playerinteraction.individual.api.IndividualAttackOtherService;

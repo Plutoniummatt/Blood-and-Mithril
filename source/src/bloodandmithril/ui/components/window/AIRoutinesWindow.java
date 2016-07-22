@@ -17,10 +17,10 @@ import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 
 import bloodandmithril.character.ai.Routine;
-import bloodandmithril.character.ai.routine.DailyRoutine;
-import bloodandmithril.character.ai.routine.EntityVisibleRoutine;
-import bloodandmithril.character.ai.routine.IndividualConditionRoutine;
-import bloodandmithril.character.ai.routine.StimulusDrivenRoutine;
+import bloodandmithril.character.ai.routine.daily.DailyRoutine;
+import bloodandmithril.character.ai.routine.entityvisible.EntityVisibleRoutine;
+import bloodandmithril.character.ai.routine.individualcondition.IndividualConditionRoutine;
+import bloodandmithril.character.ai.routine.stimulusdriven.StimulusDrivenRoutine;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.Graphics;

@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.ComparisonChain;
 
 import bloodandmithril.character.ai.AIProcessor.ReturnIndividualPosition;
+import bloodandmithril.character.ai.task.compositeaitask.CompositeAITask;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;

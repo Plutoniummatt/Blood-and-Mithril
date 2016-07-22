@@ -60,10 +60,10 @@ import com.google.inject.Singleton;
 
 import bloodandmithril.character.ai.AIProcessor;
 import bloodandmithril.character.ai.AITask;
-import bloodandmithril.character.ai.task.CompositeAITask;
 import bloodandmithril.character.ai.task.GoToLocation;
 import bloodandmithril.character.ai.task.TakeItem;
-import bloodandmithril.character.ai.task.Travel;
+import bloodandmithril.character.ai.task.compositeaitask.CompositeAITask;
+import bloodandmithril.character.ai.task.travel.Travel;
 import bloodandmithril.character.faction.FactionControlService;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.control.BloodAndMithrilClientInputProcessor;

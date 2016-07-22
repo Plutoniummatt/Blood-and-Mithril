@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Test;
 import org.reflections.Reflections;
@@ -18,6 +19,10 @@ import org.reflections.util.FilterBuilder;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
+import bloodandmithril.character.ai.AITask;
+import bloodandmithril.character.ai.ExecutedBy;
+import bloodandmithril.character.ai.RoutineContextMenusProvidedBy;
+import bloodandmithril.character.ai.RoutineTask;
 import bloodandmithril.core.Copyright;
 import javassist.Modifier;
 
@@ -33,10 +38,7 @@ import javassist.Modifier;
 public class TestClasses {
 
 	/**
-	 * Uses reflection to get every single class, then verifies that all {@link Serializable} classes
-	 * {@link Inject} dependencies that are marked as transient
-	 *
-	 * Also verifies that non-serializable classes {@link Inject} dependencies are not marked with transient
+	 * Uses reflection to get every single class and test them
 	 */
 	@Test
 	public void test() {
@@ -52,7 +54,8 @@ public class TestClasses {
 		);
 
 		final List<String> errors = Lists.newLinkedList();
-		reflections.getSubTypesOf(Object.class).stream().sorted((c1, c2) -> {return c1.getName().compareTo(c2.getName());}).forEach(each -> {
+		final Set<Class<? extends Object>> classesToTest = reflections.getSubTypesOf(Object.class);
+		classesToTest.stream().sorted((c1, c2) -> {return c1.getName().compareTo(c2.getName());}).forEach(each -> {
 			testClass(each, errors);
 		});
 
@@ -62,6 +65,8 @@ public class TestClasses {
 			});
 			fail("Errors found, check console output");
 		}
+
+		System.out.println("Test passed " + classesToTest.size() + " classes.");
 	}
 
 
@@ -81,6 +86,30 @@ public class TestClasses {
 						errors.add("Found transient dependency on non-serializable class: " + clazz.getName() + "#" + field.getName());
 					}
 				}
+			}
+		}
+
+		if (AITask.class.isAssignableFrom(clazz)) {
+			if (!clazz.isAnnotationPresent(ExecutedBy.class)) {
+				errors.add("Found AITask not annotated with @ExecutedBy: " + clazz.getName());
+			}
+		}
+
+		if (clazz.isAnnotationPresent(ExecutedBy.class)) {
+			if (!AITask.class.isAssignableFrom(clazz)) {
+				errors.add("Found non AITask annotated with @ExecutedBy: " + clazz.getName());
+			}
+		}
+
+		if (RoutineTask.class.isAssignableFrom(clazz)) {
+			if (!clazz.isAnnotationPresent(RoutineContextMenusProvidedBy.class)) {
+				errors.add("Found RoutineTask not annotated with @RoutineTaskContextMenuProvider: " + clazz.getName());
+			}
+		}
+
+		if (clazz.isAnnotationPresent(RoutineContextMenusProvidedBy.class)) {
+			if (!RoutineTask.class.isAssignableFrom(clazz)) {
+				errors.add("Found non RoutineTask annotated with @RoutineTaskContextMenuProvider: " + clazz.getName());
 			}
 		}
 

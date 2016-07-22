@@ -1,6 +1,6 @@
 package bloodandmithril.networking.requests;
 
-import bloodandmithril.character.ai.task.Follow;
+import bloodandmithril.character.ai.task.follow.Follow;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.Request;

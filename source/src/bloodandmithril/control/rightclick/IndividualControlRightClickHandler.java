@@ -11,8 +11,8 @@ import com.google.inject.Inject;
 
 import bloodandmithril.character.ai.AIProcessor;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
-import bloodandmithril.character.ai.task.Attack;
 import bloodandmithril.character.ai.task.MineTile;
+import bloodandmithril.character.ai.task.attack.Attack;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.control.Controls;
 import bloodandmithril.control.RightClickHandler;

@@ -10,6 +10,7 @@ import com.google.inject.Inject;
 
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.ui.UserInterface;
@@ -31,6 +32,7 @@ import bloodandmithril.world.Epoch;
  * @author Matt
  */
 @Copyright("Matthew Peck 2015")
+@ExecutedBy()
 public abstract class Routine extends AITask {
 	private static final long serialVersionUID = -8502601311459390398L;
 	private int priority = 1;
@@ -40,10 +42,7 @@ public abstract class Routine extends AITask {
 	private boolean enabled;
 
 	protected TaskGenerator aiTaskGenerator;
-	protected AITask task;
-
-	@Inject
-	private transient UserInterface userInterface;
+	private AITask task;
 
 	/**
 	 * Protected constructor
@@ -76,6 +75,9 @@ public abstract class Routine extends AITask {
 	public void setDescription(final String description) {
 		this.description = description;
 	}
+
+
+	public abstract Deque<Panel> constructEditWizard(final EditAIRoutineWindow parent);
 
 
 	/**
@@ -127,10 +129,9 @@ public abstract class Routine extends AITask {
 	}
 
 
-	/**
-	 * @return the UI wizard for editing this {@link Routine}
-	 */
-	public abstract Deque<Panel> constructEditWizard(EditAIRoutineWindow parent);
+	public TaskGenerator getTaskGenerator() {
+		return aiTaskGenerator;
+	}
 
 
 	/**
@@ -164,21 +165,36 @@ public abstract class Routine extends AITask {
 	}
 
 
+	public AITask getTask() {
+		return task;
+	}
+
+
+	public void setTask(final AITask aiTask) {
+		this.task = aiTask;
+	}
+
+
 	public void setEnabled(final boolean enabled) {
 		this.enabled = enabled;
 
 		if (ClientServerInterface.isClient()) {
-			userInterface.refreshRefreshableWindows(AIRoutinesWindow.class);
+			Wiring.injector().getInstance(UserInterface.class).refreshRefreshableWindows(AIRoutinesWindow.class);
 		} else {
 			ClientServerInterface.SendNotification.notifyRefreshWindows();
 		}
 	}
 
 
-	public abstract class RoutinePanel extends Panel {
+	public static abstract class RoutinePanel extends Panel {
+		@Inject	private UserInterface userInterface;
+
 		protected Button changeTaskButton, changeTimeBetweenOcurrences;
-		protected RoutinePanel(final Component parent) {
+		protected Routine routine;
+
+		protected RoutinePanel(final Component parent, final Routine routine) {
 			super(parent);
+			this.routine = routine;
 
 			this.changeTaskButton = new Button(
 				"Change task",
@@ -223,8 +239,8 @@ public abstract class Routine extends AITask {
 							userInterface.addClientMessage("Error", "Enter time in HH:mm format");
 						}
 
-						setTimeBetweenOcurrences(time);
-					}, "Confirm", true,Epoch.getTimeString(timeBetweenOcurrences))
+						routine.setTimeBetweenOcurrences(time);
+					}, "Confirm", true,Epoch.getTimeString(routine.timeBetweenOcurrences))
 				);
 			}
 
@@ -241,7 +257,7 @@ public abstract class Routine extends AITask {
 
 			defaultFont.drawWrapped(
 				graphics.getSpriteBatch(),
-				"This routine can not occur more than once in " + Epoch.getTimeString(timeBetweenOcurrences),
+				"This routine can not occur more than once in " + Epoch.getTimeString(routine.timeBetweenOcurrences),
 				x + 10,
 				y - height + 120,
 				width - 5

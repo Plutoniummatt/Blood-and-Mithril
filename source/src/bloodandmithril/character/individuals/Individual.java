@@ -47,7 +47,7 @@ import com.google.common.collect.Sets;
 import bloodandmithril.character.Speaker;
 import bloodandmithril.character.ai.ArtificialIntelligence;
 import bloodandmithril.character.ai.perception.Visible;
-import bloodandmithril.character.ai.task.Travel;
+import bloodandmithril.character.ai.task.travel.Travel;
 import bloodandmithril.character.combat.CombatService;
 import bloodandmithril.character.conditions.Condition;
 import bloodandmithril.character.faction.Faction;

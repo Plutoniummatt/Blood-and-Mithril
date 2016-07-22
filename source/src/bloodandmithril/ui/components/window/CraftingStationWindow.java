@@ -19,7 +19,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.google.inject.Inject;
 
 import bloodandmithril.character.ai.AITask;
-import bloodandmithril.character.ai.task.Craft;
+import bloodandmithril.character.ai.task.craft.Craft;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.control.Controls;
 import bloodandmithril.core.Copyright;

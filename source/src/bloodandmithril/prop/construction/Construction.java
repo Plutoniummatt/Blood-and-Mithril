@@ -9,7 +9,7 @@ import java.util.Map.Entry;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 
-import bloodandmithril.character.ai.task.ConstructDeconstruct;
+import bloodandmithril.character.ai.task.construct.ConstructDeconstruct;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;

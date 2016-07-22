@@ -18,7 +18,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import bloodandmithril.character.ai.perception.Visible;
-import bloodandmithril.character.ai.routine.EntityVisibleRoutine.EntityVisible;
+import bloodandmithril.character.ai.routine.entityvisible.EntityVisibleRoutine.EntityVisible;
 import bloodandmithril.character.ai.task.TakeItem;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;

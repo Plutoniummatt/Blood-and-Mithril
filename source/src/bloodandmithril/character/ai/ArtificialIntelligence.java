@@ -14,13 +14,14 @@ import com.google.common.collect.Lists;
 
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.perception.Stimulus;
-import bloodandmithril.character.ai.routine.StimulusDrivenRoutine;
+import bloodandmithril.character.ai.routine.stimulusdriven.StimulusDrivenRoutine;
 import bloodandmithril.character.ai.task.GoToLocation;
 import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.character.ai.task.Wait;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
@@ -114,10 +115,11 @@ public abstract class ArtificialIntelligence implements Serializable {
 
 			if (getCurrentTask() != null) {
 				final AITask taskToExecute = getCurrentTask();
-				taskToExecute.executeTask(delta);
+				final AITaskExecutor executor = Wiring.injector().getInstance(taskToExecute.getClass().getAnnotation(ExecutedBy.class).value());
+				executor.execute(taskToExecute, delta);
 				Logger.aiDebug(hostId.getSimpleName() + " is: " + taskToExecute.getShortDescription(), LogLevel.INFO);
 
-				if (taskToExecute.isComplete() && !taskToExecute.uponCompletion() && !(taskToExecute instanceof Idle)) {
+				if (executor.isComplete(taskToExecute) && !executor.uponCompletion(taskToExecute) && !(taskToExecute instanceof Idle)) {
 					setCurrentTask(new Idle());
 				}
 			}

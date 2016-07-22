@@ -1,6 +1,6 @@
 package bloodandmithril.networking.requests;
 
-import bloodandmithril.character.ai.task.Craft;
+import bloodandmithril.character.ai.task.craft.Craft;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;

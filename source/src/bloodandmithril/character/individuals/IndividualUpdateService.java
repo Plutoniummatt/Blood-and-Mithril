@@ -11,7 +11,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import bloodandmithril.character.ai.AITask;
-import bloodandmithril.character.ai.task.Attack;
+import bloodandmithril.character.ai.task.attack.Attack;
 import bloodandmithril.character.conditions.Condition;
 import bloodandmithril.character.conditions.Exhaustion;
 import bloodandmithril.character.conditions.Hunger;

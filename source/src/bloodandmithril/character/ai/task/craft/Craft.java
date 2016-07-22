@@ -1,9 +1,12 @@
-package bloodandmithril.character.ai.task;
+package bloodandmithril.character.ai.task.craft;
 
 import static bloodandmithril.character.ai.task.GoToLocation.goTo;
 
 import bloodandmithril.character.ai.AITask;
+import bloodandmithril.character.ai.ExecutedBy;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
+import bloodandmithril.character.ai.task.compositeaitask.CompositeAITask;
+import bloodandmithril.character.ai.task.compositeaitask.CompositeAITaskExecutor;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
@@ -11,7 +14,6 @@ import bloodandmithril.item.Craftable;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.prop.construction.craftingstation.CraftingStation;
 import bloodandmithril.util.datastructure.SerializableDoubleWrapper;
-import bloodandmithril.world.Domain;
 
 /**
  * {@link AITask} that represents the crafting of a {@link Craftable}
@@ -19,12 +21,13 @@ import bloodandmithril.world.Domain;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
+@ExecutedBy(CompositeAITaskExecutor.class)
 public class Craft extends CompositeAITask {
 	private static final long serialVersionUID = 4625886192088540454L;
-	private SerializableDoubleWrapper<Item, Integer> item;
-	private int quantity;
 	private int craftingStationId;
-	private boolean bulk;
+	int quantity;
+	SerializableDoubleWrapper<Item, Integer> item;
+	boolean bulk;
 
 	/**
 	 * Constructor
@@ -61,10 +64,11 @@ public class Craft extends CompositeAITask {
 	}
 
 
+	@ExecutedBy(CraftingExecutor.class)
 	public class Crafting extends AITask {
 		private static final long serialVersionUID = 7987930854206245256L;
-		private int craftingStationId;
-		private boolean occupied, stop;
+		int craftingStationId;
+		boolean occupied, stop;
 
 		/**
 		 * Constructor
@@ -75,44 +79,14 @@ public class Craft extends CompositeAITask {
 		}
 
 
+		public Craft getParent() {
+			return Craft.this;
+		}
+
+
 		@Override
 		public String getShortDescription() {
 			return "Crafting";
-		}
-
-
-		@Override
-		public boolean isComplete() {
-			return occupied || quantity == 0 || stop;
-		}
-
-
-		@Override
-		public boolean uponCompletion() {
-			return false;
-		}
-
-
-		@Override
-		protected void internalExecute(final float delta) {
-			final CraftingStation craftingStation = (CraftingStation) Domain.getWorld(getHost().getWorldId()).props().getProp(craftingStationId);
-			final Individual individual = Domain.getIndividual(hostId.getId());
-
-			if (individual == null || craftingStation == null) {
-				stop = true;
-				return;
-			}
-
-			if (!craftingStation.craft(item, individual, delta)) {
-				occupied = true;
-			}
-
-			if (craftingStation.isFinished()) {
-				if (bulk) {
-					craftingStation.takeItem(individual);
-				}
-				quantity--;
-			}
 		}
 	}
 }

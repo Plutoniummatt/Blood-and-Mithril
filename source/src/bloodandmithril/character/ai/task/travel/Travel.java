@@ -1,4 +1,4 @@
-package bloodandmithril.character.ai.task;
+package bloodandmithril.character.ai.task.travel;
 
 import com.badlogic.gdx.math.Vector2;
 import com.google.inject.Inject;
@@ -6,8 +6,13 @@ import com.google.inject.Inject;
 import bloodandmithril.character.Speech;
 import bloodandmithril.character.ai.AIProcessor.JitGoToLocation;
 import bloodandmithril.character.ai.AITask;
+import bloodandmithril.character.ai.ExecutedBy;
 import bloodandmithril.character.ai.NextWaypointProvider;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
+import bloodandmithril.character.ai.task.GoToLocation;
+import bloodandmithril.character.ai.task.Jump;
+import bloodandmithril.character.ai.task.compositeaitask.CompositeAITask;
+import bloodandmithril.character.ai.task.compositeaitask.CompositeAITaskExecutor;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;
@@ -23,6 +28,7 @@ import bloodandmithril.util.Util;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
+@ExecutedBy(CompositeAITaskExecutor.class)
 public class Travel extends CompositeAITask implements NextWaypointProvider {
 	private static final long serialVersionUID = -1118542666642761349L;
 

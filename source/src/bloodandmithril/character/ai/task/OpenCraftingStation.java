@@ -1,6 +1,7 @@
 package bloodandmithril.character.ai.task;
 
 import bloodandmithril.character.ai.AITask;
+import bloodandmithril.character.ai.task.compositeaitask.CompositeAITask;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;

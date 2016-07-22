@@ -1,6 +1,6 @@
 package bloodandmithril.networking.requests;
 
-import bloodandmithril.character.ai.task.ConstructDeconstruct;
+import bloodandmithril.character.ai.task.construct.ConstructDeconstruct;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.Request;

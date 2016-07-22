@@ -7,7 +7,7 @@ import java.util.List;
 
 import com.badlogic.gdx.graphics.Color;
 
-import bloodandmithril.character.ai.task.Construct;
+import bloodandmithril.character.ai.task.construct.Construct;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.Graphics;

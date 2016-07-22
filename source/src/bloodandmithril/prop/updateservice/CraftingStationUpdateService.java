@@ -2,7 +2,7 @@ package bloodandmithril.prop.updateservice;
 
 import com.google.inject.Singleton;
 
-import bloodandmithril.character.ai.task.Craft;
+import bloodandmithril.character.ai.task.craft.Craft;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.construction.craftingstation.CraftingStation;

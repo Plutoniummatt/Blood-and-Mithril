@@ -1,7 +1,7 @@
 package bloodandmithril.prop;
 
 import bloodandmithril.character.ai.perception.Visible;
-import bloodandmithril.character.ai.routine.EntityVisibleRoutine.EntityVisible;
+import bloodandmithril.character.ai.routine.entityvisible.EntityVisibleRoutine.EntityVisible;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;

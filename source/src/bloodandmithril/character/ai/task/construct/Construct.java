@@ -1,12 +1,13 @@
-package bloodandmithril.character.ai.task;
+package bloodandmithril.character.ai.task.construct;
 
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
+import bloodandmithril.character.ai.task.GoToLocation;
+import bloodandmithril.character.ai.task.compositeaitask.CompositeAITask;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.prop.construction.Construction;
-import bloodandmithril.world.Domain;
 
 /**
  * {@link AITask} that represents the construction of a {@link Construction}
@@ -40,9 +41,9 @@ public class Construct extends CompositeAITask {
 
 	public static class Constructing extends AITask {
 		private static final long serialVersionUID = -6557725570349017304L;
-		private int constructionId;
-		private boolean stop;
-		private boolean deconstruct;
+		int constructionId;
+		boolean stop;
+		boolean deconstruct;
 
 		/**
 		 * Constructor
@@ -57,37 +58,6 @@ public class Construct extends CompositeAITask {
 		@Override
 		public String getShortDescription() {
 			return "Constructing";
-		}
-
-
-		@Override
-		public boolean isComplete() {
-			if (deconstruct) {
-				return !Domain.getWorld(getHost().getWorldId()).props().hasProp(constructionId) || stop || !((Construction) Domain.getWorld(getHost().getWorldId()).props().getProp(constructionId)).canDeconstruct();
-			} else {
-				return ((Construction) Domain.getWorld(getHost().getWorldId()).props().getProp(constructionId)).getConstructionProgress() == 1f || stop;
-			}
-		}
-
-
-		@Override
-		public boolean uponCompletion() {
-			return false;
-		}
-
-
-		@Override
-		protected void internalExecute(final float delta) {
-			final Construction construction = (Construction) Domain.getWorld(getHost().getWorldId()).props().getProp(constructionId);
-			if (construction != null) {
-				if (deconstruct) {
-					construction.deconstruct(Domain.getIndividual(hostId.getId()), delta);
-				} else {
-					construction.construct(Domain.getIndividual(hostId.getId()), delta);
-				}
-			} else {
-				stop = true;
-			}
 		}
 	}
 }

@@ -1,17 +1,15 @@
-package bloodandmithril.character.ai.task;
-
-import static bloodandmithril.networking.ClientServerInterface.isClient;
-
-import com.google.inject.Inject;
+package bloodandmithril.character.ai.task.construct;
 
 import bloodandmithril.character.ai.AITask;
+import bloodandmithril.character.ai.ExecutedBy;
+import bloodandmithril.character.ai.task.GoToMovingLocation;
+import bloodandmithril.character.ai.task.compositeaitask.CompositeAITask;
+import bloodandmithril.character.ai.task.compositeaitask.CompositeAITaskExecutor;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
-import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.Prop.ReturnPropPosition;
 import bloodandmithril.prop.construction.Construction;
-import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.window.ConstructionWindow;
 
 /**
@@ -20,13 +18,12 @@ import bloodandmithril.ui.components.window.ConstructionWindow;
  * @author Matt
  */
 @Copyright("Matthew Peck 2015")
+@ExecutedBy(CompositeAITaskExecutor.class)
 public class ConstructDeconstruct extends CompositeAITask {
-
-	@Inject private transient UserInterface userInterface;
-
 	private static final long serialVersionUID = -5586910244188482156L;
-	private Construction construction;
-	private int connectionId;
+
+	Construction construction;
+	int connectionId;
 
 	/**
 	 * Constructor
@@ -46,9 +43,10 @@ public class ConstructDeconstruct extends CompositeAITask {
 	}
 
 
+	@ExecutedBy(OpenWindowExecutor.class)
 	public class OpenWindow extends AITask {
 		private static final long serialVersionUID = 338634457034287529L;
-		private boolean opened;
+		boolean opened;
 
 		/**
 		 * Constructor
@@ -58,41 +56,14 @@ public class ConstructDeconstruct extends CompositeAITask {
 		}
 
 
+		public ConstructDeconstruct getParent() {
+			return ConstructDeconstruct.this;
+		}
+
+
 		@Override
 		public String getShortDescription() {
 			return "Constructing/Deconstructing";
-		}
-
-
-		@Override
-		public boolean isComplete() {
-			return opened;
-		}
-
-
-		@Override
-		public boolean uponCompletion() {
-			return false;
-		}
-
-
-		@Override
-		protected void internalExecute(final float delta) {
-			if (getHost().getInteractionBox().isWithinBox(construction.position)) {
-				if (isClient()) {
-					userInterface.addLayeredComponentUnique(
-						new ConstructionWindow(
-							getHost().getId().getSimpleName() + " interacting with " + construction.getTitle(),
-							true,
-							getHost(),
-							construction
-						)
-					);
-				} else {
-					ClientServerInterface.SendNotification.notifyConstructionWindowOpen(getHost().getId().getId(), construction.id, connectionId);
-				}
-				opened = true;
-			}
 		}
 	}
 }
