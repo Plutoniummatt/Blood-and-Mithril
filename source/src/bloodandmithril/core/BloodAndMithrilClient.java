@@ -9,6 +9,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.inject.Inject;
 
 import bloodandmithril.audio.SoundService;
@@ -93,8 +94,8 @@ public class BloodAndMithrilClient implements ApplicationListener {
 		createMainMenuWorld();
 		setInputProcessor(inputProcessor);
 	}
-
-
+	
+	
 	private void setupInjector() {
 		ClientServerInterface.setClient(true);
 		Wiring.setupInjector(new CommonModule());
@@ -183,10 +184,17 @@ public class BloodAndMithrilClient implements ApplicationListener {
 
 			graphics.getCam().position.x = x;
 			graphics.getCam().position.y = y;
+			
+			customRenderFunction();
 		} catch (final Exception e) {
 			e.printStackTrace();
 			Gdx.app.exit();
 		}
+	}
+	
+	
+	@VisibleForTesting
+	protected void customRenderFunction() {
 	}
 
 

@@ -1,5 +1,6 @@
 package bloodandmithril.application;
 
+import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
@@ -18,6 +19,12 @@ public class Main {
 	public static BloodAndMithrilClient client;
 
 	public static void main(final String args[]) throws Exception {
+		BloodAndMithrilClient.devMode = true;
+		startGameClient(new BloodAndMithrilClient());
+	}
+	
+	
+	public static void startGameClient(ApplicationListener applicationListener) {
 		// Configurations
 		final LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
 		cfg.title = "Blood and Mithril";
@@ -31,9 +38,7 @@ public class Main {
 		cfg.addIcon("data/image/icon.png", FileType.Internal);
 		cfg.allowSoftwareMode = false;
 
-		BloodAndMithrilClient.devMode = true;
-		client = new BloodAndMithrilClient();
-
-		new LwjglApplication(client, cfg);
+		
+		new LwjglApplication(applicationListener, cfg);
 	}
 }
