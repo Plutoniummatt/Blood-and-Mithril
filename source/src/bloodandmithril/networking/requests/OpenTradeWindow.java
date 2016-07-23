@@ -1,6 +1,8 @@
 package bloodandmithril.networking.requests;
 
-import bloodandmithril.character.ai.task.TradeWith;
+import com.google.inject.Inject;
+
+import bloodandmithril.character.ai.task.trade.TradeExecutor;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.container.Container;
@@ -84,11 +86,10 @@ public class OpenTradeWindow implements Request {
 
 
 	public static class OpenTradeWindowResponse implements Response {
-
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = 4563938302580135709L;
+		
+		@Inject private transient TradeExecutor tradeExecutor;
+		
 		private final int proposerId;
 		private final TradeEntity proposeeEntity;
 		private final int proposeeId;
@@ -104,11 +105,11 @@ public class OpenTradeWindow implements Request {
 			Individual proposer = Domain.getIndividual(proposerId);
 			if (proposeeEntity == TradeEntity.INDIVIDUAL) {
 				Individual proposee = Domain.getIndividual(proposeeId);
-				TradeWith.openTradeWindowWithIndividual(proposer, proposee);
+				tradeExecutor.openTradeWindowWithIndividual(proposer, proposee);
 			} else {
 				Prop proposee = Domain.getWorld(proposer.getWorldId()).props().getProp(proposeeId);
 				if (proposee instanceof Prop && proposee instanceof Container) {
-					TradeWith.openTradeWindowWithProp(proposer, (Container) proposee);
+					tradeExecutor.openTradeWindowWithProp(proposer, (Container) proposee);
 				}
 			}
 		}

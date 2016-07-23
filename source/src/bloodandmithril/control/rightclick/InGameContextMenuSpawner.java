@@ -9,6 +9,7 @@ import static bloodandmithril.control.InputUtilities.isKeyPressed;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualContextMenuService;
@@ -22,15 +23,13 @@ import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.world.Domain;
 
+@Singleton
 @Copyright("Matthew Peck 2016")
 public class InGameContextMenuSpawner implements RightClickHandler {
 
-	@Inject
-	private GameClientStateTracker gameClientStateTracker;
-	@Inject
-	private IndividualContextMenuService individualContextMenuService;
-	@Inject
-	private UserInterface userInterface;
+	@Inject	private GameClientStateTracker gameClientStateTracker;
+	@Inject	private IndividualContextMenuService individualContextMenuService;
+	@Inject	private UserInterface userInterface;
 
 	@Override
 	public boolean rightClick(final boolean doubleClick) {

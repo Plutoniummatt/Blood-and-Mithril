@@ -16,8 +16,9 @@ import com.google.common.collect.Iterables;
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.perception.Visible;
-import bloodandmithril.character.ai.task.OpenCraftingStation;
 import bloodandmithril.character.ai.task.craft.Craft;
+import bloodandmithril.character.ai.task.opencraftingstation.OpenCraftingStation;
+import bloodandmithril.character.ai.task.opencraftingstation.OpenCraftingStationWindowExecutor;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;
@@ -156,7 +157,7 @@ public abstract class CraftingStation extends Construction {
 						if (gameClientStateTracker.getSelectedIndividuals().size() == 1) {
 							final AITask currentTask = selected.getAI().getCurrentTask();
 							if (currentTask instanceof Craft && ((Craft)currentTask).getCraftingStationId() == id) {
-								OpenCraftingStation.openCraftingStationWindow(selected, this);
+								Wiring.injector().getInstance(OpenCraftingStationWindowExecutor.class).openCraftingStationWindow(selected, this);
 								return;
 							}
 

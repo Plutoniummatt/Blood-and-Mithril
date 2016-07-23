@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.google.common.collect.Maps;
 
 import bloodandmithril.audio.SoundService;
-import bloodandmithril.character.ai.task.LightLightable;
+import bloodandmithril.character.ai.task.lightlightable.LightLightable;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;

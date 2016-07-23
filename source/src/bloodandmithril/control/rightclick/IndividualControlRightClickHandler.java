@@ -8,11 +8,12 @@ import static bloodandmithril.control.InputUtilities.isKeyPressed;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import bloodandmithril.character.ai.AIProcessor;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
-import bloodandmithril.character.ai.task.MineTile;
 import bloodandmithril.character.ai.task.attack.Attack;
+import bloodandmithril.character.ai.task.minetile.MineTile;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.control.Controls;
 import bloodandmithril.control.RightClickHandler;
@@ -27,15 +28,13 @@ import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 
+@Singleton
 @Copyright("Matthew Peck 2016")
 public class IndividualControlRightClickHandler implements RightClickHandler {
 
-	@Inject
-	private Controls controls;
-	@Inject
-	private GameClientStateTracker gameClientStateTracker;
-	@Inject
-	private UserInterface userInterface;
+	@Inject	private Controls controls;
+	@Inject	private GameClientStateTracker gameClientStateTracker;
+	@Inject	private UserInterface userInterface;
 
 	@Override
 	public boolean rightClick(final boolean doubleClick) {

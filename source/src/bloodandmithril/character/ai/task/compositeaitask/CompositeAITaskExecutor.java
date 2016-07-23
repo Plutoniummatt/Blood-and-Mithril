@@ -17,7 +17,6 @@ import bloodandmithril.core.Wiring;
 @Copyright("Matthew Peck 2016")
 public class CompositeAITaskExecutor implements AITaskExecutor {
 
-
 	@Override
 	public void execute(final AITask aiTask, final float delta) {
 		final CompositeAITask task = (CompositeAITask) aiTask;

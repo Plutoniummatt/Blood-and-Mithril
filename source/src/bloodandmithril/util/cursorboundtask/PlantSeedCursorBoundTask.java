@@ -17,8 +17,8 @@ import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
 import bloodandmithril.character.ai.Routine;
-import bloodandmithril.character.ai.task.PlantSeed;
-import bloodandmithril.character.ai.task.PlantSeed.PlantSeedTaskGenerator;
+import bloodandmithril.character.ai.task.plantseed.PlantSeed;
+import bloodandmithril.character.ai.task.plantseed.PlantSeed.PlantSeedTaskGenerator;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.core.Copyright;

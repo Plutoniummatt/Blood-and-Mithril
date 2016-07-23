@@ -1,7 +1,6 @@
 package bloodandmithril.character.ai.task.travel;
 
 import com.badlogic.gdx.math.Vector2;
-import com.google.inject.Inject;
 
 import bloodandmithril.character.Speech;
 import bloodandmithril.character.ai.AIProcessor.JitGoToLocation;
@@ -9,10 +8,10 @@ import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.ExecutedBy;
 import bloodandmithril.character.ai.NextWaypointProvider;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
-import bloodandmithril.character.ai.task.GoToLocation;
-import bloodandmithril.character.ai.task.Jump;
 import bloodandmithril.character.ai.task.compositeaitask.CompositeAITask;
 import bloodandmithril.character.ai.task.compositeaitask.CompositeAITaskExecutor;
+import bloodandmithril.character.ai.task.gotolocation.GoToLocation;
+import bloodandmithril.character.ai.task.jump.Jump;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;
@@ -31,8 +30,6 @@ import bloodandmithril.util.Util;
 @ExecutedBy(CompositeAITaskExecutor.class)
 public class Travel extends CompositeAITask implements NextWaypointProvider {
 	private static final long serialVersionUID = -1118542666642761349L;
-
-	@Inject private transient UserInterface userInterface;
 
 	/**
 	 * Constructor
@@ -115,6 +112,8 @@ public class Travel extends CompositeAITask implements NextWaypointProvider {
 
 
 	private void renderForTask(final AITask previousTask, final AITask task, final boolean isCurrentTask, final Graphics graphics) {
+		UserInterface userInterface = Wiring.injector().getInstance(UserInterface.class);
+		
 		if (task instanceof JitGoToLocation) {
 
 			float offset = 0f;

@@ -7,8 +7,8 @@ import com.google.inject.Inject;
 
 import bloodandmithril.character.AddIndividualService;
 import bloodandmithril.character.ai.AITask;
-import bloodandmithril.character.ai.task.GoToLocation;
 import bloodandmithril.character.ai.task.compositeaitask.CompositeAITask;
+import bloodandmithril.character.ai.task.gotolocation.GoToLocation;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;

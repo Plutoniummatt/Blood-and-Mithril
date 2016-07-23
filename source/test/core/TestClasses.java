@@ -18,12 +18,16 @@ import org.reflections.util.FilterBuilder;
 
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.ExecutedBy;
 import bloodandmithril.character.ai.RoutineContextMenusProvidedBy;
 import bloodandmithril.character.ai.RoutineTask;
+import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.ui.components.Component;
+import bloodandmithril.util.CursorBoundTask;
 import javassist.Modifier;
 
 /**
@@ -80,11 +84,24 @@ public class TestClasses {
 				}
 			}
 		} else {
+			boolean hasInjectedDependencies = false;
+			
 			for (final Field field : clazz.getDeclaredFields()) {
 				if (field.isAnnotationPresent(Inject.class)) {
 					if (Modifier.isTransient(field.getModifiers())) {
 						errors.add("Found transient dependency on non-serializable class: " + clazz.getName() + "#" + field.getName());
 					}
+					
+					hasInjectedDependencies = true;
+				}
+			}
+			
+			if (hasInjectedDependencies) {
+				if (!clazz.isAnnotationPresent(Singleton.class) && 
+					!Component.class.isAssignableFrom(clazz) &&
+					!CursorBoundTask.class.isAssignableFrom(clazz) &&
+					clazz != BloodAndMithrilClient.class) {
+					errors.add("Found class with injected dependencies without @Singleton annotation: " + clazz.getName());
 				}
 			}
 		}

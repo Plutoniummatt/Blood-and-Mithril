@@ -1,6 +1,6 @@
 package bloodandmithril.networking.requests;
 
-import bloodandmithril.character.ai.task.MineTile;
+import bloodandmithril.character.ai.task.minetile.MineTile;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.Request;

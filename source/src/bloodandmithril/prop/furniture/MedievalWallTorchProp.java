@@ -6,7 +6,7 @@ import static bloodandmithril.control.InputUtilities.getMouseScreenY;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-import bloodandmithril.character.ai.task.LightLightable;
+import bloodandmithril.character.ai.task.lightlightable.LightLightable;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;

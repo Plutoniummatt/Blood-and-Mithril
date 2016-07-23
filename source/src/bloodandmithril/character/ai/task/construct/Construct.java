@@ -1,9 +1,11 @@
 package bloodandmithril.character.ai.task.construct;
 
 import bloodandmithril.character.ai.AITask;
+import bloodandmithril.character.ai.ExecutedBy;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
-import bloodandmithril.character.ai.task.GoToLocation;
 import bloodandmithril.character.ai.task.compositeaitask.CompositeAITask;
+import bloodandmithril.character.ai.task.compositeaitask.CompositeAITaskExecutor;
+import bloodandmithril.character.ai.task.gotolocation.GoToLocation;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
@@ -15,6 +17,7 @@ import bloodandmithril.prop.construction.Construction;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
+@ExecutedBy(CompositeAITaskExecutor.class)
 public class Construct extends CompositeAITask {
 	private static final long serialVersionUID = 8175661093571274804L;
 
@@ -39,6 +42,7 @@ public class Construct extends CompositeAITask {
 	}
 
 
+	@ExecutedBy(ConstructingExecutor.class)
 	public static class Constructing extends AITask {
 		private static final long serialVersionUID = -6557725570349017304L;
 		int constructionId;

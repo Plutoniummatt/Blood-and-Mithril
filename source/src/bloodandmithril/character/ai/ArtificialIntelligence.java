@@ -1,7 +1,7 @@
 package bloodandmithril.character.ai;
 
 import static bloodandmithril.character.ai.pathfinding.PathFinder.getGroundAboveOrBelowClosestEmptyOrPlatformSpace;
-import static bloodandmithril.character.ai.task.GoToLocation.goTo;
+import static bloodandmithril.character.ai.task.gotolocation.GoToLocation.goTo;
 import static bloodandmithril.util.Util.firstNonNull;
 
 import java.io.Serializable;
@@ -15,9 +15,9 @@ import com.google.common.collect.Lists;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.perception.Stimulus;
 import bloodandmithril.character.ai.routine.stimulusdriven.StimulusDrivenRoutine;
-import bloodandmithril.character.ai.task.GoToLocation;
-import bloodandmithril.character.ai.task.Idle;
-import bloodandmithril.character.ai.task.Wait;
+import bloodandmithril.character.ai.task.gotolocation.GoToLocation;
+import bloodandmithril.character.ai.task.idle.Idle;
+import bloodandmithril.character.ai.task.wait.Wait;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;

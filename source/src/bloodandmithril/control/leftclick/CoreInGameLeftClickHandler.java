@@ -7,6 +7,7 @@ import static bloodandmithril.control.InputUtilities.getMouseWorldY;
 import static bloodandmithril.control.InputUtilities.isKeyPressed;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import bloodandmithril.character.faction.FactionControlService;
 import bloodandmithril.character.individuals.Individual;
@@ -27,17 +28,14 @@ import bloodandmithril.world.Domain;
  *
  * @author Matt
  */
+@Singleton
 @Copyright("Matthew Peck 2016")
 public class CoreInGameLeftClickHandler implements LeftClickHandler {
 
-	@Inject
-	private GameClientStateTracker gameClientStateTracker;
-	@Inject
-	private BloodAndMithrilClientInputProcessor inputProcessor;
-	@Inject
-	private FactionControlService factionControlService;
-	@Inject
-	private Controls controls;
+	@Inject	private GameClientStateTracker gameClientStateTracker;
+	@Inject	private BloodAndMithrilClientInputProcessor inputProcessor;
+	@Inject	private FactionControlService factionControlService;
+	@Inject	private Controls controls;
 
 	@Override
 	public boolean leftClick(final boolean doubleClick) {

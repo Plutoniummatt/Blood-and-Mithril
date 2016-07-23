@@ -3,8 +3,15 @@ package bloodandmithril.character.ai.task.follow;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.task.compositeaitask.CompositeAITaskExecutor;
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.world.Domain;
 
+/**
+ * Executor for {@link Follow}
+ * 
+ * @author Matt
+ */
+@Copyright("Matthew Peck 2016")
 public class FollowExecutor extends CompositeAITaskExecutor {
 
 	@Override

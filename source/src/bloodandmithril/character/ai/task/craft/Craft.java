@@ -1,6 +1,6 @@
 package bloodandmithril.character.ai.task.craft;
 
-import static bloodandmithril.character.ai.task.GoToLocation.goTo;
+import static bloodandmithril.character.ai.task.gotolocation.GoToLocation.goTo;
 
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.ExecutedBy;

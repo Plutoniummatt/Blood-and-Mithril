@@ -1,6 +1,6 @@
 package bloodandmithril.character.ai;
 
-import static bloodandmithril.character.ai.task.GoToLocation.goTo;
+import static bloodandmithril.character.ai.task.gotolocation.GoToLocation.goTo;
 import static bloodandmithril.world.Domain.getIndividual;
 
 import java.util.Set;
@@ -10,9 +10,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Sets;
 
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
-import bloodandmithril.character.ai.task.GoToLocation;
-import bloodandmithril.character.ai.task.JitAITask;
-import bloodandmithril.character.ai.task.Jump;
+import bloodandmithril.character.ai.task.gotolocation.GoToLocation;
+import bloodandmithril.character.ai.task.jitaitask.JitAITask;
+import bloodandmithril.character.ai.task.jitaitask.JitAITaskExecutor;
+import bloodandmithril.character.ai.task.jump.Jump;
 import bloodandmithril.character.ai.task.travel.Travel;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
@@ -209,6 +210,7 @@ public class AIProcessor {
 	}
 
 
+	@ExecutedBy(JitAITaskExecutor.class)
 	public static class JitGoToLocation extends JitAITask implements NextWaypointProvider {
 		private static final long serialVersionUID = 7866039883039620197L;
 		private WayPoint destination;

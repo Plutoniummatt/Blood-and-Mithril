@@ -2,9 +2,9 @@ package bloodandmithril.character.ai.task.construct;
 
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.ExecutedBy;
-import bloodandmithril.character.ai.task.GoToMovingLocation;
 import bloodandmithril.character.ai.task.compositeaitask.CompositeAITask;
 import bloodandmithril.character.ai.task.compositeaitask.CompositeAITaskExecutor;
+import bloodandmithril.character.ai.task.gotolocation.GoToMovingLocation;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;

@@ -1,8 +1,10 @@
 package bloodandmithril.networking.requests;
 
-import bloodandmithril.character.ai.task.OpenCraftingStation;
+import bloodandmithril.character.ai.task.opencraftingstation.OpenCraftingStation;
+import bloodandmithril.character.ai.task.opencraftingstation.OpenCraftingStationWindowExecutor;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.networking.Request;
 import bloodandmithril.networking.Response;
 import bloodandmithril.networking.Response.Responses;
@@ -62,11 +64,8 @@ public class CSIOpenCraftingStation implements Request {
 
 
 	public static class NotifyOpenCraftingStationWindow implements Response {
-
-		/**
-		 *
-		 */
 		private static final long serialVersionUID = 6302983218575053744L;
+		
 		private final int individualId;
 		private final int craftingStationId;
 		private final int worldId;
@@ -81,7 +80,7 @@ public class CSIOpenCraftingStation implements Request {
 		public void acknowledge() {
 			final Prop prop = Domain.getWorld(worldId).props().getProp(craftingStationId);
 			if (prop instanceof CraftingStation) {
-				OpenCraftingStation.openCraftingStationWindow(Domain.getIndividual(individualId), (CraftingStation)prop);
+				Wiring.injector().getInstance(OpenCraftingStationWindowExecutor.class).openCraftingStationWindow(Domain.getIndividual(individualId), (CraftingStation)prop);
 			}
 		}
 

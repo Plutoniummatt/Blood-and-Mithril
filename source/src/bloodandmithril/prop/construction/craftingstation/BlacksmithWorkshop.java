@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.google.common.collect.Maps;
 
 import bloodandmithril.audio.SoundService;
-import bloodandmithril.character.ai.task.Idle;
+import bloodandmithril.character.ai.task.idle.Idle;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;

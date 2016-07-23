@@ -1,7 +1,7 @@
 package bloodandmithril.networking.requests;
 
 import bloodandmithril.character.ai.AITask;
-import bloodandmithril.character.ai.task.Idle;
+import bloodandmithril.character.ai.task.idle.Idle;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.Request;

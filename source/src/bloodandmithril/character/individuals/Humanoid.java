@@ -20,7 +20,7 @@ import com.google.common.collect.Iterables;
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.perception.Visible;
-import bloodandmithril.character.ai.task.MineTile;
+import bloodandmithril.character.ai.task.minetile.MineTile;
 import bloodandmithril.character.combat.CombatService;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;

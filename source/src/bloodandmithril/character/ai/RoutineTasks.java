@@ -8,14 +8,14 @@ import java.util.Set;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-import bloodandmithril.character.ai.task.GoToMovingLocation;
-import bloodandmithril.character.ai.task.Harvest;
-import bloodandmithril.character.ai.task.LightLightable;
-import bloodandmithril.character.ai.task.PlantSeed;
-import bloodandmithril.character.ai.task.Speak;
-import bloodandmithril.character.ai.task.TakeItem;
 import bloodandmithril.character.ai.task.attack.Attack;
 import bloodandmithril.character.ai.task.follow.Follow;
+import bloodandmithril.character.ai.task.gotolocation.GoToMovingLocation;
+import bloodandmithril.character.ai.task.harvest.Harvest;
+import bloodandmithril.character.ai.task.lightlightable.LightLightable;
+import bloodandmithril.character.ai.task.plantseed.PlantSeed;
+import bloodandmithril.character.ai.task.speak.Speak;
+import bloodandmithril.character.ai.task.takeitem.TakeItem;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
 

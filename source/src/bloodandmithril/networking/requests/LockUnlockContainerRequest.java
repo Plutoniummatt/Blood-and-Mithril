@@ -1,6 +1,6 @@
 package bloodandmithril.networking.requests;
 
-import bloodandmithril.character.ai.task.LockUnlockContainer;
+import bloodandmithril.character.ai.task.lockunlockcontainer.LockUnlockContainer;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.container.Container;

@@ -12,7 +12,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-import bloodandmithril.character.ai.task.Harvest;
+import bloodandmithril.character.ai.task.harvest.Harvest;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;

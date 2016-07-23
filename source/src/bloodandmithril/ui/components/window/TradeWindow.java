@@ -21,7 +21,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 
-import bloodandmithril.character.ai.task.Idle;
+import bloodandmithril.character.ai.task.idle.Idle;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.control.Controls;
 import bloodandmithril.core.Copyright;

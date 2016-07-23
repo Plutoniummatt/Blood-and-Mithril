@@ -8,8 +8,8 @@ import java.util.function.Function;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-import bloodandmithril.character.ai.task.LockUnlockContainer;
-import bloodandmithril.character.ai.task.TradeWith;
+import bloodandmithril.character.ai.task.lockunlockcontainer.LockUnlockContainer;
+import bloodandmithril.character.ai.task.trade.TradeWith;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;

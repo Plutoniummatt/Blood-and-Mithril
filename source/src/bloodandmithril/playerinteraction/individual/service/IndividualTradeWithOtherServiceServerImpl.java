@@ -2,7 +2,7 @@ package bloodandmithril.playerinteraction.individual.service;
 
 import com.google.inject.Singleton;
 
-import bloodandmithril.character.ai.task.TradeWith;
+import bloodandmithril.character.ai.task.trade.TradeWith;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.playerinteraction.individual.api.IndividualTradeWithOtherService;

@@ -16,7 +16,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.google.inject.Inject;
 
-import bloodandmithril.character.ai.task.PlaceProp;
+import bloodandmithril.character.ai.task.placeprop.PlaceProp;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.control.Controls;
 import bloodandmithril.core.Copyright;

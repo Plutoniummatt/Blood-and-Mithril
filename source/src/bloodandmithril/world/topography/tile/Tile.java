@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import com.badlogic.gdx.graphics.Color;
 
-import bloodandmithril.character.ai.task.MineTile;
+import bloodandmithril.character.ai.task.minetile.MineTile;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.util.datastructure.BinaryTree;

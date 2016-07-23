@@ -11,6 +11,7 @@ import java.util.Iterator;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.math.Vector2;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import bloodandmithril.control.RightClickHandler;
 import bloodandmithril.core.Copyright;
@@ -25,6 +26,7 @@ import bloodandmithril.ui.components.window.Window;
  *
  * @author Matt
  */
+@Singleton
 @Copyright("Matthew Peck 2016")
 public class CoreUIRightClickHandler implements RightClickHandler {
 

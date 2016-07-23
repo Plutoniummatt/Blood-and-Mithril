@@ -2,7 +2,7 @@ package bloodandmithril.networking.requests;
 
 import java.util.Collection;
 
-import bloodandmithril.character.ai.task.TakeItem;
+import bloodandmithril.character.ai.task.takeitem.TakeItem;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
