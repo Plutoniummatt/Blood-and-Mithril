@@ -170,9 +170,9 @@ public final class Epoch implements Serializable {
 	 * @return the daylight alpha
 	 */
 	public final float dayLight() {
-		if (timeOfDay > 0f && timeOfDay < 9f) {
-			return (float) exp(-pow(timeOfDay - 9f, 2));
-		} else if (timeOfDay > 9f && timeOfDay < 16f) {
+		if (timeOfDay > 0f && timeOfDay < 8f) {
+			return (float) exp(-pow(timeOfDay - 8f, 2));
+		} else if (timeOfDay > 8f && timeOfDay < 16f) {
 			return 1f;
 		} else {
 			return (float) exp(-pow(timeOfDay - 16f, 2));

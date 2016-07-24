@@ -22,6 +22,7 @@ import bloodandmithril.character.ai.task.opencraftingstation.OpenCraftingStation
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;
+import bloodandmithril.core.UpdatedBy;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.item.Craftable;
@@ -48,6 +49,7 @@ import bloodandmithril.world.Domain;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
+@UpdatedBy()
 public abstract class CraftingStation extends Construction {
 	private static final long serialVersionUID = 2177296386331588828L;
 

@@ -3,8 +3,10 @@ package bloodandmithril.prop.furniture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.UpdatedBy;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.item.material.wood.StandardWood;
+import bloodandmithril.prop.updateservice.NoOpPropUpdateService;
 
 /**
  * Extention of {@link WoodenChestProp}, cant be locked and rotten
@@ -12,6 +14,7 @@ import bloodandmithril.item.material.wood.StandardWood;
  * @author Matt
  */
 @Copyright("Matthew Peck 2015")
+@UpdatedBy(NoOpPropUpdateService.class)
 public class RottenWoodenChest extends WoodenChestProp {
 	private static final long serialVersionUID = -8577332391703143295L;
 

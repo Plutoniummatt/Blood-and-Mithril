@@ -14,6 +14,7 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.core.Name;
+import bloodandmithril.core.UpdatedBy;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.event.events.ConstructionFinished;
 import bloodandmithril.graphics.Graphics;
@@ -45,6 +46,7 @@ import bloodandmithril.world.topography.tile.Tile;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
+@UpdatedBy()
 public abstract class Construction extends Prop implements Container {
 	private static final long serialVersionUID = -7772373095960462479L;
 

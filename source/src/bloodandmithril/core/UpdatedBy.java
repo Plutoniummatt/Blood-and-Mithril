@@ -7,6 +7,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import bloodandmithril.prop.Prop;
+import bloodandmithril.prop.updateservice.NoOpPropUpdateService;
 import bloodandmithril.prop.updateservice.PropUpdateService;
 
 /**
@@ -18,5 +19,5 @@ import bloodandmithril.prop.updateservice.PropUpdateService;
 @Target(TYPE)
 @Copyright("Matthew Peck")
 public @interface UpdatedBy {
-	public Class<? extends PropUpdateService> value();
+	public Class<? extends PropUpdateService> value() default NoOpPropUpdateService.class;
 }

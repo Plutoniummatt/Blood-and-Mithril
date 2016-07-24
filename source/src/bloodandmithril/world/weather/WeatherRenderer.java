@@ -126,7 +126,7 @@ public final class WeatherRenderer {
 		graphics.getSpriteBatch().begin();
 		graphics.getSpriteBatch().setShader(Shaders.sky);
 		final Color filter = getDaylightColor(world);
-
+		
 		final Color topColor = dayTopColor.cpy().mul(world.getEpoch().dayLight()).add(nightTopColor.cpy().mul(1f - world.getEpoch().dayLight())).mul(filter);
 		final Color bottomColor = dayBottomColor.cpy().mul(world.getEpoch().dayLight()).add(nightBottomColor.cpy().mul(1f - world.getEpoch().dayLight())).mul(filter);
 

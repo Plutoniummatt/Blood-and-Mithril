@@ -15,6 +15,7 @@ import com.google.common.collect.Lists;
 import bloodandmithril.character.ai.perception.Visible;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.MouseOverable;
+import bloodandmithril.core.UpdatedBy;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.graphics.Textures;
@@ -48,6 +49,7 @@ import bloodandmithril.world.topography.tile.Tile;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
+@UpdatedBy()
 public abstract class Prop implements Serializable, Visible, MouseOverable {
 	private static final long serialVersionUID = -1659783923740689585L;
 

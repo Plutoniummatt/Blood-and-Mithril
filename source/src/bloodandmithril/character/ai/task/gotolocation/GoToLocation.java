@@ -36,7 +36,7 @@ import bloodandmithril.world.topography.tile.Tile;
 @ExecutedBy(GoToLocationExecutor.class)
 public class GoToLocation extends AITask implements NextWaypointProvider {
 	private static final long serialVersionUID = -4121947217713585991L;
-
+	
 	/** The {@link Path} this {@link GoToLocation} {@link AITask} will follow */
 	Path path;
 

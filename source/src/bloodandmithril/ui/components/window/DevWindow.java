@@ -66,6 +66,7 @@ import bloodandmithril.prop.furniture.MedievalWallTorchProp;
 import bloodandmithril.prop.furniture.RottenWoodenChest;
 import bloodandmithril.prop.furniture.WoodenChestProp;
 import bloodandmithril.prop.plant.DryGrass;
+import bloodandmithril.prop.plant.tree.TestTree;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
@@ -373,6 +374,20 @@ public class DevWindow extends Window {
 							if (individual != null) {
 								final DryGrass grass = new DryGrass(individual.getState().position.x, individual.getState().position.y);
 								Domain.getWorld(individual.getWorldId()).props().addProp(grass);
+							}
+						},
+						Color.GREEN,
+						Color.WHITE,
+						Color.GREEN,
+						null
+					),
+					new ContextMenu.MenuItem(
+						"Tree",
+						() -> {
+							final Individual individual = Domain.getIndividualsMap().get(1);
+							if (individual != null) {
+								final TestTree tree = new TestTree(individual.getState().position.x, individual.getState().position.y, 0.6f);
+								Domain.getWorld(individual.getWorldId()).props().addProp(tree);
 							}
 						},
 						Color.GREEN,

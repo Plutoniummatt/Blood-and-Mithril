@@ -146,8 +146,9 @@ public class BloodAndMithrilClient implements ApplicationListener {
 	public void render() {
 		try {
 			inputProcessor.cameraControl();
+			float deltaTime = Gdx.graphics.getDeltaTime();
 			if (!gameSaver.isSaving()) {
-				SoundService.update(Gdx.graphics.getDeltaTime());
+				SoundService.update(deltaTime);
 			}
 
 			final float x = graphics.getCam().position.x;
@@ -181,6 +182,9 @@ public class BloodAndMithrilClient implements ApplicationListener {
 
 			// UI Rendering --------------------- /
 			userInterface.render();
+			
+			// Timer --------------------- /
+			timers.renderUtilityTime += deltaTime;
 
 			graphics.getCam().position.x = x;
 			graphics.getCam().position.y = y;

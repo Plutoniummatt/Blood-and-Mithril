@@ -11,4 +11,5 @@ import com.google.inject.Singleton;
 @Copyright("Matthew Peck 2015")
 public class Timers {
 	public long topographyBacklogExecutionTimer;
+	public double renderUtilityTime;
 }

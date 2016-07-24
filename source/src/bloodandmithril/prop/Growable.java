@@ -1,6 +1,7 @@
 package bloodandmithril.prop;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.UpdatedBy;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.util.SerializableMappingFunction;
 import bloodandmithril.world.topography.tile.Tile;
@@ -11,6 +12,7 @@ import bloodandmithril.world.topography.tile.Tile;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
+@UpdatedBy()
 public abstract class Growable extends Prop {
 	private static final long serialVersionUID = 5474231010517077123L;
 	private float growthProgress = 0f;
