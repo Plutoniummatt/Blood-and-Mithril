@@ -12,7 +12,7 @@ import bloodandmithril.character.individuals.Humanoid;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.Graphics;
-import bloodandmithril.graphics.WorldRenderer;
+import bloodandmithril.graphics.Textures;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.material.Material;
 import bloodandmithril.item.material.metal.Metal;
@@ -52,7 +52,7 @@ public abstract class Pickaxe<T extends Metal> extends TwoHandedMeleeWeapon<T> i
 		TextureRegion texture = getTextureRegion();
 
 		graphics.getSpriteBatch().draw(
-			WorldRenderer.individualTexture,
+			Textures.INDIVIDUAL_TEXTURE,
 			position.x - (flipX ? texture.getRegionWidth() - 17 : 17),
 			position.y - 9,
 			flipX ? texture.getRegionWidth() - 17 : 17,

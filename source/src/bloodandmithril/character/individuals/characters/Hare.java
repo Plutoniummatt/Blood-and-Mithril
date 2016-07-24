@@ -36,7 +36,7 @@ import bloodandmithril.character.individuals.IndividualState;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
 import bloodandmithril.graphics.RenderIndividualWith;
-import bloodandmithril.graphics.WorldRenderer;
+import bloodandmithril.graphics.Textures;
 import bloodandmithril.graphics.renderers.IndividualRendererImpl;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.construction.Construction;
@@ -70,21 +70,21 @@ public class Hare extends GroundTravellingIndividual implements Listener, Observ
 		final boolean server = !ClientServerInterface.isClient();
 
 		final AnimationSwitcher walk = new AnimationSwitcher();
-		walk.animations.put(individual -> {return true;}, AnimationHelper.animation(WorldRenderer.individualTexture, 0, 899, 48, 48, 4, 0.07f, PlayMode.LOOP));
+		walk.animations.put(individual -> {return true;}, AnimationHelper.animation(Textures.INDIVIDUAL_TEXTURE, 0, 899, 48, 48, 4, 0.07f, PlayMode.LOOP));
 
 		final ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> walkSequence = newArrayList(
 			wrap(walk, server ? null : Shaders.pass)
 		);
 
 		final AnimationSwitcher run = new AnimationSwitcher();
-		run.animations.put(individual -> {return true;}, AnimationHelper.animation(WorldRenderer.individualTexture, 0, 899, 48, 48, 4, 0.05f, PlayMode.LOOP));
+		run.animations.put(individual -> {return true;}, AnimationHelper.animation(Textures.INDIVIDUAL_TEXTURE, 0, 899, 48, 48, 4, 0.05f, PlayMode.LOOP));
 
 		final ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> runSequence = newArrayList(
 			wrap(run, server ? null : Shaders.pass)
 		);
 
 		final AnimationSwitcher stand = new AnimationSwitcher();
-		stand.animations.put(individual -> {return true;}, AnimationHelper.animation(WorldRenderer.individualTexture, 0, 899, 48, 48, 1, 1f, PlayMode.LOOP));
+		stand.animations.put(individual -> {return true;}, AnimationHelper.animation(Textures.INDIVIDUAL_TEXTURE, 0, 899, 48, 48, 1, 1f, PlayMode.LOOP));
 
 		final ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> standSequence = newArrayList(
 			wrap(stand, server ? null : Shaders.pass)

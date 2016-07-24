@@ -20,7 +20,7 @@ import com.google.common.collect.Lists;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.Graphics;
-import bloodandmithril.graphics.WorldRenderer;
+import bloodandmithril.graphics.Textures;
 import bloodandmithril.graphics.background.Layer;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;
@@ -101,18 +101,18 @@ public final class WeatherRenderer {
 		final float time = world.getEpoch().getTime();
 		final Color filter = new Color();
 
-		if (time < 10) {
-			filter.r = (float) (0.5D + 0.5D * exp(-0.050*pow(time-10, 2)));
-			filter.g = (float) (0.2D + 0.8D * exp(-0.150*pow(time-10, 2)));
-			filter.b = (float) (0.1D + 0.9D * exp(-0.200*pow(time-10, 2)));
-		} else if (time >= 10 && time < 14) {
-			filter.r = 1.1f;
-			filter.g = 1.1f;
-			filter.b = 1.1f;
+		if (time < 9) {
+			filter.r = (float) (0.5D + 0.5D * exp(-0.050*pow(time-9, 2)));
+			filter.g = (float) (0.4D + 0.6D * exp(-0.150*pow(time-9, 2)));
+			filter.b = (float) (0.1D + 0.9D * exp(-0.200*pow(time-9, 2)));
+		} else if (time >= 9 && time < 15) {
+			filter.r = 1.0f;
+			filter.g = 1.0f;
+			filter.b = 1.0f;
 		} else {
-			filter.r = (float) (0.5D + 0.5D * exp(-0.050*pow(time-14, 2)));
-			filter.g = (float) (0.2D + 0.8D * exp(-0.150*pow(time-14, 2)));
-			filter.b = (float) (0.1D + 0.9D * exp(-0.200*pow(time-14, 2)));
+			filter.r = (float) (0.5D + 0.5D * exp(-0.050*pow(time-15, 2)));
+			filter.g = (float) (0.4D + 0.6D * exp(-0.150*pow(time-15, 2)));
+			filter.b = (float) (0.1D + 0.9D * exp(-0.200*pow(time-15, 2)));
 		}
 		filter.a = 1f;
 
@@ -163,14 +163,14 @@ public final class WeatherRenderer {
 		final int source = graphics.getSpriteBatch().getBlendSrcFunc();
 		final int destination = graphics.getSpriteBatch().getBlendDstFunc();
 		graphics.getSpriteBatch().setBlendFunction(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
-		WorldRenderer.GAME_WORLD_TEXTURE.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		Textures.GAME_WORLD_TEXTURE.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		for (final CelestialBody celestialBody : celestialBodies) {
 			celestialBody.render(world, graphics);
 		}
 		graphics.getSpriteBatch().end();
 		graphics.getSpriteBatch().setBlendFunction(source, destination);
 		toDrawTo.end();
-		WorldRenderer.GAME_WORLD_TEXTURE.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
+		Textures.GAME_WORLD_TEXTURE.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 	}
 
 

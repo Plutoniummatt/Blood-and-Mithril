@@ -10,7 +10,7 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.core.UpdatedBy;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
-import bloodandmithril.graphics.WorldRenderer;
+import bloodandmithril.graphics.Textures;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.Prop;
@@ -35,7 +35,7 @@ public class DryGrass extends PlantProp {
 
 	static {
 		if (ClientServerInterface.isClient()) {
-			textureRegion = new TextureRegion(WorldRenderer.GAME_WORLD_TEXTURE, 1089, 119, 76, 12);
+			textureRegion = new TextureRegion(Textures.GAME_WORLD_TEXTURE, 1089, 119, 76, 12);
 		}
 	}
 

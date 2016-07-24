@@ -10,7 +10,7 @@ import com.google.common.collect.Sets;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
-import bloodandmithril.graphics.WorldRenderer;
+import bloodandmithril.graphics.Textures;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.weapon.ranged.projectile.ArrowProjectile;
 import bloodandmithril.networking.ClientServerInterface;
@@ -35,7 +35,7 @@ public abstract class Projectile implements Serializable {
 
 	static {
 		if (ClientServerInterface.isClient()) {
-			ArrowProjectile.textureRegion = new TextureRegion(WorldRenderer.GAME_WORLD_TEXTURE, 619, 176, 50, 3);
+			ArrowProjectile.textureRegion = new TextureRegion(Textures.GAME_WORLD_TEXTURE, 619, 176, 50, 3);
 		}
 	}
 

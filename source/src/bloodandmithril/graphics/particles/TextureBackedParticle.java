@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
+import bloodandmithril.graphics.Textures;
 import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.networking.ClientServerInterface;
@@ -29,7 +30,7 @@ public class TextureBackedParticle extends Particle {
 
 	static {
 		if (ClientServerInterface.isClient()) {
-			texture =  new TextureRegion(WorldRenderer.GAME_WORLD_TEXTURE, 453, 276, 64, 64);
+			texture =  new TextureRegion(Textures.GAME_WORLD_TEXTURE, 453, 276, 64, 64);
 		}
 	}
 

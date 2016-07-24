@@ -5,7 +5,6 @@ import static bloodandmithril.graphics.WorldRenderer.Depth.BACKGROUND;
 import static bloodandmithril.graphics.WorldRenderer.Depth.FOREGROUND;
 import static bloodandmithril.graphics.WorldRenderer.Depth.MIDDLEGROUND;
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
-import static com.badlogic.gdx.Gdx.files;
 import static com.badlogic.gdx.Gdx.gl;
 import static com.badlogic.gdx.Gdx.gl20;
 import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
@@ -22,7 +21,6 @@ import org.lwjgl.opengl.GL11;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -56,10 +54,6 @@ public class WorldRenderer {
 	/** {@link TextureRegion} to use to render a circle */
 	private static TextureRegion circle;
 
-	/** Textures */
-	public static Texture GAME_WORLD_TEXTURE;
-	public static Texture individualTexture;
-
 	/** The frame buffer used for tiles */
 	public static FrameBuffer fBuffer;
 	public static FrameBuffer mBuffer;
@@ -86,21 +80,11 @@ public class WorldRenderer {
 
 
 	public void setup() {
-		if (GAME_WORLD_TEXTURE == null) {
-			GAME_WORLD_TEXTURE 					= new Texture(files.internal("data/image/gameWorld.png"));
-			circle 								= new TextureRegion(WorldRenderer.GAME_WORLD_TEXTURE, 102, 422, 100, 100);
-			GAME_WORLD_TEXTURE.setFilter(Linear, Linear);
-		}
-
-		if (individualTexture == null) {
-			individualTexture 					= new Texture(files.internal("data/image/character/individual.png"));
-			individualTexture.setFilter(Nearest, Nearest);
-		}
-
 		if (shapeRenderer == null) {
 			shapeRenderer 						= new ShapeRenderer();
 		}
-
+		
+		circle 								= new TextureRegion(Textures.GAME_WORLD_TEXTURE, 102, 422, 100, 100);
 		fBuffer 							= new FrameBuffer(RGBA8888, Graphics.getGdxWidth() + graphics.getCamMarginX(), Graphics.getGdxHeight() + graphics.getCamMarginY(), false);
 		mBuffer 							= new FrameBuffer(RGBA8888, Graphics.getGdxWidth() + graphics.getCamMarginX(), Graphics.getGdxHeight() + graphics.getCamMarginY(), false);
 		bBuffer 							= new FrameBuffer(RGBA8888, Graphics.getGdxWidth() + graphics.getCamMarginX(), Graphics.getGdxHeight() + graphics.getCamMarginY(), false);
@@ -130,7 +114,7 @@ public class WorldRenderer {
 	private void renderForeGroundBuffer(final World world, final int camX, final int camY, final SpriteBatch batch) {
 		fBuffer.begin();
 		gl20.glClear(GL_COLOR_BUFFER_BIT);
-		individualTexture.setFilter(Linear, Linear);
+		Textures.INDIVIDUAL_TEXTURE.setFilter(Linear, Linear);
 		batch.begin();
 		batch.setShader(Shaders.filter);
 		Shaders.filter.setUniformMatrix("u_projTrans", graphics.getCam().combined);
@@ -148,7 +132,7 @@ public class WorldRenderer {
 			batch.flush();
 		}
 		batch.end();
-		individualTexture.setFilter(Nearest, Nearest);
+		Textures.INDIVIDUAL_TEXTURE.setFilter(Nearest, Nearest);
 		individualPlatformFilteringRenderer.renderIndividuals(world.getWorldId());
 		batch.begin();
 		batch.setShader(Shaders.filter);

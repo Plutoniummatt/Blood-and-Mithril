@@ -16,7 +16,7 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.characters.Elf;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.Graphics;
-import bloodandmithril.graphics.WorldRenderer;
+import bloodandmithril.graphics.Textures;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.material.Material;
 import bloodandmithril.networking.ClientServerInterface;
@@ -39,7 +39,7 @@ public abstract class OneHandedBlunt<T extends Material> extends OneHandedMeleeW
 
 	static {
 		if (ClientServerInterface.isClient()) {
-			specialEffectsMap.put(Elf.class, wrap(AnimationHelper.animation(WorldRenderer.individualTexture, 64, 784, 36, 74, 10, 0.07f, PlayMode.NORMAL), new Vector2(65f, 40f)));
+			specialEffectsMap.put(Elf.class, wrap(AnimationHelper.animation(Textures.INDIVIDUAL_TEXTURE, 64, 784, 36, 74, 10, 0.07f, PlayMode.NORMAL), new Vector2(65f, 40f)));
 		}
 	}
 
@@ -56,7 +56,7 @@ public abstract class OneHandedBlunt<T extends Material> extends OneHandedMeleeW
 		TextureRegion texture = getTextureRegion();
 
 		graphics.getSpriteBatch().draw(
-			WorldRenderer.individualTexture,
+			Textures.INDIVIDUAL_TEXTURE,
 			position.x - (flipX ? texture.getRegionWidth() - 15 : 15),
 			position.y - 3,
 			flipX ? texture.getRegionWidth() - 15 : 15,

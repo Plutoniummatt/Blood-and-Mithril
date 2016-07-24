@@ -41,7 +41,7 @@ public abstract class Layer implements Serializable {
 	}
 
 
-	private static int pegToHorizon(final int y, final Graphics graphics, final int offset) {
+	public static int pegToHorizon(final int y, final Graphics graphics, final int offset) {
 		return Math.max(
 			Math.min(y, graphics.getHeight() * 3 / 4 + offset),
 			graphics.getHeight() / 4

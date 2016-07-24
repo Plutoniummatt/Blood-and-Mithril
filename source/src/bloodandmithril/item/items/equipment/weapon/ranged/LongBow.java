@@ -8,7 +8,7 @@ import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.Graphics;
-import bloodandmithril.graphics.WorldRenderer;
+import bloodandmithril.graphics.Textures;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.weapon.TwoHandedProjectileWeapon;
@@ -34,7 +34,7 @@ public class LongBow<T extends Wood> extends TwoHandedProjectileWeapon<T> {
 
 	static {
 		if (ClientServerInterface.isClient()) {
-			texture = new TextureRegion(WorldRenderer.individualTexture, 0, 947, 94, 18);
+			texture = new TextureRegion(Textures.INDIVIDUAL_TEXTURE, 0, 947, 94, 18);
 		}
 	}
 
@@ -159,7 +159,7 @@ public class LongBow<T extends Wood> extends TwoHandedProjectileWeapon<T> {
 		TextureRegion texture = getTextureRegion();
 
 		graphics.getSpriteBatch().draw(
-			WorldRenderer.individualTexture,
+			Textures.INDIVIDUAL_TEXTURE,
 			position.x - (flipX ? texture.getRegionWidth() - 47 : 47),
 			position.y - 3,
 			flipX ? texture.getRegionWidth() - 47 : 47,

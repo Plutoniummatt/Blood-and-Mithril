@@ -15,7 +15,7 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
 import bloodandmithril.core.UpdatedBy;
 import bloodandmithril.graphics.Graphics;
-import bloodandmithril.graphics.WorldRenderer;
+import bloodandmithril.graphics.Textures;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
 import bloodandmithril.item.items.container.GlassBottleItem;
@@ -60,11 +60,11 @@ public class Furnace extends CraftingStation implements Container {
 		craftables.put(ingot(Steel.class), 1);
 
 		if (ClientServerInterface.isClient()) {
-			Furnace.FURNACE1 = new TextureRegion(WorldRenderer.GAME_WORLD_TEXTURE, 1, 1, 95, 56);
-			Furnace.FURNACE2 = new TextureRegion(WorldRenderer.GAME_WORLD_TEXTURE, 1, 58, 95, 56);
-			Furnace.FURNACE3 = new TextureRegion(WorldRenderer.GAME_WORLD_TEXTURE, 1, 115, 95, 56);
-			Furnace.FURNACE4 = new TextureRegion(WorldRenderer.GAME_WORLD_TEXTURE, 1, 172, 95, 56);
-			Furnace.FURNACE5 = new TextureRegion(WorldRenderer.GAME_WORLD_TEXTURE, 1, 229, 95, 56);
+			Furnace.FURNACE1 = new TextureRegion(Textures.GAME_WORLD_TEXTURE, 1, 1, 95, 56);
+			Furnace.FURNACE2 = new TextureRegion(Textures.GAME_WORLD_TEXTURE, 1, 58, 95, 56);
+			Furnace.FURNACE3 = new TextureRegion(Textures.GAME_WORLD_TEXTURE, 1, 115, 95, 56);
+			Furnace.FURNACE4 = new TextureRegion(Textures.GAME_WORLD_TEXTURE, 1, 172, 95, 56);
+			Furnace.FURNACE5 = new TextureRegion(Textures.GAME_WORLD_TEXTURE, 1, 229, 95, 56);
 
 			inProgressTextures.put(0f/5f, FURNACE1);
 			inProgressTextures.put(1f/5f, FURNACE2);

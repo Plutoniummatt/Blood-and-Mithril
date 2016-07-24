@@ -8,7 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.Graphics;
-import bloodandmithril.graphics.WorldRenderer;
+import bloodandmithril.graphics.Textures;
 import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.item.items.equipment.Equipper.EquipmentSlot;
 import bloodandmithril.item.items.equipment.offhand.shield.WoodenBuckler;
@@ -25,10 +25,10 @@ public abstract class OffhandEquipment extends Equipable {
 
 	static {
 		if (isClient()) {
-			WoodenKiteShield.woodenKiteShield = new TextureRegion(WorldRenderer.individualTexture, 44, 1040, 64, 40);
-			WoodenBuckler.woodenBuckler = new TextureRegion(WorldRenderer.individualTexture, 0, 858, 41, 41);
-			Torch.torch = new TextureRegion(WorldRenderer.individualTexture, 0, 851, 43, 7);
-			Lantern.lantern = new TextureRegion(WorldRenderer.individualTexture, 43, 851, 11, 25);
+			WoodenKiteShield.woodenKiteShield = new TextureRegion(Textures.INDIVIDUAL_TEXTURE, 44, 1040, 64, 40);
+			WoodenBuckler.woodenBuckler = new TextureRegion(Textures.INDIVIDUAL_TEXTURE, 0, 858, 41, 41);
+			Torch.torch = new TextureRegion(Textures.INDIVIDUAL_TEXTURE, 0, 851, 43, 7);
+			Lantern.lantern = new TextureRegion(Textures.INDIVIDUAL_TEXTURE, 43, 851, 11, 25);
 		}
 	}
 
@@ -48,7 +48,7 @@ public abstract class OffhandEquipment extends Equipable {
 		Vector2 grip = getGripLocation();
 
 		graphics.getSpriteBatch().draw(
-			WorldRenderer.individualTexture,
+			Textures.INDIVIDUAL_TEXTURE,
 			position.x - (flipX ? texture.getRegionWidth() - grip.x : grip.x),
 			position.y - grip.y,
 			flipX ? texture.getRegionWidth() - grip.x : grip.x,

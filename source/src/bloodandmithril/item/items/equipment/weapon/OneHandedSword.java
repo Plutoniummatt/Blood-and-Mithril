@@ -17,7 +17,7 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.characters.Elf;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.Graphics;
-import bloodandmithril.graphics.WorldRenderer;
+import bloodandmithril.graphics.Textures;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.items.equipment.weapon.onehandedsword.Broadsword;
 import bloodandmithril.item.items.equipment.weapon.onehandedsword.Machette;
@@ -40,10 +40,10 @@ public abstract class OneHandedSword<T extends Metal> extends OneHandedMeleeWeap
 
 	static {
 		if (ClientServerInterface.isClient()) {
-			textureRegionMap.put(Machette.class, new TextureRegion(WorldRenderer.individualTexture, 0, 800, 63, 17));
-			textureRegionMap.put(Broadsword.class, new TextureRegion(WorldRenderer.individualTexture, 0, 834, 63, 17));
-			specialEffectsMap.put(Elf.class, wrap(AnimationHelper.animation(WorldRenderer.individualTexture, 64, 784, 36, 74, 10, 0.07f, NORMAL), new Vector2(65f, 40f)));
-			specialEffectsMapStab.put(Elf.class, wrap(AnimationHelper.animation(WorldRenderer.individualTexture, 64, 858, 102, 25, 8, 0.07f, NORMAL), new Vector2(18f, 32f)));
+			textureRegionMap.put(Machette.class, new TextureRegion(Textures.INDIVIDUAL_TEXTURE, 0, 800, 63, 17));
+			textureRegionMap.put(Broadsword.class, new TextureRegion(Textures.INDIVIDUAL_TEXTURE, 0, 834, 63, 17));
+			specialEffectsMap.put(Elf.class, wrap(AnimationHelper.animation(Textures.INDIVIDUAL_TEXTURE, 64, 784, 36, 74, 10, 0.07f, NORMAL), new Vector2(65f, 40f)));
+			specialEffectsMapStab.put(Elf.class, wrap(AnimationHelper.animation(Textures.INDIVIDUAL_TEXTURE, 64, 858, 102, 25, 8, 0.07f, NORMAL), new Vector2(18f, 32f)));
 		}
 	}
 
@@ -60,7 +60,7 @@ public abstract class OneHandedSword<T extends Metal> extends OneHandedMeleeWeap
 		TextureRegion texture = getTextureRegion();
 
 		graphics.getSpriteBatch().draw(
-			WorldRenderer.individualTexture,
+			Textures.INDIVIDUAL_TEXTURE,
 			position.x - (flipX ? texture.getRegionWidth() - 17 : 17),
 			position.y - 9,
 			flipX ? texture.getRegionWidth() - 17 : 17,

@@ -31,6 +31,7 @@ import bloodandmithril.graphics.particles.Particle;
 import bloodandmithril.graphics.particles.TracerParticle;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.world.World;
+import bloodandmithril.world.weather.CloudRenderer;
 import bloodandmithril.world.weather.WeatherRenderer;
 
 /**
@@ -77,17 +78,21 @@ public class GaussianLightingRenderer {
 
 
 	private static void backgroundSprites(final World world, final Graphics graphics) {
+		final Color daylightColor = WeatherRenderer.getDaylightColor(world);
 		final SpriteBatch batch = graphics.getSpriteBatch();
+		
 		workingFBO2.begin();
-		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
+		Gdx.gl20.glClearColor(daylightColor.r + 0.1f, daylightColor.r + 0.1f, daylightColor.r + 0.1f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		
+		Wiring.injector().getInstance(CloudRenderer.class).renderClouds(world);
+		
 		world.getBackgroundImages().renderBackground(graphics);
 		workingFBO2.end();
 
 		batch.begin();
 		batch.setShader(Shaders.invertYReflective);
 		workingFBO.getColorBufferTexture().bind(14);
-		final Color daylightColor = WeatherRenderer.getDaylightColor(world);
 		Shaders.invertYReflective.setUniformf("filter", WeatherRenderer.getSunColor(world).mul(new Color(daylightColor.r, daylightColor.r, daylightColor.r, 1f)));
 		Shaders.invertYReflective.setUniformi("u_texture2", 14);
 		Shaders.invertYReflective.setUniformf("time", world.getEpoch().getTime() * 360f);
@@ -732,6 +737,7 @@ public class GaussianLightingRenderer {
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		world.getBackgroundImages().renderBackground(graphics);
+		Wiring.injector().getInstance(CloudRenderer.class).renderClouds(world);
 		batch.begin();
 		batch.setShader(Shaders.invertY);
 		batch.draw(

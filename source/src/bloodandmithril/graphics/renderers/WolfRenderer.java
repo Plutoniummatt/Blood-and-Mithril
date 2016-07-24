@@ -19,7 +19,7 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.Individual.Action;
 import bloodandmithril.character.individuals.characters.Wolf;
 import bloodandmithril.core.Copyright;
-import bloodandmithril.graphics.WorldRenderer;
+import bloodandmithril.graphics.Textures;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.util.AnimationHelper;
 import bloodandmithril.util.AnimationHelper.AnimationSwitcher;
@@ -45,28 +45,28 @@ public class WolfRenderer extends IndividualRendererImpl {
 		boolean server = !ClientServerInterface.isClient();
 
 		AnimationSwitcher bite = new AnimationSwitcher();
-		bite.animations.put(individual -> {return true;}, AnimationHelper.animation(WorldRenderer.individualTexture, 1260, 965, 140, 75, 7, 0.07f, PlayMode.LOOP_REVERSED));
+		bite.animations.put(individual -> {return true;}, AnimationHelper.animation(Textures.INDIVIDUAL_TEXTURE, 1260, 965, 140, 75, 7, 0.07f, PlayMode.LOOP_REVERSED));
 
 		ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> biteSequence = newArrayList(
 			wrap(bite, server ? null : Shaders.pass)
 		);
 
 		AnimationSwitcher run = new AnimationSwitcher();
-		run.animations.put(individual -> {return true;}, AnimationHelper.animation(WorldRenderer.individualTexture, 140, 965, 140, 75, 8, 0.06f, PlayMode.LOOP_REVERSED));
+		run.animations.put(individual -> {return true;}, AnimationHelper.animation(Textures.INDIVIDUAL_TEXTURE, 140, 965, 140, 75, 8, 0.06f, PlayMode.LOOP_REVERSED));
 
 		ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> runSequence = newArrayList(
 			wrap(run, server ? null : Shaders.pass)
 		);
 
 		AnimationSwitcher stand = new AnimationSwitcher();
-		stand.animations.put(individual -> {return true;}, AnimationHelper.animation(WorldRenderer.individualTexture, 0, 965, 140, 75, 1, 1f, PlayMode.LOOP_REVERSED));
+		stand.animations.put(individual -> {return true;}, AnimationHelper.animation(Textures.INDIVIDUAL_TEXTURE, 0, 965, 140, 75, 1, 1f, PlayMode.LOOP_REVERSED));
 
 		ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> standSequence = newArrayList(
 			wrap(stand, server ? null : Shaders.pass)
 		);
 
 		AnimationSwitcher jump = new AnimationSwitcher();
-		jump.animations.put(individual -> {return true;}, AnimationHelper.animation(WorldRenderer.individualTexture, 560, 965, 140, 75, 1, 1f, PlayMode.LOOP_REVERSED));
+		jump.animations.put(individual -> {return true;}, AnimationHelper.animation(Textures.INDIVIDUAL_TEXTURE, 560, 965, 140, 75, 1, 1f, PlayMode.LOOP_REVERSED));
 
 		ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> jumpSequence = newArrayList(
 			wrap(jump, server ? null : Shaders.pass)

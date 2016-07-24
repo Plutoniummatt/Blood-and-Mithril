@@ -2,10 +2,13 @@ package bloodandmithril.world;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ConcurrentSkipListSet;
+
+import com.google.common.collect.Lists;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
@@ -18,6 +21,7 @@ import bloodandmithril.performance.PositionalIndexMap;
 import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.world.topography.Topography;
+import bloodandmithril.world.weather.Cloud;
 
 /**
  * A World, holds info about the {@link Topography}, {@link Prop}s, {@link Individual}s and any related entities.
@@ -69,6 +73,9 @@ public final class World implements Serializable {
 
 	/** Biome decider of this {@link World} */
 	private final Class<? extends BiomeDecider> 				biomeDecider;
+	
+	/** {@link Cloud}s on this world */
+	private final List<Cloud>	 								clouds					= Lists.newLinkedList();
 
 	/**
 	 * Constructor
@@ -91,6 +98,10 @@ public final class World implements Serializable {
 		this.projectiles = new WorldProjectiles(worldId);
 		this.topography = new Topography(worldId);
 		this.positionalIndexMap = new PositionalIndexMap(worldId);
+		
+		clouds.add(new Cloud(1, 0, -300));
+		clouds.add(new Cloud(2, 0, 0));
+		clouds.add(new Cloud(3, 0, 300));
 	}
 
 
@@ -221,5 +232,10 @@ public final class World implements Serializable {
 	 */
 	public Class<? extends BiomeDecider> getBiomeDecider() {
 		return biomeDecider;
+	}
+
+
+	public List<Cloud> getClouds() {
+		return clouds;
 	}
 }

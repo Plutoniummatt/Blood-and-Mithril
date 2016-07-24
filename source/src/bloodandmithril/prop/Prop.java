@@ -17,7 +17,7 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.core.MouseOverable;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
-import bloodandmithril.graphics.WorldRenderer;
+import bloodandmithril.graphics.Textures;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.item.items.food.plant.CarrotItem.CarrotSeedProp;
 import bloodandmithril.performance.PositionalIndexNode;
@@ -122,20 +122,20 @@ public abstract class Prop implements Serializable, Visible, MouseOverable {
 	public abstract String getContextMenuItemLabel();
 
 	public static void setup() {
-		Furnace.FURNACE = new TextureRegion(WorldRenderer.GAME_WORLD_TEXTURE, 1, 286, 95, 56);
-		Furnace.FURNACE_BURNING = new TextureRegion(WorldRenderer.GAME_WORLD_TEXTURE, 1, 343, 95, 56);
+		Furnace.FURNACE = new TextureRegion(Textures.GAME_WORLD_TEXTURE, 1, 286, 95, 56);
+		Furnace.FURNACE_BURNING = new TextureRegion(Textures.GAME_WORLD_TEXTURE, 1, 343, 95, 56);
 
-		Campfire.CAMPFIRE = new TextureRegion(WorldRenderer.GAME_WORLD_TEXTURE, 554, 176, 64, 32);
-		WoodenChestProp.WOODEN_CHEST = new TextureRegion(WorldRenderer.GAME_WORLD_TEXTURE, 396, 144, 56, 31);
-		RottenWoodenChest.ROTTEN_WOODEN_CHEST = new TextureRegion(WorldRenderer.GAME_WORLD_TEXTURE, 396, 112, 56, 31);
-		SmallWoodenCrateProp.WOODEN_CRATE = new TextureRegion(WorldRenderer.GAME_WORLD_TEXTURE, 453, 140, 44, 35);
-		CarrotProp.CARROT = new TextureRegion(WorldRenderer.GAME_WORLD_TEXTURE, 352, 173, 12, 20);
-		BlacksmithWorkshop.BLACKSMITH_WORKSHOP_WORKING = new TextureRegion(WorldRenderer.GAME_WORLD_TEXTURE, 591, 132, 117, 43);
-		BlacksmithWorkshop.BLACKSMITH_WORKSHOP = new TextureRegion(WorldRenderer.GAME_WORLD_TEXTURE, 709, 132, 117, 43);
-		WorkBench.WORKBENCH = new TextureRegion(WorldRenderer.GAME_WORLD_TEXTURE, 499, 132, 90, 43);
-		CarrotSeedProp.CARROT_SEED = new TextureRegion(WorldRenderer.GAME_WORLD_TEXTURE, 389, 177, 16, 16);
-		CarrotProp.HALF_CARROT = new TextureRegion(WorldRenderer.GAME_WORLD_TEXTURE, 406, 177, 16, 16);
-		MedievalWallTorchProp.MEDIEVAL_WALL_TORCH = new TextureRegion(WorldRenderer.GAME_WORLD_TEXTURE, 678, 225, 13, 30);
+		Campfire.CAMPFIRE = new TextureRegion(Textures.GAME_WORLD_TEXTURE, 554, 176, 64, 32);
+		WoodenChestProp.WOODEN_CHEST = new TextureRegion(Textures.GAME_WORLD_TEXTURE, 396, 144, 56, 31);
+		RottenWoodenChest.ROTTEN_WOODEN_CHEST = new TextureRegion(Textures.GAME_WORLD_TEXTURE, 396, 112, 56, 31);
+		SmallWoodenCrateProp.WOODEN_CRATE = new TextureRegion(Textures.GAME_WORLD_TEXTURE, 453, 140, 44, 35);
+		CarrotProp.CARROT = new TextureRegion(Textures.GAME_WORLD_TEXTURE, 352, 173, 12, 20);
+		BlacksmithWorkshop.BLACKSMITH_WORKSHOP_WORKING = new TextureRegion(Textures.GAME_WORLD_TEXTURE, 591, 132, 117, 43);
+		BlacksmithWorkshop.BLACKSMITH_WORKSHOP = new TextureRegion(Textures.GAME_WORLD_TEXTURE, 709, 132, 117, 43);
+		WorkBench.WORKBENCH = new TextureRegion(Textures.GAME_WORLD_TEXTURE, 499, 132, 90, 43);
+		CarrotSeedProp.CARROT_SEED = new TextureRegion(Textures.GAME_WORLD_TEXTURE, 389, 177, 16, 16);
+		CarrotProp.HALF_CARROT = new TextureRegion(Textures.GAME_WORLD_TEXTURE, 406, 177, 16, 16);
+		MedievalWallTorchProp.MEDIEVAL_WALL_TORCH = new TextureRegion(Textures.GAME_WORLD_TEXTURE, 678, 225, 13, 30);
 	}
 
 

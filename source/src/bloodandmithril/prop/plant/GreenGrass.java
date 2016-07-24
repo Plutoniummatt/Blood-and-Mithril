@@ -10,7 +10,7 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.core.UpdatedBy;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
-import bloodandmithril.graphics.WorldRenderer;
+import bloodandmithril.graphics.Textures;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.Prop;
@@ -35,8 +35,8 @@ public class GreenGrass extends PlantProp {
 
 	static {
 		if (ClientServerInterface.isClient()) {
-			textureRegionBig = new TextureRegion(WorldRenderer.GAME_WORLD_TEXTURE, 1166, 119, 76, 12);
-			textureRegionSmall = new TextureRegion(WorldRenderer.GAME_WORLD_TEXTURE, 1243, 119, 34, 12);
+			textureRegionBig = new TextureRegion(Textures.GAME_WORLD_TEXTURE, 1166, 119, 76, 12);
+			textureRegionSmall = new TextureRegion(Textures.GAME_WORLD_TEXTURE, 1243, 119, 34, 12);
 		}
 	}
 

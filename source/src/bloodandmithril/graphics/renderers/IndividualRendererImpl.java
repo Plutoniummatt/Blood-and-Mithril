@@ -15,7 +15,7 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.graphics.IndividualRenderer;
-import bloodandmithril.graphics.WorldRenderer;
+import bloodandmithril.graphics.Textures;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.item.items.equipment.armor.Armor;
@@ -84,7 +84,7 @@ public class IndividualRendererImpl implements IndividualRenderer {
 
 	private void renderEquipment(Individual individual, int animationIndex, Graphics graphics) {
 		graphics.getSpriteBatch().flush();
-		WorldRenderer.individualTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		Textures.INDIVIDUAL_TEXTURE.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		for (Item equipped : individual.getEquipped().keySet()) {
 			if (((Equipable)equipped).getRenderingIndex(individual) != animationIndex) {
 				continue;
@@ -155,7 +155,7 @@ public class IndividualRendererImpl implements IndividualRenderer {
 			}
 		}
 		graphics.getSpriteBatch().flush();
-		WorldRenderer.individualTexture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
+		Textures.INDIVIDUAL_TEXTURE.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 	}
 
 

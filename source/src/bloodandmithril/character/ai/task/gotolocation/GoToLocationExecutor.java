@@ -15,6 +15,7 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
+import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 
 /**
  * Executes {@link GoToLocation}
@@ -138,16 +139,28 @@ public class GoToLocationExecutor implements AITaskExecutor {
 		if (notReached) {
 			host.sendCommand(controls.walk.keyCode, host.isWalking() || host.getState().stamina == 0f);
 			host.setWalking(host.isWalking() || host.getState().stamina == 0f);
-			if (!host.isCommandActive(controls.moveRight.keyCode) && wayPoint.waypoint.x > host.getState().position.x) {
-				host.sendCommand(controls.moveRight.keyCode, true);
-				host.sendCommand(controls.moveLeft.keyCode, false);
-				task.stuckCounter++;
-			} else if (!host.isCommandActive(controls.moveLeft.keyCode) && wayPoint.waypoint.x < host.getState().position.x) {
-				host.sendCommand(controls.moveRight.keyCode, false);
-				host.sendCommand(controls.moveLeft.keyCode, true);
-				task.stuckCounter++;
+			
+			
+			
+			// Only change direction if we're not mid-air
+			boolean onGround = false;
+			try {
+				onGround = !(Domain.getWorld(host.getWorldId()).getTopography().getTile(host.getState().position.x, host.getState().position.y - 1, true) instanceof EmptyTile);
+			} catch (NoTileFoundException e) {
 			}
-
+			
+			if (onGround) {
+				if (!host.isCommandActive(controls.moveRight.keyCode) && wayPoint.waypoint.x > host.getState().position.x) {
+					host.sendCommand(controls.moveRight.keyCode, true);
+					host.sendCommand(controls.moveLeft.keyCode, false);
+					task.stuckCounter++;
+				} else if (!host.isCommandActive(controls.moveLeft.keyCode) && wayPoint.waypoint.x < host.getState().position.x) {
+					host.sendCommand(controls.moveRight.keyCode, false);
+					host.sendCommand(controls.moveLeft.keyCode, true);
+					task.stuckCounter++;
+				}
+			}
+			
 			if (task.stuckCounter > stuckTolerance) {
 				task.path.clear();
 			}

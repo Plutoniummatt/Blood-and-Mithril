@@ -16,7 +16,7 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.characters.Elf;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.Graphics;
-import bloodandmithril.graphics.WorldRenderer;
+import bloodandmithril.graphics.Textures;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.items.equipment.weapon.dagger.BushKnife;
 import bloodandmithril.item.items.equipment.weapon.dagger.CombatKnife;
@@ -37,9 +37,9 @@ public abstract class Dagger<T extends Metal> extends OneHandedMeleeWeapon<T> im
 
 	static {
 		if (ClientServerInterface.isClient()) {
-			textureRegionMap.put(BushKnife.class, new TextureRegion(WorldRenderer.individualTexture, 0, 784, 43, 13));
-			textureRegionMap.put(CombatKnife.class, new TextureRegion(WorldRenderer.individualTexture, 0, 818, 43, 13));
-			specialEffectsMap.put(Elf.class, wrap(AnimationHelper.animation(WorldRenderer.individualTexture, 64, 858, 102, 25, 8, 0.07f, PlayMode.NORMAL), new Vector2(10f, 34f)));
+			textureRegionMap.put(BushKnife.class, new TextureRegion(Textures.INDIVIDUAL_TEXTURE, 0, 784, 43, 13));
+			textureRegionMap.put(CombatKnife.class, new TextureRegion(Textures.INDIVIDUAL_TEXTURE, 0, 818, 43, 13));
+			specialEffectsMap.put(Elf.class, wrap(AnimationHelper.animation(Textures.INDIVIDUAL_TEXTURE, 64, 858, 102, 25, 8, 0.07f, PlayMode.NORMAL), new Vector2(10f, 34f)));
 		}
 	}
 
@@ -57,7 +57,7 @@ public abstract class Dagger<T extends Metal> extends OneHandedMeleeWeapon<T> im
 		TextureRegion textureRegion = getTextureRegion();
 
 		graphics.getSpriteBatch().draw(
-			WorldRenderer.individualTexture,
+			Textures.INDIVIDUAL_TEXTURE,
 			position.x - (flipX ? textureRegion.getRegionWidth() - 15 : 15),
 			position.y - 7,
 			flipX ? textureRegion.getRegionWidth() - 15 : 15,

@@ -19,7 +19,7 @@ import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.core.UpdatedBy;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
-import bloodandmithril.graphics.WorldRenderer;
+import bloodandmithril.graphics.Textures;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.material.StickItem;
@@ -54,10 +54,10 @@ public class DeadDesertBush extends PlantProp implements Harvestable {
 		if (ClientServerInterface.isClient()) {
 			textures = Maps.newHashMap();
 
-			textures.put(1, new TextureRegion(WorldRenderer.GAME_WORLD_TEXTURE, 870, 51, 69, 80));
-			textures.put(2, new TextureRegion(WorldRenderer.GAME_WORLD_TEXTURE, 940, 78, 54, 53));
-			textures.put(3, new TextureRegion(WorldRenderer.GAME_WORLD_TEXTURE, 995, 83, 50, 48));
-			textures.put(4, new TextureRegion(WorldRenderer.GAME_WORLD_TEXTURE, 1046, 68, 42, 63));
+			textures.put(1, new TextureRegion(Textures.GAME_WORLD_TEXTURE, 870, 51, 69, 80));
+			textures.put(2, new TextureRegion(Textures.GAME_WORLD_TEXTURE, 940, 78, 54, 53));
+			textures.put(3, new TextureRegion(Textures.GAME_WORLD_TEXTURE, 995, 83, 50, 48));
+			textures.put(4, new TextureRegion(Textures.GAME_WORLD_TEXTURE, 1046, 68, 42, 63));
 		}
 	}
 
