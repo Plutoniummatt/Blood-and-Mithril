@@ -22,11 +22,13 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Vector3;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.WorldRenderer.Depth;
-import bloodandmithril.graphics.background.Layer;
+import bloodandmithril.graphics.background.BackgroundRenderingService;
 import bloodandmithril.graphics.particles.Particle;
 import bloodandmithril.graphics.particles.TracerParticle;
 import bloodandmithril.util.Shaders;
@@ -39,9 +41,11 @@ import bloodandmithril.world.weather.WeatherRenderer;
  *
  * @author Matt
  */
+@Singleton
 @Copyright("Matthew Peck 2014")
 public class GaussianLightingRenderer {
 	public static boolean SEE_ALL = false;
+	public static boolean SEE_NOTHING = false;
 
 	public static FrameBuffer foregroundLightingFBOSmall, middleGroundLightingFBOSmall, smallWorking;
 	public static FrameBuffer foregroundLightingFBO, middleGroundLightingFBO;
@@ -56,14 +60,16 @@ public class GaussianLightingRenderer {
 	public static FrameBuffer foregroundShadowFBO;
 	public static FrameBuffer workingFBO, workingFBO2;
 
-	public static final int MAX_PARTICLES = 100;
+	private static final int MAX_PARTICLES = 100;
 	private static final int LIGHTING_FBO_DOWNSIZE_SAMPLER = 6;
-	private static Graphics graphics;
+	
+	@Inject private Graphics graphics;
+	@Inject private BackgroundRenderingService backgroundRenderingService;
 
 	/**
 	 * Master render method.
 	 */
-	public static void render(final float camX, final float camY, final World world) {
+	public void render(final float camX, final float camY, final World world) {
 		weather(world, graphics);
 		backgroundSprites(world, graphics);
 		backgroundLighting(graphics.getSpriteBatch());
@@ -77,7 +83,7 @@ public class GaussianLightingRenderer {
 	}
 
 
-	private static void backgroundSprites(final World world, final Graphics graphics) {
+	private void backgroundSprites(final World world, final Graphics graphics) {
 		final Color daylightColor = WeatherRenderer.getDaylightColor(world);
 		final SpriteBatch batch = graphics.getSpriteBatch();
 		
@@ -85,7 +91,7 @@ public class GaussianLightingRenderer {
 		Gdx.gl20.glClearColor(daylightColor.r + 0.1f, daylightColor.r + 0.1f, daylightColor.r + 0.1f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		Wiring.injector().getInstance(CloudRenderer.class).renderClouds(world);
-		world.getBackgroundImages().renderBackground(graphics);
+		backgroundRenderingService.renderBackground(world.getBackgroundImages());
 		workingFBO2.end();
 
 		batch.begin();
@@ -94,7 +100,7 @@ public class GaussianLightingRenderer {
 		Shaders.invertYReflective.setUniformf("filter", WeatherRenderer.getSunColor(world).mul(new Color(daylightColor.r, daylightColor.r, daylightColor.r, 1f)));
 		Shaders.invertYReflective.setUniformi("u_texture2", 14);
 		Shaders.invertYReflective.setUniformf("time", world.getEpoch().getTime() * 360f);
-		Shaders.invertYReflective.setUniformf("horizon", (getGdxHeight() - (float) Layer.getScreenHorizonY(graphics)) / getGdxHeight());
+		Shaders.invertYReflective.setUniformf("horizon", (getGdxHeight() - backgroundRenderingService.getHorizonScreenY()) / getGdxHeight());
 		Shaders.invertYReflective.setUniformf("resolution", getGdxWidth(), getGdxHeight());
 		Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
 		batch.draw(workingFBO2.getColorBufferTexture(), 0, 0);
@@ -125,9 +131,7 @@ public class GaussianLightingRenderer {
 	/**
 	 * Loads framebuffers etc.
 	 */
-	public static void setup() {
-		graphics = Wiring.injector().getInstance(Graphics.class);
-
+	public void setup() {
 		workingDownSampled = new FrameBuffer(
 			RGBA8888,
 			(getGdxWidth() + graphics.getCamMarginX()) / 16,
@@ -382,7 +386,7 @@ public class GaussianLightingRenderer {
 	/**
 	 * Renders the background lighting control occlusion FBO
 	 */
-	private static void backgroundLighting(final SpriteBatch batch) {
+	private void backgroundLighting(final SpriteBatch batch) {
 		// Step 1
 		// Render the quantized background buffer to 16x downsampled FBO
 		workingDownSampled.begin();
@@ -507,7 +511,7 @@ public class GaussianLightingRenderer {
 
 
 
-	private static void foregroundLighting(final SpriteBatch batch) {
+	private void foregroundLighting(final SpriteBatch batch) {
 		// Step 1
 		// Render the quantized foreground buffer to the 16x downsampled FBO
 		workingDownSampled.begin();
@@ -595,7 +599,7 @@ public class GaussianLightingRenderer {
 	}
 
 
-	private static void background(final World world, final SpriteBatch batch) {
+	private void background(final World world, final SpriteBatch batch) {
 		workingFBO.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -608,6 +612,10 @@ public class GaussianLightingRenderer {
 		);
 		batch.end();
 		workingFBO.end();
+		
+		if (SEE_NOTHING) {
+			return;
+		}
 
 		batch.begin();
 		if (SEE_ALL) {
@@ -640,7 +648,7 @@ public class GaussianLightingRenderer {
 	}
 
 
-	private static void middleground(final World world, final SpriteBatch batch) {
+	private void middleground(final World world, final SpriteBatch batch) {
 		Gdx.gl20.glEnable(GL20.GL_DITHER);
 		workingFBO.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
@@ -654,6 +662,10 @@ public class GaussianLightingRenderer {
 		);
 		batch.end();
 		workingFBO.end();
+		
+		if (SEE_NOTHING) {
+			return;
+		}
 
 		batch.begin();
 		if (SEE_ALL) {
@@ -691,7 +703,7 @@ public class GaussianLightingRenderer {
 	}
 
 
-	private static void foreground(final World world, final SpriteBatch batch) {
+	private void foreground(final World world, final SpriteBatch batch) {
 		workingFBO.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -704,6 +716,10 @@ public class GaussianLightingRenderer {
 		);
 		batch.end();
 		workingFBO.end();
+		
+		if (SEE_NOTHING) {
+			return;
+		}
 
 		batch.begin();
 		if (SEE_ALL) {
@@ -742,11 +758,11 @@ public class GaussianLightingRenderer {
 	}
 
 
-	private static void volumetricLighting(final World world, final SpriteBatch batch) {
+	private void volumetricLighting(final World world, final SpriteBatch batch) {
 		workingFBO.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		world.getBackgroundImages().renderBackground(graphics);
+		backgroundRenderingService.renderBackground(world.getBackgroundImages());
 		Wiring.injector().getInstance(CloudRenderer.class).renderClouds(world);
 		batch.begin();
 		batch.setShader(Shaders.invertY);

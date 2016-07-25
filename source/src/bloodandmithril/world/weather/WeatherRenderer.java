@@ -19,9 +19,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Lists;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.graphics.Textures;
-import bloodandmithril.graphics.background.Layer;
+import bloodandmithril.graphics.background.BackgroundRenderingService;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
@@ -133,7 +134,7 @@ public final class WeatherRenderer {
 		Shaders.sky.setUniformf("top", topColor);
 		Shaders.sky.setUniformf("bottom", bottomColor);
 		Shaders.sky.setUniformf("sun", sunPosition);
-		Shaders.sky.setUniformf("horizon", (float) Layer.getScreenHorizonY(graphics) / graphics.getHeight());
+		Shaders.sky.setUniformf("horizon", Wiring.injector().getInstance(BackgroundRenderingService.class).getHorizonScreenY() / graphics.getHeight());
 		Shaders.sky.setUniformf("resolution", graphics.getWidth(), graphics.getHeight());
 
 		graphics.getSpriteBatch().draw(working.getColorBufferTexture(), 0, 0, graphics.getWidth(), graphics.getHeight());

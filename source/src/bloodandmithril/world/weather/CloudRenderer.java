@@ -13,7 +13,7 @@ import com.google.inject.Singleton;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.graphics.Textures;
-import bloodandmithril.graphics.background.Layer;
+import bloodandmithril.graphics.background.BackgroundRenderingService;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.world.World;
 
@@ -29,6 +29,7 @@ public class CloudRenderer {
 	public static final Map<Integer, TextureRegion> cloudTextures = Maps.newHashMap();
 	
 	@Inject private Graphics graphics;
+	@Inject private BackgroundRenderingService backgroundRenderingService;
 	
 	@Inject
 	CloudRenderer() {
@@ -55,7 +56,7 @@ public class CloudRenderer {
 		graphics.getSpriteBatch().draw(
 			cloudTextures.get(cloud.cloudTextureId), 
 			cloud.getxPosition(), 
-			Layer.getScreenHorizonY(graphics)
+			backgroundRenderingService.getHorizonScreenY()
 		);
 		
 		cloud.setxPosition(cloud.getxPosition() + 0.01f);

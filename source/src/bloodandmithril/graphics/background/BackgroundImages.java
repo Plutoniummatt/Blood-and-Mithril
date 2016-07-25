@@ -1,21 +1,11 @@
 package bloodandmithril.graphics.background;
 
-import static com.badlogic.gdx.Gdx.files;
-
 import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 import bloodandmithril.core.Copyright;
-import bloodandmithril.graphics.Graphics;
-import bloodandmithril.networking.ClientServerInterface;
-import bloodandmithril.util.Shaders;
 
 /**
  * Class to manage background images
@@ -25,49 +15,10 @@ import bloodandmithril.util.Shaders;
 @Copyright("Matthew Peck 2015")
 public class BackgroundImages implements Serializable {
 	private static final long serialVersionUID = -649236314540206654L;
-	private static Texture backgrounds;
 
-	public static Map<Integer, TextureRegion> textures = Maps.newHashMap();
-	private List<Layer> layers = Lists.newArrayList();
-
-	public static final int EMPTY = 0;
-	public static final int OCEAN = 1;
-	public static final int ISLAND = 2;
-	public static final int SHIP = 3;
-
-	static {
-		if (ClientServerInterface.isClient()) {
-			backgrounds = new Texture(files.internal("data/image/bg.png"));
-			backgrounds.setFilter(TextureFilter.Linear, TextureFilter.Nearest);
-			textures.put(OCEAN, new TextureRegion(backgrounds, 474, 0, 10, 75));
-			textures.put(ISLAND, new TextureRegion(backgrounds, 0, 0, 473, 75));
-			textures.put(SHIP, new TextureRegion(backgrounds, 485, 0, 58, 44));
-		}
-	}
-
+	List<Layer> layers = Lists.newArrayList();
+	
 	public BackgroundImages() {
 		layers.add(new DayLightColorLayerWithFluidReflections());
-	}
-
-	/**
-	 * Renders the background images
-	 */
-	public void renderBackground(Graphics graphics) {
-		// Render the sea
-		graphics.getSpriteBatch().begin();
-		graphics.getSpriteBatch().setShader(Shaders.pass);
-		graphics.getSpriteBatch().draw(textures.get(OCEAN), 0, 0, graphics.getWidth(), Layer.getScreenHorizonY(graphics) - 1);
-		graphics.getSpriteBatch().end();
-
-		for (Layer layer : layers) {
-			graphics.getSpriteBatch().begin();
-			layer.preRender(graphics);
-			layer.render(
-				(int) graphics.getCam().position.x,
-				(int) graphics.getCam().position.y,
-				graphics
-			);
-			graphics.getSpriteBatch().end();
-		}
 	}
 }

@@ -641,6 +641,29 @@ public class DevWindow extends Window {
 			),
 			0
 		);
+		
+		newHashMap.put(
+			new ListingMenuItem<String>(
+				"See Nothing",
+				new Button(
+					"See Nothing",
+					Fonts.defaultFont,
+					0,
+					0,
+					310,
+					16,
+					() -> {
+						GaussianLightingRenderer.SEE_NOTHING = !GaussianLightingRenderer.SEE_NOTHING;
+					},
+					GaussianLightingRenderer.SEE_NOTHING ? Color.GREEN : Color.RED,
+					Color.WHITE,
+					Color.GREEN,
+					UIRef.BL
+				),
+				null
+			),
+			0
+		);
 
 		newHashMap.put(
 			new ListingMenuItem<String>(

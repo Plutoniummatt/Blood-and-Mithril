@@ -42,6 +42,7 @@ public class Graphics {
 	private boolean fading;
 
 	@Inject private WorldRenderer worldRenderer;
+	@Inject private GaussianLightingRenderer gaussianLightingRenderer;
 
 	@Inject
 	public Graphics() {
@@ -153,7 +154,7 @@ public class Graphics {
 		WeatherRenderer.dispose();
 
 		worldRenderer.setup();
-		GaussianLightingRenderer.setup();
+		gaussianLightingRenderer.setup();
 		WeatherRenderer.setup();
 
 		spriteBatch.getProjectionMatrix().setToOrtho2D(0, 0, width, height);

@@ -69,6 +69,7 @@ public class WorldRenderer {
 	@Inject private PropRenderer propRenderer;
 	@Inject private IndividualPlatformFilteringRenderer individualPlatformFilteringRenderer;
 	@Inject private TopographyRenderer topographyRenderer;
+	@Inject private GaussianLightingRenderer gaussianLightingRenderer;
 
 	public void dispose() {
 		fBuffer.dispose();
@@ -109,9 +110,10 @@ public class WorldRenderer {
 		renderForeGroundBuffer(world, camX, camY, batch);
 
 		// Renders all buffers using the final renderer
-		GaussianLightingRenderer.render(camX, camY, world);
+		gaussianLightingRenderer.render(camX, camY, world);
 		gameClientStateTracker.setRendering(false);
 	}
+
 
 	private void renderForeGroundBuffer(final World world, final int camX, final int camY, final SpriteBatch batch) {
 		fBuffer.begin();

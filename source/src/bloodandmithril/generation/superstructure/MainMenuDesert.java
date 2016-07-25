@@ -9,7 +9,7 @@ import bloodandmithril.world.topography.Topography;
  * @author Matt
  */
 @Copyright("Matthew Peck 2015")
-public class MainMenuDesert extends Desert {
+public class MainMenuDesert extends TestSuperStructure {
 	private static final long serialVersionUID = 1482427063691368237L;
 
 	/**

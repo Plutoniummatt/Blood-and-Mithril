@@ -1,7 +1,7 @@
 package bloodandmithril.generation.biome;
 
 import bloodandmithril.core.Copyright;
-import bloodandmithril.generation.superstructure.Desert;
+import bloodandmithril.generation.superstructure.TestSuperStructure;
 import bloodandmithril.generation.superstructure.Sky;
 import bloodandmithril.generation.superstructure.SuperStructure;
 import bloodandmithril.generation.superstructure.Underground;
@@ -25,7 +25,7 @@ public class DefaultBiomeDecider implements BiomeDecider {
 	 */
 	@Override
 	public SuperStructure decideAndGetSurfaceBiome(World world) {
-		return new Desert(world.getWorldId(), 50, cSurfaceStructureHeight, 30);
+		return new TestSuperStructure(world.getWorldId(), 50, cSurfaceStructureHeight, 30);
 	}
 
 

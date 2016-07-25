@@ -22,22 +22,22 @@ public class DayLightColorLayerWithFluidReflections extends Layer {
 	 * Constructor
 	 */
 	public DayLightColorLayerWithFluidReflections() {
-		super(getMap());
+		super(getMap(), true);
 	}
 
 
 	private static TreeMap<Integer, WrapperForTwo<Integer, Integer>> getMap() {
 		TreeMap<Integer, WrapperForTwo<Integer, Integer>> map = Maps.newTreeMap();
 
-		map.put(400, WrapperForTwo.wrap(BackgroundImages.ISLAND, 150));
-		map.put(873, WrapperForTwo.wrap(BackgroundImages.SHIP, 157));
+		map.put(400, WrapperForTwo.wrap(BackgroundRenderingService.ISLAND, 150));
+		map.put(873, WrapperForTwo.wrap(BackgroundRenderingService.SHIP, 157));
 
 		for (int i = 931; i < 5931; i += 200) {
-			map.put(i, WrapperForTwo.wrap(BackgroundImages.EMPTY, 0));
+			map.put(i, WrapperForTwo.wrap(BackgroundRenderingService.EMPTY, 0));
 		}
 
 		for (int i = 200; i > -5000; i -= 200) {
-			map.put(i, WrapperForTwo.wrap(BackgroundImages.EMPTY, 0));
+			map.put(i, WrapperForTwo.wrap(BackgroundRenderingService.EMPTY, 0));
 		}
 
 		return map;
@@ -64,6 +64,6 @@ public class DayLightColorLayerWithFluidReflections extends Layer {
 
 	@Override
 	public float getOffsetY() {
-		return 390;
+		return -160;
 	}
 }

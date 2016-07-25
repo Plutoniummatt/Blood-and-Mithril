@@ -43,13 +43,13 @@ import bloodandmithril.world.topography.tile.tiles.soil.StandardSoilTile;
  * @author Sam, Matt
  */
 @Copyright("Matthew Peck 2014")
-public class Desert extends SuperStructure {
+public class TestSuperStructure extends SuperStructure {
 	private static final long serialVersionUID = 4034191268168150728L;
 
 	/** Generates the wavey surface of the desert */
 	private final PerlinNoiseGenerator1D perlinSurfaceGenerator = new PerlinNoiseGenerator1D(30, Wiring.injector().getInstance(ParameterPersistenceService.class).getParameters().getSeed(), 1, 0f);
 
-	/** Dimensions of this {@link Desert} */
+	/** Dimensions of this {@link TestSuperStructure} */
 	private int cWidth, cHeight, tDuneVariationHeight;
 
 
@@ -59,7 +59,7 @@ public class Desert extends SuperStructure {
 	 * @param cHeight - The Height of the desert in chunks.
 	 * @param tDuneVariationHeight - How much the surface height can vary by.
 	 */
-	public Desert(int worldId, int cWidth, int cHeight, int tDuneVariationHeight) {
+	public TestSuperStructure(int worldId, int cWidth, int cHeight, int tDuneVariationHeight) {
 		super(worldId);
 		this.cWidth = cWidth;
 		this.cHeight = cHeight;
