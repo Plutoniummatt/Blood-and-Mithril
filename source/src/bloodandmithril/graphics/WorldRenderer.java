@@ -122,14 +122,16 @@ public class WorldRenderer {
 		batch.begin();
 		batch.setShader(Shaders.filter);
 		Shaders.filter.setUniformMatrix("u_projTrans", graphics.getCam().combined);
-		for (final Prop prop : world.props().getProps()) {
+		
+		world.getPositionalIndexMap().getOnScreenEntities(Prop.class, graphics).stream().map(id -> world.props().getProp(id)).forEach(prop -> {
 			if (prop.depth == FOREGROUND) {
 				Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
 				prop.preRender();
 				propRenderer.render(prop);
 				batch.flush();
 			}
-		}
+		});
+		
 		for (final Item item : world.items().getItems()) {
 			Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
 			item.render(graphics);
@@ -170,14 +172,17 @@ public class WorldRenderer {
 		batch.begin();
 		batch.setShader(Shaders.filter);
 		Shaders.filter.setUniformMatrix("u_projTrans", graphics.getCam().combined);
-		for (final Prop prop : world.props().getProps()) {
+		
+		world.getPositionalIndexMap().getOnScreenEntities(Prop.class, graphics).stream().map(id -> world.props().getProp(id)).forEach(prop -> {
 			if (prop.depth == MIDDLEGROUND) {
 				Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
 				prop.preRender();
 				propRenderer.render(prop);
 				batch.flush();
+				i.increment();
 			}
-		}
+		});
+		
 		renderParticles(MIDDLEGROUND, world);
 		batch.end();
 		mBuffer.end();
@@ -252,13 +257,13 @@ public class WorldRenderer {
 		batch.begin();
 		batch.setShader(Shaders.filter);
 		Shaders.pass.setUniformMatrix("u_projTrans", graphics.getCam().combined);
-		for (final Prop prop : world.props().getProps()) {
+		world.getPositionalIndexMap().getOnScreenEntities(Prop.class, graphics).stream().map(id -> world.props().getProp(id)).forEach(prop -> {
 			if (prop.depth == BACKGROUND) {
 				Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
 				propRenderer.render(prop);
 				batch.flush();
 			}
-		}
+		});
 		renderParticles(Depth.BACKGROUND, world);
 		batch.end();
 		bBuffer.end();
