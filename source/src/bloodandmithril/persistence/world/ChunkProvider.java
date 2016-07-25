@@ -113,7 +113,7 @@ public class ChunkProvider {
 
 
 	/** Loads a single chunk from disk and stores it in the chunkMap, or generates it if can't be loaded */
-	private void provideSingleChunk(final int chunkX, final int chunkY, final World world, final boolean populateChunkMap) {
+	public void provideSingleChunk(final int chunkX, final int chunkY, final World world, final boolean populateChunkMap) {
 		synchronized (chunksInQueue) {
 			Logger.loaderDebug("Loading chunk: x=" + chunkX + ", y=" + chunkY, LogLevel.TRACE);
 

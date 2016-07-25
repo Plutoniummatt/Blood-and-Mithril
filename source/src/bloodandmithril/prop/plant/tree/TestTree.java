@@ -77,10 +77,12 @@ public class TestTree extends Tree {
 		this.stump.generateTree(
 			() -> segments.get(getRandom().nextInt(segments.size())).call(), 
 			trunkSegment -> {
+				
+				// Only add branches to the top half of the tree
 				if (trunkSegment.segmentHeight > treeHeight / 2) {
 					trunkSegment.getBranches().add(
 						WrapperForThree.wrap(
-							0.5f, 
+							0.1f, 
 							randomOneOf(getRandom().nextFloat() * 20 + 40, -getRandom().nextFloat() * 20 - 40), 
 							segments.get(getRandom().nextInt(segments.size())).call()
 						)
@@ -113,7 +115,7 @@ public class TestTree extends Tree {
 	public void render(Graphics graphics) {
 		Timers timers = Wiring.injector().getInstance(Timers.class);
 		
-		float windStrength = 0.00f;
+		float windStrength = 0f;
 		
 		double windStrengthTerm = 1f + 3 * abs(windStrength);
 		float swayMagnitude = 0.1f + windStrength * 1.2f;
@@ -149,7 +151,7 @@ public class TestTree extends Tree {
 				() -> {
 					Wiring.injector().getInstance(UserInterface.class).addLayeredComponent(
 						new MessageWindow(
-							"What you want to know? its a fuckin tree",
+							"A skeleton of its former self",
 							Color.ORANGE,
 							500,
 							250,
@@ -191,13 +193,13 @@ public class TestTree extends Tree {
 
 	@Override
 	public Color getContextMenuColor() {
-		return Color.MAROON;
+		return Color.WHITE;
 	}
 
 
 	@Override
 	public String getContextMenuItemLabel() {
-		return "Fuckin tree mate, innit";
+		return "Dead tree";
 	}
 
 

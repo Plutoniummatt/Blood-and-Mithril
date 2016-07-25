@@ -2,7 +2,6 @@ package bloodandmithril.prop;
 
 import static bloodandmithril.control.InputUtilities.getMouseWorldX;
 import static bloodandmithril.control.InputUtilities.getMouseWorldY;
-import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -34,13 +33,10 @@ import bloodandmithril.prop.furniture.SmallWoodenCrateProp;
 import bloodandmithril.prop.furniture.WoodenChestProp;
 import bloodandmithril.prop.plant.CarrotProp;
 import bloodandmithril.ui.components.ContextMenu;
-import bloodandmithril.util.Function;
 import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.util.SerializableMappingFunction;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.world.Domain;
-import bloodandmithril.world.World;
-import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile;
 
 /**
@@ -182,72 +178,14 @@ public abstract class Prop implements Serializable, Visible, MouseOverable {
 		this.worldId = worldId;
 	}
 
-	/**
-	 * @return whether this prop can be placed at this props location
-	 */
-	public boolean canPlaceAtCurrentPosition() {
-		return canPlaceAt(position);
+	
+	public SerializableMappingFunction<Tile, Boolean> canPlaceOnTopOf() {
+		return canPlaceOnTopOf;
 	}
-
-
-	/**
-	 * @return whether this prop can be placed at a given location
-	 */
-	public boolean canPlaceAt(Vector2 position) {
-		return canPlaceAt(position.x, position.y, width, height, canPlaceOnTopOf, canPlaceInFrontOf, grounded, () -> {
-			for (Integer propId : Domain.getWorld(worldId).getPositionalIndexMap().getNearbyEntityIds(Prop.class, position.x, position.y)) {
-				Prop prop = Domain.getWorld(worldId).props().getProp(propId);
-				if (Domain.getWorld(worldId).props().hasProp(propId)) {
-					this.position.x = position.x;
-					this.position.y = position.y;
-					if (this.id == prop.id || prop.depth == Depth.FRONT || this.depth == Depth.FRONT) {
-						continue;
-					}
-					if (this.overlapsWith(prop)) {
-						return false;
-					}
-				}
-			}
-
-			return true;
-		}, Domain.getWorld(worldId));
-	}
-
-
-	/**
-	 * @return whether this prop can be placed at a given location
-	 */
-	public static boolean canPlaceAt(float x, float y, float width, float height, SerializableMappingFunction<Tile, Boolean> canPlaceOnTopOf, SerializableMappingFunction<Tile, Boolean> canPlaceInFrontOf, boolean grounded, Function<Boolean> customFunction, World world) {
-		float xStep = width / TILE_SIZE;
-		long xSteps = Math.round(Math.ceil(xStep));
-		float xIncrement = width / xSteps;
-
-		float yStep = height / TILE_SIZE;
-		long ySteps = Math.round(Math.ceil(yStep));
-		float yIncrement = height / ySteps;
-
-		try {
-			for (int i = 0; i <= xSteps; i++) {
-				Tile tileUnder = world.getTopography().getTile(x - width / 2 + i * xIncrement, y - TILE_SIZE/2, true);
-				if (grounded && (tileUnder.isPassable() || canPlaceOnTopOf != null && !canPlaceOnTopOf.apply(tileUnder))) {
-					return false;
-				}
-
-				for (int j = 1; j <= ySteps; j++) {
-					Tile tileOverlapping = world.getTopography().getTile(x - width / 2 + i * xIncrement, y + j * yIncrement - TILE_SIZE/2, true);
-					Tile tileUnderlapping = world.getTopography().getTile(x - width / 2 + i * xIncrement, y + j * yIncrement - TILE_SIZE/2, false);
-					if (!tileOverlapping.isPassable() || canPlaceInFrontOf != null && !canPlaceInFrontOf.apply(tileUnderlapping)) {
-						return false;
-					}
-				}
-			}
-		} catch (NoTileFoundException e) {
-			return false;
-		} catch (NullPointerException e) {
-			return false;
-		}
-
-		return customFunction.call();
+	
+	
+	public SerializableMappingFunction<Tile, Boolean> canPlaceInFrontOf() {
+		return canPlaceInFrontOf;
 	}
 
 
@@ -255,24 +193,6 @@ public abstract class Prop implements Serializable, Visible, MouseOverable {
 		this.canPlaceInFrontOf = function;
 	}
 
-
-	private boolean overlapsWith(Prop other) {
-		float left = position.x - width/2;
-		float right = position.x + width/2;
-		float top = position.y + height;
-		float bottom = position.y;
-
-		float otherLeft = other.position.x - other.width/2;
-		float otherRight = other.position.x + other.width/2;
-		float otherTop = other.position.y + other.height;
-		float otherBottom = other.position.y;
-
-		return
-			!(left >= otherRight) &&
-			!(right <= otherLeft) &&
-			!(top <= otherBottom) &&
-			!(bottom >= otherTop);
-	}
 
 	public abstract void preRender();
 

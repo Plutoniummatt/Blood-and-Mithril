@@ -1,14 +1,16 @@
 package bloodandmithril.prop.furniture;
 
+import com.badlogic.gdx.graphics.Color;
+
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.UpdatedBy;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.util.SerializableMappingFunction;
 import bloodandmithril.world.topography.tile.Tile;
 
-import com.badlogic.gdx.graphics.Color;
-
 @Copyright("Matthew Peck 2014")
+@UpdatedBy()
 public abstract class Furniture extends Prop {
 	private static final long serialVersionUID = -1643197661469081725L;
 

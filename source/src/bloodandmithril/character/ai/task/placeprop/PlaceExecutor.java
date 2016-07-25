@@ -9,8 +9,10 @@ import bloodandmithril.character.ai.task.placeprop.PlaceProp.Place;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.prop.Prop;
+import bloodandmithril.prop.PropPlacementService;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
 /**
  * Executes {@link Place}
@@ -22,6 +24,7 @@ import bloodandmithril.world.Domain;
 public class PlaceExecutor implements AITaskExecutor {
 	
 	@Inject private UserInterface userInterface;
+	@Inject private PropPlacementService propPlacementService;
 	
 	@Override
 	public void execute(AITask aiTask, float delta) {
@@ -30,7 +33,13 @@ public class PlaceExecutor implements AITaskExecutor {
 		final Prop prop = task.getParent().propItem.getProp();
 		final Individual host = task.getHost();
 		prop.setWorldId(host.getWorldId());
-		if (host.has(task.getParent().propItem) > 0 && host.getInteractionBox().isWithinBox(task.getParent().position) && prop.canPlaceAt(task.getParent().position)) {
+		
+		boolean canPlace = false;
+		try {
+			canPlace = propPlacementService.canPlaceAt(prop, task.getParent().position);
+		} catch (NoTileFoundException e) {}
+		
+		if (host.has(task.getParent().propItem) > 0 && host.getInteractionBox().isWithinBox(task.getParent().position) && canPlace) {
 			prop.position.x = task.getParent().position.x;
 			prop.position.y = task.getParent().position.y;
 			Domain.getWorld(host.getWorldId()).props().addProp(prop);

@@ -7,8 +7,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.generation.Structures;
 import bloodandmithril.prop.Prop;
+import bloodandmithril.prop.PropPlacementService;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.datastructure.ConcurrentDualKeyHashMap;
@@ -104,7 +106,7 @@ public final class Topography {
 
 	public static final Vector2 convertToWorldCoord(Vector2 coords, boolean floor) throws NoTileFoundException {
 		if (coords == null) {
-			throw new NoTileFoundException();
+			throw new NoTileFoundException(null, null);
 		}
 		return convertToWorldCoord(coords.x, coords.y, floor);
 	}
@@ -173,7 +175,13 @@ public final class Topography {
 		World world = Domain.getWorld(worldId);
 		world.getPositionalIndexMap().getNearbyEntityIds(Prop.class, worldX, worldY).forEach(id -> {
 			Prop prop = world.props().getProp(id);
-			if (!prop.canPlaceAtCurrentPosition() && !prop.preventsMining) {
+			
+			boolean canPlace = false;
+			try {
+				canPlace = Wiring.injector().getInstance(PropPlacementService.class).canPlaceAtCurrentPosition(prop);
+			} catch (NoTileFoundException e) {}
+			
+			if (!canPlace && !prop.preventsMining) {
 				world.props().removeProp(prop.id);
 			}
 		});
@@ -193,7 +201,13 @@ public final class Topography {
 		World world = Domain.getWorld(worldId);
 		world.getPositionalIndexMap().getNearbyEntityIds(Prop.class, worldX, worldY).forEach(id -> {
 			Prop prop = world.props().getProp(id);
-			if (!prop.canPlaceAtCurrentPosition() && prop.preventsMining) {
+			
+			boolean canPlace = false;
+			try {
+				canPlace = Wiring.injector().getInstance(PropPlacementService.class).canPlaceAtCurrentPosition(prop);
+			} catch (NoTileFoundException e) {}
+			
+			if (!canPlace && prop.preventsMining) {
 				b.setValue(true);
 			}
 		});
@@ -305,16 +319,16 @@ public final class Topography {
 	 * Gets a tile given the world coordinates
 	 */
 	public synchronized final Tile getTile(float worldX, float worldY, boolean foreGround) throws NoTileFoundException {
+		int chunkX = convertToChunkCoord(worldX);
+		int chunkY = convertToChunkCoord(worldY);
+		
+		int tileX = convertToChunkTileCoord(worldX);
+		int tileY = convertToChunkTileCoord(worldY);
+		
 		try {
-			int chunkX = convertToChunkCoord(worldX);
-			int chunkY = convertToChunkCoord(worldY);
-
-			int tileX = convertToChunkTileCoord(worldX);
-			int tileY = convertToChunkTileCoord(worldY);
-
 			return getChunkMap().get(chunkX).get(chunkY).getTile(tileX, tileY, foreGround);
 		} catch (NullPointerException e) {
-			throw new NoTileFoundException();
+			throw new NoTileFoundException(chunkX, chunkY);
 		}
 	}
 
@@ -332,7 +346,7 @@ public final class Topography {
 		try {
 			return getChunkMap().get(chunkX).get(chunkY).getTile(chunkTileX, chunkTileY, foreGround);
 		} catch (NullPointerException e) {
-			throw new NoTileFoundException();
+			throw new NoTileFoundException(chunkX, chunkY);
 		}
 	}
 
@@ -360,5 +374,12 @@ public final class Topography {
 
 	public static final class NoTileFoundException extends Exception {
 		private static final long serialVersionUID = 5955361949995345496L;
+		public final Integer chunkX;
+		public final Integer chunkY;
+		
+		public NoTileFoundException(Integer chunkX, Integer chunkY) {
+			this.chunkX = chunkX;
+			this.chunkY = chunkY;
+		}
 	}
 }

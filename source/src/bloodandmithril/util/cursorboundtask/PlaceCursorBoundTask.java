@@ -26,6 +26,7 @@ import bloodandmithril.graphics.Graphics;
 import bloodandmithril.item.items.PropItem;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.Prop;
+import bloodandmithril.prop.PropPlacementService;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.util.CursorBoundTask;
 import bloodandmithril.world.Domain;
@@ -42,6 +43,7 @@ public class PlaceCursorBoundTask extends CursorBoundTask {
 		private Prop toPlace;
 
 		@Inject private GameClientStateTracker gameClientStateTracker;
+		@Inject private PropPlacementService propPlacementService;
 
 		/**
 		 * Constructor
@@ -68,7 +70,10 @@ public class PlaceCursorBoundTask extends CursorBoundTask {
 						return;
 					}
 
-					final boolean canBuild = toPlace.canPlaceAt(coords);
+					boolean canBuild = false;
+					try {
+						canBuild = Wiring.injector().getInstance(PropPlacementService.class).canPlaceAt(toPlace, coords);
+					} catch (NoTileFoundException e) {}
 
 					if (canBuild) {
 						if (ClientServerInterface.isServer()) {
@@ -118,7 +123,10 @@ public class PlaceCursorBoundTask extends CursorBoundTask {
 			final float x = worldToScreenX(coords.x);
 			final float y = worldToScreenY(coords.y);
 
-			final boolean canBuild = propToPlace.canPlaceAt(coords);
+			boolean canBuild = false;
+			try {
+				canBuild = Wiring.injector().getInstance(PropPlacementService.class).canPlaceAt(propToPlace, coords);
+			} catch (NoTileFoundException e) {}
 
 			propToPlace.position.x = coords.x;
 			propToPlace.position.y = coords.y;
@@ -162,7 +170,7 @@ public class PlaceCursorBoundTask extends CursorBoundTask {
 					coords.x = Topography.convertToWorldTileCoord(coords.x) * Topography.TILE_SIZE;
 					coords.y = Topography.convertToWorldTileCoord(coords.y) * Topography.TILE_SIZE;
 				}
-				return toPlace.canPlaceAt(coords);
+				return propPlacementService.canPlaceAt(toPlace, coords);
 			} catch (final NoTileFoundException e) {
 				return false;
 			}

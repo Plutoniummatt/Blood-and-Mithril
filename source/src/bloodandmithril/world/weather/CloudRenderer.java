@@ -1,5 +1,8 @@
 package bloodandmithril.world.weather;
 
+import static com.badlogic.gdx.graphics.Texture.TextureFilter.Linear;
+import static com.badlogic.gdx.graphics.Texture.TextureFilter.Nearest;
+
 import java.util.Map;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -36,6 +39,7 @@ public class CloudRenderer {
 	
 	
 	public void renderClouds(World world) {
+		Textures.GAME_WORLD_TEXTURE.setFilter(Linear, Linear);
 		graphics.getSpriteBatch().begin();
 		graphics.getSpriteBatch().setShader(Shaders.pass);
 		for (Cloud cloud : world.getClouds()) {
@@ -43,6 +47,7 @@ public class CloudRenderer {
 			graphics.getSpriteBatch().flush();
 		}
 		graphics.getSpriteBatch().end();
+		Textures.GAME_WORLD_TEXTURE.setFilter(Nearest, Nearest);
 	}
 	
 	

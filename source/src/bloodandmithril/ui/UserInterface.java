@@ -10,6 +10,7 @@ import static bloodandmithril.control.InputUtilities.screenToWorldX;
 import static bloodandmithril.control.InputUtilities.screenToWorldY;
 import static bloodandmithril.control.InputUtilities.worldToScreenX;
 import static bloodandmithril.control.InputUtilities.worldToScreenY;
+import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldCoords;
 import static bloodandmithril.graphics.Graphics.getGdxHeight;
 import static bloodandmithril.graphics.Graphics.getGdxWidth;
 import static bloodandmithril.item.items.equipment.weapon.RangedWeapon.rangeControl;
@@ -19,6 +20,7 @@ import static bloodandmithril.networking.ClientServerInterface.ping;
 import static bloodandmithril.ui.FloatingText.floatingText;
 import static bloodandmithril.util.Fonts.defaultFont;
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
+import static bloodandmithril.world.topography.Topography.convertToChunkCoord;
 import static bloodandmithril.world.topography.Topography.convertToWorldTileCoord;
 import static com.badlogic.gdx.Gdx.files;
 import static com.badlogic.gdx.Gdx.gl;
@@ -1195,6 +1197,15 @@ public class UserInterface {
 		defaultFont.draw(graphics.getSpriteBatch(), "Number of tasks queued in AI/Pathfinding thread: " + Integer.toString(AIProcessor.getNumberOfOutstandingTasks()), 5, graphics.getHeight() - 125);
 		defaultFont.draw(graphics.getSpriteBatch(), "Number of tasks queued in Loader thread: " + Integer.toString(chunkLoader.loaderTasks.size()), 5, graphics.getHeight() - 145);
 		defaultFont.draw(graphics.getSpriteBatch(), "Number of tasks queued in Saver thread: " + Integer.toString(threadedTasks.saverTasks.size()), 5, graphics.getHeight() - 165);
+		
+		try {
+			defaultFont.draw(
+				graphics.getSpriteBatch(), 
+				"Superstructure on mouse: " + gameClientStateTracker.getActiveWorld().getTopography().getStructures().getStructure(convertToChunkCoord(getMouseWorldCoords().x), convertToChunkCoord(getMouseWorldCoords().y), true).toString(), 
+				5, 
+				graphics.getHeight() - 185
+			);
+		} catch (NullPointerException e) {}
 
 		defaultFont.setColor(Color.CYAN);
 	}

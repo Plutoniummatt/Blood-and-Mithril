@@ -115,16 +115,14 @@ public class Structures {
 		// Grab the specified key map
 		ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, Integer>> keyMapToUse = superStructure ? getSuperStructureKeys() : getSubStructureKeys();
 
-		// Delete the key from key map
-		int key = keyMapToUse.get(chunkX).get(chunkY);
-		keyMapToUse.get(chunkX).remove(chunkY);
-
 		// Decrement chunks left to be generated
+		int key = keyMapToUse.get(chunkX).get(chunkY);
 		getStructures().get(key).setChunksLeftToBeGenerated(getStructures().get(key).getChunksLeftToBeGenerated() - 1);
 
 		// If that was the last chunk, delete the structure, no longer needed
 		if (getStructures().get(key).allChunksGenerated()) {
 			getStructures().remove(key);
+			// TODO We can also delete everything from the keymap
 		}
 	}
 

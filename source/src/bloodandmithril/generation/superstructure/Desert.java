@@ -17,11 +17,10 @@ import bloodandmithril.generation.component.components.prefab.DesertPyramid;
 import bloodandmithril.generation.component.components.prefab.UndergroundDesertTempleEntrance;
 import bloodandmithril.generation.tools.PerlinNoiseGenerator1D;
 import bloodandmithril.generation.tools.RectangularSpaceCalculator;
-import bloodandmithril.item.material.wood.StandardWood;
 import bloodandmithril.persistence.ParameterPersistenceService;
-import bloodandmithril.prop.furniture.SmallWoodenCrateProp;
 import bloodandmithril.prop.plant.DeadDesertBush;
 import bloodandmithril.prop.plant.GreenGrass;
+import bloodandmithril.prop.plant.tree.TestTree;
 import bloodandmithril.util.Function;
 import bloodandmithril.util.SerializableMappingFunction;
 import bloodandmithril.util.Util;
@@ -273,12 +272,12 @@ public class Desert extends SuperStructure {
 					)
 				);
 			}
-			if (Util.roll(0.04f)) {
+			if (Util.roll(0.08f)) {
 				Structures.get(getStructureKey()).addProp(
-					new SmallWoodenCrateProp(
+					new TestTree(
 						Topography.convertToWorldCoord(x, false),
 						Topography.convertToWorldCoord(getSurfaceHeight().apply(x), false) + 16,
-						StandardWood.class
+						0.95f
 					)
 				);
 			}

@@ -6,16 +6,15 @@ import static bloodandmithril.world.topography.Topography.convertToWorldTileCoor
 import java.io.Serializable;
 import java.util.List;
 
+import com.google.common.collect.Lists;
+
 import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.component.Component;
-import bloodandmithril.generation.tools.PropPlacer;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.world.topography.Chunk;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.Tile.EmptyTile;
-
-import com.google.common.collect.Lists;
 
 /**
  * A {@link Structure} which can later be used to generate a {@link Chunk}

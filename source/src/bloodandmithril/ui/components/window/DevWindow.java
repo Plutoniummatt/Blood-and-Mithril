@@ -50,7 +50,6 @@ import bloodandmithril.graphics.particles.DiminishingColorChangingParticle;
 import bloodandmithril.graphics.particles.Particle.MovementMode;
 import bloodandmithril.graphics.particles.RandomParticle;
 import bloodandmithril.item.items.Item;
-import bloodandmithril.item.items.food.plant.CarrotItem;
 import bloodandmithril.item.items.material.RockItem;
 import bloodandmithril.item.material.mineral.Coal;
 import bloodandmithril.item.material.mineral.SandStone;
@@ -58,6 +57,7 @@ import bloodandmithril.item.material.wood.StandardWood;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.objectives.tutorial.Tutorial;
 import bloodandmithril.persistence.GameSaver;
+import bloodandmithril.persistence.world.ChunkProvider;
 import bloodandmithril.prop.construction.craftingstation.BlacksmithWorkshop;
 import bloodandmithril.prop.construction.craftingstation.Campfire;
 import bloodandmithril.prop.construction.craftingstation.Furnace;
@@ -66,7 +66,6 @@ import bloodandmithril.prop.furniture.MedievalWallTorchProp;
 import bloodandmithril.prop.furniture.RottenWoodenChest;
 import bloodandmithril.prop.furniture.WoodenChestProp;
 import bloodandmithril.prop.plant.DryGrass;
-import bloodandmithril.prop.plant.tree.TestTree;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
@@ -78,6 +77,7 @@ import bloodandmithril.util.Fonts;
 import bloodandmithril.util.RepeatingCountdown;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickPlatform;
 import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickTile;
 
@@ -190,7 +190,12 @@ public class DevWindow extends Window {
 		}
 
 		if (keyCode == Keys.I) {
-			gameClientStateTracker.getActiveWorld().items().addItem(new CarrotItem(), new Vector2(getMouseWorldX(), getMouseWorldY()), new Vector2());
+			Wiring.injector().getInstance(ChunkProvider.class).provideSingleChunk(
+				Topography.convertToChunkCoord(BloodAndMithrilClient.getMouseWorldCoords().x), 
+				Topography.convertToChunkCoord(BloodAndMithrilClient.getMouseWorldCoords().y), 
+				gameClientStateTracker.getActiveWorld(), 
+				true
+			);
 		}
 
 		if (keyCode == Keys.J) {
@@ -374,20 +379,6 @@ public class DevWindow extends Window {
 							if (individual != null) {
 								final DryGrass grass = new DryGrass(individual.getState().position.x, individual.getState().position.y);
 								Domain.getWorld(individual.getWorldId()).props().addProp(grass);
-							}
-						},
-						Color.GREEN,
-						Color.WHITE,
-						Color.GREEN,
-						null
-					),
-					new ContextMenu.MenuItem(
-						"Tree",
-						() -> {
-							final Individual individual = Domain.getIndividualsMap().get(1);
-							if (individual != null) {
-								final TestTree tree = new TestTree(individual.getState().position.x, individual.getState().position.y, 0.6f);
-								Domain.getWorld(individual.getWorldId()).props().addProp(tree);
 							}
 						},
 						Color.GREEN,

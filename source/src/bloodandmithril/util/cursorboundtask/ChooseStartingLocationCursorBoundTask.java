@@ -25,6 +25,7 @@ import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.item.items.container.Container;
 import bloodandmithril.prop.Prop;
+import bloodandmithril.prop.PropPlacementService;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.util.CursorBoundTask;
 import bloodandmithril.util.SerializableMappingFunction;
@@ -49,6 +50,7 @@ public class ChooseStartingLocationCursorBoundTask extends CursorBoundTask {
 	@Inject	private AddIndividualService addIndividualService;
 	@Inject	private GameClientStateTracker gameClientStateTracker;
 	@Inject	private UserInterface userInterface;
+	@Inject	private PropPlacementService propPlacementService;
 
 	/**
 	 * Constructor
@@ -119,8 +121,8 @@ public class ChooseStartingLocationCursorBoundTask extends CursorBoundTask {
 	}
 
 
-	private boolean canPlaceIndividual(final Individual individual) {
-		return Prop.canPlaceAt(
+	private boolean canPlaceIndividual(final Individual individual) throws NoTileFoundException {
+		return propPlacementService.canPlaceAt(
 			individual.getState().position.x,
 			individual.getState().position.y,
 			1,
@@ -154,11 +156,20 @@ public class ChooseStartingLocationCursorBoundTask extends CursorBoundTask {
 
 		if (container instanceof Prop) {
 			for (final Individual individual : individuals.values()) {
-				if  (!canPlaceIndividual(individual)) {
+				try {
+					if (!canPlaceIndividual(individual)) {
+						return false;
+					}
+				} catch (NoTileFoundException e) {
 					return false;
 				}
 			}
-			return ((Prop) container).canPlaceAtCurrentPosition();
+			
+			try {
+				return propPlacementService.canPlaceAtCurrentPosition((Prop) container);
+			} catch (NoTileFoundException e) {
+				return false;
+			}
 		}
 
 		return false;
