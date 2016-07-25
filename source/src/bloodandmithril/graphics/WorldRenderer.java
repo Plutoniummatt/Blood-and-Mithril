@@ -179,7 +179,6 @@ public class WorldRenderer {
 				prop.preRender();
 				propRenderer.render(prop);
 				batch.flush();
-				i.increment();
 			}
 		});
 		
