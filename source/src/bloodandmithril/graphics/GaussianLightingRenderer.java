@@ -612,6 +612,10 @@ public class GaussianLightingRenderer {
 		batch.begin();
 		if (SEE_ALL) {
 			batch.setShader(Shaders.invertY);
+			batch.draw(
+				workingFBO.getColorBufferTexture(),
+				0, 0
+			);
 		} else {
 			batch.setShader(Shaders.backgroundShader);
 			backgroundOcclusionFBO.getColorBufferTexture().bind(2);
@@ -654,6 +658,10 @@ public class GaussianLightingRenderer {
 		batch.begin();
 		if (SEE_ALL) {
 			batch.setShader(Shaders.invertY);
+			batch.draw(
+				workingFBO.getColorBufferTexture(),
+				0, 0
+			);
 		} else {
 			batch.setShader(Shaders.foregroundShader);
 			final Color daylight = WeatherRenderer.getDaylightColor(world);
@@ -700,6 +708,10 @@ public class GaussianLightingRenderer {
 		batch.begin();
 		if (SEE_ALL) {
 			batch.setShader(Shaders.invertY);
+			batch.draw(
+				workingFBO.getColorBufferTexture(),
+				0, 0
+			);
 		} else {
 			batch.setShader(Shaders.foregroundShader);
 			final Color daylight = WeatherRenderer.getDaylightColor(world);

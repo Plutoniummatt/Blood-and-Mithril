@@ -23,6 +23,7 @@ import bloodandmithril.prop.plant.grass.GrassWithLongThinYellowFlowers;
 import bloodandmithril.prop.plant.grass.GrassWithYellowFlower;
 import bloodandmithril.prop.plant.grass.GrassyWhiteFlowers;
 import bloodandmithril.prop.plant.grass.GreenGrass;
+import bloodandmithril.prop.plant.grass.TallGrass;
 import bloodandmithril.prop.plant.tree.TestTree;
 import bloodandmithril.util.Function;
 import bloodandmithril.util.SerializableMappingFunction;
@@ -272,6 +273,15 @@ public class Desert extends SuperStructure {
 					new DeadDesertBush(
 						Topography.convertToWorldCoord(x, false),
 						Topography.convertToWorldCoord(getSurfaceHeight().apply(x), false) + 16
+					)
+				);
+			}
+			if (Util.roll(0.1f)) {
+				Structures.get(getStructureKey()).addProp(
+					new TallGrass(
+						Topography.convertToWorldCoord(x, false),
+						Topography.convertToWorldCoord(getSurfaceHeight().apply(x), false) + 16,
+						Util.getRandom().nextBoolean()
 					)
 				);
 			}
