@@ -35,6 +35,7 @@ import bloodandmithril.util.Shaders;
 import bloodandmithril.world.World;
 import bloodandmithril.world.weather.CloudRenderer;
 import bloodandmithril.world.weather.WeatherRenderer;
+import bloodandmithril.world.weather.WeatherService;
 
 /**
  * Class that encapsulates rendering things to the screen, lighting model is based on efficient large radius Gaussian blurred occlusion mapping
@@ -64,6 +65,8 @@ public class GaussianLightingRenderer {
 	private static final int LIGHTING_FBO_DOWNSIZE_SAMPLER = 6;
 	
 	@Inject private Graphics graphics;
+	@Inject private WeatherService weatherService;
+	@Inject private WeatherRenderer weatherRenderer;
 	@Inject private BackgroundRenderingService backgroundRenderingService;
 
 	/**
@@ -84,7 +87,7 @@ public class GaussianLightingRenderer {
 
 
 	private void backgroundSprites(final World world, final Graphics graphics) {
-		final Color daylightColor = WeatherRenderer.getDaylightColor(world);
+		final Color daylightColor = weatherService.getDaylightColor(world);
 		final SpriteBatch batch = graphics.getSpriteBatch();
 		
 		workingFBO2.begin();
@@ -97,7 +100,7 @@ public class GaussianLightingRenderer {
 		batch.begin();
 		batch.setShader(Shaders.invertYReflective);
 		workingFBO.getColorBufferTexture().bind(14);
-		Shaders.invertYReflective.setUniformf("filter", WeatherRenderer.getSunColor(world).mul(new Color(daylightColor.r, daylightColor.r, daylightColor.r, 1f)));
+		Shaders.invertYReflective.setUniformf("filter", weatherService.getSunColor(world).mul(new Color(daylightColor.r, daylightColor.r, daylightColor.r, 1f)));
 		Shaders.invertYReflective.setUniformi("u_texture2", 14);
 		Shaders.invertYReflective.setUniformf("time", world.getEpoch().getTime() * 360f);
 		Shaders.invertYReflective.setUniformf("horizon", (getGdxHeight() - backgroundRenderingService.getHorizonScreenY()) / getGdxHeight());
@@ -254,12 +257,12 @@ public class GaussianLightingRenderer {
 	}
 
 
-	private static void weather(final World world, final Graphics graphics) {
+	private void weather(final World world, final Graphics graphics) {
 		workingFBO.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		workingFBO.end();
-		WeatherRenderer.render(workingFBO, world, graphics);
+		weatherRenderer.render(workingFBO, world, graphics);
 
 		final SpriteBatch batch = graphics.getSpriteBatch();
 
@@ -630,7 +633,7 @@ public class GaussianLightingRenderer {
 			backgroundOcclusionFBONearest.getColorBufferTexture().bind(3);
 			foregroundLightingFBO.getColorBufferTexture().bind(4);
 			middleGroundLightingFBO.getColorBufferTexture().bind(8);
-			final Color daylight = WeatherRenderer.getDaylightColor(world);
+			final Color daylight = weatherService.getDaylightColor(world);
 			Shaders.backgroundShader.setUniformf("dayLightColor", daylight.r, daylight.g, daylight.b, 1.0f);
 			Shaders.backgroundShader.setUniformi("occlusion3", 2);
 			Shaders.backgroundShader.setUniformi("occlusion4", 3);
@@ -676,7 +679,7 @@ public class GaussianLightingRenderer {
 			);
 		} else {
 			batch.setShader(Shaders.foregroundShader);
-			final Color daylight = WeatherRenderer.getDaylightColor(world);
+			final Color daylight = weatherService.getDaylightColor(world);
 			Shaders.invertYBlendWithOcclusion.setUniformf("dayLightColor", daylight.r, daylight.g, daylight.b, 1.0f);
 			foregroundOcclusionFBO.getColorBufferTexture().bind(1);
 			backgroundOcclusionFBO.getColorBufferTexture().bind(2);
@@ -730,7 +733,7 @@ public class GaussianLightingRenderer {
 			);
 		} else {
 			batch.setShader(Shaders.foregroundShader);
-			final Color daylight = WeatherRenderer.getDaylightColor(world);
+			final Color daylight = weatherService.getDaylightColor(world);
 			Shaders.foregroundShader.setUniformf("dayLightColor", daylight.r, daylight.g, daylight.b, 1.0f);
 			foregroundOcclusionFBO.getColorBufferTexture().bind(1);
 			backgroundOcclusionFBO.getColorBufferTexture().bind(2);
@@ -786,14 +789,14 @@ public class GaussianLightingRenderer {
 
 		batch.begin();
 		batch.setShader(Shaders.volumetricLighting);
-		final Color daylightColor = WeatherRenderer.getDaylightColor(world);
+		final Color daylightColor = weatherService.getDaylightColor(world);
 		final Vector3 rgb = new Vector3(daylightColor.r, daylightColor.g, daylightColor.b);
 		rgb.nor().scl(1.7f);
 
 		Shaders.volumetricLighting.setUniformf("color", rgb.x, rgb.y, rgb.z, daylightColor.r);
 		Shaders.volumetricLighting.setUniformf("resolution", getGdxWidth(), getGdxHeight());
 		Shaders.volumetricLighting.setUniformf("time", world.getEpoch().getTime() * 300f);
-		Shaders.volumetricLighting.setUniformf("sourceLocation", WeatherRenderer.getSunPosition().cpy().x, WeatherRenderer.getSunPosition().cpy().y);
+		Shaders.volumetricLighting.setUniformf("sourceLocation", weatherRenderer.getSunPosition().cpy().x, weatherRenderer.getSunPosition().cpy().y);
 		batch.draw(
 			workingFBO.getColorBufferTexture(),
 			0, 0

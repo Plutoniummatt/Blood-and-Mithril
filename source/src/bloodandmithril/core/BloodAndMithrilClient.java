@@ -87,6 +87,7 @@ public class BloodAndMithrilClient implements ApplicationListener {
 	@Inject private TopographyTaskExecutor topographyTaskExecutor;
 	@Inject private UserInterface userInterface;
 	@Inject private GaussianLightingRenderer gaussianLightingRenderer;
+	@Inject private WeatherRenderer weatherRenderer;
 
 	@Override
 	public void create() {
@@ -129,7 +130,7 @@ public class BloodAndMithrilClient implements ApplicationListener {
 		PrefabricatedComponent.setup();
 		Topography.setup();
 		Shaders.setup();
-		WeatherRenderer.setup();
+		weatherRenderer.setup();
 		Controls.setup();
 		Equipable.setup();
 		Prop.setup();

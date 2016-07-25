@@ -12,7 +12,6 @@ import com.google.inject.Singleton;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.persistence.ConfigPersistenceService;
-import bloodandmithril.world.weather.WeatherRenderer;
 
 /**
  * Singleton graphics instance
@@ -27,22 +26,19 @@ public class Graphics {
 	private SpriteBatch spriteBatch;
 
 	/** Camera used for the main game world */
-	private OrthographicCamera cam;
+	OrthographicCamera cam;
 
 	/** Resolution */
-	private int width, height;
+	int width, height;
 
 	/** The cam margin is the extra 'space' required for frame buffers so that dynamic tile lighting works */
-	private int camMarginX, camMarginY;
+	int camMarginX, camMarginY;
 
 	/** Current 'amount' of fade */
 	private float fadeAlpha;
 
 	/** Whether the screen is currently fading */
 	private boolean fading;
-
-	@Inject private WorldRenderer worldRenderer;
-	@Inject private GaussianLightingRenderer gaussianLightingRenderer;
 
 	@Inject
 	public Graphics() {
@@ -126,38 +122,6 @@ public class Graphics {
 
 	public void setFading(final boolean fading) {
 		this.fading = fading;
-	}
-
-
-	/**
-	 * Processes graphics side of resizing the window
-	 */
-	public void resize(final int newWidth, final int newHeight) {
-		width = newWidth;
-		height = newHeight;
-
-		camMarginX = 640 + 32 - width % 32;
-		camMarginY = 640 + 32 - height % 32;
-
-		final float oldCamX = cam.position.x;
-		final float oldCamY = cam.position.y;
-
-		cam.setToOrtho(false, width + camMarginX, height + camMarginY);
-		cam.position.x = oldCamX;
-		cam.position.y = oldCamY;
-
-		worldRenderer.getShapeRenderer().setProjectionMatrix(cam.projection);
-		worldRenderer.getShapeRenderer().setTransformMatrix(cam.view);
-
-		worldRenderer.dispose();
-		GaussianLightingRenderer.dispose();
-		WeatherRenderer.dispose();
-
-		worldRenderer.setup();
-		gaussianLightingRenderer.setup();
-		WeatherRenderer.setup();
-
-		spriteBatch.getProjectionMatrix().setToOrtho2D(0, 0, width, height);
 	}
 
 

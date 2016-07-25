@@ -29,9 +29,11 @@ public class Textures {
 	/** All trunk textures */
 	public static Map<Class<? extends Tree>, Map<Integer, TextureRegion>> trunkTextures = newHashMap();
 	
-	
 	/** All background image textures */
 	public static Map<Integer, TextureRegion> backgroundImages = Maps.newHashMap();
+	
+	/** All celestial body images */
+	public static final Map<Integer, TextureRegion> celestialBodyTextures = Maps.newHashMap();
 	
 	static {
 		GAME_WORLD_TEXTURE = new Texture(files.internal("data/image/gameWorld.png"));
