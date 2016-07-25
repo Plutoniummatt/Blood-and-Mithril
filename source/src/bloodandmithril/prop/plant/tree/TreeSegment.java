@@ -28,6 +28,7 @@ public class TreeSegment {
 	public final int textureId;
 	public final int width;
 	public final int height;
+	public int segmentHeight;
 	
 	/**
 	 * Constructor
@@ -65,20 +66,34 @@ public class TreeSegment {
 	 * @return The top trunk segment
 	 */
 	public TreeSegment generateTree(Callable<TreeSegment> trunkSegmentGenerator, Operator<TreeSegment> branchGenerator, int number) {
+		TreeSegment previous = this;
 		TreeSegment current = this;
 		branchGenerator.operate(this);
+		this.segmentHeight = 1;
 		
 		for (int i = 0; i < number; i++) {
 			current.trunk = trunkSegmentGenerator.call();
 			current = current.trunk;
+			current.segmentHeight = 1 + previous.segmentHeight;
 			branchGenerator.operate(current);
+			previous = current;
 		}
 		
 		return current;
 	}
 
 
-	public void render(Graphics graphics, Vector2 renderPosition, float angle, float thinningFactor, float thinningFactorStep, float curvature, int overlap, Class<? extends Tree> treeClass) {
+	public void render(
+		Graphics graphics, 
+		Vector2 renderPosition, 
+		float angle, 
+		float thinningFactor, 
+		float thinningFactorStep, 
+		float curvature, 
+		int overlap, 
+		Class<? extends Tree> treeClass, 
+		int treeWidth
+	) {
 		if (trunk != null) {
 			trunk.render(
 				graphics, 
@@ -88,23 +103,24 @@ public class TreeSegment {
 				thinningFactorStep, 
 				curvature, 
 				overlap, 
-				treeClass
+				treeClass,
+				treeWidth
 			);
 		}
 		
 		for (WrapperForThree<Float, Float, TreeSegment> branch : branches) {
 			branch.c.render(
 				graphics, 
-				renderPosition.cpy().add(new Vector2(0, branch.a * width - overlap).rotate(angle + branch.b)), 
+				renderPosition.cpy().add(new Vector2(0, branch.a * width - overlap).rotate(angle)), 
 				angle + branch.b, 
 				thinningFactor * 0.35f, 
 				0f, 
 				0f, 
 				overlap, 
-				treeClass
+				treeClass,
+				treeWidth
 			);
 		}
-		
 		
 		TextureRegion textureRegion = Textures.trunkTextures.get(treeClass).get(textureId);
 		graphics.getSpriteBatch().draw(
@@ -113,9 +129,9 @@ public class TreeSegment {
 			renderPosition.y,
 			width/2,
 			0f,
-			textureRegion.getRegionWidth() * thinningFactor,
+			textureRegion.getRegionWidth(),
 			textureRegion.getRegionHeight(),
-			1f,
+			thinningFactor,
 			1f,
 			angle
 		);
