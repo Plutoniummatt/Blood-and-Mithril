@@ -3,10 +3,13 @@ package bloodandmithril.prop;
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 
 import com.badlogic.gdx.math.Vector2;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.generation.PropPlacement;
 import bloodandmithril.graphics.WorldRenderer.Depth;
+import bloodandmithril.persistence.world.ChunkProvider;
 import bloodandmithril.util.Function;
 import bloodandmithril.util.SerializableMappingFunction;
 import bloodandmithril.world.Domain;
@@ -22,6 +25,43 @@ import bloodandmithril.world.topography.tile.Tile;
 @Singleton
 @Copyright("Matthew Peck 2016")
 public class PropPlacementService {
+	
+	@Inject private ChunkProvider chunkProvider;
+	
+	/**
+	 * Places a prop via a {@link PropPlacement}, return whether or not placement was successful
+	 */
+	public boolean placeProp(PropPlacement placement) {
+		try {
+			Vector2 coords;
+			if (placement.prop.grounded) {
+				coords = new Vector2(
+					placement.location.x,
+					Domain.getWorld(placement.worldId).getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(placement.location.x, placement.location.y, true).y
+				);
+			} else {
+				coords = placement.location;
+			}
+			
+			if (canPlaceAt(placement.prop, coords)) {
+				placement.prop.position.x = coords.x;
+				placement.prop.position.y = coords.y;
+				Domain.getWorld(placement.worldId).props().addProp(placement.prop);
+				return true;
+			}
+
+			return false;
+		} catch (NoTileFoundException e) {
+			chunkProvider.provideSingleChunk(
+				e.chunkX, 
+				e.chunkY, 
+				Domain.getWorld(placement.worldId), 
+				true
+			);
+			
+			return false;
+		}
+	}
 	
 	
 	/**

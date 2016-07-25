@@ -29,6 +29,7 @@ import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.persistence.ConfigPersistenceService;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.prop.Prop;
+import bloodandmithril.prop.plant.tree.Tree;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.window.MainMenuWindow;
@@ -135,6 +136,7 @@ public class BloodAndMithrilClient implements ApplicationListener {
 		userInterface.setup();
 		Item.setup();
 		Component.setup();
+		Tree.setup();
 
 		userInterface.addLayeredComponent(
 			new MainMenuWindow(false)

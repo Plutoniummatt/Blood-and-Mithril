@@ -17,13 +17,15 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.core.UpdatedBy;
 import bloodandmithril.core.Wiring;
-import bloodandmithril.graphics.Graphics;
+import bloodandmithril.graphics.RenderPropWith;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.food.plant.CarrotItem.CarrotSeedItem;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.Harvestable;
 import bloodandmithril.prop.Prop;
+import bloodandmithril.prop.StaticallyRenderedProp;
+import bloodandmithril.prop.renderservice.StaticSpritePropRenderingService;
 import bloodandmithril.prop.updateservice.CarrotPropUpdateService;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
@@ -41,7 +43,8 @@ import bloodandmithril.world.topography.tile.tiles.SoilTile;
  */
 @Copyright("Matthew Peck 2014")
 @UpdatedBy(CarrotPropUpdateService.class)
-public class CarrotProp extends PlantProp implements Harvestable {
+@RenderPropWith(StaticSpritePropRenderingService.class)
+public class CarrotProp extends PlantProp implements Harvestable, StaticallyRenderedProp {
 	private static final long serialVersionUID = -4581900482709094877L;
 
 	/** {@link TextureRegion} of the {@link CarrotProp} */
@@ -55,13 +58,13 @@ public class CarrotProp extends PlantProp implements Harvestable {
 		super(x, y, 12, 17, Depth.MIDDLEGROUND, new SoilTilesOnly(), false);
 	}
 
-
+	
 	@Override
-	public void render(final Graphics graphics) {
+	public TextureRegion getTextureRegion() {
 		if (getGrowthProgress() < 1.0f) {
-			graphics.getSpriteBatch().draw(HALF_CARROT, position.x - width / 2, position.y);
+			return HALF_CARROT;
 		} else {
-			graphics.getSpriteBatch().draw(CARROT, position.x - width / 2, position.y);
+			return CARROT;
 		}
 	}
 

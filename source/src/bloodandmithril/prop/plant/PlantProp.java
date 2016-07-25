@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.UpdatedBy;
+import bloodandmithril.graphics.RenderPropWith;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.prop.Growable;
 import bloodandmithril.prop.Prop;
@@ -17,6 +18,7 @@ import bloodandmithril.world.topography.tile.Tile;
  */
 @Copyright("Matthew Peck 2014")
 @UpdatedBy()
+@RenderPropWith()
 public abstract class PlantProp extends Growable {
 	private static final long serialVersionUID = -4865430066854382581L;
 

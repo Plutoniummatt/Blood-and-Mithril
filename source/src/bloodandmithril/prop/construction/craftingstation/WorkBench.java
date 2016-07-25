@@ -13,6 +13,7 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
 import bloodandmithril.core.UpdatedBy;
+import bloodandmithril.graphics.RenderPropWith;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.WoodenBucketItem;
 import bloodandmithril.item.items.equipment.offhand.Torch;
@@ -21,6 +22,7 @@ import bloodandmithril.item.items.furniture.WoodenChestItem;
 import bloodandmithril.item.items.material.PlankItem;
 import bloodandmithril.item.material.metal.Iron;
 import bloodandmithril.item.material.wood.StandardWood;
+import bloodandmithril.prop.renderservice.ConstructionRenderingService;
 import bloodandmithril.prop.updateservice.CraftingStationUpdateService;
 
 /**
@@ -31,6 +33,7 @@ import bloodandmithril.prop.updateservice.CraftingStationUpdateService;
 @Copyright("Matthew Peck 2014")
 @Name(name = "Work bench")
 @UpdatedBy(CraftingStationUpdateService.class)
+@RenderPropWith(ConstructionRenderingService.class)
 public class WorkBench extends CraftingStation {
 
 	private static final Map<Item, Integer> craftables = Maps.newHashMap();
@@ -58,7 +61,7 @@ public class WorkBench extends CraftingStation {
 
 
 	@Override
-	protected TextureRegion getTextureRegion() {
+	public TextureRegion getTextureRegion() {
 		return WORKBENCH;
 	}
 

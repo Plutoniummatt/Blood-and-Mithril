@@ -16,7 +16,7 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.core.MouseOverable;
 import bloodandmithril.core.UpdatedBy;
 import bloodandmithril.core.Wiring;
-import bloodandmithril.graphics.Graphics;
+import bloodandmithril.graphics.RenderPropWith;
 import bloodandmithril.graphics.Textures;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.item.items.food.plant.CarrotItem.CarrotSeedProp;
@@ -46,6 +46,7 @@ import bloodandmithril.world.topography.tile.Tile;
  */
 @Copyright("Matthew Peck 2014")
 @UpdatedBy()
+@RenderPropWith()
 public abstract class Prop implements Serializable, Visible, MouseOverable {
 	private static final long serialVersionUID = -1659783923740689585L;
 
@@ -86,9 +87,6 @@ public abstract class Prop implements Serializable, Visible, MouseOverable {
 		this.id = Wiring.injector().getInstance(ParameterPersistenceService.class).getParameters().getNextPropId();
 		this.grounded = grounded;
 	}
-
-	/** Render this {@link Prop} */
-	public abstract void render(Graphics graphics);
 
 	/** Synchronizes this prop with another */
 	public abstract void synchronizeProp(Prop other);

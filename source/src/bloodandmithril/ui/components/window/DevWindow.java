@@ -65,7 +65,7 @@ import bloodandmithril.prop.construction.craftingstation.WorkBench;
 import bloodandmithril.prop.furniture.MedievalWallTorchProp;
 import bloodandmithril.prop.furniture.RottenWoodenChest;
 import bloodandmithril.prop.furniture.WoodenChestProp;
-import bloodandmithril.prop.plant.DryGrass;
+import bloodandmithril.prop.plant.grass.DryGrass;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;

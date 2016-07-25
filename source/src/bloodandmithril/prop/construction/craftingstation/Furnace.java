@@ -6,7 +6,6 @@ import static com.google.common.collect.Maps.newHashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.google.common.collect.Maps;
 
@@ -14,7 +13,7 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
 import bloodandmithril.core.UpdatedBy;
-import bloodandmithril.graphics.Graphics;
+import bloodandmithril.graphics.RenderPropWith;
 import bloodandmithril.graphics.Textures;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
@@ -28,6 +27,7 @@ import bloodandmithril.item.material.metal.Steel;
 import bloodandmithril.item.material.mineral.Mineral;
 import bloodandmithril.item.material.mineral.SandStone;
 import bloodandmithril.networking.ClientServerInterface;
+import bloodandmithril.prop.renderservice.ConstructionRenderingService;
 import bloodandmithril.prop.updateservice.FurnaceUpdateService;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util.Colors;
@@ -40,6 +40,7 @@ import bloodandmithril.util.Util.Colors;
 @Copyright("Matthew Peck 2014")
 @Name(name = "Furnace")
 @UpdatedBy(FurnaceUpdateService.class)
+@RenderPropWith(ConstructionRenderingService.class)
 public class Furnace extends CraftingStation implements Container {
 	private static final long serialVersionUID = 7693386784097531328L;
 
@@ -84,23 +85,6 @@ public class Furnace extends CraftingStation implements Container {
 
 
 	@Override
-	protected void internalRender(float constructionProgress, Graphics graphics) {
-		SpriteBatch batch = graphics.getSpriteBatch();
-		if (getConstructionProgress() == 0f) {
-			batch.draw(FURNACE, position.x - width / 2, position.y);
-		} else if (getConstructionProgress() >= 1f) {
-			if (isOccupied()) {
-				batch.draw(FURNACE_BURNING, position.x - width / 2, position.y);
-			} else {
-				batch.draw(FURNACE, position.x - width / 2, position.y);
-			}
-		} else {
-			batch.draw(inProgressTextures.floorEntry(getConstructionProgress()).getValue(), position.x - width / 2, position.y);
-		}
-	}
-
-
-	@Override
 	public Map<Item, Integer> getRequiredMaterials() {
 		Map<Item, Integer> requiredItems = newHashMap();
 		requiredItems.put(RockItem.rock(SandStone.class), 5);
@@ -116,8 +100,18 @@ public class Furnace extends CraftingStation implements Container {
 
 
 	@Override
-	protected TextureRegion getTextureRegion() {
-		return null;
+	public TextureRegion getTextureRegion() {
+		if (getConstructionProgress() == 0f) {
+			return FURNACE;
+		} else if (getConstructionProgress() >= 1f) {
+			if (isOccupied()) {
+				return FURNACE_BURNING;
+			} else {
+				return FURNACE;
+			}
+		} else {
+			return inProgressTextures.floorEntry(getConstructionProgress()).getValue();
+		}
 	}
 
 

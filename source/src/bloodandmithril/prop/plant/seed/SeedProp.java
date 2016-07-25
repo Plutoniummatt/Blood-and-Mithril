@@ -7,6 +7,7 @@ import com.google.common.collect.Lists;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.UpdatedBy;
+import bloodandmithril.graphics.RenderPropWith;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.food.plant.SeedItem;
@@ -24,6 +25,7 @@ import bloodandmithril.world.topography.tile.Tile;
  */
 @Copyright("Matthew Peck 2014")
 @UpdatedBy()
+@RenderPropWith()
 public abstract class SeedProp extends Growable implements Harvestable {
 	private static final long serialVersionUID = 6958594764600730817L;
 

@@ -17,7 +17,7 @@ import bloodandmithril.core.Name;
 import bloodandmithril.core.UpdatedBy;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.event.events.ConstructionFinished;
-import bloodandmithril.graphics.Graphics;
+import bloodandmithril.graphics.RenderPropWith;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
@@ -27,6 +27,7 @@ import bloodandmithril.networking.requests.RefreshWindowsResponse;
 import bloodandmithril.networking.requests.SynchronizeIndividual;
 import bloodandmithril.networking.requests.SynchronizePropRequest;
 import bloodandmithril.prop.Prop;
+import bloodandmithril.prop.StaticallyRenderedProp;
 import bloodandmithril.prop.construction.craftingstation.CraftingStation;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
@@ -47,11 +48,12 @@ import bloodandmithril.world.topography.tile.Tile;
  */
 @Copyright("Matthew Peck 2014")
 @UpdatedBy()
-public abstract class Construction extends Prop implements Container {
+@RenderPropWith()
+public abstract class Construction extends Prop implements Container, StaticallyRenderedProp {
 	private static final long serialVersionUID = -7772373095960462479L;
 
 	/** Current construction progress, 1f means fully constructed */
-	private float constructionProgress;
+	protected float constructionProgress;
 
 	/** The rate at which this {@link Construction} is constructed, in units of /s */
 	public final float constructionRate;
@@ -68,12 +70,6 @@ public abstract class Construction extends Prop implements Container {
 	protected Construction(final float x, final float y, final int width, final int height, final boolean grounded, final float constructionRate, final SerializableMappingFunction<Tile, Boolean> canPlaceOnTopOf) {
 		super(x, y, width, height, grounded, Depth.MIDDLEGROUND, canPlaceOnTopOf, true);
 		this.constructionRate = constructionRate;
-	}
-
-
-	@Override
-	public void render(final Graphics graphics) {
-		internalRender(constructionProgress, graphics);
 	}
 
 
@@ -292,9 +288,6 @@ public abstract class Construction extends Prop implements Container {
 	public String getTitle() {
 		return getClass().getAnnotation(Name.class).name();
 	}
-
-	/** Renders this {@link Construction} based on {@link #constructionProgress} */
-	protected abstract void internalRender(float constructionProgress, Graphics graphics);
 
 	/** Get the required items to construct this {@link Construction} */
 	public abstract Map<Item, Integer> getRequiredMaterials();

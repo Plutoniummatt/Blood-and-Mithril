@@ -10,6 +10,7 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.core.UpdatedBy;
 import bloodandmithril.core.Wiring;
+import bloodandmithril.graphics.RenderPropWith;
 import bloodandmithril.item.items.container.LiquidContainerItem;
 import bloodandmithril.item.liquid.Liquid;
 import bloodandmithril.prop.Prop;
@@ -26,6 +27,7 @@ import bloodandmithril.util.Util.Colors;
  */
 @Copyright("Matthew Peck 2016")
 @UpdatedBy()
+@RenderPropWith()
 public abstract class LiquidContainerProp extends Furniture {
 	private static final long serialVersionUID = 5555138707601557563L;
 	private final LiquidContainerItem container;

@@ -15,13 +15,15 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.core.UpdatedBy;
 import bloodandmithril.core.Wiring;
-import bloodandmithril.graphics.Graphics;
+import bloodandmithril.graphics.RenderPropWith;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
 import bloodandmithril.item.items.container.ContainerImpl;
 import bloodandmithril.item.material.wood.Wood;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.Prop;
+import bloodandmithril.prop.StaticallyRenderedProp;
+import bloodandmithril.prop.renderservice.StaticSpritePropRenderingService;
 import bloodandmithril.prop.updateservice.NoOpPropUpdateService;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
@@ -35,7 +37,8 @@ import bloodandmithril.world.topography.Topography.NoTileFoundException;
  */
 @Copyright("Matthew Peck 2015")
 @UpdatedBy(NoOpPropUpdateService.class)
-public class SmallWoodenCrateProp extends Furniture implements Container {
+@RenderPropWith(StaticSpritePropRenderingService.class)
+public class SmallWoodenCrateProp extends Furniture implements Container, StaticallyRenderedProp {
 	private static final long serialVersionUID = -7463802693132242218L;
 
 	@SuppressWarnings("unused")
@@ -205,12 +208,6 @@ public class SmallWoodenCrateProp extends Furniture implements Container {
 
 
 	@Override
-	public void render(final Graphics graphics) {
-		graphics.getSpriteBatch().draw(WOODEN_CRATE, position.x - width / 2, position.y);
-	}
-
-
-	@Override
 	public Container getContainerImpl() {
 		return container;
 	}
@@ -272,5 +269,11 @@ public class SmallWoodenCrateProp extends Furniture implements Container {
 	@Override
 	public boolean getWeightLimited() {
 		return false;
+	}
+
+
+	@Override
+	public TextureRegion getTextureRegion() {
+		return WOODEN_CRATE;
 	}
 }

@@ -84,9 +84,7 @@ public class GaussianLightingRenderer {
 		workingFBO2.begin();
 		Gdx.gl20.glClearColor(daylightColor.r + 0.1f, daylightColor.r + 0.1f, daylightColor.r + 0.1f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		
 		Wiring.injector().getInstance(CloudRenderer.class).renderClouds(world);
-		
 		world.getBackgroundImages().renderBackground(graphics);
 		workingFBO2.end();
 

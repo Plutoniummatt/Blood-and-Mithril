@@ -9,8 +9,10 @@ import java.util.List;
 import com.google.common.collect.Lists;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.generation.component.Component;
 import bloodandmithril.prop.Prop;
+import bloodandmithril.prop.PropPlacementService;
 import bloodandmithril.world.topography.Chunk;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.tile.Tile;
@@ -38,7 +40,7 @@ public abstract class Structure implements Serializable {
 	private final List<Component> components = Lists.newLinkedList();
 
 	/** {@link Prop}s */
-	private final List<PropPlacer> props = Lists.newLinkedList();
+	private final List<PropPlacement> props = Lists.newLinkedList();
 
 	/**
 	 * @return whether this {@link Structure} has finished generating.
@@ -225,7 +227,7 @@ public abstract class Structure implements Serializable {
 	public synchronized void addProp(Prop prop) {
 		prop.setWorldId(worldId);
 		props.add(
-			new PropPlacer(
+			new PropPlacement(
 				prop,
 				prop.position,
 				worldId
@@ -238,11 +240,11 @@ public abstract class Structure implements Serializable {
 	 * Attempt to place all props
 	 */
 	public synchronized void attemptPropPlacement(int chunkX, int chunkY) {
-		for (PropPlacer prop : Lists.newArrayList(props)) {
-			if (convertToChunkCoord(prop.getLocation().x) == chunkX && convertToChunkCoord(prop.getLocation().y) == chunkY) {
+		for (PropPlacement prop : Lists.newArrayList(props)) {
+			if (convertToChunkCoord(prop.location.x) == chunkX && convertToChunkCoord(prop.location.y) == chunkY) {
 				boolean componentOverlap = false;
 				for (Component c : components) {
-					if (c.getBoundaries().isWithin(convertToWorldTileCoord(prop.getLocation().x), convertToWorldTileCoord(prop.getLocation().y))) {
+					if (c.getBoundaries().isWithin(convertToWorldTileCoord(prop.location.x), convertToWorldTileCoord(prop.location.y))) {
 						props.remove(prop);
 						componentOverlap = true;
 						break;
@@ -250,7 +252,7 @@ public abstract class Structure implements Serializable {
 				}
 
 				if (!componentOverlap) {
-					prop.place();
+					Wiring.injector().getInstance(PropPlacementService.class).placeProp(prop);
 					props.remove(prop);
 				}
 			}
@@ -261,7 +263,7 @@ public abstract class Structure implements Serializable {
 	/**
 	 * @return all props
 	 */
-	public synchronized List<PropPlacer> getProps() {
+	public synchronized List<PropPlacement> getProps() {
 		return props;
 	}
 }

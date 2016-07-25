@@ -13,7 +13,7 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
 import bloodandmithril.core.UpdatedBy;
-import bloodandmithril.graphics.Graphics;
+import bloodandmithril.graphics.RenderPropWith;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.weapon.dagger.BushKnife;
 import bloodandmithril.item.items.equipment.weapon.dagger.CombatKnife;
@@ -22,6 +22,7 @@ import bloodandmithril.item.items.equipment.weapon.onehandedsword.Machette;
 import bloodandmithril.item.items.furniture.MedievalWallTorchItem;
 import bloodandmithril.item.material.metal.Iron;
 import bloodandmithril.prop.Prop;
+import bloodandmithril.prop.renderservice.ConstructionRenderingService;
 import bloodandmithril.prop.updateservice.BlacksmithWorkshopUpdateService;
 
 /**
@@ -32,6 +33,7 @@ import bloodandmithril.prop.updateservice.BlacksmithWorkshopUpdateService;
 @Copyright("Matthew Peck 2014")
 @Name(name = "Blacksmith Workshop")
 @UpdatedBy(BlacksmithWorkshopUpdateService.class)
+@RenderPropWith(ConstructionRenderingService.class)
 public class BlacksmithWorkshop extends CraftingStation {
 
 	private static final Map<Item, Integer> craftables = Maps.newHashMap();
@@ -62,18 +64,12 @@ public class BlacksmithWorkshop extends CraftingStation {
 
 
 	@Override
-	protected void internalRender(float constructionProgress, Graphics graphics) {
+	public TextureRegion getTextureRegion() {
 		if (isOccupied()) {
-			graphics.getSpriteBatch().draw(BLACKSMITH_WORKSHOP_WORKING, position.x - width / 2, position.y);
+			return BLACKSMITH_WORKSHOP_WORKING;
 		} else {
-			graphics.getSpriteBatch().draw(BLACKSMITH_WORKSHOP, position.x - width / 2, position.y);
+			return BLACKSMITH_WORKSHOP;
 		}
-	}
-
-
-	@Override
-	protected TextureRegion getTextureRegion() {
-		return BLACKSMITH_WORKSHOP;
 	}
 
 

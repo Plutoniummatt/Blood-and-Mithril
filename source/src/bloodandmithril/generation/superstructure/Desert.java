@@ -19,7 +19,10 @@ import bloodandmithril.generation.tools.PerlinNoiseGenerator1D;
 import bloodandmithril.generation.tools.RectangularSpaceCalculator;
 import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.prop.plant.DeadDesertBush;
-import bloodandmithril.prop.plant.GreenGrass;
+import bloodandmithril.prop.plant.grass.GrassWithLongThinYellowFlowers;
+import bloodandmithril.prop.plant.grass.GrassWithYellowFlower;
+import bloodandmithril.prop.plant.grass.GrassyWhiteFlowers;
+import bloodandmithril.prop.plant.grass.GreenGrass;
 import bloodandmithril.prop.plant.tree.TestTree;
 import bloodandmithril.util.Function;
 import bloodandmithril.util.SerializableMappingFunction;
@@ -272,6 +275,33 @@ public class Desert extends SuperStructure {
 					)
 				);
 			}
+			if (Util.roll(0.04f)) {
+				Structures.get(getStructureKey()).addProp(
+					new GrassyWhiteFlowers(
+						Topography.convertToWorldCoord(x, false),
+						Topography.convertToWorldCoord(getSurfaceHeight().apply(x), false) + 16,
+						Util.getRandom().nextBoolean()
+					)
+				);
+			}
+			if (Util.roll(0.04f)) {
+				Structures.get(getStructureKey()).addProp(
+					new GrassWithLongThinYellowFlowers(
+						Topography.convertToWorldCoord(x, false),
+						Topography.convertToWorldCoord(getSurfaceHeight().apply(x), false) + 16,
+						Util.getRandom().nextBoolean()
+					)
+				);
+			}
+			if (Util.roll(0.02f)) {
+				Structures.get(getStructureKey()).addProp(
+						new GrassWithYellowFlower(
+						Topography.convertToWorldCoord(x, false),
+						Topography.convertToWorldCoord(getSurfaceHeight().apply(x), false) + 16,
+						Util.getRandom().nextBoolean()
+					)
+				);
+			}
 			if (Util.roll(0.08f)) {
 				Structures.get(getStructureKey()).addProp(
 					new TestTree(
@@ -281,7 +311,7 @@ public class Desert extends SuperStructure {
 					)
 				);
 			}
-			if (Util.roll(0.8f)) {
+			if (Util.roll(1f)) {
 				Structures.get(getStructureKey()).addProp(
 					new GreenGrass(
 						Topography.convertToWorldCoord(x, false),

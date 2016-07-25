@@ -7,6 +7,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.prop.DummyPropRenderingService;
 import bloodandmithril.prop.renderservice.PropRenderingService;
 
 /**
@@ -18,5 +19,5 @@ import bloodandmithril.prop.renderservice.PropRenderingService;
 @Target(TYPE)
 @Copyright("Matthew Peck 2016")
 public @interface RenderPropWith {
-	Class<? extends PropRenderingService> value();
+	Class<? extends PropRenderingService> value() default DummyPropRenderingService.class;
 }

@@ -10,14 +10,16 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.UpdatedBy;
 import bloodandmithril.core.Wiring;
-import bloodandmithril.graphics.Graphics;
+import bloodandmithril.graphics.RenderPropWith;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.food.Food;
 import bloodandmithril.prop.Growable;
 import bloodandmithril.prop.Prop;
+import bloodandmithril.prop.StaticallyRenderedProp;
 import bloodandmithril.prop.plant.CarrotProp;
 import bloodandmithril.prop.plant.CarrotProp.SoilTilesOnly;
+import bloodandmithril.prop.renderservice.StaticSpritePropRenderingService;
 import bloodandmithril.prop.updateservice.SeedPropUpdateService;
 import bloodandmithril.ui.FloatingTextService;
 import bloodandmithril.ui.UserInterface;
@@ -162,7 +164,8 @@ public class CarrotItem extends Food {
 	 * @author Matt
 	 */
 	@UpdatedBy(SeedPropUpdateService.class)
-	public static class CarrotSeedProp extends bloodandmithril.prop.plant.seed.SeedProp {
+	@RenderPropWith(StaticSpritePropRenderingService.class)
+	public static class CarrotSeedProp extends bloodandmithril.prop.plant.seed.SeedProp implements StaticallyRenderedProp {
 		private static final long serialVersionUID = 1761994206485966594L;
 
 		/** {@link TextureRegion} of this seed */
@@ -174,11 +177,11 @@ public class CarrotItem extends Food {
 		public CarrotSeedProp(final float x, final float y, final SeedItem seed) {
 			super(x, y, seed, new SoilTilesOnly());
 		}
-
-
+		
+		
 		@Override
-		public void render(final Graphics graphics) {
-			graphics.getSpriteBatch().draw(CARROT_SEED, position.x - width / 2, position.y);
+		public TextureRegion getTextureRegion() {
+			return CARROT_SEED;
 		}
 
 

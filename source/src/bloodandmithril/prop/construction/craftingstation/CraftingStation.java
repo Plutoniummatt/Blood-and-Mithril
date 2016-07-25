@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.base.Optional;
 import com.google.common.collect.Iterables;
@@ -24,7 +23,7 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.core.UpdatedBy;
 import bloodandmithril.core.Wiring;
-import bloodandmithril.graphics.Graphics;
+import bloodandmithril.graphics.RenderPropWith;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.networking.ClientServerInterface;
@@ -37,7 +36,6 @@ import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.ui.components.window.CraftingStationWindow;
 import bloodandmithril.ui.components.window.MessageWindow;
-import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.util.datastructure.SerializableDoubleWrapper;
@@ -50,6 +48,7 @@ import bloodandmithril.world.Domain;
  */
 @Copyright("Matthew Peck 2014")
 @UpdatedBy()
+@RenderPropWith()
 public abstract class CraftingStation extends Construction {
 	private static final long serialVersionUID = 2177296386331588828L;
 
@@ -64,10 +63,6 @@ public abstract class CraftingStation extends Construction {
 	protected CraftingStation(final float x, final float y, final int width, final int height, final float constructionRate) {
 		super(x, y, width, height, true, constructionRate, null);
 	}
-
-
-	/** Returns the {@link TextureRegion} of the {@link CraftingStation} */
-	protected abstract TextureRegion getTextureRegion();
 
 	/** Returns the verb that describes the action of this {@link CraftingStation} */
 	public abstract String getAction();
@@ -95,15 +90,6 @@ public abstract class CraftingStation extends Construction {
 	 */
 	public String getCustomMessage() {
 		return "";
-	}
-
-
-	@Override
-	protected void internalRender(final float constructionProgress, final Graphics graphics) {
-		if (constructionProgress == 0f) {
-			Shaders.filter.setUniformf("color", 1f, 1f, 1f, 0.90f);
-		}
-		graphics.getSpriteBatch().draw(getTextureRegion(), position.x - width / 2, position.y);
 	}
 
 

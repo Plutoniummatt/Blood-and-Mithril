@@ -16,6 +16,7 @@ import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.core.Name;
 import bloodandmithril.core.UpdatedBy;
 import bloodandmithril.core.Wiring;
+import bloodandmithril.graphics.RenderPropWith;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.food.animal.ChickenLegItem;
 import bloodandmithril.item.items.material.PlankItem;
@@ -24,6 +25,7 @@ import bloodandmithril.item.material.wood.StandardWood;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.Lightable;
 import bloodandmithril.prop.Prop;
+import bloodandmithril.prop.renderservice.ConstructionRenderingService;
 import bloodandmithril.prop.updateservice.CampfireUpdateService;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
@@ -38,6 +40,7 @@ import bloodandmithril.world.topography.Topography.NoTileFoundException;
 @Copyright("Matthew Peck 2014")
 @Name(name = "Campfire")
 @UpdatedBy(CampfireUpdateService.class)
+@RenderPropWith(ConstructionRenderingService.class)
 public class Campfire extends CraftingStation implements Lightable {
 	private static final long serialVersionUID = -8876217926271589078L;
 
@@ -69,7 +72,7 @@ public class Campfire extends CraftingStation implements Lightable {
 
 
 	@Override
-	protected TextureRegion getTextureRegion() {
+	public TextureRegion getTextureRegion() {
 		return CAMPFIRE;
 	}
 

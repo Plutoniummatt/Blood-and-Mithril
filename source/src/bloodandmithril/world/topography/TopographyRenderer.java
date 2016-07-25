@@ -13,6 +13,8 @@ import com.google.inject.Singleton;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.Graphics;
+import bloodandmithril.util.Logger;
+import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.Operator;
 
 /**
@@ -43,7 +45,11 @@ public class TopographyRenderer {
 			for (int y = bottomLeftY - 2; y <= topRightY + 2; y++) {
 				if (topography.getChunkMap().get(x) != null && topography.getChunkMap().get(x).get(y) != null) {
 					topography.getChunkMap().get(x).get(y).checkMesh();
-					chunkRenderer.render(topography.getChunkMap().get(x).get(y), false, graphics.getCam(), shader, uniformSettings);
+					try {
+						chunkRenderer.render(topography.getChunkMap().get(x).get(y), false, graphics.getCam(), shader, uniformSettings);
+					} catch (NullPointerException e) {
+						Logger.generalDebug("NPE when rendering chunk", LogLevel.WARN);
+					}
 				}
 			}
 		}

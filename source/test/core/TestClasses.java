@@ -27,6 +27,7 @@ import bloodandmithril.character.ai.RoutineTask;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.UpdatedBy;
+import bloodandmithril.graphics.RenderPropWith;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.util.CursorBoundTask;
@@ -123,6 +124,12 @@ public class TestClasses {
 		if (RoutineTask.class.isAssignableFrom(clazz)) {
 			if (!clazz.isAnnotationPresent(RoutineContextMenusProvidedBy.class)) {
 				errors.add("Found RoutineTask not annotated with @RoutineTaskContextMenuProvider: " + clazz.getName());
+			}
+		}
+		
+		if (Prop.class.isAssignableFrom(clazz)) {
+			if (!clazz.isAnnotationPresent(RenderPropWith.class)) {
+				errors.add("Found Prop not annotated with @RenderPropWith: " + clazz.getName());
 			}
 		}
 

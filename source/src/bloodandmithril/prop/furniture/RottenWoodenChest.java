@@ -4,8 +4,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.UpdatedBy;
-import bloodandmithril.graphics.Graphics;
+import bloodandmithril.graphics.RenderPropWith;
 import bloodandmithril.item.material.wood.StandardWood;
+import bloodandmithril.prop.renderservice.StaticSpritePropRenderingService;
 import bloodandmithril.prop.updateservice.NoOpPropUpdateService;
 
 /**
@@ -15,6 +16,7 @@ import bloodandmithril.prop.updateservice.NoOpPropUpdateService;
  */
 @Copyright("Matthew Peck 2015")
 @UpdatedBy(NoOpPropUpdateService.class)
+@RenderPropWith(StaticSpritePropRenderingService.class)
 public class RottenWoodenChest extends WoodenChestProp {
 	private static final long serialVersionUID = -8577332391703143295L;
 
@@ -27,10 +29,10 @@ public class RottenWoodenChest extends WoodenChestProp {
 	public RottenWoodenChest(float x, float y, float capacity, int volume) {
 		super(x, y, capacity, volume, StandardWood.class);
 	}
-
-
+	
+	
 	@Override
-	public void render(Graphics graphics) {
-		graphics.getSpriteBatch().draw(ROTTEN_WOODEN_CHEST, position.x - width / 2, position.y);
+	public TextureRegion getTextureRegion() {
+		return ROTTEN_WOODEN_CHEST;
 	}
 }

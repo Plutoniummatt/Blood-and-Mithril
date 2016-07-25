@@ -34,6 +34,7 @@ import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.weapon.ranged.Projectile;
 import bloodandmithril.prop.Prop;
+import bloodandmithril.prop.PropRenderer;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.datastructure.Wrapper;
 import bloodandmithril.world.World;
@@ -65,6 +66,7 @@ public class WorldRenderer {
 
 	@Inject private Graphics graphics;
 	@Inject private GameClientStateTracker gameClientStateTracker;
+	@Inject private PropRenderer propRenderer;
 	@Inject private IndividualPlatformFilteringRenderer individualPlatformFilteringRenderer;
 	@Inject private TopographyRenderer topographyRenderer;
 
@@ -122,7 +124,7 @@ public class WorldRenderer {
 			if (prop.depth == FOREGROUND) {
 				Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
 				prop.preRender();
-				prop.render(graphics);
+				propRenderer.render(prop);
 				batch.flush();
 			}
 		}
@@ -152,7 +154,7 @@ public class WorldRenderer {
 			if (prop.depth == Depth.FRONT) {
 				Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
 				prop.preRender();
-				prop.render(graphics);
+				propRenderer.render(prop);
 				batch.flush();
 			}
 		}
@@ -170,7 +172,7 @@ public class WorldRenderer {
 			if (prop.depth == MIDDLEGROUND) {
 				Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
 				prop.preRender();
-				prop.render(graphics);
+				propRenderer.render(prop);
 				batch.flush();
 			}
 		}
@@ -251,7 +253,7 @@ public class WorldRenderer {
 		for (final Prop prop : world.props().getProps()) {
 			if (prop.depth == BACKGROUND) {
 				Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
-				prop.render(graphics);
+				propRenderer.render(prop);
 				batch.flush();
 			}
 		}

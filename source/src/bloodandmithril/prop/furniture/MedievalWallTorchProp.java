@@ -12,10 +12,12 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.core.UpdatedBy;
 import bloodandmithril.core.Wiring;
-import bloodandmithril.graphics.Graphics;
+import bloodandmithril.graphics.RenderPropWith;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.Lightable;
 import bloodandmithril.prop.Prop;
+import bloodandmithril.prop.StaticallyRenderedProp;
+import bloodandmithril.prop.renderservice.StaticSpritePropRenderingService;
 import bloodandmithril.prop.updateservice.MedievalWallTorchPropUpdateService;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
@@ -32,7 +34,8 @@ import bloodandmithril.world.topography.tile.Tile.EmptyTile;
  */
 @Copyright("Matthew Peck 2016")
 @UpdatedBy(MedievalWallTorchPropUpdateService.class)
-public class MedievalWallTorchProp extends Furniture implements Lightable {
+@RenderPropWith(StaticSpritePropRenderingService.class)
+public class MedievalWallTorchProp extends Furniture implements Lightable, StaticallyRenderedProp {
 	private static final long serialVersionUID = -7830128026417134792L;
 	private static final float BURN_DURATION = 300f;
 
@@ -60,12 +63,6 @@ public class MedievalWallTorchProp extends Furniture implements Lightable {
 	public MedievalWallTorchProp(final float x, final float y) {
 		super(x, y, 13, 30, false);
 		canPlaceInFrontOf(new NotEmptyTile());
-	}
-
-
-	@Override
-	public void render(final Graphics graphics) {
-		graphics.getSpriteBatch().draw(MEDIEVAL_WALL_TORCH, position.x - width / 2, position.y);
 	}
 
 
@@ -206,5 +203,11 @@ public class MedievalWallTorchProp extends Furniture implements Lightable {
 
 	public void setLit(final boolean lit) {
 		this.lit = lit;
+	}
+
+
+	@Override
+	public TextureRegion getTextureRegion() {
+		return MEDIEVAL_WALL_TORCH;
 	}
 }
