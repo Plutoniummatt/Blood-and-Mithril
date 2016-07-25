@@ -32,14 +32,16 @@ public class BackgroundRenderingService {
 	public static final int OCEAN = 1;
 	public static final int ISLAND = 2;
 	public static final int SHIP = 3;
+	public static final int FLOATING_ISLAND_CASTLE = 4;
 
 	static {
 		if (ClientServerInterface.isClient()) {
 			BACKGROUND_IMAGES = new Texture(files.internal("data/image/bg.png"));
 			BACKGROUND_IMAGES.setFilter(TextureFilter.Linear, TextureFilter.Nearest);
-			backgroundImages.put(OCEAN, new TextureRegion(BACKGROUND_IMAGES, 474, 0, 10, 75));
+			backgroundImages.put(OCEAN, new TextureRegion(BACKGROUND_IMAGES, 475, 0, 8, 75));
 			backgroundImages.put(ISLAND, new TextureRegion(BACKGROUND_IMAGES, 0, 0, 473, 75));
 			backgroundImages.put(SHIP, new TextureRegion(BACKGROUND_IMAGES, 485, 0, 58, 44));
+			backgroundImages.put(FLOATING_ISLAND_CASTLE, new TextureRegion(BACKGROUND_IMAGES, 0, 75, 172, 219));
 		}
 	}
 	

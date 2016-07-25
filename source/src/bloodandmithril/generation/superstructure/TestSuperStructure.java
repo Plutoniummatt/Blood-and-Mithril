@@ -24,7 +24,7 @@ import bloodandmithril.prop.plant.grass.GrassWithYellowFlower;
 import bloodandmithril.prop.plant.grass.GrassyWhiteFlowers;
 import bloodandmithril.prop.plant.grass.GreenGrass;
 import bloodandmithril.prop.plant.grass.TallGrass;
-import bloodandmithril.prop.plant.tree.TestTree;
+import bloodandmithril.prop.plant.tree.testtree.TestTree;
 import bloodandmithril.util.Function;
 import bloodandmithril.util.SerializableMappingFunction;
 import bloodandmithril.util.Util;

@@ -1,5 +1,7 @@
 package bloodandmithril.util;
 
+import java.io.Serializable;
+
 import bloodandmithril.core.Copyright;
 
 /**
@@ -8,7 +10,7 @@ import bloodandmithril.core.Copyright;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
-public interface Operator<T> {
+public interface Operator<T> extends Serializable {
 
 	public void operate(T t);
 }

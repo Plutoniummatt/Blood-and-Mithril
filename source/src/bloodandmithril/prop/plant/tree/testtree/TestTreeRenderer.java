@@ -1,4 +1,4 @@
-package bloodandmithril.prop.plant.tree;
+package bloodandmithril.prop.plant.tree.testtree;
 
 import static java.lang.Math.abs;
 
@@ -9,6 +9,7 @@ import com.google.inject.Singleton;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Timers;
 import bloodandmithril.prop.Prop;
+import bloodandmithril.prop.plant.tree.TreeSegmentRenderer;
 import bloodandmithril.prop.renderservice.PropRenderingService;
 
 /**
@@ -40,12 +41,12 @@ public class TestTreeRenderer implements PropRenderingService {
 		float angle = tree.baseAngle;
 		
 		Vector2 renderPosition = tree.position.cpy();				
-		renderPosition.x = tree.position.x - tree.stump.width/2;
+		renderPosition.x = tree.position.x - tree.getStump().width/2;
 		renderPosition.y = tree.position.y;
 		
 		// Top-down render
 		treeSegmentRenderer.render(
-			tree.stump, 
+			tree.getStump(), 
 			renderPosition, 
 			angle, 
 			1f, 
@@ -53,7 +54,8 @@ public class TestTreeRenderer implements PropRenderingService {
 			tree.curvature, 
 			tree.getTrunkOverlap(), 
 			TestTree.class, 
-			tree.width
+			tree.width,
+			1f
 		);
 	}
 }

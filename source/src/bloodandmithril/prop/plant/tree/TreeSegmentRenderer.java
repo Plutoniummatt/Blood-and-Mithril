@@ -8,7 +8,8 @@ import com.google.inject.Singleton;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.graphics.Textures;
-import bloodandmithril.util.datastructure.WrapperForThree;
+import bloodandmithril.util.Operator;
+import bloodandmithril.util.datastructure.WrapperForFour;
 
 /**
  * Renders {@link TreeSegment}s
@@ -30,7 +31,8 @@ public class TreeSegmentRenderer {
 		float curvature, 
 		int overlap, 
 		Class<? extends Tree> treeClass, 
-		int treeWidth
+		int treeWidth,
+		float lengthFactor
 	) {
 		if (segment.trunk != null) {
 			render(
@@ -42,21 +44,23 @@ public class TreeSegmentRenderer {
 				curvature, 
 				overlap, 
 				treeClass,
-				treeWidth
+				treeWidth,
+				lengthFactor
 			);
 		}
 		
-		for (WrapperForThree<Float, Float, TreeSegment> branch : segment.branches) {
+		for (WrapperForFour<Float, Float, TreeSegment, Operator<TreeSegment>> branch : segment.branches) {
 			render(
 				branch.c, 
-				renderPosition.cpy().add(new Vector2(0, branch.a * segment.width - overlap).rotate(angle)), 
+				renderPosition.cpy().add(new Vector2(0, Math.min(branch.a * lengthFactor, branch.a) * segment.height - overlap / 4).rotate(angle)), 
 				angle + branch.b, 
-				thinningFactor * 0.35f, 
+				thinningFactor * 0.78f, 
 				0f, 
 				0f, 
 				overlap, 
 				treeClass,
-				treeWidth
+				treeWidth,
+				lengthFactor * 0.9f
 			);
 		}
 		
@@ -68,7 +72,7 @@ public class TreeSegmentRenderer {
 			segment.width/2,
 			0f,
 			textureRegion.getRegionWidth(),
-			textureRegion.getRegionHeight(),
+			textureRegion.getRegionHeight() * lengthFactor,
 			thinningFactor,
 			1f,
 			angle

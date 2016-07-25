@@ -1,4 +1,4 @@
-package bloodandmithril.prop.plant.tree;
+package bloodandmithril.prop.plant.tree.testtree;
 
 import static bloodandmithril.control.InputUtilities.getMouseScreenX;
 import static bloodandmithril.control.InputUtilities.getMouseScreenY;
@@ -15,6 +15,8 @@ import bloodandmithril.core.UpdatedBy;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.RenderPropWith;
 import bloodandmithril.prop.Prop;
+import bloodandmithril.prop.plant.tree.Tree;
+import bloodandmithril.prop.plant.tree.TreeSegment;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
@@ -22,7 +24,7 @@ import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.util.Callable;
 import bloodandmithril.util.SerializableMappingFunction;
 import bloodandmithril.util.Util;
-import bloodandmithril.util.datastructure.WrapperForThree;
+import bloodandmithril.util.datastructure.WrapperForFour;
 import bloodandmithril.world.topography.tile.Tile;
 
 /**
@@ -36,8 +38,8 @@ import bloodandmithril.world.topography.tile.Tile;
 public class TestTree extends Tree {
 	private static final long serialVersionUID = -439711190324228635L;
 	
-	private static List<Callable<TreeSegment>> segments = newArrayList();
-	private static List<Callable<TreeSegment>> stumps = newArrayList();
+	static List<Callable<TreeSegment>> segments = newArrayList();
+	static List<Callable<TreeSegment>> stumps = newArrayList();
 	
 	static {
 		segments.add(() -> new TreeSegment(0, 44, 51));
@@ -62,23 +64,21 @@ public class TestTree extends Tree {
 			}
 		});
 		this.maxThinningFactor = maxThinningFactor;
-		
-		this.stump = stumps.get(getRandom().nextInt(stumps.size())).call();
+		this.setStump(stumps.get(getRandom().nextInt(stumps.size())).call());
 		
 		int treeHeight = Util.getRandom().nextInt(10) + 5;
-		this.stump.generateTree(
+		this.getStump().generateTree(
 			() -> segments.get(getRandom().nextInt(segments.size())).call(), 
 			trunkSegment -> {
 				
 				// Only add branches to the top half of the tree
 				if (trunkSegment.segmentHeight > treeHeight / 2) {
-					trunkSegment.getBranches().add(
-						WrapperForThree.wrap(
-							0.1f, 
-							randomOneOf(getRandom().nextFloat() * 20 + 40, -getRandom().nextFloat() * 20 - 40), 
-							segments.get(getRandom().nextInt(segments.size())).call()
-						)
-					);
+					trunkSegment.addBranch(WrapperForFour.wrap(
+						0.1f,
+						randomOneOf(getRandom().nextFloat() * 20 + 40, -getRandom().nextFloat() * 20 - 40),
+						segments.get(getRandom().nextInt(segments.size())).call(),
+						new TestTreeBranchingFunction(0)
+					));
 				}
 			}, 
 			treeHeight

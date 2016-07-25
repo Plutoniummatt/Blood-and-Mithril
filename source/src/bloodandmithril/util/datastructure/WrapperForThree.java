@@ -1,10 +1,13 @@
 package bloodandmithril.util.datastructure;
 
+import java.io.Serializable;
+
 import bloodandmithril.core.Copyright;
 
 @Copyright("Matthew Peck 2014")
-public class WrapperForThree<A, B, C> {
-
+public class WrapperForThree<A, B, C> implements Serializable {
+	private static final long serialVersionUID = -7895334250552575621L;
+	
 	public A a;
 	public B b;
 	public C c;

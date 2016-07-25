@@ -1,5 +1,6 @@
 package bloodandmithril.prop.plant.tree;
 
+import java.io.Serializable;
 import java.util.List;
 
 import com.google.common.collect.Lists;
@@ -7,19 +8,20 @@ import com.google.common.collect.Lists;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.util.Callable;
 import bloodandmithril.util.Operator;
-import bloodandmithril.util.datastructure.WrapperForThree;
+import bloodandmithril.util.datastructure.WrapperForFour;
 
 /**
  * @author Matt
  */
 @Copyright("Matthew Peck 2016")
-public class TreeSegment {
-	
+public class TreeSegment implements Serializable {
+	private static final long serialVersionUID = -9182686550790739541L;
+
 	/** The trunk */
 	TreeSegment trunk;
 	
-	/** Represents the position of the branch, the angle, and the branch itself */
-	final List<WrapperForThree<Float, Float, TreeSegment>> branches = Lists.newLinkedList();
+	/** Represents the position of the branch, the angle, and the branch itself, plus an addition branching function */
+	final List<WrapperForFour<Float, Float, TreeSegment, Operator<TreeSegment>>> branches = Lists.newLinkedList();
 
 	public final int textureId;
 	public final int width;
@@ -36,8 +38,9 @@ public class TreeSegment {
 	}
 
 	
-	public List<WrapperForThree<Float, Float, TreeSegment>> getBranches() {
-		return branches;
+	public void addBranch(WrapperForFour<Float, Float, TreeSegment, Operator<TreeSegment>> branch) {
+		branches.add(branch);
+		branch.d.operate(branch.c);
 	}
 
 

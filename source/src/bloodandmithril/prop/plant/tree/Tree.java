@@ -13,6 +13,7 @@ import bloodandmithril.graphics.RenderPropWith;
 import bloodandmithril.graphics.Textures;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.prop.Prop;
+import bloodandmithril.prop.plant.tree.testtree.TestTree;
 import bloodandmithril.util.SerializableMappingFunction;
 import bloodandmithril.world.topography.tile.Tile;
 
@@ -26,7 +27,7 @@ public abstract class Tree extends Prop {
 	private static final long serialVersionUID = 4453602903027321858L;
 
 	/** Trunk is made from {@link TreeSegment}s */
-	TreeSegment stump;
+	private TreeSegment stump;
 	
 	/**
 	 * Constructor
@@ -43,7 +44,7 @@ public abstract class Tree extends Prop {
 	 * @return the height of the tree trunk
 	 */
 	public int getHeight() {
-		return stump.getTrunkHeight();
+		return getStump().getTrunkHeight();
 	}
 	
 	
@@ -55,5 +56,15 @@ public abstract class Tree extends Prop {
 		testTreeTextures.put(3, new TextureRegion(GAME_WORLD_TEXTURE, 1005, 132, 44, 51));
 		testTreeTextures.put(4, new TextureRegion(GAME_WORLD_TEXTURE, 1050, 132, 44, 51));
 		Textures.trunkTextures.put(TestTree.class, testTreeTextures);
+	}
+
+
+	public TreeSegment getStump() {
+		return stump;
+	}
+
+
+	public void setStump(TreeSegment stump) {
+		this.stump = stump;
 	}
 }

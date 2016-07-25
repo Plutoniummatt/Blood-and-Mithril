@@ -1,5 +1,7 @@
 package bloodandmithril.util;
 
+import java.io.Serializable;
+
 import bloodandmithril.core.Copyright;
 
 /**
@@ -10,7 +12,7 @@ import bloodandmithril.core.Copyright;
  * @param <T>
  */
 @Copyright("Matthew Peck 2016")
-public interface Callable<T> {
+public interface Callable<T> extends Serializable {
 
 	public T call();
 }
