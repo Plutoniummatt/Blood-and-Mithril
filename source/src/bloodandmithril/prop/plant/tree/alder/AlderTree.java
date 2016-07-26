@@ -16,8 +16,8 @@ import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.RenderPropWith;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.plant.Leaves;
-import bloodandmithril.prop.plant.tree.TreeRenderer;
 import bloodandmithril.prop.plant.tree.Tree;
+import bloodandmithril.prop.plant.tree.TreeRenderer;
 import bloodandmithril.prop.plant.tree.TreeSegment;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
@@ -75,6 +75,22 @@ public class AlderTree extends Tree {
 					trunkSegment.addBranch(WrapperForFour.wrap(
 						0.1f,
 						randomOneOf(getRandom().nextFloat() * 20 + 40, -getRandom().nextFloat() * 20 - 40),
+						segments.get(getRandom().nextInt(segments.size())).call(),
+						new AlderTreeBranchingFunction(0)
+					));
+				}
+				
+				// Split the tip of the trunk into two branches
+				if (trunkSegment.segmentHeight == treeHeight + 1) {
+					trunkSegment.addBranch(WrapperForFour.wrap(
+						1f,
+						getRandom().nextFloat() * 20 + 15,
+						segments.get(getRandom().nextInt(segments.size())).call(),
+						new AlderTreeBranchingFunction(0)
+					));
+					trunkSegment.addBranch(WrapperForFour.wrap(
+						1f,
+						-getRandom().nextFloat() * 20 - 15,
 						segments.get(getRandom().nextInt(segments.size())).call(),
 						new AlderTreeBranchingFunction(0)
 					));
