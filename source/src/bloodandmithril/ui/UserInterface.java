@@ -386,6 +386,7 @@ public class UserInterface {
 		if (DEBUG && isServer()) {
 			renderComponentInterfaces();
 			renderPositionalIndexes();
+			renderChunkBoundaries();
 			if (renderComponentBoundaries) {
 				renderComponentBoundaries();
 			}
@@ -431,6 +432,40 @@ public class UserInterface {
 		if (RENDER_TOPOGRAPHY) {
 			topographyDebugRenderer.render(graphics);
 		}
+	}
+
+
+	private void renderChunkBoundaries() {
+		getShapeRenderer().begin(ShapeType.Line);
+		gl.glEnable(GL_BLEND);
+		Gdx.gl20.glLineWidth(2f);
+		gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		getShapeRenderer().setColor(new Color(0.7f, 0.5f, 1f, 0.25f));
+
+		float baseLineHorizontal = (Graphics.getGdxHeight()/2 - graphics.getCam().position.y) % 320;
+		float lineLengthHorizontal = Graphics.getGdxWidth();
+		
+		float baseLineVertical = (Graphics.getGdxWidth()/2 - graphics.getCam().position.x) % 320;
+		float lineLengthVeritical = Graphics.getGdxHeight();
+		
+		for (int i = 0; i < 8; i++) {
+			getShapeRenderer().line(
+				0, 
+				baseLineHorizontal + i * 320, 
+				lineLengthHorizontal, 
+				baseLineHorizontal + i * 320
+			);
+		}
+		for (int i = 0; i < 16; i++) {
+			getShapeRenderer().line(
+				baseLineVertical + i * 320, 
+				0, 
+				baseLineVertical + i * 320, 
+				lineLengthVeritical
+			);
+		}
+		
+		getShapeRenderer().end();
 	}
 
 

@@ -1,21 +1,14 @@
 package bloodandmithril.world.topography;
 
-import static bloodandmithril.control.InputUtilities.worldToScreenX;
-import static bloodandmithril.control.InputUtilities.worldToScreenY;
-
 import org.lwjgl.opengl.GL11;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import bloodandmithril.core.Copyright;
-import bloodandmithril.ui.UserInterface;
 import bloodandmithril.util.Operator;
 
 /**
@@ -26,8 +19,6 @@ import bloodandmithril.util.Operator;
 @Singleton
 @Copyright("Matthew Peck 2016")
 public class ChunkRenderer {
-
-	@Inject private UserInterface userInterface;
 
 	/**
 	 * Renders this chunk
@@ -51,14 +42,6 @@ public class ChunkRenderer {
 			shader.end();
 		}
 
-		if (userInterface.DEBUG) {
-			userInterface.getShapeRenderer().begin(ShapeType.Line);
-			userInterface.getShapeRenderer().setColor(new Color(1f, 0.5f, 1f, 0.15f));
-			final float x = chunk.getFData().xChunkCoord * Topography.CHUNK_SIZE * Topography.TILE_SIZE;
-			final float y = chunk.getFData().yChunkCoord * Topography.CHUNK_SIZE * Topography.TILE_SIZE;
-			userInterface.getShapeRenderer().rect(worldToScreenX(x), worldToScreenY(y), Topography.CHUNK_SIZE * Topography.TILE_SIZE, Topography.CHUNK_SIZE * Topography.TILE_SIZE);
-			userInterface.getShapeRenderer().end();
-		}
 		Gdx.gl.glDisable(GL20.GL_BLEND);
 	}
 }

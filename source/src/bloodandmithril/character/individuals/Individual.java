@@ -380,6 +380,7 @@ public abstract class Individual implements Equipper, Visible, MouseOverable, Sp
 
 		if (userInterface.DEBUG) {
 			userInterface.getShapeRenderer().begin(ShapeType.Line);
+			Gdx.gl.glLineWidth(2f);
 			userInterface.getShapeRenderer().setColor(Color.ORANGE);
 			userInterface.getShapeRenderer().rect(
 				worldToScreenX(interactionBox.position.x - interactionBox.width / 2),
