@@ -24,7 +24,7 @@ import bloodandmithril.prop.plant.grass.GrassWithYellowFlower;
 import bloodandmithril.prop.plant.grass.GrassyWhiteFlowers;
 import bloodandmithril.prop.plant.grass.GreenGrass;
 import bloodandmithril.prop.plant.grass.TallGrass;
-import bloodandmithril.prop.plant.tree.testtree.TestTree;
+import bloodandmithril.prop.plant.tree.alder.AlderTree;
 import bloodandmithril.util.Function;
 import bloodandmithril.util.SerializableMappingFunction;
 import bloodandmithril.util.Util;
@@ -314,7 +314,7 @@ public class TestSuperStructure extends SuperStructure {
 			}
 			if (Util.roll(0.08f)) {
 				Structures.get(getStructureKey()).addProp(
-					new TestTree(
+					new AlderTree(
 						Topography.convertToWorldCoord(x, false),
 						Topography.convertToWorldCoord(getSurfaceHeight().apply(x), false) + 16,
 						0.95f

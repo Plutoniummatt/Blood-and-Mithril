@@ -26,8 +26,8 @@ public class Textures {
 	public static Texture INDIVIDUAL_TEXTURE;
 	public static Texture BACKGROUND_IMAGES;
 	
-	/** All trunk textures */
-	public static Map<Class<? extends Tree>, Map<Integer, TextureRegion>> trunkTextures = newHashMap();
+	/** All tree textures */
+	public static Map<Class<? extends Tree>, Map<Integer, TextureRegion>> treeTextures = newHashMap();
 	
 	/** All background image textures */
 	public static Map<Integer, TextureRegion> backgroundImages = Maps.newHashMap();

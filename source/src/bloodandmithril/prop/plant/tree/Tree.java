@@ -13,7 +13,7 @@ import bloodandmithril.graphics.RenderPropWith;
 import bloodandmithril.graphics.Textures;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.prop.Prop;
-import bloodandmithril.prop.plant.tree.testtree.TestTree;
+import bloodandmithril.prop.plant.tree.alder.AlderTree;
 import bloodandmithril.util.SerializableMappingFunction;
 import bloodandmithril.world.topography.tile.Tile;
 
@@ -55,7 +55,8 @@ public abstract class Tree extends Prop {
 		testTreeTextures.put(2, new TextureRegion(GAME_WORLD_TEXTURE, 960, 132, 44, 51));
 		testTreeTextures.put(3, new TextureRegion(GAME_WORLD_TEXTURE, 1005, 132, 44, 51));
 		testTreeTextures.put(4, new TextureRegion(GAME_WORLD_TEXTURE, 1050, 132, 44, 51));
-		Textures.trunkTextures.put(TestTree.class, testTreeTextures);
+		testTreeTextures.put(5, new TextureRegion(GAME_WORLD_TEXTURE, 1095, 132, 44, 51));
+		Textures.treeTextures.put(AlderTree.class, testTreeTextures);
 	}
 
 

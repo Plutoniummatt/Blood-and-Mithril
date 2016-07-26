@@ -64,7 +64,7 @@ public class TreeSegmentRenderer {
 			);
 		}
 		
-		TextureRegion textureRegion = Textures.trunkTextures.get(treeClass).get(segment.textureId);
+		TextureRegion textureRegion = Textures.treeTextures.get(treeClass).get(segment.textureId);
 		graphics.getSpriteBatch().draw(
 			textureRegion,
 			renderPosition.x, 
@@ -77,5 +77,21 @@ public class TreeSegmentRenderer {
 			1f,
 			angle
 		);
+		
+		if (segment.getLeaves() != null) {
+			TextureRegion leavesTexture = Textures.treeTextures.get(treeClass).get(segment.getLeaves().textureId);
+			graphics.getSpriteBatch().draw(
+				leavesTexture,
+				renderPosition.x, 
+				renderPosition.y,
+				segment.width/2,
+				0f,
+				leavesTexture.getRegionWidth(),
+				leavesTexture.getRegionHeight(),
+				1f,
+				1f,
+				angle
+			);
+		}
 	}
 }

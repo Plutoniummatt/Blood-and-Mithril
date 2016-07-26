@@ -1,4 +1,4 @@
-package bloodandmithril.prop.plant.tree.testtree;
+package bloodandmithril.prop.plant.tree.alder;
 
 import static java.lang.Math.abs;
 
@@ -13,22 +13,22 @@ import bloodandmithril.prop.plant.tree.TreeSegmentRenderer;
 import bloodandmithril.prop.renderservice.PropRenderingService;
 
 /**
- * Renders {@link TestTree}s
+ * Renders {@link AlderTree}s
  * 
  * @author Matt
  */
 @Singleton
 @Copyright("Matthew Peck 2016")
-public class TestTreeRenderer implements PropRenderingService {
+public class AlderTreeRenderer implements PropRenderingService {
 	
 	@Inject private Timers timers;
 	@Inject private TreeSegmentRenderer treeSegmentRenderer;
 
 	@Override
 	public void render(Prop p) {
-		TestTree tree = (TestTree) p;
+		AlderTree tree = (AlderTree) p;
 		
-		float windStrength = 0f;
+		float windStrength = 0.0f;
 		
 		double windStrengthTerm = 1f + 3 * abs(windStrength);
 		float swayMagnitude = 0.1f + windStrength * 1.2f;
@@ -53,7 +53,7 @@ public class TestTreeRenderer implements PropRenderingService {
 			tree.maxThinningFactor/tree.getHeight(), 
 			tree.curvature, 
 			tree.getTrunkOverlap(), 
-			TestTree.class, 
+			AlderTree.class, 
 			tree.width,
 			1f
 		);

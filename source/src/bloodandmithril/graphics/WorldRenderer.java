@@ -132,11 +132,12 @@ public class WorldRenderer {
 			}
 		});
 		
-		for (final Item item : world.items().getItems()) {
+		world.getPositionalIndexMap().getOnScreenEntities(Item.class, graphics).stream().map(id-> world.items().getItem(id)).forEach(item -> {
 			Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
 			item.render(graphics);
 			batch.flush();
-		}
+		});
+		
 		batch.end();
 		Textures.INDIVIDUAL_TEXTURE.setFilter(Nearest, Nearest);
 		individualPlatformFilteringRenderer.renderIndividuals(world.getWorldId());

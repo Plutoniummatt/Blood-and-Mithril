@@ -1,4 +1,4 @@
-package bloodandmithril.prop.plant.tree.testtree;
+package bloodandmithril.prop.plant.tree.alder;
 
 import static bloodandmithril.control.InputUtilities.getMouseScreenX;
 import static bloodandmithril.control.InputUtilities.getMouseScreenY;
@@ -15,6 +15,7 @@ import bloodandmithril.core.UpdatedBy;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.RenderPropWith;
 import bloodandmithril.prop.Prop;
+import bloodandmithril.prop.plant.Leaves;
 import bloodandmithril.prop.plant.tree.Tree;
 import bloodandmithril.prop.plant.tree.TreeSegment;
 import bloodandmithril.ui.UserInterface;
@@ -28,16 +29,17 @@ import bloodandmithril.util.datastructure.WrapperForFour;
 import bloodandmithril.world.topography.tile.Tile;
 
 /**
- * Test {@link Tree}
+ * Alder {@link Tree}
  * 
  * @author Matt
  */
 @Copyright("Matthew Peck 2016")
 @UpdatedBy()
-@RenderPropWith(TestTreeRenderer.class)
-public class TestTree extends Tree {
+@RenderPropWith(AlderTreeRenderer.class)
+public class AlderTree extends Tree {
 	private static final long serialVersionUID = -439711190324228635L;
 	
+	static List<Callable<Leaves>> leaves = newArrayList();
 	static List<Callable<TreeSegment>> segments = newArrayList();
 	static List<Callable<TreeSegment>> stumps = newArrayList();
 	
@@ -48,6 +50,8 @@ public class TestTree extends Tree {
 		
 		stumps.add(() -> new TreeSegment(3, 44, 51));
 		stumps.add(() -> new TreeSegment(4, 44, 51));
+		
+		leaves.add(() -> new Leaves(5));
 	}
 	
 	/** The curvature of this {@link Tree} */
@@ -55,7 +59,7 @@ public class TestTree extends Tree {
 	final float baseAngle = 0f;
 	final float maxThinningFactor;
 	
-	public TestTree(float x, float y, float maxThinningFactor) {
+	public AlderTree(float x, float y, float maxThinningFactor) {
 		super(x, y, 0, 0, new SerializableMappingFunction<Tile, Boolean>() {
 			private static final long serialVersionUID = 2159543403323901068L;
 			@Override
@@ -77,7 +81,7 @@ public class TestTree extends Tree {
 						0.1f,
 						randomOneOf(getRandom().nextFloat() * 20 + 40, -getRandom().nextFloat() * 20 - 40),
 						segments.get(getRandom().nextInt(segments.size())).call(),
-						new TestTreeBranchingFunction(0)
+						new AlderTreeBranchingFunction(0)
 					));
 				}
 			}, 
@@ -104,7 +108,7 @@ public class TestTree extends Tree {
 				() -> {
 					Wiring.injector().getInstance(UserInterface.class).addLayeredComponent(
 						new MessageWindow(
-							"A skeleton of its former self",
+							"A nice Alder tree, commonly found near streams, rivers, and wetlands.",
 							Color.ORANGE,
 							500,
 							250,
@@ -152,7 +156,7 @@ public class TestTree extends Tree {
 
 	@Override
 	public String getContextMenuItemLabel() {
-		return "Dead tree";
+		return "Alder tree";
 	}
 
 

@@ -6,6 +6,7 @@ import java.util.List;
 import com.google.common.collect.Lists;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.prop.plant.Leaves;
 import bloodandmithril.util.Callable;
 import bloodandmithril.util.Operator;
 import bloodandmithril.util.datastructure.WrapperForFour;
@@ -19,6 +20,9 @@ public class TreeSegment implements Serializable {
 
 	/** The trunk */
 	TreeSegment trunk;
+	
+	/** The trunk */
+	private Leaves leaves;
 	
 	/** Represents the position of the branch, the angle, and the branch itself, plus an addition branching function */
 	final List<WrapperForFour<Float, Float, TreeSegment, Operator<TreeSegment>>> branches = Lists.newLinkedList();
@@ -79,5 +83,15 @@ public class TreeSegment implements Serializable {
 		}
 		
 		return current;
+	}
+
+
+	public Leaves getLeaves() {
+		return leaves;
+	}
+
+
+	public void setLeaves(Leaves leaves) {
+		this.leaves = leaves;
 	}
 }
