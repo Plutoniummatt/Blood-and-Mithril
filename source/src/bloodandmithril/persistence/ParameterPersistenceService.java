@@ -37,6 +37,11 @@ public class ParameterPersistenceService {
 		final Parameters params = parameters == null ? loadParameters() : parameters;
 		return params;
 	}
+	
+	/** Set params */
+	public synchronized void setParameters(Parameters params) {
+		this.parameters = params;
+	}
 
 	/** Loads and returns persisted parameters from disk */
 	public synchronized Parameters loadParameters() {

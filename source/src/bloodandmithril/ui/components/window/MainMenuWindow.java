@@ -11,8 +11,10 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector2;
 import com.google.inject.Inject;
 
+import bloodandmithril.control.CameraTracker;
 import bloodandmithril.core.ClientModule;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;
@@ -39,6 +41,8 @@ public class MainMenuWindow extends Window {
 
 	private Button singlePlayer, multiPlayer, options, exit;
 
+	@Inject	private Graphics graphics;
+	@Inject	private CameraTracker cameraTracker;
 	@Inject	private Threading threading;
 	@Inject	private GameSaver gameSaver;
 	@Inject private UserInterface userInterface;
@@ -112,6 +116,11 @@ public class MainMenuWindow extends Window {
 										userInterface.addGlobalMessage("Invalid name", "Please enter a valid name.");
 										return;
 									}
+									
+									cameraTracker.getWorldcamcoordinates().put(gameClientStateTracker.getActiveWorldId(), new Vector2(
+										graphics.getCam().position.x,
+										graphics.getCam().position.y
+									));
 
 									gameSaver.save(input, false);
 								},

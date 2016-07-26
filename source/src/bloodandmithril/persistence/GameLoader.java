@@ -22,10 +22,10 @@ import bloodandmithril.character.faction.FactionControlService;
 import bloodandmithril.control.CameraTracker;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;
-import bloodandmithril.core.Wiring;
 import bloodandmithril.generation.Structure;
 import bloodandmithril.generation.Structures;
 import bloodandmithril.generation.patterns.GlobalLayers;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.persistence.GameSaver.PersistenceMetaData;
 import bloodandmithril.persistence.character.IndividualLoader;
@@ -50,6 +50,8 @@ public class GameLoader {
 	@Inject private PersistenceParameters persistenceParameters;
 	@Inject private IndividualLoader individualLoader;
 	@Inject private GameClientStateTracker gameClientStateTracker;
+	@Inject private Graphics graphics;
+	@Inject private CameraTracker cameraTracker;
 
 	/**
 	 * Loads a saved game
@@ -61,15 +63,18 @@ public class GameLoader {
 			persistenceParameters.setMostRecentlyLoaded(null);
 		} else {
 			persistenceParameters.setMostRecentlyLoaded(metadata);
-			if (ClientServerInterface.isClient()) {
-				loadCameraPosition();
-			}
-			parameterPersistenceService.loadParameters();
+			parameterPersistenceService.setParameters(parameterPersistenceService.loadParameters());
 			gameClientStateTracker.setActiveWorldId(parameterPersistenceService.getParameters().getActiveWorldId());
 			loadGenerationData();
 			loadWorlds();
 			loadFactions();
 			individualLoader.loadAll();
+			
+			if (ClientServerInterface.isClient()) {
+				loadCameraPosition();
+			}
+			graphics.getCam().position.x = cameraTracker.getWorldcamcoordinates().get(parameterPersistenceService.getParameters().getActiveWorldId()).x;
+			graphics.getCam().position.y = cameraTracker.getWorldcamcoordinates().get(parameterPersistenceService.getParameters().getActiveWorldId()).y;
 		}
 	}
 	
@@ -172,7 +177,6 @@ public class GameLoader {
 	private void loadCameraPosition() {
 		final Map<Integer, Vector2> savedCameraPositions = parameterPersistenceService.getParameters().getSavedCameraPosition();
 		if (savedCameraPositions != null) {
-			final CameraTracker cameraTracker = Wiring.injector().getInstance(CameraTracker.class);
 			cameraTracker.getWorldcamcoordinates().clear();
 			cameraTracker.getWorldcamcoordinates().putAll(savedCameraPositions);
 		}
