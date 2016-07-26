@@ -12,6 +12,7 @@ import bloodandmithril.graphics.Graphics;
 import bloodandmithril.graphics.Textures;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.renderservice.PropRenderingService;
+import bloodandmithril.util.Shaders;
 import bloodandmithril.world.weather.WeatherService;
 
 /**
@@ -52,6 +53,11 @@ public class TreeRenderer implements PropRenderingService {
 			if (segment.getLeaves() != null) {
 				TextureRegion leavesTexture = Textures.treeTextures.get(treeClass).get(segment.getLeaves().textureId);
 				float wind = weatherService.getWind(tree.getWorldId(), position);
+				
+				graphics.getSpriteBatch().setShader(Shaders.filter);
+				Shaders.filter.setUniformf("color", tree.getLeavesColor());
+				Shaders.filter.setUniformMatrix("u_projTrans", graphics.getCam().combined);
+				
 				graphics.getSpriteBatch().draw(
 					leavesTexture,
 					position.x, 
@@ -64,6 +70,9 @@ public class TreeRenderer implements PropRenderingService {
 					1f,
 					angle + 2f * (float) sin(timers.renderUtilityTime * 6f + segment.hashCode() / 100000f) * wind
 				);
+				graphics.getSpriteBatch().flush();
+				
+				Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
 			}
 		});
 	}

@@ -7,8 +7,8 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.ui.UserInterface;
+import bloodandmithril.util.datastructure.WrapperForTwo;
 import bloodandmithril.world.World;
-import bloodandmithril.world.topography.Chunk;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.tile.Tile;
 
@@ -28,7 +28,7 @@ public class ChunkGenerator {
 	/**
 	 * Generates a chunk, based on passed in chunk coordinates
 	 */
-	public void generate(final int chunkX, final int chunkY, final World world, final boolean populateChunkMap) {
+	public WrapperForTwo<Tile[][], Tile[][]> generate(final int chunkX, final int chunkY, final World world) {
 
 		// If a structure does not exist where the surface should be, generate the surface structure.
 		generateSurface(chunkX, world);
@@ -36,26 +36,14 @@ public class ChunkGenerator {
 		// If a structure still does not exist at the chunk coordinates being generated, it must be outside of the surface structure boundaries.
 		generateAboveAndBelowSurface(chunkX, chunkY, world);
 
-		if (!populateChunkMap) {
-			return;
-		}
-
 		// Makes arrays of tiles to work on. both for foreground and background
 		final Tile[][] fTiles = new Tile[Topography.CHUNK_SIZE][Topography.CHUNK_SIZE];
 		final Tile[][] bTiles = new Tile[Topography.CHUNK_SIZE][Topography.CHUNK_SIZE];
 
 		// Populate the tile arrays.
 		populateTileArrays(chunkX, chunkY, fTiles, bTiles, world.getTopography().getStructures());
-
-		// Create the chunk and put it in the ChunkMap.
-		final Chunk newChunk = new Chunk(fTiles, bTiles, chunkX, chunkY, world.getWorldId());
-		world.getTopography().getChunkMap().addChunk(chunkX, chunkY, newChunk);
-		placeProps(world, chunkX, chunkY, world.getTopography().getStructures());
-
-		// If the structure has finished generating, we can delete it from the StructureMap, otherwise, decrement the number of chunks left to be generated on the structure
-		if (world.getTopography().getStructures().structureExists(chunkX, chunkY, true)) {
-			world.getTopography().getStructures().deleteChunkFromStructureKeyMapAndCheckIfStructureCanBeDeleted(chunkX, chunkY, true);
-		}
+		
+		return WrapperForTwo.wrap(fTiles, bTiles);
 	}
 
 
@@ -77,17 +65,6 @@ public class ChunkGenerator {
 					handleNPE(fTiles, tileX, tileY, e);
 				}
 			}
-		}
-	}
-
-
-	/** Adds props */
-	private void placeProps(final World world, final int x, final int y, final Structures structures) {
-		if (world.getTopography().getStructures().structureExists(x, y, true)) {
-			Structures.get(world.getTopography().getStructures().getSuperStructureKeys().get(x).get(y)).attemptPropPlacement(x, y);
-		}
-		if (world.getTopography().getStructures().structureExists(x, y, false)) {
-			Structures.get(world.getTopography().getStructures().getSubStructureKeys().get(x).get(y)).attemptPropPlacement(x, y);
 		}
 	}
 

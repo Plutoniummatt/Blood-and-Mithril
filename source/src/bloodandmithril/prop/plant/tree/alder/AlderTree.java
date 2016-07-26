@@ -180,4 +180,10 @@ public class AlderTree extends Tree {
 	public int getTrunkOverlap() {
 		return 10;
 	}
+
+
+	@Override
+	public Color getLeavesColor() {
+		return Color.GREEN;
+	}
 }

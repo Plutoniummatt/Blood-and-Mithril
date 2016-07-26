@@ -12,15 +12,18 @@ import com.google.inject.Singleton;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.ChunkGenerator;
+import bloodandmithril.generation.ChunkPopulator;
 import bloodandmithril.persistence.PersistenceParameters;
 import bloodandmithril.persistence.ZipHelper;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.Task;
 import bloodandmithril.util.datastructure.ConcurrentDualKeyHashMap;
+import bloodandmithril.util.datastructure.WrapperForTwo;
 import bloodandmithril.world.World;
 import bloodandmithril.world.topography.Chunk;
 import bloodandmithril.world.topography.Chunk.ChunkData;
+import bloodandmithril.world.topography.tile.Tile;
 
 /**
  * Responsible for loading chunks from disk, or generating it if can't be loaded
@@ -39,17 +42,16 @@ public class ChunkProvider {
 
 	/** The current chunk coordinates that is in the queue to be loaded/generated */
 	private final ConcurrentDualKeyHashMap<Integer, Integer, Boolean> chunksInQueue = new ConcurrentDualKeyHashMap<>();
-
-	private final PersistenceParameters persistenceParameters;
-	private final ChunkGenerator chunkGenerator;
+            
+	@Inject private PersistenceParameters persistenceParameters;
+	@Inject private ChunkGenerator chunkGenerator;
+	@Inject private ChunkPopulator chunkPopulator;
 	
 	/**
 	 * Constructor
 	 */
 	@Inject
-	public ChunkProvider(PersistenceParameters persistenceParameters, ChunkGenerator chunkGenerator) {
-		this.persistenceParameters = persistenceParameters;
-		this.chunkGenerator = chunkGenerator;
+	public ChunkProvider() {
 		loaderThread = new Thread(() -> {
 			while (true) {
 				try {
@@ -134,9 +136,14 @@ public class ChunkProvider {
 				}
 			} catch (final Exception e) {
 				Logger.loaderDebug("No chunk found on disk, generating new chunk: " + chunkX + ", " + chunkY, LogLevel.DEBUG);
-				// If load was unsuccessful, the chunk in question remains null and we
-				// generate it.
-				chunkGenerator.generate(chunkX, chunkY, world, populateChunkMap);
+				
+				// If load was unsuccessful, the chunk in question remains null and we generate it.
+				WrapperForTwo<Tile[][], Tile[][]> chunk = chunkGenerator.generate(chunkX, chunkY, world);
+				
+				if (populateChunkMap) {
+					// Populate the world with the generated chunk
+					chunkPopulator.populateChunkMap(chunk.a, chunk.b, world, chunkX, chunkY);
+				}
 			}
 
 			// Remove chunk from queue.

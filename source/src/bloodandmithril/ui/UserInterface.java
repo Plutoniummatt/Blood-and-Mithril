@@ -264,7 +264,7 @@ public class UserInterface {
 	/**
 	 * @return all components
 	 */
-	public Deque<Component> getLayeredComponents() {
+	public synchronized Deque<Component> getLayeredComponents() {
 		return new ArrayDeque<Component>(layeredComponents);
 	}
 
@@ -285,7 +285,7 @@ public class UserInterface {
 	}
 
 
-	public void refreshRefreshableWindows() {
+	public synchronized void refreshRefreshableWindows() {
 		layeredComponents.stream().filter((component) -> {
 			return component instanceof Refreshable;
 		}).forEach((component) -> {
@@ -294,7 +294,7 @@ public class UserInterface {
 	}
 
 
-	public void refreshRefreshableWindows(final Class<? extends Window> classToRefresh) {
+	public synchronized void refreshRefreshableWindows(final Class<? extends Window> classToRefresh) {
 		layeredComponents.stream().filter((component) -> {
 			return component instanceof Refreshable && component.getClass().equals(classToRefresh);
 		}).forEach((component) -> {
@@ -1373,7 +1373,7 @@ public class UserInterface {
 	/**
 	 * Removes a layered component
 	 */
-	public void removeLayeredComponent(final Component toRemove) {
+	public synchronized void removeLayeredComponent(final Component toRemove) {
 		layeredComponents.remove(toRemove);
 	}
 
@@ -1381,7 +1381,7 @@ public class UserInterface {
 	/**
 	 * Removes a layered component
 	 */
-	public void removeLayeredComponent(final String title) {
+	public synchronized void removeLayeredComponent(final String title) {
 		for (final Component component : layeredComponents) {
 			if (component instanceof Window && ((Window) component).title.equals(title)) {
 				component.setClosing(true);
@@ -1499,7 +1499,7 @@ public class UserInterface {
 	}
 
 
-	public void closeAllWindows() {
+	public synchronized void closeAllWindows() {
 		for (final Component component : layeredComponents) {
 			component.setClosing(true);
 		}
@@ -1526,12 +1526,12 @@ public class UserInterface {
 	}
 
 
-	public void clearLayeredComponents() {
+	public synchronized void clearLayeredComponents() {
 		layeredComponents.clear();
 	}
 
 
-	public void addLayeredComponents(final Collection<Component> toAdd) {
+	public synchronized void addLayeredComponents(final Collection<Component> toAdd) {
 		layeredComponents.addAll(toAdd);
 	}
 

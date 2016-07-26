@@ -5,6 +5,7 @@ import static com.google.common.collect.Maps.newHashMap;
 
 import java.util.HashMap;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import bloodandmithril.core.Copyright;
@@ -49,7 +50,15 @@ public abstract class Tree extends Prop {
 	}
 	
 	
+	/**
+	 * @return the distance in pixels of trunk overlap
+	 */
 	public abstract int getTrunkOverlap();
+	
+	/**
+	 * @return color of leaves
+	 */
+	public abstract Color getLeavesColor();
 
 
 	/**
@@ -75,8 +84,8 @@ public abstract class Tree extends Prop {
 	public TreeSegment getStump() {
 		return stump;
 	}
-
-
+	
+	
 	public void setStump(TreeSegment stump) {
 		this.stump = stump;
 	}
