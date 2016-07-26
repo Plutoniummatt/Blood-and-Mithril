@@ -30,7 +30,6 @@ import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.control.Controls;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;
-import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.item.Consumable;
 import bloodandmithril.item.items.Item;
@@ -83,6 +82,7 @@ public class InventoryWindow extends Window implements Refreshable {
 
 	@Inject private GameClientStateTracker gameClientStateTracker;
 	@Inject private UserInterface userInterface;
+	@Inject private BloodAndMithrilClientInputProcessor bloodAndMithrilClientInputProcessor;
 	@Inject private Controls controls;
 
 	/** Inventory listing maps */
@@ -610,8 +610,9 @@ public class InventoryWindow extends Window implements Refreshable {
 				"Discard",
 				() -> {
 					if (isKeyPressed(controls.bulkDiscard.keyCode)) {
-						userInterface.addLayeredComponent(
+						userInterface.addLayeredComponentUnique(
 							new TextInputWindow(
+								"discardFromInventory",
 								250,
 								100,
 								"Quantity",
@@ -648,7 +649,8 @@ public class InventoryWindow extends Window implements Refreshable {
 			toReturn.addMenuItem(new MenuItem(
 				"Throw",
 				() -> {
-					Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).setCursorBoundTask(new ThrowItemCursorBoundTask(item, (Individual) host));
+					InventoryWindow.this.setClosing(true);
+					bloodAndMithrilClientInputProcessor.setCursorBoundTask(new ThrowItemCursorBoundTask(item, (Individual) host));
 				},
 				Colors.UI_GRAY,
 				Color.GREEN,
@@ -667,7 +669,7 @@ public class InventoryWindow extends Window implements Refreshable {
 			() -> {
 				final Prop prop = item.getProp();
 				prop.setWorldId(gameClientStateTracker.getActiveWorld().getWorldId());
-				Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).setCursorBoundTask(
+				bloodAndMithrilClientInputProcessor.setCursorBoundTask(
 					new PlaceCursorBoundTask(prop, (Individual) host, item)
 				);
 			},
@@ -689,7 +691,7 @@ public class InventoryWindow extends Window implements Refreshable {
 		final MenuItem plant = new MenuItem(
 			"Plant",
 			() -> {
-				Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).setCursorBoundTask(
+				bloodAndMithrilClientInputProcessor.setCursorBoundTask(
 					new PlantSeedCursorBoundTask((SeedItem) item, (Individual) host, null)
 				);
 			},
@@ -776,8 +778,9 @@ public class InventoryWindow extends Window implements Refreshable {
 				new MenuItem(
 					"Refuel",
 					() -> {
-						userInterface.addLayeredComponent(
+						userInterface.addLayeredComponentUnique(
 							new TextInputWindow(
+								"enterRefuelAmount",
 								250,
 								100,
 								"Amount",
@@ -905,8 +908,9 @@ public class InventoryWindow extends Window implements Refreshable {
 		final MenuItem drink = new MenuItem(
 			"Drink from",
 			() -> {
-				userInterface.addLayeredComponent(
+				userInterface.addLayeredComponentUnique(
 					new TextInputWindow(
+						"drinkFromLiquidContainer",
 						250,
 						100,
 						"Amount",
@@ -949,8 +953,9 @@ public class InventoryWindow extends Window implements Refreshable {
 		final MenuItem emptyContainerContents = new MenuItem(
 			"Discard content",
 			() -> {
-				userInterface.addLayeredComponent(
+				userInterface.addLayeredComponentUnique(
 					new TextInputWindow(
+						"discardContentFromLiquidContainer",
 						250,
 						100,
 						"Amount",
@@ -989,8 +994,9 @@ public class InventoryWindow extends Window implements Refreshable {
 		final MenuItem transferContainerContents = new MenuItem(
 			"Transfer",
 			() -> {
-				userInterface.addLayeredComponent(
+				userInterface.addLayeredComponentUnique(
 					new TextInputWindow(
+						"transferBetweenLiquidContainers",
 						250,
 						100,
 						"Amount",

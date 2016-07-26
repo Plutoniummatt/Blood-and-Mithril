@@ -443,8 +443,9 @@ public class TradeWindow extends Window implements Refreshable {
 					}
 
 					if (isKeyPressed(controls.bulkTrade.keyCode)) {
-						userInterface.addLayeredComponent(
+						userInterface.addLayeredComponentUnique(
 							new TextInputWindow(
+								"enterQuantityBulkTrade",
 								250,
 								100,
 								"Enter quantity",
@@ -516,8 +517,9 @@ public class TradeWindow extends Window implements Refreshable {
 			16,
 			() -> {
 				if (isKeyPressed(controls.bulkTrade.keyCode)) {
-					userInterface.addLayeredComponent(
+					userInterface.addLayeredComponentUnique(
 						new TextInputWindow(
+							"enterQuantityBulkTrade",
 							250,
 							100,
 							"Enter quantity",

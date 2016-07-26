@@ -370,8 +370,9 @@ public class IndividualContextMenuService {
 			new MenuItem(
 				"Change nickname",
 				() -> {
-					userInterface.addLayeredComponent(
+					userInterface.addLayeredComponentUnique(
 						new TextInputWindow(
+							"changeNickName",
 							250,
 							100,
 							"Change nickname",
@@ -394,8 +395,9 @@ public class IndividualContextMenuService {
 			new MenuItem(
 				"Update biography",
 				() -> {
-					userInterface.addLayeredComponent(
+					userInterface.addLayeredComponentUnique(
 						new TextInputWindow(
+							"updateBiography",
 							250,
 							100,
 							"Change biography",

@@ -102,8 +102,9 @@ public class MainMenuWindow extends Window {
 							return;
 						}
 
-						userInterface.addLayeredComponent(
+						userInterface.addLayeredComponentUnique(
 							new TextInputWindow(
+								"enterSaveGameName",
 								250,
 								100,
 								"Enter name",
@@ -188,8 +189,9 @@ public class MainMenuWindow extends Window {
 					return;
 				}
 
-				userInterface.addLayeredComponent(
+				userInterface.addLayeredComponentUnique(
 					new TextInputWindow(
+						"enterIPMultiplayer",
 						250,
 						100,
 						"Enter IP",

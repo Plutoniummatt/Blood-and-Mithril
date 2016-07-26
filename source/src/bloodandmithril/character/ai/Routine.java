@@ -229,8 +229,8 @@ public abstract class Routine extends AITask {
 		@Override
 		public boolean leftClick(final List<ContextMenu> copy, final Deque<Component> windowsCopy) {
 			if (changeTimeBetweenOcurrences.click()) {
-				userInterface.addLayeredComponent(
-					new TextInputWindow(300, 100, "Change minimum time between ocurrences", 300, 100, args -> {
+				userInterface.addLayeredComponentUnique(
+					new TextInputWindow("changeTimeBetweenOcurrences", 300, 100, "Change minimum time between ocurrences", 300, 100, args -> {
 						float time = 0f;
 						try {
 							final String[] split = ((String) args[0]).split(":");

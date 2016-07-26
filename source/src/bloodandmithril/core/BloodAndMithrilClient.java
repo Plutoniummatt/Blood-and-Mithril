@@ -60,6 +60,7 @@ import bloodandmithril.world.weather.WeatherRenderer;
  * <b><p> Resource gathering (At least the following: farming, hunting, foraging)			 	 		 </b></p>
  * <b><p> Customizable AI                                                                                </b></p>
  * <b><p> Window resizing                                          										 </b></p>
+ * <b><p> Procedurally generated trees                             										 </b></p>
  * <b><p> Stockpiling                                              										 </b></p>
  * <b><p> Props (Trees, rocks, etc, and wiring these into generation)                                    </b></p>
  * <b><p> Prop and Construction (Prop construction and de-construction framework)                  		 </b></p>

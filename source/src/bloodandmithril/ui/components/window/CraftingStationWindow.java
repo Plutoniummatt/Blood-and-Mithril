@@ -128,8 +128,9 @@ public class CraftingStationWindow extends Window implements Refreshable {
 			16,
 			() -> {
 				if (isKeyPressed(controls.bulkCraft.keyCode)) {
-					userInterface.addLayeredComponent(
+					userInterface.addLayeredComponentUnique(
 						new TextInputWindow(
+							"craftQuantity",
 							250,
 							100,
 							"Quantity",

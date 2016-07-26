@@ -54,8 +54,9 @@ public class DailyRoutineInfoPanel extends RoutinePanel {
 			110,
 			16,
 			() -> {
-				userInterface.addLayeredComponent(
+				userInterface.addLayeredComponentUnique(
 					new TextInputWindow(
+						"changeTime",
 						250,
 						100,
 						"Change time",
@@ -88,8 +89,9 @@ public class DailyRoutineInfoPanel extends RoutinePanel {
 			150,
 			16,
 			() -> {
-				userInterface.addLayeredComponent(
+				userInterface.addLayeredComponentUnique(
 					new TextInputWindow(
+						"changeDuration",
 						250,
 						100,
 						"Change duration",

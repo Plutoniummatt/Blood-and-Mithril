@@ -254,7 +254,7 @@ public class AIRoutinesWindow extends ScrollableListingWindow<Routine, String> {
 			"Rename",
 			() -> {
 				userInterface.addLayeredComponentUnique(
-					new TextInputWindow(500, 100, "Input name", 250, 100, args -> {
+					new TextInputWindow("renameRoutine", 500, 100, "Input name", 250, 100, args -> {
 						tEntry.getKey().setDescription((String) args[0]);
 						AIRoutinesWindow.this.refresh();
 					}, "Confirm", true, tEntry.getKey().getShortDescription())

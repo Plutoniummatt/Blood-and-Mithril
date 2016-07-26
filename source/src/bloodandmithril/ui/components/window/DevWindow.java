@@ -20,8 +20,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Function;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
@@ -56,7 +54,6 @@ import bloodandmithril.item.material.mineral.SandStone;
 import bloodandmithril.item.material.wood.StandardWood;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.objectives.tutorial.Tutorial;
-import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.persistence.world.ChunkProvider;
 import bloodandmithril.prop.construction.craftingstation.BlacksmithWorkshop;
 import bloodandmithril.prop.construction.craftingstation.Campfire;
@@ -91,7 +88,6 @@ public class DevWindow extends Window {
 
 	private final ScrollableListingPanel<String, Object> panel;
 
-	@Inject private GameSaver gameSaver;
 	@Inject private MissionTracker missionTracker;
 	@Inject private GameClientStateTracker gameClientStateTracker;
 	@Inject private AddIndividualService addIndividualService;
@@ -588,8 +584,9 @@ public class DevWindow extends Window {
 					310,
 					16,
 					() -> {
-						userInterface.addLayeredComponent(
+						userInterface.addLayeredComponentUnique(
 							new TextInputWindow(
+								"",
 								250,
 								100,
 								"Change time of day",
@@ -702,51 +699,6 @@ public class DevWindow extends Window {
 						userInterface.RENDER_TOPOGRAPHY = !userInterface.RENDER_TOPOGRAPHY;
 					},
 					userInterface.RENDER_TOPOGRAPHY ? Color.GREEN : Color.RED,
-					Color.WHITE,
-					Color.GREEN,
-					UIRef.BL
-				),
-				null
-			),
-			0
-		);
-
-		newHashMap.put(
-			new ListingMenuItem<String>(
-				"Save game",
-				new Button(
-					"Save game",
-					Fonts.defaultFont,
-					0,
-					0,
-					310,
-					16,
-					() -> {
-						userInterface.addLayeredComponent(
-							new TextInputWindow(
-								250,
-								100,
-								"Enter name",
-								250,
-								100,
-								args -> {
-									final String input = (String)args[0];
-									input.replace(" ", "");
-
-									if (StringUtils.isBlank(input)) {
-										userInterface.addGlobalMessage("Invalid name", "Please enter a valid name.");
-										return;
-									}
-
-									gameSaver.save(input, false);
-								},
-								"Save",
-								true,
-								""
-							)
-						);
-					},
-					Color.GREEN,
 					Color.WHITE,
 					Color.GREEN,
 					UIRef.BL

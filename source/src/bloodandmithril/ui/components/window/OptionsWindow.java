@@ -46,8 +46,9 @@ public class OptionsWindow extends Window {
 			170,
 			16,
 			() -> {
-				userInterface.addLayeredComponent(
+				userInterface.addLayeredComponentUnique(
 					new TextInputWindow(
+						"enterWidthResolution",
 						250,
 						100,
 						"Enter width",
@@ -73,8 +74,9 @@ public class OptionsWindow extends Window {
 								return;
 							}
 
-							userInterface.addLayeredComponent(
+							userInterface.addLayeredComponentUnique(
 								new TextInputWindow(
+									"enterResolutionHeight",
 									250,
 									100,
 									"Enter height",

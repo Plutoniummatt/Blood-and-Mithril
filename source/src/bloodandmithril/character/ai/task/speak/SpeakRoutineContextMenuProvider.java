@@ -59,8 +59,8 @@ public class SpeakRoutineContextMenuProvider implements RoutineTaskContextMenuPr
 		return new ContextMenu(getMouseScreenX(), getMouseScreenY(), true, new ContextMenu.MenuItem(
 			"Set text",
 			() -> {
-				userInterface.addLayeredComponent(
-					new TextInputWindow(500, 100, "Input text", 300, 250, args -> {
+				userInterface.addLayeredComponentUnique(
+					new TextInputWindow("speakSetText", 500, 100, "Input text", 300, 250, args -> {
 						final String text = (String) args[0];
 						routine.setAiTaskGenerator(new SpeakTaskGenerator(host, Math.max(7500, text.length() * 10), text));
 					}, "Set", true, "")

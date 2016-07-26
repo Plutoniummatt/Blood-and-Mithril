@@ -33,11 +33,14 @@ public class TextInputWindow extends Window {
 
 	private final JITTask task;
 
+	private String uniquenessToken;
+
 	/**
 	 * Constructor
 	 */
-	public TextInputWindow(int length, int height, String title, int minLength, int minHeight, JITTask task, String buttonText, boolean closeUponButtonClick, String defaultText) {
+	public TextInputWindow(String uniquenessToken, int length, int height, String title, int minLength, int minHeight, JITTask task, String buttonText, boolean closeUponButtonClick, String defaultText) {
 		super(length, height, title, true, minLength, minHeight, false, false, true);
+		this.uniquenessToken = uniquenessToken;
 		this.task = task;
 		this.closeUponButtonClick = closeUponButtonClick;
 
@@ -109,6 +112,6 @@ public class TextInputWindow extends Window {
 
 	@Override
 	public Object getUniqueIdentifier() {
-		return hashCode();
+		return uniquenessToken;
 	}
 }

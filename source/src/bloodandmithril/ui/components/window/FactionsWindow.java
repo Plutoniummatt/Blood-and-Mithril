@@ -154,8 +154,9 @@ public class FactionsWindow extends Window {
 						}
 						refreshWindow();
 					} else {
-						userInterface.addLayeredComponent(
+						userInterface.addLayeredComponentUnique(
 							new TextInputWindow(
+								"enterFactionControlPassword",
 								250,
 								100,
 								"Enter password",
@@ -223,8 +224,9 @@ public class FactionsWindow extends Window {
 			final ContextMenu.MenuItem changePassword = new ContextMenu.MenuItem(
 				"Change control password",
 				() -> {
-					userInterface.addLayeredComponent(
+					userInterface.addLayeredComponentUnique(
 						new TextInputWindow(
+							"changeFactionControlPassword",
 							250,
 							100,
 							"Change password",

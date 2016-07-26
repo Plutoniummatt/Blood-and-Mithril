@@ -99,8 +99,8 @@ public class IndividualConditionRoutinePanel extends RoutinePanel {
 					Color.GRAY,
 					() -> { return new ContextMenu(0, 0, true,
 						new MenuItem("Less than %", () -> {
-							userInterface.addLayeredComponent(
-								new TextInputWindow(300, 100, "Input %", 200, 100, args -> {
+							userInterface.addLayeredComponentUnique(
+								new TextInputWindow("lessthan%", 300, 100, "Input %", 200, 100, args -> {
 									try {
 										final float parseFloat = Float.parseFloat((String)args[0]);
 										if (parseFloat > 100 || parseFloat < 0) {
@@ -114,8 +114,8 @@ public class IndividualConditionRoutinePanel extends RoutinePanel {
 							);
 						}, Color.ORANGE, Color.GREEN, Color.GRAY, null),
 						new MenuItem("Greater than %", () -> {
-							userInterface.addLayeredComponent(
-								new TextInputWindow(300, 100, "Input %", 200, 100, args -> {
+							userInterface.addLayeredComponentUnique(
+								new TextInputWindow("greaterthan%", 300, 100, "Input %", 200, 100, args -> {
 									try {
 										final float parseFloat = Float.parseFloat((String)args[0]);
 										if (parseFloat > 100 || parseFloat < 0) {
