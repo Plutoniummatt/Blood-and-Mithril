@@ -1,7 +1,5 @@
 package bloodandmithril.world;
 
-import static java.lang.Math.sin;
-
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -57,6 +55,6 @@ public class WorldUpdateService {
 			} catch (final NoTileFoundException e) {}
 		}
 		
-		world.getWeatherState().setWind(0.2f * (float) sin(world.getEpoch().getTime() * 8f * Math.PI));
+		world.getWeatherState().setWind(0.2f * (float) Math.sin(world.getEpoch().getTime() * 8f * Math.PI));
 	}
 }

@@ -29,11 +29,23 @@ public abstract class Tree extends Prop {
 	/** Trunk is made from {@link TreeSegment}s */
 	private TreeSegment stump;
 	
+	/** The curvature of this {@link Tree} */
+	public float rigidity = 1f;
+	
+	/** Used for curvature calculations */
+	public float acceleration = 0f;
+	public float velocity = 0f;
+	public float curvature = 0f;
+	
+	public final float baseAngle = 0f;
+	public final float maxThinningFactor;
+	
 	/**
 	 * Constructor
 	 */
-	protected Tree(float x, float y, int width, int height, SerializableMappingFunction<Tile, Boolean> canPlaceOnTopOf) {
+	protected Tree(float x, float y, int width, int height, float maxThinningFactor, SerializableMappingFunction<Tile, Boolean> canPlaceOnTopOf) {
 		super(x, y, width, height, true, Depth.MIDDLEGROUND, canPlaceOnTopOf, true);
+		this.maxThinningFactor = maxThinningFactor;
 	}
 	
 	

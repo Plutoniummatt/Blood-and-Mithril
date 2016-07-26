@@ -16,6 +16,7 @@ import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.RenderPropWith;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.plant.Leaves;
+import bloodandmithril.prop.plant.tree.TreeRenderer;
 import bloodandmithril.prop.plant.tree.Tree;
 import bloodandmithril.prop.plant.tree.TreeSegment;
 import bloodandmithril.ui.UserInterface;
@@ -35,7 +36,7 @@ import bloodandmithril.world.topography.tile.Tile;
  */
 @Copyright("Matthew Peck 2016")
 @UpdatedBy(AlderTreeUpdater.class)
-@RenderPropWith(AlderTreeRenderer.class)
+@RenderPropWith(TreeRenderer.class)
 public class AlderTree extends Tree {
 	private static final long serialVersionUID = -439711190324228635L;
 	
@@ -54,26 +55,14 @@ public class AlderTree extends Tree {
 		leaves.add(() -> new Leaves(5));
 	}
 	
-	/** The curvature of this {@link Tree} */
-	float rigidity = 1f;
-	
-	/** Used for curvature calculations */
-	float acceleration = 0f;
-	float velocity = 0f;
-	float curvature = 0f;
-	
-	final float baseAngle = 0f;
-	final float maxThinningFactor;
-	
 	public AlderTree(float x, float y, float maxThinningFactor) {
-		super(x, y, 0, 0, new SerializableMappingFunction<Tile, Boolean>() {
+		super(x, y, 0, 0, maxThinningFactor, new SerializableMappingFunction<Tile, Boolean>() {
 			private static final long serialVersionUID = 2159543403323901068L;
 			@Override
 			public Boolean apply(Tile input) {
 				return true;
 			}
 		});
-		this.maxThinningFactor = maxThinningFactor;
 		this.setStump(stumps.get(getRandom().nextInt(stumps.size())).call());
 		
 		int treeHeight = Util.getRandom().nextInt(10) + 5;
