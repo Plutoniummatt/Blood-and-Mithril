@@ -3,10 +3,16 @@ package bloodandmithril.world.weather;
 import static java.lang.Math.exp;
 import static java.lang.Math.pow;
 import static java.lang.Math.sin;
+import static java.lang.Math.toRadians;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector2;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Timers;
+import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
 
 /**
@@ -14,8 +20,36 @@ import bloodandmithril.world.World;
  * 
  * @author Matt
  */
+@Singleton
 @Copyright("Matthew Peck 2016")
 public class WeatherService {
+	
+	@Inject private Timers timers;
+	
+	
+	/**
+	 * @param world
+	 * @param position
+	 * 
+	 * @return the wind value, given a {@link World} and a world location
+	 */
+	public float getWind(final World world, final Vector2 position) {
+		float wind = world.getWeatherState().getWind();
+		float locationModulation = (float) pow(sin(toRadians(position.x) + timers.renderUtilityTime/3f), 2);
+		
+		return locationModulation * wind;
+	}
+	
+	
+	/**
+	 * @param world
+	 * @param position
+	 * 
+	 * @return the wind value, given a {@link World} and a world location
+	 */
+	public float getWind(final int world, final Vector2 position) {
+		return getWind(Domain.getWorld(world), position);
+	}
 
 	
 	public final Color getSunColor(final World world) {

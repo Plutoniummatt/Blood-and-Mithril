@@ -34,7 +34,7 @@ import bloodandmithril.world.topography.tile.Tile;
  * @author Matt
  */
 @Copyright("Matthew Peck 2016")
-@UpdatedBy()
+@UpdatedBy(AlderTreeUpdater.class)
 @RenderPropWith(AlderTreeRenderer.class)
 public class AlderTree extends Tree {
 	private static final long serialVersionUID = -439711190324228635L;
@@ -55,7 +55,13 @@ public class AlderTree extends Tree {
 	}
 	
 	/** The curvature of this {@link Tree} */
+	float rigidity = 1f;
+	
+	/** Used for curvature calculations */
+	float acceleration = 0f;
+	float velocity = 0f;
 	float curvature = 0f;
+	
 	final float baseAngle = 0f;
 	final float maxThinningFactor;
 	

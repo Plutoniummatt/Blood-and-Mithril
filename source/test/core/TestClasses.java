@@ -73,7 +73,7 @@ public class TestClasses {
 			fail("Errors found, check console output");
 		}
 
-		System.out.println("Test passed " + classesToTest.size() + " classes.");
+		System.out.println("Test passed for " + classesToTest.size() + " classes.");
 	}
 
 

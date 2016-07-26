@@ -1,15 +1,19 @@
 package bloodandmithril.prop.plant.tree;
 
+import static java.lang.Math.sin;
+
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Timers;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.graphics.Textures;
 import bloodandmithril.util.Operator;
 import bloodandmithril.util.datastructure.WrapperForFour;
+import bloodandmithril.world.weather.WeatherService;
 
 /**
  * Renders {@link TreeSegment}s
@@ -20,9 +24,12 @@ import bloodandmithril.util.datastructure.WrapperForFour;
 @Copyright("Matthew Peck 2016")
 public class TreeSegmentRenderer {
 
-	@Inject private Graphics graphics; 
+	@Inject private Graphics graphics;
+	@Inject private WeatherService weatherService;
+	@Inject private Timers timers;
 	
 	public void render(
+		int worldId,
 		TreeSegment segment,
 		Vector2 renderPosition, 
 		float angle,
@@ -36,6 +43,7 @@ public class TreeSegmentRenderer {
 	) {
 		if (segment.trunk != null) {
 			render(
+				worldId,
 				segment.trunk, 
 				renderPosition.cpy().add(new Vector2(0, segment.height - overlap).rotate(angle)),
 				angle + curvature, 
@@ -51,6 +59,7 @@ public class TreeSegmentRenderer {
 		
 		for (WrapperForFour<Float, Float, TreeSegment, Operator<TreeSegment>> branch : segment.branches) {
 			render(
+				worldId,
 				branch.c, 
 				renderPosition.cpy().add(new Vector2(0, Math.min(branch.a * lengthFactor, branch.a) * segment.height - overlap / 4).rotate(angle)), 
 				angle + branch.b, 
@@ -80,6 +89,7 @@ public class TreeSegmentRenderer {
 		
 		if (segment.getLeaves() != null) {
 			TextureRegion leavesTexture = Textures.treeTextures.get(treeClass).get(segment.getLeaves().textureId);
+			float wind = weatherService.getWind(worldId, renderPosition);
 			graphics.getSpriteBatch().draw(
 				leavesTexture,
 				renderPosition.x, 
@@ -90,7 +100,7 @@ public class TreeSegmentRenderer {
 				leavesTexture.getRegionHeight(),
 				1f,
 				1f,
-				angle
+				angle + 2f * (float) sin(timers.renderUtilityTime * 6f + segment.hashCode() / 100000f) * wind
 			);
 		}
 	}

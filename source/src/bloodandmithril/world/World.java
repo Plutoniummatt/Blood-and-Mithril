@@ -22,6 +22,7 @@ import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.weather.Cloud;
+import bloodandmithril.world.weather.WeatherState;
 
 /**
  * A World, holds info about the {@link Topography}, {@link Prop}s, {@link Individual}s and any related entities.
@@ -76,6 +77,9 @@ public final class World implements Serializable {
 	
 	/** {@link Cloud}s on this world */
 	private final List<Cloud>	 								clouds					= Lists.newLinkedList();
+	
+	/** The {@link WeatherState} of this world */
+	private final WeatherState 									weatherState			= new WeatherState();
 
 	/**
 	 * Constructor
@@ -237,5 +241,10 @@ public final class World implements Serializable {
 
 	public List<Cloud> getClouds() {
 		return clouds;
+	}
+
+
+	public WeatherState getWeatherState() {
+		return weatherState;
 	}
 }
