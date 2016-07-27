@@ -395,6 +395,10 @@ public abstract class Tile implements Serializable {
 				throw new RuntimeException("Tile type is not defined");
 			}
 		}
+		
+		if (edge) {
+			texX = 39 + edgeIndex;
+		}
 
 		return foreGround ? texX * Topography.TEXTURE_COORDINATE_QUANTIZATION : (texX + 20) * Topography.TEXTURE_COORDINATE_QUANTIZATION;
 	}
@@ -672,8 +676,8 @@ public abstract class Tile implements Serializable {
 			this.edgeIndex = edge[0];
 			this.edgeRotation = edge[1];
 		} else {
-			this.edgeIndex = -1;
-			this.edgeRotation = -1;
+			this.edgeIndex = 0;
+			this.edgeRotation = 0;
 		}
 	}
 

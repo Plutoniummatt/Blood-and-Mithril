@@ -84,7 +84,7 @@ public final class Chunk {
 				float texX = tile.getTexCoordX(foreGround);
 				float texY = tile.getTexCoordY();
 
-				populateQuadVertexAttributes(x, y, texX, texY, data, vertexAttributes);
+				populateQuadVertexAttributes(x, y, texX, texY, data, vertexAttributes, tile.edgeRotation);
 
 			}
 		}
@@ -116,30 +116,32 @@ public final class Chunk {
 	/**
 	 * Populates the vertex attributes of a quad.
 	 */
-	private final void populateQuadVertexAttributes(int x, int y, float texX, float texY, ChunkData data, float[] vertexAttributes) {
+	private final void populateQuadVertexAttributes(int x, int y, float texX, float texY, ChunkData data, float[] vertexAttributes, int rotation) {
+		int i  = (4 - rotation) * 4;
+		
 		// Top left
 		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + 0] = data.xChunkCoord * CHUNK_SIZE * TILE_SIZE + x * TILE_SIZE + TILE_SIZE/2 - tileRenderSize/2;
 		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + 1] = data.yChunkCoord * CHUNK_SIZE * TILE_SIZE + y * TILE_SIZE + TILE_SIZE/2 - tileRenderSize/2;
-		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + 2] = texX;
-		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + 3] = texY;
+		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + (2 + i) % 16] = texX;
+		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + (3 + i) % 16] = texY;
 
 		// Top right
 		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + 4] = data.xChunkCoord * CHUNK_SIZE * TILE_SIZE + x * TILE_SIZE + TILE_SIZE/2 + tileRenderSize/2;
 		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + 5] = data.yChunkCoord * CHUNK_SIZE * TILE_SIZE + y * TILE_SIZE + TILE_SIZE/2 - tileRenderSize/2;
-		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + 6] = texX + TEXTURE_COORDINATE_QUANTIZATION;
-		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + 7] = texY;
+		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + (6 + i) % 16] = texX + TEXTURE_COORDINATE_QUANTIZATION;
+		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + (7 + i) % 16] = texY;
 
 		// Bottom right
 		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + 8] = data.xChunkCoord * CHUNK_SIZE * TILE_SIZE + x * TILE_SIZE + TILE_SIZE/2 + tileRenderSize/2;
 		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + 9] = data.yChunkCoord * CHUNK_SIZE * TILE_SIZE + y * TILE_SIZE + TILE_SIZE/2 + tileRenderSize/2;
-		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + 10] = texX + TEXTURE_COORDINATE_QUANTIZATION;
-		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + 11] = texY - TEXTURE_COORDINATE_QUANTIZATION;
+		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + (10 + i) % 16] = texX + TEXTURE_COORDINATE_QUANTIZATION;
+		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + (11 + i) % 16] = texY - TEXTURE_COORDINATE_QUANTIZATION;
 
 		// Bottom left
 		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + 12] = data.xChunkCoord * CHUNK_SIZE * TILE_SIZE + x * TILE_SIZE + TILE_SIZE/2 - tileRenderSize/2;
 		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + 13] = data.yChunkCoord * CHUNK_SIZE * TILE_SIZE + y * TILE_SIZE + TILE_SIZE/2 + tileRenderSize/2;
-		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + 14] = texX;
-		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + 15] = texY - TEXTURE_COORDINATE_QUANTIZATION;
+		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + (14 + i) % 16] = texX;
+		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + (15 + i) % 16] = texY - TEXTURE_COORDINATE_QUANTIZATION;
 	}
 
 
@@ -228,9 +230,9 @@ public final class Chunk {
 	public final void repopulateTextureCoordinates(int x, int y, boolean foreGround) {
 		Tile tile = foreGround ? fData.tiles[x][y] : bData.tiles[x][y];
 		if (foreGround) {
-			populateQuadVertexAttributes(x, y, tile.getTexCoordX(foreGround), tile.getTexCoordY(), fData, fVertexAttributes);
+			populateQuadVertexAttributes(x, y, tile.getTexCoordX(foreGround), tile.getTexCoordY(), fData, fVertexAttributes, tile.edgeRotation);
 		} else {
-			populateQuadVertexAttributes(x, y, tile.getTexCoordX(foreGround), tile.getTexCoordY(), bData, bVertexAttributes);
+			populateQuadVertexAttributes(x, y, tile.getTexCoordX(foreGround), tile.getTexCoordY(), bData, bVertexAttributes, tile.edgeRotation);
 		}
 	}
 
@@ -312,21 +314,29 @@ public final class Chunk {
 		
 		if (chunkMap.get(chunkX + 1) != null && chunkMap.get(chunkX + 1).get(chunkY + 1) != null) {
 			chunkMap.get(chunkX + 1).get(chunkY + 1).getTile(0, 0, foreGround).calculateOrientationAndEdge(chunkX + 1, chunkY + 1, 0, 0, foreGround, chunkMap);
+			chunkMap.get(chunkX + 1).get(chunkY + 1).repopulateTextureCoordinates(0, 0, foreGround);
+			chunkMap.get(chunkX + 1).get(chunkY + 1).refreshMesh();
 		}
 		
 		
 		if (chunkMap.get(chunkX + 1) != null && chunkMap.get(chunkX + 1).get(chunkY - 1) != null) {
 			chunkMap.get(chunkX + 1).get(chunkY - 1).getTile(0, CHUNK_SIZE - 1, foreGround).calculateOrientationAndEdge(chunkX + 1, chunkY - 1, 0, CHUNK_SIZE - 1, foreGround, chunkMap);
+			chunkMap.get(chunkX + 1).get(chunkY - 1).repopulateTextureCoordinates(0, CHUNK_SIZE - 1, foreGround);
+			chunkMap.get(chunkX + 1).get(chunkY - 1).refreshMesh();
 		}
 		
 		
 		if (chunkMap.get(chunkX - 1) != null && chunkMap.get(chunkX - 1).get(chunkY + 1) != null) {
 			chunkMap.get(chunkX - 1).get(chunkY + 1).getTile(CHUNK_SIZE - 1, 0, foreGround).calculateOrientationAndEdge(chunkX - 1, chunkY + 1, CHUNK_SIZE - 1, 0, foreGround, chunkMap);
+			chunkMap.get(chunkX - 1).get(chunkY + 1).repopulateTextureCoordinates(CHUNK_SIZE - 1, 0, foreGround);
+			chunkMap.get(chunkX - 1).get(chunkY + 1).refreshMesh();
 		}
 		
 		
 		if (chunkMap.get(chunkX - 1) != null && chunkMap.get(chunkX - 1).get(chunkY - 1) != null) {
 			chunkMap.get(chunkX - 1).get(chunkY - 1).getTile(CHUNK_SIZE - 1, CHUNK_SIZE - 1, foreGround).calculateOrientationAndEdge(chunkX - 1, chunkY - 1, CHUNK_SIZE - 1, CHUNK_SIZE - 1, foreGround, chunkMap);
+			chunkMap.get(chunkX - 1).get(chunkY - 1).repopulateTextureCoordinates(CHUNK_SIZE - 1, CHUNK_SIZE - 1, foreGround);
+			chunkMap.get(chunkX - 1).get(chunkY - 1).refreshMesh();
 		}
 
 		for (int x = 0; x < CHUNK_SIZE; x++) {
@@ -417,7 +427,8 @@ public final class Chunk {
 				tile.getTexCoordX(foreGround),
 				tile.getTexCoordY(),
 				foreGround ? chunk.fData : chunk.bData,
-				foreGround ? chunk.fVertexAttributes : chunk.bVertexAttributes
+				foreGround ? chunk.fVertexAttributes : chunk.bVertexAttributes,
+				tile.edgeRotation
 			);
 
 			chunk.refreshMesh();
@@ -436,10 +447,9 @@ public final class Chunk {
 			tile.getTexCoordX(foreGround),
 			tile.getTexCoordY(),
 			foreGround ? fData : bData,
-			foreGround ? fVertexAttributes : bVertexAttributes
+			foreGround ? fVertexAttributes : bVertexAttributes,
+			tile.edgeRotation
 		);
-
-		map.get(fData.xChunkCoord).get(fData.yChunkCoord).refreshMesh();
 	}
 
 
@@ -531,5 +541,7 @@ public final class Chunk {
 		}
 
 		fData.tiles[tileX][tileY].calculateOrientationAndEdge(fData.xChunkCoord,fData.yChunkCoord, tileX, tileY, foreGround, map);
+		
+		refreshMesh();
 	}
 }
