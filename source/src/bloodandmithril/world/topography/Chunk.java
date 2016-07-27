@@ -68,17 +68,21 @@ public final class Chunk {
 	 * Constructs the mesh.
 	 */
 	private final void constructMesh(ChunkData data, float[] vertexAttributes, boolean foreGround) {
-
-
-		Mesh mesh = new Mesh(false, Topography.CHUNK_SIZE * Topography.CHUNK_SIZE * 4, 0, new VertexAttribute(VertexAttributes.Usage.Position, 2, "a_position"),
-				new VertexAttribute(Usage.TextureCoordinates, 2, "a_texCoord0"));
+		Mesh mesh = new Mesh(
+			false, 
+			Topography.CHUNK_SIZE * Topography.CHUNK_SIZE * 4, 
+			0, 
+			new VertexAttribute(VertexAttributes.Usage.Position, 2, "a_position"),
+			new VertexAttribute(Usage.TextureCoordinates, 2, "a_texCoord0")
+		);
 
 		for (int x = 0; x != Topography.CHUNK_SIZE; x++) {
 			for (int y = 0; y != Topography.CHUNK_SIZE; y++) {
 
 
-				float texX = fData.tiles[x][y].getTexCoordX(foreGround);
-				float texY = fData.tiles[x][y].getTexCoordY();
+				Tile tile = fData.tiles[x][y];
+				float texX = tile.getTexCoordX(foreGround);
+				float texY = tile.getTexCoordY();
 
 				populateQuadVertexAttributes(x, y, texX, texY, data, vertexAttributes);
 
@@ -97,12 +101,12 @@ public final class Chunk {
 	/**
 	 * Checks if the mesh has been constructed, if not, construct it and calculate orientations of tiles
 	 */
-	public final void checkMesh() {
-		if (fMesh == null) {
+	public final void checkMesh(boolean force) {
+		if (fMesh == null || force) {
 			constructMesh(fData, fVertexAttributes, true);
 			calculateChunkOrientations(true);
 		}
-		if (bMesh == null) {
+		if (bMesh == null || force) {
 			constructMesh(bData, bVertexAttributes, false);
 			calculateChunkOrientations(false);
 		}
@@ -113,21 +117,25 @@ public final class Chunk {
 	 * Populates the vertex attributes of a quad.
 	 */
 	private final void populateQuadVertexAttributes(int x, int y, float texX, float texY, ChunkData data, float[] vertexAttributes) {
+		// Top left
 		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + 0] = data.xChunkCoord * CHUNK_SIZE * TILE_SIZE + x * TILE_SIZE + TILE_SIZE/2 - tileRenderSize/2;
 		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + 1] = data.yChunkCoord * CHUNK_SIZE * TILE_SIZE + y * TILE_SIZE + TILE_SIZE/2 - tileRenderSize/2;
 		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + 2] = texX;
 		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + 3] = texY;
 
+		// Top right
 		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + 4] = data.xChunkCoord * CHUNK_SIZE * TILE_SIZE + x * TILE_SIZE + TILE_SIZE/2 + tileRenderSize/2;
 		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + 5] = data.yChunkCoord * CHUNK_SIZE * TILE_SIZE + y * TILE_SIZE + TILE_SIZE/2 - tileRenderSize/2;
 		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + 6] = texX + TEXTURE_COORDINATE_QUANTIZATION;
 		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + 7] = texY;
 
+		// Bottom right
 		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + 8] = data.xChunkCoord * CHUNK_SIZE * TILE_SIZE + x * TILE_SIZE + TILE_SIZE/2 + tileRenderSize/2;
 		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + 9] = data.yChunkCoord * CHUNK_SIZE * TILE_SIZE + y * TILE_SIZE + TILE_SIZE/2 + tileRenderSize/2;
 		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + 10] = texX + TEXTURE_COORDINATE_QUANTIZATION;
 		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + 11] = texY - TEXTURE_COORDINATE_QUANTIZATION;
 
+		// Bottom left
 		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + 12] = data.xChunkCoord * CHUNK_SIZE * TILE_SIZE + x * TILE_SIZE + TILE_SIZE/2 - tileRenderSize/2;
 		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + 13] = data.yChunkCoord * CHUNK_SIZE * TILE_SIZE + y * TILE_SIZE + TILE_SIZE/2 + tileRenderSize/2;
 		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + 14] = texX;
@@ -264,7 +272,7 @@ public final class Chunk {
 		if (chunkMap.get(chunkX).get(chunkY + 1) != null) {
 			int x = 0;
 			for (Tile tile : chunkMap.get(chunkX).get(chunkY + 1).getRow(0, foreGround)) {
-				tile.calculateOrientation(chunkX, chunkY + 1, x, 0, foreGround, chunkMap);
+				tile.calculateOrientationAndEdge(chunkX, chunkY + 1, x, 0, foreGround, chunkMap);
 				chunkMap.get(chunkX).get(chunkY + 1).repopulateTextureCoordinates(x, 0, foreGround);
 				x++;
 			}
@@ -274,7 +282,7 @@ public final class Chunk {
 		if (chunkMap.get(chunkX).get(chunkY - 1) != null) {
 			int x = 0;
 			for (Tile tile : chunkMap.get(chunkX).get(chunkY - 1).getRow(Topography.CHUNK_SIZE - 1, foreGround)) {
-				tile.calculateOrientation(chunkX, chunkY - 1, x, Topography.CHUNK_SIZE - 1, foreGround, chunkMap);
+				tile.calculateOrientationAndEdge(chunkX, chunkY - 1, x, Topography.CHUNK_SIZE - 1, foreGround, chunkMap);
 				chunkMap.get(chunkX).get(chunkY - 1).repopulateTextureCoordinates(x, Topography.CHUNK_SIZE - 1, foreGround);
 				x++;
 			}
@@ -284,7 +292,7 @@ public final class Chunk {
 		if (chunkMap.get(chunkX - 1) != null && chunkMap.get(chunkX - 1).get(chunkY) != null) {
 			int y = 0;
 			for (Tile tile : chunkMap.get(chunkX - 1).get(chunkY).getColumn(Topography.CHUNK_SIZE - 1, foreGround)) {
-				tile.calculateOrientation(chunkX - 1, chunkY, Topography.CHUNK_SIZE - 1, y, foreGround, chunkMap);
+				tile.calculateOrientationAndEdge(chunkX - 1, chunkY, Topography.CHUNK_SIZE - 1, y, foreGround, chunkMap);
 				chunkMap.get(chunkX - 1).get(chunkY).repopulateTextureCoordinates(Topography.CHUNK_SIZE - 1, y, foreGround);
 				y++;
 			}
@@ -294,19 +302,41 @@ public final class Chunk {
 		if (chunkMap.get(chunkX + 1) != null && chunkMap.get(chunkX + 1).get(chunkY) != null) {
 			int y = 0;
 			for (Tile tile : chunkMap.get(chunkX + 1).get(chunkY).getColumn(0, foreGround)) {
-				tile.calculateOrientation(chunkX + 1, chunkY, 0, y, foreGround, chunkMap);
+				tile.calculateOrientationAndEdge(chunkX + 1, chunkY, 0, y, foreGround, chunkMap);
 				chunkMap.get(chunkX + 1).get(chunkY).repopulateTextureCoordinates(0, y, foreGround);
 				y++;
 			}
 			chunkMap.get(chunkX + 1).get(chunkY).refreshMesh();
 		}
+		
+		
+		if (chunkMap.get(chunkX + 1) != null && chunkMap.get(chunkX + 1).get(chunkY + 1) != null) {
+			chunkMap.get(chunkX + 1).get(chunkY + 1).getTile(0, 0, foreGround).calculateOrientationAndEdge(chunkX + 1, chunkY + 1, 0, 0, foreGround, chunkMap);
+		}
+		
+		
+		if (chunkMap.get(chunkX + 1) != null && chunkMap.get(chunkX + 1).get(chunkY - 1) != null) {
+			chunkMap.get(chunkX + 1).get(chunkY - 1).getTile(0, CHUNK_SIZE - 1, foreGround).calculateOrientationAndEdge(chunkX + 1, chunkY - 1, 0, CHUNK_SIZE - 1, foreGround, chunkMap);
+		}
+		
+		
+		if (chunkMap.get(chunkX - 1) != null && chunkMap.get(chunkX - 1).get(chunkY + 1) != null) {
+			chunkMap.get(chunkX - 1).get(chunkY + 1).getTile(CHUNK_SIZE - 1, 0, foreGround).calculateOrientationAndEdge(chunkX - 1, chunkY + 1, CHUNK_SIZE - 1, 0, foreGround, chunkMap);
+		}
+		
+		
+		if (chunkMap.get(chunkX - 1) != null && chunkMap.get(chunkX - 1).get(chunkY - 1) != null) {
+			chunkMap.get(chunkX - 1).get(chunkY - 1).getTile(CHUNK_SIZE - 1, CHUNK_SIZE - 1, foreGround).calculateOrientationAndEdge(chunkX - 1, chunkY - 1, CHUNK_SIZE - 1, CHUNK_SIZE - 1, foreGround, chunkMap);
+		}
 
-		for (int x = 0; x < Topography.CHUNK_SIZE; x++) {
-			for (int y = 0; y < Topography.CHUNK_SIZE; y++) {
-				chunkMap.get(chunkX).get(chunkY).getTile(x, y, foreGround).calculateOrientation(chunkX, chunkY, x, y, foreGround, chunkMap);
+		for (int x = 0; x < CHUNK_SIZE; x++) {
+			for (int y = 0; y < CHUNK_SIZE; y++) {
+				Tile tile = chunkMap.get(chunkX).get(chunkY).getTile(x, y, foreGround);
+				tile.calculateOrientationAndEdge(chunkX, chunkY, x, y, foreGround, chunkMap);
 				chunkMap.get(chunkX).get(chunkY).repopulateTextureCoordinates(x, y, foreGround);
 			}
 		}
+		
 		chunkMap.get(chunkX).get(chunkY).refreshMesh();
 	}
 
@@ -372,164 +402,134 @@ public final class Chunk {
 	public ChunkData getBData() {
 		return bData;
 	}
+	
+	
+	private void recalculateOrientationForAdjascentTileAcrossChunks(int chunkX, int chunkY, int tileX, int tileY, boolean foreGround, ChunkMap map) {
+		Tile tile;
+		if (map.doesChunkExist(chunkX, chunkY)) {
+			Chunk chunk = map.get(chunkX).get(chunkY);
+			tile = chunk.getTile(tileX, tileY, foreGround);
+			tile.calculateOrientationAndEdge(chunkX, chunkY, tileX, tileY, foreGround, map);
+
+			chunk.populateQuadVertexAttributes(
+				tileX,
+				tileY,
+				tile.getTexCoordX(foreGround),
+				tile.getTexCoordY(),
+				foreGround ? chunk.fData : chunk.bData,
+				foreGround ? chunk.fVertexAttributes : chunk.bVertexAttributes
+			);
+
+			chunk.refreshMesh();
+		}
+	}
+	
+	
+	private void recalculateOrientationForTileWithinSameChunk(int tileX, int tileY, boolean foreGround, ChunkMap map) {
+		Tile tile;
+		tile = map.get(fData.xChunkCoord).get(fData.yChunkCoord).getTile(tileX, tileY, foreGround);
+		tile.calculateOrientationAndEdge(fData.xChunkCoord, fData.yChunkCoord, tileX, tileY, foreGround, map);
+
+		map.get(fData.xChunkCoord).get(fData.yChunkCoord).populateQuadVertexAttributes(
+			tileX,
+			tileY,
+			tile.getTexCoordX(foreGround),
+			tile.getTexCoordY(),
+			foreGround ? fData : bData,
+			foreGround ? fVertexAttributes : bVertexAttributes
+		);
+
+		map.get(fData.xChunkCoord).get(fData.yChunkCoord).refreshMesh();
+	}
 
 
 	/**
-	 * This method is a lie, it doesn't do anything....Just kidding this thing calculates the orientation of ONE tile within *this* chunk
+	 * Calculates the orientation of ONE tile within *this* chunk
 	 */
-	private final void recalculateOrientationsForTile(int x, int y, boolean foreGround) {
+	private final void recalculateOrientationsForTile(int tileX, int tileY, boolean foreGround) {
 
 		ChunkMap map = Domain.getWorld(fData.worldId).getTopography().getChunkMap();
-
-		Tile left;
-		Tile right;
-		Tile above;
-		Tile below;
+		
+		// Bottom left
+		if (tileX != 0 && tileY != 0) {
+			recalculateOrientationForTileWithinSameChunk(tileX - 1, tileY - 1, foreGround, map);
+		} else {
+			if (tileX == 0 && tileY == 0) {
+				recalculateOrientationForAdjascentTileAcrossChunks(fData.xChunkCoord - 1, fData.yChunkCoord - 1, CHUNK_SIZE - 1, CHUNK_SIZE - 1, foreGround, map);
+			} else if (tileX == 0) {
+				recalculateOrientationForAdjascentTileAcrossChunks(fData.xChunkCoord - 1, fData.yChunkCoord, CHUNK_SIZE - 1, tileY - 1, foreGround, map);
+			} else {
+				recalculateOrientationForAdjascentTileAcrossChunks(fData.xChunkCoord, fData.yChunkCoord - 1, tileX - 1, CHUNK_SIZE - 1, foreGround, map);
+			}
+		}
+		
+		// Top left
+		if (tileX != 0 && tileY != CHUNK_SIZE - 1) {
+			recalculateOrientationForTileWithinSameChunk(tileX - 1, tileY + 1, foreGround, map);
+		} else {
+			if (tileX == 0 && tileY == CHUNK_SIZE - 1) {
+				recalculateOrientationForAdjascentTileAcrossChunks(fData.xChunkCoord - 1, fData.yChunkCoord + 1, CHUNK_SIZE - 1, 0, foreGround, map);
+			} else if (tileX == 0) {
+				recalculateOrientationForAdjascentTileAcrossChunks(fData.xChunkCoord - 1, fData.yChunkCoord, CHUNK_SIZE - 1, tileY + 1, foreGround, map);
+			} else {
+				recalculateOrientationForAdjascentTileAcrossChunks(fData.xChunkCoord, fData.yChunkCoord + 1, tileX - 1, 0, foreGround, map);
+			}
+		}
+		
+		// Top right
+		if (tileX != CHUNK_SIZE - 1 && tileY != CHUNK_SIZE - 1) {
+			recalculateOrientationForTileWithinSameChunk(tileX + 1, tileY + 1, foreGround, map);
+		} else {
+			if (tileX == CHUNK_SIZE - 1 && tileY == CHUNK_SIZE - 1) {
+				recalculateOrientationForAdjascentTileAcrossChunks(fData.xChunkCoord + 1, fData.yChunkCoord + 1, 0, 0, foreGround, map);
+			} else if (tileX == CHUNK_SIZE - 1) {
+				recalculateOrientationForAdjascentTileAcrossChunks(fData.xChunkCoord + 1, fData.yChunkCoord, 0, tileY + 1, foreGround, map);
+			} else {
+				recalculateOrientationForAdjascentTileAcrossChunks(fData.xChunkCoord, tileX + 1, 0, 0, foreGround, map);
+			}
+		}
+		
+		// Bottom right
+		if (tileX != CHUNK_SIZE - 1 && tileY != 0) {
+			recalculateOrientationForTileWithinSameChunk(tileX + 1, tileY - 1, foreGround, map);
+		} else {
+			if (tileX == CHUNK_SIZE - 1 && tileY == 0) {
+				recalculateOrientationForAdjascentTileAcrossChunks(fData.xChunkCoord + 1, fData.yChunkCoord - 1, 0, CHUNK_SIZE - 1, foreGround, map);
+			} else if (tileX == CHUNK_SIZE - 1) {
+				recalculateOrientationForAdjascentTileAcrossChunks(fData.xChunkCoord + 1, fData.yChunkCoord, 0, tileY - 1, foreGround, map);
+			} else {
+				recalculateOrientationForAdjascentTileAcrossChunks(fData.xChunkCoord, fData.yChunkCoord - 1, tileX + 1, CHUNK_SIZE - 1, foreGround, map);
+			}
+		}
 
 		// Get the tile to the left
-		if (x == 0) {
-			if (map.doesChunkExist(fData.xChunkCoord - 1, fData.yChunkCoord)) {
-				Chunk chunk = map.get(fData.xChunkCoord - 1).get(fData.yChunkCoord);
-				left = chunk.getTile(Topography.CHUNK_SIZE - 1, y, foreGround);
-				left.calculateOrientation(fData.xChunkCoord - 1, fData.yChunkCoord, Topography.CHUNK_SIZE - 1, y, foreGround, map);
-
-				chunk.populateQuadVertexAttributes(
-					Topography.CHUNK_SIZE - 1,
-					y,
-					left.getTexCoordX(foreGround),
-					left.getTexCoordY(),
-					foreGround ? chunk.fData : chunk.bData,
-					foreGround ? chunk.fVertexAttributes : chunk.bVertexAttributes
-				);
-
-				chunk.refreshMesh();
-			} else {
-				left = null;
-			}
+		if (tileX == 0) {
+			recalculateOrientationForAdjascentTileAcrossChunks(fData.xChunkCoord - 1, fData.yChunkCoord, CHUNK_SIZE - 1, tileY, foreGround, map);
 		} else {
-			left = map.get(fData.xChunkCoord).get(fData.yChunkCoord).getTile(x - 1, y, foreGround);
-			left.calculateOrientation(fData.xChunkCoord, fData.yChunkCoord, x - 1, y, foreGround, map);
-
-			map.get(fData.xChunkCoord).get(fData.yChunkCoord).populateQuadVertexAttributes(
-				x - 1,
-				y,
-				left.getTexCoordX(foreGround),
-				left.getTexCoordY(),
-				foreGround ? fData : bData,
-				foreGround ? fVertexAttributes : bVertexAttributes
-			);
-
-			map.get(fData.xChunkCoord).get(fData.yChunkCoord).refreshMesh();
+			recalculateOrientationForTileWithinSameChunk(tileX - 1, tileY, foreGround, map);
 		}
 
 		// Get the tile to the right
-		if (x == Topography.CHUNK_SIZE - 1) {
-			if (map.doesChunkExist(fData.xChunkCoord + 1, fData.yChunkCoord)) {
-				Chunk chunk = map.get(fData.xChunkCoord + 1).get(fData.yChunkCoord);
-				right = chunk.getTile(0, y, foreGround);
-				right.calculateOrientation(fData.xChunkCoord + 1, fData.yChunkCoord, 0, y, foreGround, map);
-
-				chunk.populateQuadVertexAttributes(
-					0,
-					y,
-					right.getTexCoordX(foreGround),
-					right.getTexCoordY(),
-					foreGround ? chunk.fData : chunk.bData,
-					foreGround ? chunk.fVertexAttributes : chunk.bVertexAttributes
-				);
-
-				chunk.refreshMesh();
-			} else {
-				right = null;
-			}
+		if (tileX == Topography.CHUNK_SIZE - 1) {
+			recalculateOrientationForAdjascentTileAcrossChunks(fData.xChunkCoord + 1, fData.yChunkCoord, 0, tileY, foreGround, map);
 		} else {
-			right = map.get(fData.xChunkCoord).get(fData.yChunkCoord).getTile(x + 1, y, foreGround);
-			right.calculateOrientation(fData.xChunkCoord, fData.yChunkCoord, x + 1, y, foreGround, map);
-
-			map.get(fData.xChunkCoord).get(fData.yChunkCoord).populateQuadVertexAttributes(
-				x + 1,
-				y,
-				right.getTexCoordX(foreGround),
-				right.getTexCoordY(),
-				foreGround ? fData : bData,
-				foreGround ? fVertexAttributes : bVertexAttributes
-			);
-
-			map.get(fData.xChunkCoord).get(fData.yChunkCoord).refreshMesh();
+			recalculateOrientationForTileWithinSameChunk(tileX + 1, tileY, foreGround, map);
 		}
 
 		// Get the tile above
-		if (y == Topography.CHUNK_SIZE - 1) {
-			if (map.doesChunkExist(fData.xChunkCoord, fData.yChunkCoord + 1)) {
-				Chunk chunk = map.get(fData.xChunkCoord).get(fData.yChunkCoord + 1);
-				above = chunk.getTile(x, 0, foreGround);
-				above.calculateOrientation(fData.xChunkCoord, fData.yChunkCoord + 1, x, 0, foreGround, map);
-
-				chunk.populateQuadVertexAttributes(
-					x,
-					0,
-					above.getTexCoordX(foreGround),
-					above.getTexCoordY(),
-					foreGround ? chunk.fData : chunk.bData,
-					foreGround ? chunk.fVertexAttributes : chunk.bVertexAttributes
-				);
-
-				chunk.refreshMesh();
-			} else {
-				above = null;
-			}
+		if (tileY == Topography.CHUNK_SIZE - 1) {
+			recalculateOrientationForAdjascentTileAcrossChunks(fData.xChunkCoord, fData.yChunkCoord + 1, tileX, 0, foreGround, map);
 		} else {
-			above = map.get(fData.xChunkCoord).get(fData.yChunkCoord).getTile(x, y + 1, foreGround);
-			above.calculateOrientation(fData.xChunkCoord, fData.yChunkCoord, x, y + 1, foreGround, map);
-
-			map.get(fData.xChunkCoord).get(fData.yChunkCoord).populateQuadVertexAttributes(
-				x,
-				y + 1,
-				above.getTexCoordX(foreGround),
-				above.getTexCoordY(),
-				foreGround ? fData : bData,
-				foreGround ? fVertexAttributes : bVertexAttributes
-			);
-
-			map.get(fData.xChunkCoord).get(fData.yChunkCoord).refreshMesh();
+			recalculateOrientationForTileWithinSameChunk(tileX, tileY + 1, foreGround, map);
 		}
 
 		// Get the tile below
-		if (y == 0) {
-			if (map.doesChunkExist(fData.xChunkCoord, fData.yChunkCoord - 1)) {
-				Chunk chunk = map.get(fData.xChunkCoord).get(fData.yChunkCoord - 1);
-				below = chunk.getTile(x, Topography.CHUNK_SIZE - 1, foreGround);
-				below.calculateOrientation(fData.xChunkCoord, fData.yChunkCoord - 1, x, Topography.CHUNK_SIZE - 1, foreGround, map);
-
-				chunk.populateQuadVertexAttributes(
-					x,
-					Topography.CHUNK_SIZE - 1,
-					below.getTexCoordX(foreGround),
-					below.getTexCoordY(),
-					foreGround ? chunk.fData : chunk.bData,
-					foreGround ? chunk.fVertexAttributes : chunk.bVertexAttributes
-				);
-
-				chunk.refreshMesh();
-			} else {
-				below = null;
-			}
+		if (tileY == 0) {
+			recalculateOrientationForAdjascentTileAcrossChunks(fData.xChunkCoord, fData.yChunkCoord - 1, tileX, CHUNK_SIZE - 1, foreGround, map);
 		} else {
-			below = map.get(fData.xChunkCoord).get(fData.yChunkCoord).getTile(x, y - 1, foreGround);
-			below.calculateOrientation(fData.xChunkCoord, fData.yChunkCoord, x, y - 1, foreGround, map);
-
-			map.get(fData.xChunkCoord).get(fData.yChunkCoord).populateQuadVertexAttributes(
-				x,
-				y - 1,
-				below.getTexCoordX(foreGround),
-				below.getTexCoordY(),
-				foreGround ? fData : bData,
-				foreGround ? fVertexAttributes : bVertexAttributes
-			);
-
-			map.get(fData.xChunkCoord).get(fData.yChunkCoord).refreshMesh();
+			recalculateOrientationForTileWithinSameChunk(tileX, tileY - 1, foreGround, map);
 		}
 
-		fData.tiles[x][y].calculateOrientation(fData.xChunkCoord,fData.yChunkCoord, x, y, foreGround, map);
+		fData.tiles[tileX][tileY].calculateOrientationAndEdge(fData.xChunkCoord,fData.yChunkCoord, tileX, tileY, foreGround, map);
 	}
 }

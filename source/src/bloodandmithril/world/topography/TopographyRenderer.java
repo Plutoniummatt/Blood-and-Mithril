@@ -44,7 +44,7 @@ public class TopographyRenderer {
 		for (int x = bottomLeftX - 2; x <= topRightX + 2; x++) {
 			for (int y = bottomLeftY - 2; y <= topRightY + 2; y++) {
 				if (topography.getChunkMap().get(x) != null && topography.getChunkMap().get(x).get(y) != null) {
-					topography.getChunkMap().get(x).get(y).checkMesh();
+					topography.getChunkMap().get(x).get(y).checkMesh(false);
 					try {
 						chunkRenderer.render(topography.getChunkMap().get(x).get(y), false, graphics.getCam(), shader, uniformSettings);
 					} catch (NullPointerException e) {
@@ -69,7 +69,7 @@ public class TopographyRenderer {
 		for (int x = bottomLeftX - 2; x <= topRightX + 2; x++) {
 			for (int y = bottomLeftY - 2; y <= topRightY + 2; y++) {
 				if (topography.getChunkMap().get(x) != null && topography.getChunkMap().get(x).get(y) != null) {
-					topography.getChunkMap().get(x).get(y).checkMesh();
+					topography.getChunkMap().get(x).get(y).checkMesh(false);
 					try {
 						chunkRenderer.render(topography.getChunkMap().get(x).get(y), true, graphics.getCam(), shader, uniformSettings);
 					} catch (NullPointerException e) {

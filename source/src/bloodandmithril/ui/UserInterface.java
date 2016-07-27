@@ -19,6 +19,7 @@ import static bloodandmithril.networking.ClientServerInterface.isServer;
 import static bloodandmithril.networking.ClientServerInterface.ping;
 import static bloodandmithril.ui.FloatingText.floatingText;
 import static bloodandmithril.util.Fonts.defaultFont;
+import static bloodandmithril.world.topography.Topography.CHUNK_SIZE;
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static bloodandmithril.world.topography.Topography.convertToChunkCoord;
 import static bloodandmithril.world.topography.Topography.convertToWorldTileCoord;
@@ -43,6 +44,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentLinkedDeque;
+
+import org.lwjgl.opengl.Display;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -70,6 +73,7 @@ import bloodandmithril.character.faction.FactionControlService;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.control.Controls;
+import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.core.ThreadedTasks;
@@ -106,7 +110,9 @@ import bloodandmithril.util.Util.Colors;
 import bloodandmithril.util.datastructure.Boundaries;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Chunk;
+import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
+import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 
 /**
@@ -387,6 +393,7 @@ public class UserInterface {
 			renderComponentInterfaces();
 			renderPositionalIndexes();
 			renderChunkBoundaries();
+			renderEdgeTileBoxes(gameClientStateTracker.getActiveWorld().getTopography(), (int)graphics.getCam().position.x, (int)graphics.getCam().position.y);
 			if (renderComponentBoundaries) {
 				renderComponentBoundaries();
 			}
@@ -432,6 +439,52 @@ public class UserInterface {
 		if (RENDER_TOPOGRAPHY) {
 			topographyDebugRenderer.render(graphics);
 		}
+	}
+
+
+	private void renderEdgeTileBoxes(Topography topography, int camX, int camY) {
+		int bottomLeftX 	= (camX - Display.getWidth() / 2) / (CHUNK_SIZE * TILE_SIZE);
+		int bottomLeftY 	= (camY - Display.getHeight() / 2) / (CHUNK_SIZE * TILE_SIZE);
+		int topRightX 		= bottomLeftX + Display.getWidth() / (CHUNK_SIZE * TILE_SIZE);
+		int topRightY		= bottomLeftY + Display.getHeight() / (CHUNK_SIZE * TILE_SIZE);
+
+		getShapeRenderer().begin(ShapeType.Line);
+		gl.glEnable(GL_BLEND);
+		gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		Gdx.gl20.glLineWidth(2f);
+		for (int x = bottomLeftX - 2; x <= topRightX + 2; x++) {
+			for (int y = bottomLeftY - 2; y <= topRightY + 2; y++) {
+				if (topography.getChunkMap().get(x) != null && topography.getChunkMap().get(x).get(y) != null) {
+					Chunk chunk = topography.getChunkMap().get(x).get(y);
+					
+					for (int tileX = 0; tileX < CHUNK_SIZE; tileX++) {
+						for (int tileY = 0; tileY < CHUNK_SIZE; tileY++) {
+							getShapeRenderer().setColor(1f, 0.3f, 0.2f, 0.4f);
+							if (chunk.getTile(tileX, tileY, false).edge) {
+								getShapeRenderer().rect(
+									worldToScreenX(CHUNK_SIZE * TILE_SIZE * x + TILE_SIZE * tileX), 
+									worldToScreenY(CHUNK_SIZE * TILE_SIZE * y + TILE_SIZE * tileY), 
+									TILE_SIZE, 
+									TILE_SIZE
+								);
+							}
+							getShapeRenderer().setColor(0.3f, 0.9f, 0.7f, 0.9f);
+							if (chunk.getTile(tileX, tileY, true).edge) {
+								getShapeRenderer().rect(
+									worldToScreenX(CHUNK_SIZE * TILE_SIZE * x + TILE_SIZE * tileX), 
+									worldToScreenY(CHUNK_SIZE * TILE_SIZE * y + TILE_SIZE * tileY), 
+									TILE_SIZE, 
+									TILE_SIZE
+								);
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		getShapeRenderer().end();
+		gl.glDisable(GL_BLEND);
 	}
 
 
@@ -723,6 +776,21 @@ public class UserInterface {
 		getShapeRenderer().setColor(Color.GREEN);
 		getShapeRenderer().rect(x, y, TILE_SIZE, TILE_SIZE);
 		getShapeRenderer().end();
+		
+		graphics.getSpriteBatch().begin();
+		graphics.getSpriteBatch().setShader(Shaders.text);
+		defaultFont.setColor(Color.YELLOW);
+		
+		try {
+			Tile tile = gameClientStateTracker.getActiveWorld().getTopography().getTile(BloodAndMithrilClient.getMouseWorldCoords(), true);
+			defaultFont.draw(graphics.getSpriteBatch(), "Tile edge index: " + tile.edgeIndex, getMouseScreenX() + 32, getMouseScreenY() - 64);
+			defaultFont.draw(graphics.getSpriteBatch(), "Tile edge rotation: " + tile.edgeRotation, getMouseScreenX() + 32, getMouseScreenY() - 84);
+		} catch (NoTileFoundException e) {}
+		
+
+		gl.glDisable(GL_BLEND);
+		graphics.getSpriteBatch().end();
+		
 		gl.glDisable(GL_BLEND);
 
 		return true;

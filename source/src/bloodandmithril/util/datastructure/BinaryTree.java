@@ -1,6 +1,10 @@
 package bloodandmithril.util.datastructure;
 
+import static java.lang.Integer.toBinaryString;
 import static java.lang.Math.log;
+
+import org.apache.commons.lang3.StringUtils;
+
 import bloodandmithril.core.Copyright;
 
 /**
@@ -46,6 +50,24 @@ public class BinaryTree<T> {
 			bitIncrementKeySequence(depth - 1, keySequence);
 		}
 	}
+	
+	
+	/**
+	 * Prints all paths along with the values they lead to
+	 */
+	public void printAll() {
+		for (int i = 0; i < Math.pow(2, depth); i++) {
+			boolean[] path = new boolean[depth];
+			String stringPath = StringUtils.leftPad(toBinaryString(i), depth, '0');
+			
+			for (int j = 0; j < depth; j++) {
+				path[j] = stringPath.toCharArray()[j] != '0';
+			}
+			
+			System.out.println(stringPath + ": " + get(path));
+		}
+	}
+	
 
 	/**
 	 * Navigates through the binary tree and retrieves the element given the

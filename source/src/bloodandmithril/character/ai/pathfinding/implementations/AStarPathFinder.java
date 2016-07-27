@@ -1,8 +1,5 @@
 package bloodandmithril.character.ai.pathfinding.implementations;
 
-import static bloodandmithril.util.Logger.aiDebug;
-import static bloodandmithril.util.Logger.LogLevel.DEBUG;
-import static bloodandmithril.util.Logger.LogLevel.INFO;
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static bloodandmithril.world.topography.Topography.convertToWorldCoord;
 import static java.lang.Math.abs;
@@ -19,7 +16,6 @@ import bloodandmithril.character.ai.pathfinding.Path;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.pathfinding.PathFinder;
 import bloodandmithril.core.Copyright;
-import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.datastructure.DualKeyHashMap;
 import bloodandmithril.util.datastructure.DualKeyHashMap.DualKeyEntry;
 import bloodandmithril.world.World;
@@ -107,7 +103,6 @@ public final class AStarPathFinder extends PathFinder {
 			int finishY = round(finishCoords.y);
 
 			Node finishNode = new Node(finishX, finishY, null, null, null, safeHeight);
-			aiDebug("Destination: " + finishNode.toString(), DEBUG);
 
 			Node startNode = new Node(startX, startY, null, null, finishNode, safeHeight);
 			openNodes.put(startX, startY, startNode);
@@ -131,11 +126,9 @@ public final class AStarPathFinder extends PathFinder {
 				try {
 					destination = processOpenNodeGround(entry.value, finishNode, height, safeHeight, world);
 				} catch (UndiscoveredPathNotification e) {
-					aiDebug("Detected undiscovered region", DEBUG);
 				}
 
 				if (destination != null) {
-					aiDebug("Extracting path, begining from: " + destination.toString(), DEBUG);
 					destinationFound = true;
 					return extractPath(destination, finish.tolerance, forceTolerance, world);
 				}
@@ -143,7 +136,6 @@ public final class AStarPathFinder extends PathFinder {
 
 			throw new RuntimeException("Failed to find path");
 		} catch (NoTileFoundException e) {
-			aiDebug("NPE during pathfinding", LogLevel.DEBUG);
 			return new Path();
 		}
 	}
@@ -198,7 +190,6 @@ public final class AStarPathFinder extends PathFinder {
 				return new Path();
 			}
 
-			aiDebug("Adding node to path: " + workingNode.toString(), DEBUG);
 			answer.addWayPointReversed(new WayPoint(convertToWorldCoord(workingNode.x, workingNode.y, true), 0f));
 		}
 
@@ -214,7 +205,6 @@ public final class AStarPathFinder extends PathFinder {
 
 	/** Processes an open {@link Node} */
 	private final Node processOpenNodeGround(Node toProcess, Node destinationNode, int height, int safeHeight, World world) throws UndiscoveredPathNotification, NoTileFoundException {
-		aiDebug("Processing open node: " + toProcess.toString(), DEBUG);
 		openNodes.remove(toProcess.x, toProcess.y);
 		closedNodes.put(toProcess.x, toProcess.y, toProcess);
 		return processAdjascentNodesToOpenNodeGround(toProcess, destinationNode, height, safeHeight, world);
@@ -229,9 +219,12 @@ public final class AStarPathFinder extends PathFinder {
 		Node rightNode = new Node(toProcess.x + TILE_SIZE, toProcess.y, toProcess.x, toProcess.y, destinationNode, safeHeight);
 
 
+		// The left node is the destination
 		if (isDestination(leftNode, destinationNode)) {
 			return leftNode;
 		}
+		
+		// Calculate how many steps up required to go left
 		int stepUpLeft = processAdjascent(leftNode, height, false, toProcess, destinationNode, safeHeight, world);
 		Node newLeftNode = new Node(leftNode.x, leftNode.y + stepUpLeft * TILE_SIZE, leftNode.parentX, leftNode.parentY, destinationNode, safeHeight);
 		if (!isDestination(newLeftNode, destinationNode)) {
@@ -239,7 +232,6 @@ public final class AStarPathFinder extends PathFinder {
 				addToOpenNodes(newLeftNode);
 			}
 		} else {
-			aiDebug("Destination found: " + leftNode.toString(), DEBUG);
 			return newLeftNode;
 		}
 
@@ -253,7 +245,6 @@ public final class AStarPathFinder extends PathFinder {
 				addToOpenNodes(newRightNode);
 			}
 		} else {
-			aiDebug("Destination found: " + rightNode.toString(), DEBUG);
 			return newRightNode;
 		}
 
@@ -263,7 +254,6 @@ public final class AStarPathFinder extends PathFinder {
 
 	/** Checks if a {@link Node} contains the same coordinates and another */
 	private final boolean isDestination(final Node isThisDestination, final Node destinationNode) {
-		aiDebug("Checking if " + isThisDestination.toString() + " is the destination node: " + destinationNode.toString(), DEBUG);
 		return isThisDestination.x.equals(destinationNode.x) && isThisDestination.y.equals(destinationNode.y);
 	}
 
@@ -328,7 +318,6 @@ public final class AStarPathFinder extends PathFinder {
 		try {
 			tile = world.getTopography().getTile(x, y, true);
 		} catch (NoTileFoundException e) {
-			aiDebug("Null tile encountered, perhaps not yet generated", INFO);
 			return;
 		}
 

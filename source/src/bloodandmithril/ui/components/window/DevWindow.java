@@ -54,7 +54,6 @@ import bloodandmithril.item.material.mineral.SandStone;
 import bloodandmithril.item.material.wood.StandardWood;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.objectives.tutorial.Tutorial;
-import bloodandmithril.persistence.world.ChunkProvider;
 import bloodandmithril.prop.construction.craftingstation.BlacksmithWorkshop;
 import bloodandmithril.prop.construction.craftingstation.Campfire;
 import bloodandmithril.prop.construction.craftingstation.Furnace;
@@ -74,7 +73,6 @@ import bloodandmithril.util.Fonts;
 import bloodandmithril.util.RepeatingCountdown;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
-import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickPlatform;
 import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickTile;
 
@@ -186,12 +184,13 @@ public class DevWindow extends Window {
 		}
 
 		if (keyCode == Keys.I) {
-			Wiring.injector().getInstance(ChunkProvider.class).provideSingleChunk(
-				Topography.convertToChunkCoord(BloodAndMithrilClient.getMouseWorldCoords().x), 
-				Topography.convertToChunkCoord(BloodAndMithrilClient.getMouseWorldCoords().y), 
-				gameClientStateTracker.getActiveWorld(), 
-				true
-			);
+			for (int i = 0; i < 10000; i++) {
+				gameClientStateTracker.getActiveWorld().items().addItem(
+					RockItem.rock(Coal.class),
+					BloodAndMithrilClient.getMouseWorldCoords(), 
+					new Vector2(0, Util.getRandom().nextFloat() * 1000f).rotate(Util.getRandom().nextFloat() * 360f)
+				);
+			}
 		}
 
 		if (keyCode == Keys.J) {
