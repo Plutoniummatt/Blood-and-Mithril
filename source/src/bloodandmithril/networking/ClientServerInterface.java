@@ -335,12 +335,12 @@ import bloodandmithril.world.topography.tile.tiles.SeditmentaryTile;
 import bloodandmithril.world.topography.tile.tiles.SoilTile;
 import bloodandmithril.world.topography.tile.tiles.StoneTile;
 import bloodandmithril.world.topography.tile.tiles.brick.GreyBrickTile;
-import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickPlatform;
 import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickTile;
 import bloodandmithril.world.topography.tile.tiles.sedimentary.SandTile;
-import bloodandmithril.world.topography.tile.tiles.soil.StandardSoilTile;
+import bloodandmithril.world.topography.tile.tiles.soil.OrdinarySoilTile;
 import bloodandmithril.world.topography.tile.tiles.stone.GraniteTile;
 import bloodandmithril.world.topography.tile.tiles.stone.SandStoneTile;
+import bloodandmithril.world.topography.tile.tiles.wood.WoodenPlatform;
 
 @Copyright("Matthew Peck 2014")
 public class ClientServerInterface {
@@ -740,7 +740,7 @@ public class ClientServerInterface {
 		kryo.register(Proficiencies.class);
 		kryo.register(SlabItem.class);
 		kryo.register(SoilTile.class);
-		kryo.register(StandardSoilTile.class);
+		kryo.register(OrdinarySoilTile.class);
 		kryo.register(Steel.class);
 		kryo.register(StoneTile.class);
 		kryo.register(SynchronizeFaction.class);
@@ -774,7 +774,7 @@ public class ClientServerInterface {
 		kryo.register(WoodenBucketItem.class);
 		kryo.register(WoodenChestProp.class);
 		kryo.register(WorkBench.class);
-		kryo.register(YellowBrickPlatform.class);
+		kryo.register(WoodenPlatform.class);
 		kryo.register(YellowBrickTile.class);
 		kryo.register(bloodandmithril.item.items.furniture.WoodenChestItem.class);
 		kryo.register(bloodandmithril.prop.plant.CarrotProp.class);

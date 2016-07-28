@@ -9,14 +9,14 @@ import bloodandmithril.item.items.mineral.earth.DirtItem;
 import bloodandmithril.world.topography.tile.tiles.SoilTile;
 
 @Copyright("Matthew Peck 2014")
-public class StandardSoilTile extends SoilTile {
+public class OrdinarySoilTile extends SoilTile {
 	private static final long serialVersionUID = 8075638248883710200L;
 	private static Color mineExplosionColor = new Color(61f/255f, 31/255f, 31/255f, 1f);
 
 	/**
 	 * Constructor
 	 */
-	public StandardSoilTile() {
+	public OrdinarySoilTile() {
 		super(false);
 	}
 

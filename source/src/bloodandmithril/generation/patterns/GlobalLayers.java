@@ -11,7 +11,7 @@ import bloodandmithril.util.Util;
 import bloodandmithril.util.datastructure.TwoInts;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.tile.Tile;
-import bloodandmithril.world.topography.tile.tiles.soil.StandardSoilTile;
+import bloodandmithril.world.topography.tile.tiles.soil.OrdinarySoilTile;
 import bloodandmithril.world.topography.tile.tiles.stone.GraniteTile;
 
 /**
@@ -79,7 +79,7 @@ public class GlobalLayers {
 		}
 
 		if (layerHeight > firstLayerHeight) {
-			return new StandardSoilTile();
+			return new OrdinarySoilTile();
 		} else if (layerHeight <= firstLayerHeight && layerHeight > secondLayerHeight) {
 			return new GraniteTile();
 		} else if (layerHeight <= secondLayerHeight && layerHeight > thirdLayerHeight) {

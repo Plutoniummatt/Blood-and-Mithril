@@ -35,7 +35,7 @@ import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.tiles.brick.GreyBrickTile;
 import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickTile;
-import bloodandmithril.world.topography.tile.tiles.soil.StandardSoilTile;
+import bloodandmithril.world.topography.tile.tiles.soil.OrdinarySoilTile;
 
 /**
  * The structure of a desert surface to be stored and used to generate when needed
@@ -339,7 +339,7 @@ public class TestSuperStructure extends SuperStructure {
 		if (worldTileY > getSurfaceHeight().apply(worldTileX)) {
 			return new Tile.EmptyTile();
 		} else {
-			return new StandardSoilTile();
+			return new OrdinarySoilTile();
 		}
 	}
 
@@ -349,7 +349,7 @@ public class TestSuperStructure extends SuperStructure {
 		if (worldTileY > getSurfaceHeight().apply(worldTileX)-1) {
 			return new Tile.EmptyTile();
 		} else {
-			return new StandardSoilTile();
+			return new OrdinarySoilTile();
 		}
 	}
 

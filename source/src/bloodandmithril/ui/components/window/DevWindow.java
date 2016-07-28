@@ -73,8 +73,8 @@ import bloodandmithril.util.Fonts;
 import bloodandmithril.util.RepeatingCountdown;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
-import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickPlatform;
 import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickTile;
+import bloodandmithril.world.topography.tile.tiles.wood.WoodenPlatform;
 
 /**
  * Window containing dev features
@@ -230,7 +230,7 @@ public class DevWindow extends Window {
 				getMouseWorldX(),
 				getMouseWorldY(),
 				true,
-				YellowBrickPlatform.class
+				WoodenPlatform.class
 			);
 		}
 
