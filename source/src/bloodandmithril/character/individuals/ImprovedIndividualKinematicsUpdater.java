@@ -45,7 +45,7 @@ public class ImprovedIndividualKinematicsUpdater implements IndividualKinematics
 		updatePosition(delta, velocity, position);
 		gravitation(delta, world, velocity, acceleration);
 		
-		if () {
+		if (!obj(individual.getCurrentAction()).oneOf(JUMP_LEFT, JUMP_RIGHT)) {
 			friction(individual);
 		}
 		
@@ -55,7 +55,12 @@ public class ImprovedIndividualKinematicsUpdater implements IndividualKinematics
 			
 			int cornerTileOffset = deriveCornerTileOffset(position, surface);
 			
-			if (!terminateJump(individual, surfaceVector, velocity)) {
+			if (obj(individual.getCurrentAction()).oneOf(JUMP_LEFT, JUMP_RIGHT)) {
+				if (terminateJump(individual, surfaceVector, velocity)) {
+					position.y = surfaceLocation.y - cornerTileOffset;
+					velocity.y = 0f;
+				}
+			} else {
 				position.y = surfaceLocation.y - cornerTileOffset;
 				velocity.y = 0f;
 			}
@@ -69,10 +74,8 @@ public class ImprovedIndividualKinematicsUpdater implements IndividualKinematics
 		Vector2 velocity
 	) {
 		if (velocity.dot(surfaceVector) <= 0) {
-			if (obj(individual.getCurrentAction()).oneOf(JUMP_LEFT, JUMP_RIGHT)) {
-				individual.setCurrentAction(velocity.x > 0 ? STAND_RIGHT : STAND_LEFT);
-				return true;
-			}
+			individual.setCurrentAction(velocity.x > 0 ? STAND_RIGHT : STAND_LEFT);
+			return true;
 		}
 		
 		return false;
@@ -87,7 +90,7 @@ public class ImprovedIndividualKinematicsUpdater implements IndividualKinematics
 		
 		switch (cornerType) {
 		case SLOPE_UP:
-			surfaceVector = new Vector2(-1f, -1f);
+			surfaceVector = new Vector2(-1f, 1f);
 			break;
 		case SLOPE_DOWN:
 			surfaceVector = new Vector2(1f, 1f);
@@ -95,7 +98,7 @@ public class ImprovedIndividualKinematicsUpdater implements IndividualKinematics
 		case SLOPE_UP_THEN_DOWN:
 			int mod = (int) -position.x % TILE_SIZE;
 			if (position.x < 0) {
-				surfaceVector = mod <= TILE_SIZE/2 ? new Vector2(2f, 1f) : new Vector2(-1f, 2f);
+				surfaceVector = mod <= TILE_SIZE/2 ? new Vector2(2f, 1f) : new Vector2(-2f, 1f);
 			} else {
 				surfaceVector = mod <= TILE_SIZE/2 ? new Vector2(-2f, 1f) : new Vector2(2f, 1f);
 			}
