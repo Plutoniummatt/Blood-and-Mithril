@@ -135,7 +135,7 @@ public class DevWindow extends Window {
 
 		panel.render(graphics);
 
-		if (isKeyPressed(Keys.W)) {
+		if (isKeyPressed(Keys.N)) {
 			for (int i = 0; i < 2; i++) {
 				final long lifetime = Util.getRandom().nextInt(10000);
 				final Color randomOneOf = Util.randomOneOf(new Color(0.4f, 0.224f, 0.76f, 1.0f), new Color(0.1f, 0.763f, 0.324f, 1.0f));
@@ -338,7 +338,7 @@ public class DevWindow extends Window {
 		final HashMap<ListingMenuItem<String>, Object> newHashMap = Maps.newHashMap();
 
 		newHashMap.put(
-			new ListingMenuItem<String>(
+			new ListingMenuItem<>(
 				"Spawn Prop on first individual",
 				new Button(
 					"Spawn Prop on first individual",
@@ -517,7 +517,7 @@ public class DevWindow extends Window {
 		);
 
 		newHashMap.put(
-			new ListingMenuItem<String>(
+			new ListingMenuItem<>(
 				"Render component boundaries",
 				new Button(
 					"Render component boundaries",
@@ -540,7 +540,7 @@ public class DevWindow extends Window {
 		);
 
 		newHashMap.put(
-			new ListingMenuItem<String>(
+			new ListingMenuItem<>(
 				"Render component interfaces",
 				new Button(
 					"Render component interfaces",
@@ -563,7 +563,7 @@ public class DevWindow extends Window {
 		);
 
 		newHashMap.put(
-			new ListingMenuItem<String>(
+			new ListingMenuItem<>(
 				"Change time of day",
 				new Button(
 					"Change time of day",
@@ -606,7 +606,7 @@ public class DevWindow extends Window {
 		);
 
 		newHashMap.put(
-			new ListingMenuItem<String>(
+			new ListingMenuItem<>(
 				"See All",
 				new Button(
 					"See All",
@@ -629,7 +629,7 @@ public class DevWindow extends Window {
 		);
 		
 		newHashMap.put(
-			new ListingMenuItem<String>(
+			new ListingMenuItem<>(
 				"See Nothing",
 				new Button(
 					"See Nothing",
@@ -652,7 +652,7 @@ public class DevWindow extends Window {
 		);
 
 		newHashMap.put(
-			new ListingMenuItem<String>(
+			new ListingMenuItem<>(
 				"Debug",
 				new Button(
 					"Debug",
@@ -675,7 +675,7 @@ public class DevWindow extends Window {
 		);
 
 		newHashMap.put(
-			new ListingMenuItem<String>(
+			new ListingMenuItem<>(
 				"Render Topography",
 				new Button(
 					"Render Topography",

@@ -73,7 +73,7 @@ public class ParticleService {
 					false
 				));
 			}
-			for (int i = 0; i < 100; i++) {
+			for (int i = 0; i < 25; i++) {
 				final float radius = Util.getRandom().nextFloat() * 3f;
 				gameClientStateTracker.getActiveWorld().getClientParticles().add(new DiminishingColorChangingParticle(
 					position.cpy(),
