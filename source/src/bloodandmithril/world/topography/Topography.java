@@ -66,6 +66,12 @@ public final class Topography {
 	public synchronized final Vector2 getLowestEmptyTileOrPlatformTileWorldCoords(Vector2 worldCoords, boolean floor) throws NoTileFoundException {
 		return getLowestEmptyTileOrPlatformTileWorldCoords(worldCoords.x, worldCoords.y, floor);
 	}
+	
+	
+	/** Get the tile on the surface from the given location */
+	public synchronized Tile getSurfaceTile(float worldX, float worldY) throws NoTileFoundException {
+		return getTile(getLowestEmptyTileOrPlatformTileWorldCoords(worldX, worldY, false).sub(0, TILE_SIZE), true);
+	}
 
 
 	/** Get the lowest empty tile world coordinates */
@@ -243,7 +249,7 @@ public final class Topography {
 	 */
 	public synchronized final void changeTile(float worldX, float worldY, boolean foreGround, Tile toChangeTo) {
 		if (toChangeTo instanceof EmptyTile) {
-			throw new IllegalStateException("Can't change tile to empty tile");
+			return;
 		}
 
 		int chunkX = convertToChunkCoord(worldX);

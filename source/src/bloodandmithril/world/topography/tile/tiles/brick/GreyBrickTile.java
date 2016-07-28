@@ -22,7 +22,7 @@ public class GreyBrickTile extends BrickTile {
 
 	@Override
 	protected float getTexCoordYSpecific() {
-		return 13;
+		return smoothCeiling ? 14 : 13;
 	}
 
 

@@ -36,7 +36,6 @@ import bloodandmithril.character.individuals.IndividualState;
 import bloodandmithril.character.individuals.characters.Elf;
 import bloodandmithril.character.individuals.characters.Hare;
 import bloodandmithril.character.individuals.characters.Wolf;
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.core.MissionTracker;
@@ -46,7 +45,6 @@ import bloodandmithril.graphics.Graphics;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.graphics.particles.DiminishingColorChangingParticle;
 import bloodandmithril.graphics.particles.Particle.MovementMode;
-import bloodandmithril.graphics.particles.RandomParticle;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.material.RockItem;
 import bloodandmithril.item.material.mineral.Coal;
@@ -70,9 +68,10 @@ import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.util.Fonts;
-import bloodandmithril.util.RepeatingCountdown;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.topography.Topography.NoTileFoundException;
+import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickTile;
 import bloodandmithril.world.topography.tile.tiles.wood.WoodenPlatform;
 
@@ -194,26 +193,16 @@ public class DevWindow extends Window {
 		}
 
 		if (keyCode == Keys.H) {
-			for (int i = 0; i < 20; i++) {
-				gameClientStateTracker.getActiveWorld().getClientParticles().add(
-					new RandomParticle(
-						BloodAndMithrilClient.getMouseWorldCoords(),
-						new Vector2(),
-						Color.WHITE,
-						Color.CYAN,
-						2f,
-						gameClientStateTracker.getActiveWorldId(),
-						4f,
-						MovementMode.EMBER,
-						Depth.FOREGROUND,
-						1000 + Util.getRandom().nextInt(2000),
-						() -> {
-							return new Vector2(150, 0).rotate(Util.getRandom().nextFloat() * 360f);
-						},
-						new RepeatingCountdown(10)
-					)
+			try {
+				Tile tile = gameClientStateTracker.getActiveWorld().getTopography().getTile(getMouseWorldCoords(), true);
+				tile.changeToSmoothCeiling();
+				gameClientStateTracker.getActiveWorld().getTopography().changeTile(
+					getMouseWorldX(),
+					getMouseWorldY(),
+					true,
+					tile
 				);
-			}
+			} catch (NoTileFoundException e) {}
 		}
 
 		if (keyCode == Keys.T) {

@@ -21,6 +21,7 @@ import bloodandmithril.util.datastructure.DualKeyHashMap.DualKeyEntry;
 import bloodandmithril.world.World;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile;
+import bloodandmithril.world.topography.tile.Tile.CornerType;
 import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 
 /**
@@ -33,10 +34,10 @@ public final class AStarPathFinder extends PathFinder {
 	private static final long serialVersionUID = 3045865381118362210L;
 
 	/** Open {@link Node}s */
-	private final DualKeyHashMap<Integer, Integer, Node> openNodes = new DualKeyHashMap<Integer, Integer, AStarPathFinder.Node>();
+	private final DualKeyHashMap<Integer, Integer, Node> openNodes = new DualKeyHashMap<>();
 
 	/** Closed {@link Node}s */
-	private final DualKeyHashMap<Integer, Integer, Node> closedNodes = new DualKeyHashMap<Integer, Integer, AStarPathFinder.Node>();
+	private final DualKeyHashMap<Integer, Integer, Node> closedNodes = new DualKeyHashMap<>();
 
 	/** Used for sorting {@link Node}s in ascending order by F = G + H */
 	private static final Comparator<DualKeyEntry<Integer, Integer, Node>> fComparator = new Comparator<DualKeyEntry<Integer, Integer, Node>>() {
@@ -143,6 +144,7 @@ public final class AStarPathFinder extends PathFinder {
 
 	private final Vector2 determineWayPointCoords(Vector2 location, boolean floor, boolean finish, World world) throws NoTileFoundException {
 		Tile tile = world.getTopography().getTile(location, true);
+		
 		if (location.y < 0) {
 			tile = world.getTopography().getTile(location.x, location.y + 1, true);
 		}
@@ -198,6 +200,14 @@ public final class AStarPathFinder extends PathFinder {
 			answer.getAndRemoveNextWayPoint();
 			answer.getNextPoint().tolerance = TILE_SIZE/2;
 		}
+		
+		for (WayPoint waypoint : answer.getWayPoints()) {
+			Tile tile = world.getTopography().getTile(waypoint.waypoint.x, waypoint.waypoint.y - TILE_SIZE/2, true);
+			if (tile.getCornerType() != CornerType.NONE) { 
+				waypoint.waypoint.sub(0, TILE_SIZE/2);
+				waypoint.tolerance = TILE_SIZE/2;
+			}
+		};
 
 		return answer;
 	}

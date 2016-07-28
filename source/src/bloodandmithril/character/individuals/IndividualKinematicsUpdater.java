@@ -12,7 +12,7 @@ import bloodandmithril.world.topography.Topography.NoTileFoundException;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
-@ImplementedBy(LegacyIndividualKinematicsUpdater.class)
+@ImplementedBy(ImprovedIndividualKinematicsUpdater.class)
 public interface IndividualKinematicsUpdater {
 
 	/**

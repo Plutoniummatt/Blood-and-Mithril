@@ -19,16 +19,12 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector2;
 
-import bloodandmithril.character.ai.task.idle.Idle;
 import bloodandmithril.control.Controls;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.util.AnimationHelper.AnimationSwitcher;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.util.datastructure.WrapperForTwo;
-import bloodandmithril.world.Domain;
-import bloodandmithril.world.topography.Topography;
-import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
 /**
  * An {@link Individual} that is grounded, moves on ground.
@@ -122,17 +118,14 @@ public abstract class GroundTravellingIndividual extends Individual {
 		final Controls controls = Wiring.injector().getInstance(Controls.class);
 
 		//Horizontal movement
-		final Topography topography = Domain.getWorld(getWorldId()).getTopography();
 		final boolean attacking = attacking();
-
-		try {
 			if (Math.abs(getState().velocity.y) < 5f) {
 
 				final float walkSpeed = getWalkSpeed();
 				final float runSpeed = getRunSpeed();
-				final int accel = 2000;
+				final int accel = 1000;
 
-				if (!attacking && isCommandActive(controls.moveLeft.keyCode) && (LegacyIndividualKinematicsUpdater.canStepUp(-2, topography, getState(), getHeight(), getAI(), getKinematicsData()) || !LegacyIndividualKinematicsUpdater.obstructed(-2, topography, getState(), getHeight(), getAI(), getKinematicsData()))) {
+				if (!attacking && isCommandActive(controls.moveLeft.keyCode)) {
 					if (isCommandActive(controls.walk.keyCode)) {
 						if (getState().velocity.x > -walkSpeed) {
 							getState().acceleration.x = -accel;
@@ -146,7 +139,7 @@ public abstract class GroundTravellingIndividual extends Individual {
 							getState().acceleration.x = accel;
 						}
 					}
-				} else if (!attacking && isCommandActive(controls.moveRight.keyCode) && (LegacyIndividualKinematicsUpdater.canStepUp(2, topography, getState(), getHeight(), getAI(), getKinematicsData()) || !LegacyIndividualKinematicsUpdater.obstructed(2, topography, getState(), getHeight(), getAI(), getKinematicsData()))) {
+				} else if (!attacking && isCommandActive(controls.moveRight.keyCode)) {
 					if (isCommandActive(controls.walk.keyCode)) {
 						if (getState().velocity.x < walkSpeed) {
 							getState().acceleration.x = accel;
@@ -163,19 +156,11 @@ public abstract class GroundTravellingIndividual extends Individual {
 				} else {
 					getState().acceleration.x = 0f;
 
-					final int offset = isCommandActive(controls.moveRight.keyCode) ? 2 : isCommandActive(controls.moveLeft.keyCode) ? -2 : 0;
-					if (LegacyIndividualKinematicsUpdater.obstructed(offset, topography, getState(), getHeight(), getAI(), getKinematicsData()) && !LegacyIndividualKinematicsUpdater.canStepUp(offset, topography, getState(), getHeight(), getAI(), getKinematicsData()) && !(getAI().getCurrentTask() instanceof Idle)) {
-						getAI().setCurrentTask(new Idle());
-					}
-
 					sendCommand(controls.moveRight.keyCode, false);
 					sendCommand(controls.moveLeft.keyCode, false);
 					sendCommand(controls.walk.keyCode, false);
 				}
 			}
-		} catch (final NoTileFoundException e) {
-			throw new RuntimeException(e);
-		}
 	}
 
 

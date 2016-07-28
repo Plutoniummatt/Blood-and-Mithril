@@ -20,8 +20,14 @@ import bloodandmithril.world.topography.Topography;
 @Copyright("Matthew Peck 2014")
 public abstract class Tile implements Serializable {
 	private static final long serialVersionUID = -2331827246047876705L;
-	
 	private static final int UNIQUE_TILE_TEXTURES = 14;
+	
+	public enum CornerType {
+		NONE,
+		SLOPE_UP,
+		SLOPE_DOWN,
+		SLOPE_UP_THEN_DOWN
+	}
 	
 	/**
 	 * The 'orientation' of edge tiles
@@ -293,6 +299,16 @@ public abstract class Tile implements Serializable {
 	/** An 'edge' tile is a tile that is adjascent to at least one {@link EmptyTile}, adjascency is defined as, right next to, or diagonal to */
 	public boolean edge = false;
 	
+	/**
+	 * The corner type controls how entities move over the tile
+	 * 
+	 * Type 0 - Not a corner tile, entities treat this as 
+	 * Type 1 - Slope up from left 
+	 * Type 2 - Slope down from left 
+	 * Type 3 - Slope up then down 
+	 */
+	private byte cornerType = 0;
+	
 	/** Which tile texture index we should use for this edge tile, and how many CW 90 degree rotations should be applied */
 	public int edgeIndex, edgeRotation;
 
@@ -545,6 +561,17 @@ public abstract class Tile implements Serializable {
 				bottomleft.getClass().equals(EmptyTile.class) ||
 				bottomRight.getClass().equals(EmptyTile.class));
 		
+		cornerType = determineCornerType(
+			above instanceof EmptyTile, 
+			below instanceof EmptyTile, 
+			left instanceof EmptyTile, 
+			right instanceof EmptyTile,
+			topLeft instanceof EmptyTile,
+			topRight instanceof EmptyTile,
+			bottomleft instanceof EmptyTile,
+			bottomRight instanceof EmptyTile
+		);
+		
 		if (edge) {
 			int[] edge = edgeOrientationArray[255 - (aboveEdge + belowEdge + leftEdge + rightEdge + topLeftEdge + topRightEdge + bottomLeftEdge + bottomRightEdge)];
 			this.edgeIndex = edge[0];
@@ -553,6 +580,32 @@ public abstract class Tile implements Serializable {
 			this.edgeIndex = 0;
 			this.edgeRotation = 0;
 		}
+	}
+
+
+	private byte determineCornerType(
+		boolean above, 
+		boolean below, 
+		boolean left, 
+		boolean right, 
+		boolean topLeft, 
+		boolean topRight, 
+		boolean bottomleft, 
+		boolean bottomRight
+	) {
+		if (left && above && !right && !bottomleft && topLeft) {
+			return 1;
+		}
+		
+		if (right && above && !left && !bottomRight && topRight) {
+			return 2;
+		}
+		
+		if (above && left && right && (!bottomleft || !bottomRight) && topLeft && topRight) {
+			return 3;
+		}
+		
+		return 0;
 	}
 
 
@@ -650,5 +703,21 @@ public abstract class Tile implements Serializable {
 
 	public final boolean isSmoothCeiling() {
 		return smoothCeiling;
+	}
+	
+	
+	public CornerType getCornerType() {
+		switch (cornerType) {
+		case 0:
+			return CornerType.NONE;
+		case 1:
+			return CornerType.SLOPE_UP;
+		case 2:
+			return CornerType.SLOPE_DOWN;
+		case 3:
+			return CornerType.SLOPE_UP_THEN_DOWN;
+		default:
+			throw new IllegalStateException();
+		}
 	}
 }
