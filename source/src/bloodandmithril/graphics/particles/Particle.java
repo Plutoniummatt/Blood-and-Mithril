@@ -16,6 +16,7 @@ import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.util.SerializableColor;
 import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.World;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile;
@@ -86,20 +87,23 @@ public abstract class Particle implements Serializable {
 		if (doNotUpdate) {
 			return;
 		}
+		
+		World world = Domain.getWorld(worldId);
 
 		Vector2 previousPosition = position.cpy();
 		Vector2 previousVelocity = velocity.cpy();
 
 		position.add(velocity.cpy().scl(0.016f));
+		velocity.add(world.getWeatherState().getWind() * 200f * 0.016f, 0);
 
 		movement(delta);
 
-		Tile tileUnder = Domain.getWorld(worldId).getTopography().getTile(position.x, position.y, true);
+		Tile tileUnder = world.getTopography().getTile(position.x, position.y, true);
 		if (tileUnder.isPlatformTile || !tileUnder.isPassable()) {
 			Vector2 trial = position.cpy();
 			trial.y += -previousVelocity.y*delta;
 
-			if (Domain.getWorld(worldId).getTopography().getTile(trial.x, trial.y, true).isPassable()) {
+			if (world.getTopography().getTile(trial.x, trial.y, true).isPassable()) {
 				if (previousVelocity.y <= 0f && previousVelocity.y != 0f && !bounces) {
 					velocity.x = velocity.x * 0.6f;
 					velocity.y = 0f;

@@ -183,16 +183,6 @@ public class DevWindow extends Window {
 			return true;
 		}
 
-		if (keyCode == Keys.I) {
-			for (int i = 0; i < 10000; i++) {
-				gameClientStateTracker.getActiveWorld().items().addItem(
-					RockItem.rock(Coal.class),
-					BloodAndMithrilClient.getMouseWorldCoords(), 
-					new Vector2(0, Util.getRandom().nextFloat() * 1000f).rotate(Util.getRandom().nextFloat() * 360f)
-				);
-			}
-		}
-
 		if (keyCode == Keys.J) {
 			final Set<Integer> keySet = Sets.newHashSet(Domain.getAllWorldIds());
 			keySet.remove(gameClientStateTracker.getActiveWorldId());
