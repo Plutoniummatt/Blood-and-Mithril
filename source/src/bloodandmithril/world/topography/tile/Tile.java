@@ -23,6 +23,9 @@ public abstract class Tile implements Serializable {
 	
 	private static final int UNIQUE_TILE_TEXTURES = 14;
 	
+	/**
+	 * The 'orientation' of edge tiles
+	 */
 	private static int[][] edgeOrientationArray = new int[][] {
 		{8,0},
 		{8,0},
@@ -282,31 +285,6 @@ public abstract class Tile implements Serializable {
 		{-1,-1}
 	};
 	
-
-	/**
-	 * The orientation of the tile
-	 *
-	 * @author Matt
-	 */
-	public enum Orientation {
-		TOP_LEFT, 
-		TOP_MIDDLE, 
-		TOP_RIGHT, 
-		LEFT, 
-		MIDDLE, 
-		RIGHT, 
-		BOTTOM_LEFT, 
-		BOTTOM_MIDDLE, 
-		BOTTOM_RIGHT, 
-		PETRUDING_LEFT, 
-		PETRUDING_TOP, 
-		PETRUDING_RIGHT, 
-		PETRUDING_BOTTOM, 
-		VERTICAL, 
-		HORIZONTAL, 
-		SINGLE
-	}
-
 	/** Whether this is a platform tile */
 	public final boolean isPlatformTile;
 

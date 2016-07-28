@@ -755,7 +755,6 @@ public class ClientServerInterface {
 		kryo.register(Take.class);
 		kryo.register(TakeItem.class);
 		kryo.register(Thirst.class);
-		kryo.register(Tile.Orientation.class);
 		kryo.register(Tile.class);
 		kryo.register(Tile[].class);
 		kryo.register(Tile[][].class);
