@@ -11,12 +11,6 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.world.topography.ChunkMap;
 import bloodandmithril.world.topography.Topography;
-import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickPlatform;
-import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickTile;
-import bloodandmithril.world.topography.tile.tiles.sedimentary.SandTile;
-import bloodandmithril.world.topography.tile.tiles.soil.StandardSoilTile;
-import bloodandmithril.world.topography.tile.tiles.stone.GraniteTile;
-import bloodandmithril.world.topography.tile.tiles.stone.SandStoneTile;
 
 /**
  * A FUCKING TILE!
@@ -349,17 +343,6 @@ public abstract class Tile implements Serializable {
 
 	/**
 	 * Returns the y component of the texture coordinate of the top left vertex
-	 *
-	 *  <p> 1		{@link EmptyTile}               </p>
-	 *  <p> 2		{@link DebugTile}               </p>
-	 *  <p> 3		{@link StandardSoilTile}        </p>
-	 *  <p> 4		{@link GraniteTile}             </p>
-	 *  <p> 5		{@link SandTile}          </p>
-	 *  <p> 6		{@link SandStoneTile}           </p>
-	 *  <p> 7		{@link DryDirtTile}             </p>
-	 *  <p> 8		{@link YellowBrickTile}         </p>
-	 *  <p> 9		{@link ClearGlassTile}          </p>
-	 *  <p> 10		{@link YellowBrickPlatform}		</p>
 	 */
 	public final float getTexCoordY() {
 		return getTexCoordYSpecific() * Topography.TEXTURE_COORDINATE_QUANTIZATION;
