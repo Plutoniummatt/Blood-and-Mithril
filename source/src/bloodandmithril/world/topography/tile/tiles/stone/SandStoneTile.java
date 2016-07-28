@@ -48,10 +48,4 @@ public class SandStoneTile extends StoneTile {
 	public Color getMineExplosionColor() {
 		return mineExplosionColor;
 	}
-
-
-	@Override
-	public int getSymmetryNumber() {
-		return 1;
-	}
 }

@@ -46,10 +46,4 @@ public class GraniteTile extends StoneTile {
 	public Color getMineExplosionColor() {
 		return Color.DARK_GRAY;
 	}
-
-
-	@Override
-	public int getSymmetryNumber() {
-		return 1;
-	}
 }

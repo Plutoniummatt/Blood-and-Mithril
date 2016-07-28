@@ -104,8 +104,8 @@ import bloodandmithril.character.ai.task.takeitem.TakeItem.LootAreaTaskGenerator
 import bloodandmithril.character.ai.task.takeitem.TakeItem.Take;
 import bloodandmithril.character.ai.task.takeitem.TakeItem.TakeVisibleItemTaskGenerator;
 import bloodandmithril.character.ai.task.trade.TradeWith;
-import bloodandmithril.character.ai.task.trade.Trading;
 import bloodandmithril.character.ai.task.trade.TradeWith.Trade;
+import bloodandmithril.character.ai.task.trade.Trading;
 import bloodandmithril.character.ai.task.travel.Travel;
 import bloodandmithril.character.ai.task.wait.Wait;
 import bloodandmithril.character.conditions.Bleeding;
@@ -335,13 +335,9 @@ import bloodandmithril.world.topography.tile.tiles.SeditmentaryTile;
 import bloodandmithril.world.topography.tile.tiles.SoilTile;
 import bloodandmithril.world.topography.tile.tiles.StoneTile;
 import bloodandmithril.world.topography.tile.tiles.brick.GreyBrickTile;
-import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickFloor;
 import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickPlatform;
 import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickTile;
-import bloodandmithril.world.topography.tile.tiles.glass.ClearGlassTile;
-import bloodandmithril.world.topography.tile.tiles.glass.InterlacedWindowTile;
 import bloodandmithril.world.topography.tile.tiles.sedimentary.SandTile;
-import bloodandmithril.world.topography.tile.tiles.soil.DryDirtTile;
 import bloodandmithril.world.topography.tile.tiles.soil.StandardSoilTile;
 import bloodandmithril.world.topography.tile.tiles.stone.GraniteTile;
 import bloodandmithril.world.topography.tile.tiles.stone.SandStoneTile;
@@ -595,7 +591,6 @@ public class ClientServerInterface {
 		kryo.register(AttackRequest.class);
 		kryo.register(FalseFunction.class);
 		kryo.register(Furniture.class);
-		kryo.register(YellowBrickFloor.class);
 		kryo.register(AITask.class);
 		kryo.register(AStarPathFinder.Node.class);
 		kryo.register(AStarPathFinder.class);
@@ -626,7 +621,6 @@ public class ClientServerInterface {
 		kryo.register(ChickenLegItem.class);
 		kryo.register(ChunkData.class);
 		kryo.register(Class.class);
-		kryo.register(ClearGlassTile.class);
 		kryo.register(ClientConnected.class);
 		kryo.register(Coal.class);
 		kryo.register(Color.class);
@@ -656,7 +650,6 @@ public class ClientServerInterface {
 		kryo.register(DirtItem.class);
 		kryo.register(Domain.getIndividualIds().getClass());
 		kryo.register(DrinkLiquid.class);
-		kryo.register(DryDirtTile.class);
 		kryo.register(DualKeyHashMap.class);
 		kryo.register(Elf.class);
 		kryo.register(ElfAI.class);
@@ -692,7 +685,6 @@ public class ClientServerInterface {
 		kryo.register(IndividualSelection.class);
 		kryo.register(IndividualState.class);
 		kryo.register(IngotItem.class);
-		kryo.register(InterlacedWindowTile.class);
 		kryo.register(Iron.class);
 		kryo.register(Key.class);
 		kryo.register(LinkedList.class);

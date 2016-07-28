@@ -47,10 +47,4 @@ public class SandTile extends SeditmentaryTile {
 	public Color getMineExplosionColor() {
 		return mineExplosionColor;
 	}
-
-
-	@Override
-	public int getSymmetryNumber() {
-		return 1;
-	}
 }

@@ -49,10 +49,4 @@ public class YellowBrickTile extends BrickTile {
 	public Color getMineExplosionColor() {
 		return mineExplosionColor;
 	}
-
-
-	@Override
-	public int getSymmetryNumber() {
-		return 1;
-	}
 }

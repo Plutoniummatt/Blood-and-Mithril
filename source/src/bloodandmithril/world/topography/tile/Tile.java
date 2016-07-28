@@ -1,7 +1,6 @@
 package bloodandmithril.world.topography.tile;
 
 import static bloodandmithril.world.topography.Topography.CHUNK_SIZE;
-import static java.lang.Math.min;
 
 import java.io.Serializable;
 
@@ -14,9 +13,7 @@ import bloodandmithril.world.topography.ChunkMap;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickPlatform;
 import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickTile;
-import bloodandmithril.world.topography.tile.tiles.glass.ClearGlassTile;
 import bloodandmithril.world.topography.tile.tiles.sedimentary.SandTile;
-import bloodandmithril.world.topography.tile.tiles.soil.DryDirtTile;
 import bloodandmithril.world.topography.tile.tiles.soil.StandardSoilTile;
 import bloodandmithril.world.topography.tile.tiles.stone.GraniteTile;
 import bloodandmithril.world.topography.tile.tiles.stone.SandStoneTile;
@@ -355,16 +352,10 @@ public abstract class Tile implements Serializable {
 	 * Returns the x component of the texture coordinate of the top left vertex
 	 */
 	public final float getTexCoordX(final boolean foreGround) {
-		int texX = (edge ? edgeIndex : 0) + min(getSymmetryNumber() - 1, edgeRotation) * UNIQUE_TILE_TEXTURES;
+		int texX = (edge ? edgeIndex : 0) + edgeRotation * UNIQUE_TILE_TEXTURES;
 
 		return (texX + (foreGround ? 0 : 59)) * Topography.TEXTURE_COORDINATE_QUANTIZATION;
 	}
-	
-	
-	/**
-	 * @return the symmetry of this tile
-	 */
-	public abstract int getSymmetryNumber();
 
 
 	/**
@@ -599,14 +590,14 @@ public abstract class Tile implements Serializable {
 		final int leftValue = left.getClass().equals(this.getClass()) ? 2 : 0;
 		final int rightValue = right.getClass().equals(this.getClass()) ? 1 : 0;
 		
-		final int aboveEdge = above.isPassable() ? 2 : 0;
-		final int belowEdge = below.isPassable() ? 64 : 0;
-		final int leftEdge = left.isPassable() ? 8 : 0;
-		final int rightEdge = right.isPassable() ? 16 : 0;
-		final int topLeftEdge = topLeft.isPassable() ? 1 : 0;
-		final int topRightEdge = topRight.isPassable() ? 4 : 0;
-		final int bottomLeftEdge = bottomleft.isPassable() ? 32 : 0;
-		final int bottomRightEdge = bottomRight.isPassable() ? 128 : 0;
+		final int aboveEdge = ((!isPlatformTile && above.isPassable()) || (above instanceof EmptyTile && isPlatformTile)) ? 2 : 0;
+		final int belowEdge = ((!isPlatformTile && below.isPassable()) || (below instanceof EmptyTile && isPlatformTile)) ? 64 : 0;
+		final int leftEdge = ((!isPlatformTile && left.isPassable()) || (left instanceof EmptyTile && isPlatformTile)) ? 8 : 0;
+		final int rightEdge = ((!isPlatformTile && right.isPassable()) || (right instanceof EmptyTile && isPlatformTile)) ? 16 : 0;
+		final int topLeftEdge = ((!isPlatformTile && topLeft.isPassable()) || (topLeft instanceof EmptyTile && isPlatformTile)) ? 1 : 0;
+		final int topRightEdge = ((!isPlatformTile && topRight.isPassable()) || (topRight instanceof EmptyTile && isPlatformTile)) ? 4 : 0;
+		final int bottomLeftEdge = ((!isPlatformTile && bottomleft.isPassable()) || (bottomleft instanceof EmptyTile && isPlatformTile)) ? 32 : 0;
+		final int bottomRightEdge = ((!isPlatformTile && bottomRight.isPassable()) || (bottomRight instanceof EmptyTile && isPlatformTile)) ? 128 : 0;
 
 		orientation = orientationArray[aboveValue + belowValue + leftValue + rightValue];
 		
@@ -674,12 +665,6 @@ public abstract class Tile implements Serializable {
 		public Color getMineExplosionColor() {
 			return Color.RED;
 		}
-
-
-		@Override
-		public int getSymmetryNumber() {
-			return 1;
-		}
 	}
 
 
@@ -725,12 +710,6 @@ public abstract class Tile implements Serializable {
 		@Override
 		public Color getMineExplosionColor() {
 			return Color.BLACK.mul(0);
-		}
-
-
-		@Override
-		public int getSymmetryNumber() {
-			return 1;
 		}
 	}
 

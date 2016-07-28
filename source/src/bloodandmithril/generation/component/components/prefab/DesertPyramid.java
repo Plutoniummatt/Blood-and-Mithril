@@ -7,7 +7,6 @@ import bloodandmithril.generation.component.Component;
 import bloodandmithril.generation.component.PrefabricatedComponent;
 import bloodandmithril.util.datastructure.Boundaries;
 import bloodandmithril.world.topography.tile.Tile;
-import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickFloor;
 import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickPlatform;
 
 /**
@@ -68,8 +67,6 @@ public class DesertPyramid extends PrefabricatedComponent {
 						fTiles[x][height - 1 - y] = new Tile.EmptyTile();
 					} else if (fPixel == Color.rgba8888(Color.BLUE)) {
 						fTiles[x][height - 1 - y] = new YellowBrickPlatform();
-					} else if (fPixel == Color.rgba8888(Color.GREEN)) {
-						fTiles[x][height - 1 - y] = new YellowBrickFloor();
 					} else if (fPixel == Color.rgba8888(Color.MAGENTA)) {
 						Tile tile = wallTile.newInstance();
 						fTiles[x][height - 1 - y] = tile;

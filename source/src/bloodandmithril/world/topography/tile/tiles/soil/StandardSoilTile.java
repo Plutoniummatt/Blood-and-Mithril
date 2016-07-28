@@ -54,10 +54,4 @@ public class StandardSoilTile extends SoilTile {
 	public Color getMineExplosionColor() {
 		return mineExplosionColor;
 	}
-
-
-	@Override
-	public int getSymmetryNumber() {
-		return 1;
-	}
 }

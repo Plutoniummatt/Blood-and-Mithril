@@ -48,10 +48,4 @@ public class GreyBrickTile extends BrickTile {
 	public Color getMineExplosionColor() {
 		return Color.DARK_GRAY;
 	}
-
-
-	@Override
-	public int getSymmetryNumber() {
-		return 4;
-	}
 }
