@@ -29,14 +29,6 @@ public abstract class Tile implements Serializable {
 	
 	private static final int UNIQUE_TILE_TEXTURES = 14;
 	
-	/** For fast calculation of tile orientation */
-	private static Orientation[] orientationArray = new Orientation[] {
-		Orientation.SINGLE, Orientation.PETRUDING_LEFT, Orientation.PETRUDING_RIGHT, Orientation.HORIZONTAL,
-		Orientation.PETRUDING_TOP, Orientation.TOP_LEFT, Orientation.TOP_RIGHT, Orientation.TOP_MIDDLE,
-		Orientation.PETRUDING_BOTTOM, Orientation.BOTTOM_LEFT, Orientation.BOTTOM_RIGHT, Orientation.BOTTOM_MIDDLE,
-		Orientation.VERTICAL, Orientation.LEFT, Orientation.RIGHT, Orientation.MIDDLE
-	};
-	
 	private static int[][] edgeOrientationArray = new int[][] {
 		{8,0},
 		{8,0},
@@ -321,9 +313,6 @@ public abstract class Tile implements Serializable {
 		SINGLE
 	}
 
-	/** The {@link Orientation} of the tile */
-	private Orientation orientation;
-
 	/** Whether this is a platform tile */
 	public final boolean isPlatformTile;
 
@@ -382,14 +371,6 @@ public abstract class Tile implements Serializable {
 
 
 	/**
-	 * @return {@link #orientation}.
-	 */
-	public final Orientation getOrientation() {
-		return orientation;
-	}
-
-
-	/**
 	 * Whether or not this can be a passable tile
 	 */
 	public final boolean isPassable() {
@@ -417,7 +398,7 @@ public abstract class Tile implements Serializable {
 
 	@Override
 	public final String toString() {
-		return "Tile: " + Integer.toHexString(hashCode()) + "\n" + this.getClass().getSimpleName() + ", " + orientation;
+		return "Tile: " + Integer.toHexString(hashCode()) + "\n" + this.getClass().getSimpleName();
 	}
 
 
@@ -584,11 +565,6 @@ public abstract class Tile implements Serializable {
 				}
 			}
 		}
-
-		final int aboveValue = above.getClass().equals(this.getClass()) ? 8 : 0;
-		final int belowValue = below.getClass().equals(this.getClass()) ? 4 : 0;
-		final int leftValue = left.getClass().equals(this.getClass()) ? 2 : 0;
-		final int rightValue = right.getClass().equals(this.getClass()) ? 1 : 0;
 		
 		final int aboveEdge = ((!isPlatformTile && above.isPassable()) || (above instanceof EmptyTile && isPlatformTile)) ? 2 : 0;
 		final int belowEdge = ((!isPlatformTile && below.isPassable()) || (below instanceof EmptyTile && isPlatformTile)) ? 64 : 0;
@@ -599,8 +575,6 @@ public abstract class Tile implements Serializable {
 		final int bottomLeftEdge = ((!isPlatformTile && bottomleft.isPassable()) || (bottomleft instanceof EmptyTile && isPlatformTile)) ? 32 : 0;
 		final int bottomRightEdge = ((!isPlatformTile && bottomRight.isPassable()) || (bottomRight instanceof EmptyTile && isPlatformTile)) ? 128 : 0;
 
-		orientation = orientationArray[aboveValue + belowValue + leftValue + rightValue];
-		
 		edge = 	!getClass().equals(EmptyTile.class) && (
 				above.getClass().equals(EmptyTile.class) || 
 				below.getClass().equals(EmptyTile.class) ||
