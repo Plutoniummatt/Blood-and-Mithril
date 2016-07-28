@@ -281,8 +281,7 @@ public abstract class Tile implements Serializable {
 		{3,1},
 		{2,0},
 		{2,0},
-		{3,0},
-		{-1,-1}
+		{3,0}
 	};
 	
 	/** Whether this is a platform tile */
