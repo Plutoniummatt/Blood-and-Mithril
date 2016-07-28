@@ -28,11 +28,6 @@ public class YellowBrickFloor extends BrickTile {
 
 
 	@Override
-	public void changeToStair() {
-	}
-
-
-	@Override
 	public void changeToSmoothCeiling() {
 	}
 
@@ -52,5 +47,11 @@ public class YellowBrickFloor extends BrickTile {
 	@Override
 	public Color getMineExplosionColor() {
 		return mineExplosionColor;
+	}
+
+
+	@Override
+	public int getSymmetryNumber() {
+		return 1;
 	}
 }

@@ -38,7 +38,7 @@ public final class Topography {
 	public static Texture TILE_TEXTURE_ATLAS;
 
 	/** The texture coordinate increment representing one tile in the texture atlas. (1/128) */
-	public static final float TEXTURE_COORDINATE_QUANTIZATION = 0.015625f;
+	public static final float TEXTURE_COORDINATE_QUANTIZATION = 0.0078125f;
 	
 	/** Unique ID of the {@link World} that this {@link Topography} lives on */
 	private final int worldId;

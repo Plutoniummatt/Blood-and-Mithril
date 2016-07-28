@@ -28,11 +28,6 @@ public class DryDirtTile extends SoilTile {
 
 
 	@Override
-	public void changeToStair() {
-	}
-
-
-	@Override
 	public void changeToSmoothCeiling() {
 	}
 
@@ -58,5 +53,11 @@ public class DryDirtTile extends SoilTile {
 	@Override
 	public Color getMineExplosionColor() {
 		return mineExplosionColor;
+	}
+
+
+	@Override
+	public int getSymmetryNumber() {
+		return 1;
 	}
 }

@@ -42,7 +42,7 @@ public final class Chunk {
 	private final ChunkData bData;
 
 	/**	Rendering size of tiles */
-	private static final int tileRenderSize = 32;
+	private static final int tileRenderSize = 16;
 
 	/**
 	 * Constructor

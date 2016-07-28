@@ -1,6 +1,7 @@
 package bloodandmithril.world.topography.tile;
 
 import static bloodandmithril.world.topography.Topography.CHUNK_SIZE;
+import static java.lang.Math.min;
 
 import java.io.Serializable;
 
@@ -28,6 +29,8 @@ import bloodandmithril.world.topography.tile.tiles.stone.SandStoneTile;
 @Copyright("Matthew Peck 2014")
 public abstract class Tile implements Serializable {
 	private static final long serialVersionUID = -2331827246047876705L;
+	
+	private static final int UNIQUE_TILE_TEXTURES = 14;
 	
 	/** For fast calculation of tile orientation */
 	private static Orientation[] orientationArray = new Orientation[] {
@@ -327,9 +330,6 @@ public abstract class Tile implements Serializable {
 	/** Whether this is a platform tile */
 	public final boolean isPlatformTile;
 
-	/** Whether this is a Stair tile */
-	protected boolean isStair = false;
-
 	/** Whether this is a smoothed ceiling tile */
 	protected boolean smoothCeiling = false;
 	
@@ -355,53 +355,16 @@ public abstract class Tile implements Serializable {
 	 * Returns the x component of the texture coordinate of the top left vertex
 	 */
 	public final float getTexCoordX(final boolean foreGround) {
+		int texX = (edge ? edgeIndex : 0) + min(getSymmetryNumber() - 1, edgeRotation) * UNIQUE_TILE_TEXTURES;
 
-		int texX = 0;
-		if (orientation != null) {
-			switch (orientation) {
-			case TOP_LEFT: texX = isStair ? 16 : 0;
-				break;
-			case TOP_MIDDLE: texX = 1;
-				break;
-			case TOP_RIGHT: texX = isStair ? 17 : 2;
-				break;
-			case LEFT: texX = 3;
-				break;
-			case MIDDLE: texX = 4;
-				break;
-			case RIGHT: texX = 5;
-				break;
-			case BOTTOM_LEFT: texX = smoothCeiling ? 18 : 6;
-				break;
-			case BOTTOM_MIDDLE: texX = 7;
-				break;
-			case BOTTOM_RIGHT: texX = smoothCeiling ? 19 : 8;
-				break;
-			case PETRUDING_LEFT: texX = 9;
-				break;
-			case PETRUDING_TOP: texX = 10;
-				break;
-			case PETRUDING_RIGHT: texX = 11;
-				break;
-			case PETRUDING_BOTTOM: texX = 12;
-				break;
-			case VERTICAL: texX = 13;
-				break;
-			case HORIZONTAL: texX = 14;
-				break;
-			case SINGLE: texX = 15;
-				break;
-			default:
-				throw new RuntimeException("Tile type is not defined");
-			}
-		}
-		
-		if (edge) {
-			texX = 39 + edgeIndex;
-		}
-
-		return foreGround ? texX * Topography.TEXTURE_COORDINATE_QUANTIZATION : (texX + 20) * Topography.TEXTURE_COORDINATE_QUANTIZATION;
+		return (texX + (foreGround ? 0 : 59)) * Topography.TEXTURE_COORDINATE_QUANTIZATION;
 	}
+	
+	
+	/**
+	 * @return the symmetry of this tile
+	 */
+	public abstract int getSymmetryNumber();
 
 
 	/**
@@ -450,12 +413,6 @@ public abstract class Tile implements Serializable {
 
 
 	/**
-	 * Changes this tile to a {@link #isStair} tile
-	 */
-	public abstract void changeToStair();
-
-
-	/**
 	 * Changes this tile to a {@link #smoothCeiling} tile
 	 */
 	public abstract void changeToSmoothCeiling();
@@ -465,14 +422,6 @@ public abstract class Tile implements Serializable {
 	 * @return an {@link Item} that is obtained when this {@link Tile} is mined. See {@link MineTile}
 	 */
 	public abstract Item mine();
-
-
-	/**
-	 * @return true if {@link #isStair}
-	 */
-	public final boolean isStair() {
-		return isStair;
-	}
 
 
 	@Override
@@ -705,11 +654,6 @@ public abstract class Tile implements Serializable {
 
 
 		@Override
-		public final void changeToStair() {
-		}
-
-
-		@Override
 		public final void changeToSmoothCeiling() {
 		}
 
@@ -729,6 +673,12 @@ public abstract class Tile implements Serializable {
 		@Override
 		public Color getMineExplosionColor() {
 			return Color.RED;
+		}
+
+
+		@Override
+		public int getSymmetryNumber() {
+			return 1;
 		}
 	}
 
@@ -756,11 +706,6 @@ public abstract class Tile implements Serializable {
 
 
 		@Override
-		public final void changeToStair() {
-		}
-
-
-		@Override
 		public final void changeToSmoothCeiling() {
 		}
 
@@ -780,6 +725,12 @@ public abstract class Tile implements Serializable {
 		@Override
 		public Color getMineExplosionColor() {
 			return Color.BLACK.mul(0);
+		}
+
+
+		@Override
+		public int getSymmetryNumber() {
+			return 1;
 		}
 	}
 

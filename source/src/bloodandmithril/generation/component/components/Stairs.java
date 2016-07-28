@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+
 import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.component.Component;
 import bloodandmithril.generation.component.components.Corridor.CorridorCreationCustomization;
@@ -14,9 +17,6 @@ import bloodandmithril.util.Util;
 import bloodandmithril.util.datastructure.Boundaries;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.Tile.EmptyTile;
-
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
 
 /**
  * Stairs, these are sloped {@link Component}s similar to {@link Corridor}s....apart from these are well...sloped.
@@ -72,7 +72,6 @@ public class Stairs extends Component {
 			if(worldTileY == Math.round(slopeGradient * worldTileX) + slopeConstant) {
 				try {
 					Tile newInstance = stairType.newInstance();
-					newInstance.changeToStair();
 					return newInstance;
 				} catch (Exception e) {
 					throw new RuntimeException(e);

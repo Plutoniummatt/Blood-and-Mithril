@@ -26,11 +26,6 @@ public class InterlacedWindowTile extends GlassTile {
 
 
 	@Override
-	public void changeToStair() {
-	}
-
-
-	@Override
 	public void changeToSmoothCeiling() {
 	}
 
@@ -50,5 +45,11 @@ public class InterlacedWindowTile extends GlassTile {
 	@Override
 	public Color getMineExplosionColor() {
 		return Color.DARK_GRAY;
+	}
+
+
+	@Override
+	public int getSymmetryNumber() {
+		return 1;
 	}
 }

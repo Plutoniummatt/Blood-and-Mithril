@@ -27,12 +27,6 @@ public class GreyBrickTile extends BrickTile {
 
 
 	@Override
-	public void changeToStair() {
-		this.isStair = true;
-	}
-
-
-	@Override
 	public void changeToSmoothCeiling() {
 		this.smoothCeiling = true;
 	}
@@ -53,5 +47,11 @@ public class GreyBrickTile extends BrickTile {
 	@Override
 	public Color getMineExplosionColor() {
 		return Color.DARK_GRAY;
+	}
+
+
+	@Override
+	public int getSymmetryNumber() {
+		return 4;
 	}
 }

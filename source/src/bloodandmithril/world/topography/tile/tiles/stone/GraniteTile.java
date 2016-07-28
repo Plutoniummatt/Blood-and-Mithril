@@ -25,11 +25,6 @@ public class GraniteTile extends StoneTile {
 
 
 	@Override
-	public void changeToStair() {
-	}
-
-
-	@Override
 	public void changeToSmoothCeiling() {
 	}
 
@@ -50,5 +45,11 @@ public class GraniteTile extends StoneTile {
 	@Override
 	public Color getMineExplosionColor() {
 		return Color.DARK_GRAY;
+	}
+
+
+	@Override
+	public int getSymmetryNumber() {
+		return 1;
 	}
 }

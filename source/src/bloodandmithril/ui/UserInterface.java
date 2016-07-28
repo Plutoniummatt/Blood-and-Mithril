@@ -73,7 +73,6 @@ import bloodandmithril.character.faction.FactionControlService;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.control.Controls;
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.core.ThreadedTasks;
@@ -112,7 +111,6 @@ import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Chunk;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
-import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 
 /**
@@ -776,20 +774,6 @@ public class UserInterface {
 		getShapeRenderer().setColor(Color.GREEN);
 		getShapeRenderer().rect(x, y, TILE_SIZE, TILE_SIZE);
 		getShapeRenderer().end();
-		
-		graphics.getSpriteBatch().begin();
-		graphics.getSpriteBatch().setShader(Shaders.text);
-		defaultFont.setColor(Color.YELLOW);
-		
-		try {
-			Tile tile = gameClientStateTracker.getActiveWorld().getTopography().getTile(BloodAndMithrilClient.getMouseWorldCoords(), true);
-			defaultFont.draw(graphics.getSpriteBatch(), "Tile edge index: " + tile.edgeIndex, getMouseScreenX() + 32, getMouseScreenY() - 64);
-			defaultFont.draw(graphics.getSpriteBatch(), "Tile edge rotation: " + tile.edgeRotation, getMouseScreenX() + 32, getMouseScreenY() - 84);
-		} catch (NoTileFoundException e) {}
-		
-
-		gl.glDisable(GL_BLEND);
-		graphics.getSpriteBatch().end();
 		
 		gl.glDisable(GL_BLEND);
 
