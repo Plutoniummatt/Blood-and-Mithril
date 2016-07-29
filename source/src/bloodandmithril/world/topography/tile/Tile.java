@@ -552,25 +552,40 @@ public abstract class Tile implements Serializable {
 		final int bottomRightEdge = ((!isPlatformTile && bottomRight.isPassable()) || (bottomRight instanceof EmptyTile && isPlatformTile)) ? 128 : 0;
 
 		edge = 	!getClass().equals(EmptyTile.class) && (
-				above.getClass().equals(EmptyTile.class) || 
-				below.getClass().equals(EmptyTile.class) ||
-				left.getClass().equals(EmptyTile.class) ||
-				right.getClass().equals(EmptyTile.class) ||
-				topLeft.getClass().equals(EmptyTile.class) ||
-				topRight.getClass().equals(EmptyTile.class) ||
-				bottomleft.getClass().equals(EmptyTile.class) ||
-				bottomRight.getClass().equals(EmptyTile.class));
+				above.isPassable() || 
+				below.isPassable() ||
+				left.isPassable() ||
+				right.isPassable() ||
+				topLeft.isPassable() ||
+				topRight.isPassable() ||
+				bottomleft.isPassable() ||
+				bottomRight.isPassable());
+
 		
-		cornerType = determineCornerType(
-			above instanceof EmptyTile, 
-			below instanceof EmptyTile, 
-			left instanceof EmptyTile, 
-			right instanceof EmptyTile,
-			topLeft instanceof EmptyTile,
-			topRight instanceof EmptyTile,
-			bottomleft instanceof EmptyTile,
-			bottomRight instanceof EmptyTile
-		);
+		if (isPlatformTile) {
+			cornerType = determineCornerType(
+				above.isPlatformTile, 
+				below.isPlatformTile, 
+				left.isPlatformTile, 
+				right.isPlatformTile,
+				topLeft.isPlatformTile,
+				topRight.isPlatformTile,
+				bottomleft.isPlatformTile,
+				bottomRight.isPlatformTile
+			);
+		} else {
+			cornerType = determineCornerType(
+				above.isPassable(), 
+				below.isPassable(), 
+				left.isPassable(), 
+				right.isPassable(),
+				topLeft.isPassable(),
+				topRight.isPassable(),
+				bottomleft.isPassable(),
+				bottomRight.isPassable()
+			);
+		}
+
 		
 		if (edge) {
 			int[] edge = edgeOrientationArray[255 - (aboveEdge + belowEdge + leftEdge + rightEdge + topLeftEdge + topRightEdge + bottomLeftEdge + bottomRightEdge)];
@@ -597,7 +612,15 @@ public abstract class Tile implements Serializable {
 			return 1;
 		}
 		
+		if (left && above && topLeft && !bottomleft && !topRight) {
+			return 1;
+		}
+		
 		if (right && above && !left && !bottomRight && topRight) {
+			return 2;
+		}
+		
+		if (right && above && topRight && !topLeft && !bottomRight) {
 			return 2;
 		}
 		

@@ -5,6 +5,7 @@ import org.apache.commons.lang3.mutable.MutableBoolean;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
+import com.google.common.base.Function;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Wiring;
@@ -69,8 +70,8 @@ public final class Topography {
 	
 	
 	/** Get the tile on the surface from the given location */
-	public synchronized Tile getSurfaceTile(float worldX, float worldY) throws NoTileFoundException {
-		return getTile(getLowestEmptyTileOrPlatformTileWorldCoords(worldX, worldY, false).sub(0, TILE_SIZE), true);
+	public synchronized Tile getSurfaceTile(float worldX, float worldY, Function<Vector2, Boolean> toExlude) throws NoTileFoundException {
+		return getTile(getLowestEmptyTileOrPlatformTileWorldCoordsExludeSpecified(worldX, worldY, false, toExlude).sub(0, TILE_SIZE), true);
 	}
 
 
@@ -83,6 +84,26 @@ public final class Topography {
 			worldY = worldY + TILE_SIZE;
 		} else {
 			while (!(getTile(worldX, worldY, true) instanceof EmptyTile)) {
+				worldY = worldY + TILE_SIZE;
+			}
+		}
+
+		return new Vector2(
+			convertToWorldCoord(convertToWorldTileCoord(worldX), false),
+			convertToWorldCoord(convertToWorldTileCoord(worldY), floor)
+		);
+	}
+	
+	
+	/** Get the lowest empty tile world coordinates */
+	public synchronized final Vector2 getLowestEmptyTileOrPlatformTileWorldCoordsExludeSpecified(float worldX, float worldY, boolean floor, Function<Vector2, Boolean> toExlude) throws NoTileFoundException {
+		if (getTile(worldX, worldY, true) instanceof EmptyTile || toExlude.apply(new Vector2(worldX, worldY))) {
+			while (getTile(worldX, worldY, true) instanceof EmptyTile || toExlude.apply(new Vector2(worldX, worldY))) {
+				worldY = worldY - TILE_SIZE;
+			}
+			worldY = worldY + TILE_SIZE;
+		} else {
+			while (!(getTile(worldX, worldY, true) instanceof EmptyTile || !toExlude.apply(new Vector2(worldX, worldY)))) {
 				worldY = worldY + TILE_SIZE;
 			}
 		}

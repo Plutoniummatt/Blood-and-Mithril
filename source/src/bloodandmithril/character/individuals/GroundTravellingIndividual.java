@@ -222,7 +222,7 @@ public abstract class GroundTravellingIndividual extends Individual {
 	public void jump(final Vector2 jumpVector) {
 		getState().velocity.x = jumpVector.x;
 		getState().velocity.y = jumpVector.y;
-		decreaseStamina(0.1f);
+		// decreaseStamina(0.1f);
 
 		setCurrentAction(jumpVector.x < 0f ? Action.JUMP_LEFT : Action.JUMP_RIGHT);
 	}
