@@ -77,6 +77,42 @@ public class PositionalIndexMap implements Serializable {
 			graphics.getCam().position.y - graphics.getHeight()
 		);
 	}
+	
+	
+	/**
+	 * @return a {@link Collection} of {@link PositionalIndexNode} that are on screen
+	 */
+	public Collection<PositionalIndexNode> getOnScreenNodes(Graphics graphics) {
+		return getNodesWithinBounds(
+			graphics.getCam().position.x - graphics.getWidth(),
+			graphics.getCam().position.x + graphics.getWidth(),
+			graphics.getCam().position.y + graphics.getHeight(),
+			graphics.getCam().position.y - graphics.getHeight()
+		);
+	}
+	
+	
+	/**
+	 * @return a {@link Collection} of {@link PositionalIndexNode}s of that are contained (roughly) within a defined box.
+	 *
+	 * Roughly because the indexing nodes are quantised.
+	 */
+	public Collection<PositionalIndexNode> getNodesWithinBounds(float left, float right, float top, float bottom) {
+		int i = CHUNK_SIZE * TILE_SIZE;
+
+		int xSteps = (int)(right - left) / i + 1;
+		int ySteps = (int)(top - bottom) / i + 1;
+		
+		Collection<PositionalIndexNode> nodes = Lists.newLinkedList();
+
+		for (int x = 0; x <= xSteps; x++) {
+			for (int y = 0; y <= ySteps; y++) {
+				nodes.add(get(left + x * i, bottom + y * i));
+			}
+		}
+
+		return nodes;
+	}
 
 
 	/**

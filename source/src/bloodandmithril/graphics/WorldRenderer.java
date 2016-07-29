@@ -122,17 +122,18 @@ public class WorldRenderer {
 		batch.begin();
 		batch.setShader(Shaders.filter);
 		Shaders.filter.setUniformMatrix("u_projTrans", graphics.getCam().combined);
+		renderProps(world, batch, FOREGROUND);
 		
-		world.getPositionalIndexMap().getOnScreenEntities(Prop.class, graphics).stream().map(id -> world.props().getProp(id)).forEach(prop -> {
-			if (prop.depth == FOREGROUND) {
-				Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
-				prop.preRender();
-				propRenderer.render(prop);
-				batch.flush();
+		world.getPositionalIndexMap().getOnScreenEntities(Item.class, graphics).stream().forEach(itemId -> {
+			
+			Item item = world.items().getItem(itemId);
+			if (item == null) {
+				world.getPositionalIndexMap().getOnScreenNodes(graphics).forEach(node -> {
+					node.removeItem(itemId);
+				});
+				return;
 			}
-		});
-		
-		world.getPositionalIndexMap().getOnScreenEntities(Item.class, graphics).stream().map(id-> world.items().getItem(id)).forEach(item -> {
+			
 			Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
 			item.render(graphics);
 			batch.flush();
@@ -173,19 +174,31 @@ public class WorldRenderer {
 		batch.begin();
 		batch.setShader(Shaders.filter);
 		Shaders.filter.setUniformMatrix("u_projTrans", graphics.getCam().combined);
-		
-		world.getPositionalIndexMap().getOnScreenEntities(Prop.class, graphics).stream().map(id -> world.props().getProp(id)).forEach(prop -> {
-			if (prop.depth == MIDDLEGROUND) {
+		renderProps(world, batch, MIDDLEGROUND);
+		renderParticles(MIDDLEGROUND, world);
+		batch.end();
+		mBuffer.end();
+	}
+
+
+	private void renderProps(final World world, final SpriteBatch batch, Depth depth) {
+		world.getPositionalIndexMap().getOnScreenEntities(Prop.class, graphics).stream().forEach(propId -> {
+			Prop prop = world.props().getProp(propId);
+			
+			if (prop == null) {
+				world.getPositionalIndexMap().getOnScreenNodes(graphics).forEach(node -> {
+					node.removeProp(propId);
+				});
+				return;
+			}
+			
+			if (prop.depth == depth) {
 				Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
 				prop.preRender();
 				propRenderer.render(prop);
 				batch.flush();
 			}
 		});
-		
-		renderParticles(MIDDLEGROUND, world);
-		batch.end();
-		mBuffer.end();
 	}
 
 	private void renderQuantizedBuffersForTileLighting(final World world, final int camX, final int camY, final SpriteBatch batch) {
@@ -257,13 +270,7 @@ public class WorldRenderer {
 		batch.begin();
 		batch.setShader(Shaders.filter);
 		Shaders.pass.setUniformMatrix("u_projTrans", graphics.getCam().combined);
-		world.getPositionalIndexMap().getOnScreenEntities(Prop.class, graphics).stream().map(id -> world.props().getProp(id)).forEach(prop -> {
-			if (prop.depth == BACKGROUND) {
-				Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
-				propRenderer.render(prop);
-				batch.flush();
-			}
-		});
+		renderProps(world, batch, BACKGROUND);
 		renderParticles(Depth.BACKGROUND, world);
 		batch.end();
 		bBuffer.end();
