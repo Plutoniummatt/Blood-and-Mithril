@@ -207,6 +207,7 @@ public final class AStarPathFinder extends PathFinder {
 				waypoint.waypoint.sub(0, TILE_SIZE/2);
 				waypoint.tolerance = TILE_SIZE/2;
 			}
+			waypoint.tolerance = TILE_SIZE/4;
 		};
 
 		return answer;

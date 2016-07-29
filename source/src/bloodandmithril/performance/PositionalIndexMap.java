@@ -3,6 +3,7 @@ package bloodandmithril.performance;
 import static bloodandmithril.world.topography.Topography.CHUNK_SIZE;
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static bloodandmithril.world.topography.Topography.convertToChunkCoord;
+import static bloodandmithril.world.topography.Topography.convertToWorldTileCoord;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -171,8 +172,8 @@ public class PositionalIndexMap implements Serializable {
 	 * @return the {@link PositionalIndexNode} given the world coords
 	 */
 	public PositionalIndexNode get(float x, float y) {
-		int chunkX = convertToChunkCoord(x);
-		int chunkY = convertToChunkCoord(y);
+		int chunkX = convertToChunkCoord(convertToWorldTileCoord(x));
+		int chunkY = convertToChunkCoord(convertToWorldTileCoord(y));
 		PositionalIndexNode positionalIndex = indexes.get(chunkX, chunkY);
 
 		if (positionalIndex == null) {

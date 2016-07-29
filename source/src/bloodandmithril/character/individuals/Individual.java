@@ -22,6 +22,10 @@ import static bloodandmithril.control.InputUtilities.worldToScreenX;
 import static bloodandmithril.control.InputUtilities.worldToScreenY;
 import static bloodandmithril.item.items.equipment.weapon.RangedWeapon.rangeControl;
 import static bloodandmithril.util.ComparisonUtil.obj;
+import static com.badlogic.gdx.Gdx.gl;
+import static com.badlogic.gdx.graphics.GL20.GL_BLEND;
+import static com.badlogic.gdx.graphics.GL20.GL_ONE_MINUS_SRC_ALPHA;
+import static com.badlogic.gdx.graphics.GL20.GL_SRC_ALPHA;
 import static com.google.common.collect.Sets.newHashSet;
 import static java.lang.Math.PI;
 import static java.lang.Math.cos;
@@ -89,6 +93,7 @@ import bloodandmithril.util.datastructure.Commands;
 import bloodandmithril.util.datastructure.WrapperForTwo;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
+import bloodandmithril.world.topography.Topography;
 
 /**
  * Class representing a character, PC or NPC.
@@ -396,6 +401,30 @@ public abstract class Individual implements Equipper, Visible, MouseOverable, Sp
 				getHitBox().height
 			);
 			userInterface.getShapeRenderer().end();
+			
+			gl.glEnable(GL_BLEND);
+			gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			userInterface.getShapeRenderer().begin(ShapeType.Filled);
+			userInterface.getShapeRenderer().setColor(0.2f, 0.5f, 1f, 0.8f);
+			if (kinematicsData.tileDirectlyBelowX != null && kinematicsData.tileDirectlyBelowY != null) {
+				userInterface.getShapeRenderer().rect(
+					worldToScreenX(Topography.convertToWorldCoord(kinematicsData.tileDirectlyBelowX, true)),
+					worldToScreenY(Topography.convertToWorldCoord(kinematicsData.tileDirectlyBelowY, true)),
+					Topography.TILE_SIZE,
+					Topography.TILE_SIZE
+				);
+			}
+			userInterface.getShapeRenderer().setColor(1f, 0.3f, 1f, 0.7f);
+			if (kinematicsData.mostRecentTileX != null && kinematicsData.mostRecentTileY != null) {
+				userInterface.getShapeRenderer().rect(
+					worldToScreenX(Topography.convertToWorldCoord(kinematicsData.mostRecentTileX, true)),
+					worldToScreenY(Topography.convertToWorldCoord(kinematicsData.mostRecentTileY, true)),
+					Topography.TILE_SIZE,
+					Topography.TILE_SIZE
+				);
+			}
+			userInterface.getShapeRenderer().end();
+			gl.glDisable(GL_BLEND);
 		}
 
 		final Controls controls = Wiring.injector().getInstance(Controls.class);
@@ -438,15 +467,6 @@ public abstract class Individual implements Equipper, Visible, MouseOverable, Sp
 		} else {
 			activeCommands.deactivate(Integer.toString(keyCode));
 		}
-	}
-
-
-	/**
-	 * No longer jumping off, set {@link #jumpOff} to null, to signify that this individual is not trying to jump off any tile
-	 */
-	public final synchronized void setJumpOffToNull() {
-		getKinematicsData().jumpOff = null;
-		getKinematicsData().jumpedOff = false;
 	}
 
 

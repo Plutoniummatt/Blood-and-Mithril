@@ -81,7 +81,9 @@ public final class Topography {
 			while (getTile(worldX, worldY, true) instanceof EmptyTile) {
 				worldY = worldY - TILE_SIZE;
 			}
-			worldY = worldY + TILE_SIZE;
+			if (worldY != -16.0f) {
+				worldY = worldY + TILE_SIZE;
+		 	}
 		} else {
 			while (!(getTile(worldX, worldY, true) instanceof EmptyTile)) {
 				worldY = worldY + TILE_SIZE;
@@ -95,13 +97,42 @@ public final class Topography {
 	}
 	
 	
+	/** Get the lowest empty tile world coordinates, or the highest non empty non platform (if starting position is non-empty) */
+	public synchronized final Vector2 getLowestEmptyTileOrPlatformTileWorldCoordsOrHighestNonEmptyNonPlatform(float worldX, float worldY, boolean floor) throws NoTileFoundException {
+		if (getTile(worldX, worldY, true) instanceof EmptyTile) {
+			while (getTile(worldX, worldY, true) instanceof EmptyTile) {
+				worldY = worldY - TILE_SIZE;
+			}
+			if (worldY != -16.0f) {
+				worldY = worldY + TILE_SIZE;
+			}
+		} else {
+			while (!(getTile(worldX, worldY, true).isPassable())) {
+				worldY = worldY + TILE_SIZE;
+			}
+		}
+
+		return new Vector2(
+			convertToWorldCoord(convertToWorldTileCoord(worldX), false),
+			convertToWorldCoord(convertToWorldTileCoord(worldY), floor)
+		);
+	}
+	
+	
 	/** Get the lowest empty tile world coordinates */
-	public synchronized final Vector2 getLowestEmptyTileOrPlatformTileWorldCoordsExludeSpecified(float worldX, float worldY, boolean floor, Function<Vector2, Boolean> toExlude) throws NoTileFoundException {
+	public synchronized final Vector2 getLowestEmptyTileOrPlatformTileWorldCoordsExludeSpecified(
+		float worldX, 
+		float worldY, 
+		boolean floor, 
+		Function<Vector2, Boolean> toExlude
+	) throws NoTileFoundException {
 		if (getTile(worldX, worldY, true) instanceof EmptyTile || toExlude.apply(new Vector2(worldX, worldY))) {
 			while (getTile(worldX, worldY, true) instanceof EmptyTile || toExlude.apply(new Vector2(worldX, worldY))) {
 				worldY = worldY - TILE_SIZE;
 			}
-			worldY = worldY + TILE_SIZE;
+			if (worldY != -16.0f) {
+				worldY = worldY + TILE_SIZE;
+			}
 		} else {
 			while (!(getTile(worldX, worldY, true) instanceof EmptyTile || !toExlude.apply(new Vector2(worldX, worldY)))) {
 				worldY = worldY + TILE_SIZE;
@@ -152,6 +183,16 @@ public final class Topography {
 	 */
 	public static final int convertToChunkTileCoord(float worldCoord) {
 		int worldCoordinateIntegerized = (int) worldCoord;
+		
+		if (worldCoord < 0f && worldCoord > -1f) {
+			worldCoordinateIntegerized -= 1;
+		}
+		
+		if (worldCoordinateIntegerized < 0 && worldCoordinateIntegerized % 16 == 0) {
+			if (worldCoordinateIntegerized <= worldCoord) {
+				worldCoordinateIntegerized += 1;
+			}
+		}
 
 		if (worldCoordinateIntegerized >= 0) {
 			return worldCoordinateIntegerized / TILE_SIZE % CHUNK_SIZE;
@@ -309,6 +350,16 @@ public final class Topography {
 	 */
 	public static final int convertToChunkCoord(float worldCoord) {
 		int worldCoordinateIntegerized = (int) worldCoord;
+		
+		if (worldCoord < 0f && worldCoord > -1f) {
+			worldCoordinateIntegerized -= 1;
+		}
+		
+		if (worldCoordinateIntegerized < 0 && worldCoordinateIntegerized % CHUNK_SIZE == 0) {
+			if (worldCoordinateIntegerized <= worldCoord) {
+				worldCoordinateIntegerized += 1;
+			}
+		}
 
 		if (worldCoordinateIntegerized >= 0) {
 			return worldCoordinateIntegerized / TILE_SIZE / CHUNK_SIZE;

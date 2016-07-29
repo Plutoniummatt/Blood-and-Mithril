@@ -35,9 +35,9 @@ public class WorldUpdateService {
 	public void update(final World world) {
 		world.getEpoch().incrementTime(UPDATE_TICK);
 
-		for (int i = 5; i > 0; i--) {
+		for (int i = 12; i > 0; i--) {
 			for (final int individualId : world.getIndividuals()) {
-				individualUpdateService.update(Domain.getIndividual(individualId), UPDATE_TICK / 5f);
+				individualUpdateService.update(Domain.getIndividual(individualId), UPDATE_TICK / 12f);
 			}
 		}
 

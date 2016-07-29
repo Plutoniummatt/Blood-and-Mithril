@@ -163,13 +163,13 @@ public class UserInterface {
 	public Button savingButton;
 
 	/** {@link ContextMenu}s */
-	private List<ContextMenu> contextMenus = new ArrayList<ContextMenu>();
+	private List<ContextMenu> contextMenus = new ArrayList<>();
 
 	/** {@link Window}s */
-	private ArrayDeque<Component> layeredComponents = new ArrayDeque<Component>();
+	private ArrayDeque<Component> layeredComponents = new ArrayDeque<>();
 
 	/** {@link TextBubble}s */
-	private ArrayDeque<TextBubble> textBubbles = new ArrayDeque<TextBubble>();
+	private ArrayDeque<TextBubble> textBubbles = new ArrayDeque<>();
 
 	/** Floating texts per world */
 	private Map<Integer, List<FloatingText>> worldFloatingTexts = Maps.newHashMap();
@@ -269,7 +269,7 @@ public class UserInterface {
 	 * @return all components
 	 */
 	public synchronized Deque<Component> getLayeredComponents() {
-		return new ArrayDeque<Component>(layeredComponents);
+		return new ArrayDeque<>(layeredComponents);
 	}
 
 
@@ -602,7 +602,7 @@ public class UserInterface {
 
 
 	private void renderHint() {
-		if (inputProcessor.getCursorBoundTask() == null && contextMenus.isEmpty() && gameClientStateTracker.getActiveWorld() != null && !isKeyPressed(Keys.ANY_KEY)) {
+		if (!gameClientStateTracker.isLoading() && inputProcessor.getCursorBoundTask() == null && contextMenus.isEmpty() && gameClientStateTracker.getActiveWorld() != null && !isKeyPressed(Keys.ANY_KEY)) {
 			boolean renderHint = false;
 			final PositionalIndexMap positionalIndexMap = gameClientStateTracker.getActiveWorld().getPositionalIndexMap();
 			for (final int id : positionalIndexMap.getNearbyEntityIds(Individual.class, getMouseWorldX(), getMouseWorldY())) {

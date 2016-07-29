@@ -1,6 +1,7 @@
 package bloodandmithril.world.topography.tile;
 
 import static bloodandmithril.world.topography.Topography.CHUNK_SIZE;
+import static bloodandmithril.world.topography.Topography.TEXTURE_COORDINATE_QUANTIZATION;
 
 import java.io.Serializable;
 
@@ -10,7 +11,6 @@ import bloodandmithril.character.ai.task.minetile.MineTile;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.world.topography.ChunkMap;
-import bloodandmithril.world.topography.Topography;
 
 /**
  * A FUCKING TILE!
@@ -330,7 +330,7 @@ public abstract class Tile implements Serializable {
 	public final float getTexCoordX(final boolean foreGround) {
 		int texX = (edge ? edgeIndex : 0) + edgeRotation * UNIQUE_TILE_TEXTURES;
 
-		return (texX + (foreGround ? 0 : 59)) * Topography.TEXTURE_COORDINATE_QUANTIZATION;
+		return (texX + (foreGround ? 0 : 59)) * TEXTURE_COORDINATE_QUANTIZATION;
 	}
 
 
@@ -338,7 +338,7 @@ public abstract class Tile implements Serializable {
 	 * Returns the y component of the texture coordinate of the top left vertex
 	 */
 	public final float getTexCoordY() {
-		return getTexCoordYSpecific() * Topography.TEXTURE_COORDINATE_QUANTIZATION;
+		return getTexCoordYSpecific() * TEXTURE_COORDINATE_QUANTIZATION;
 	}
 
 
@@ -402,14 +402,14 @@ public abstract class Tile implements Serializable {
 			if (map.get(chunkX - 1) == null || map.get(chunkX - 1).get(chunkY) == null) {
 				left = new EmptyTile();
 			} else {
-				left = map.get(chunkX - 1).get(chunkY).getTile(Topography.CHUNK_SIZE - 1, tileY, foreGround);
+				left = map.get(chunkX - 1).get(chunkY).getTile(CHUNK_SIZE - 1, tileY, foreGround);
 			}
 		} else {
 			left = map.get(chunkX).get(chunkY).getTile(tileX - 1, tileY, foreGround);
 		}
 
 		// Get the tile to the right
-		if (tileX == Topography.CHUNK_SIZE - 1) {
+		if (tileX == CHUNK_SIZE - 1) {
 			if (map.get(chunkX + 1) == null || map.get(chunkX + 1).get(chunkY) == null) {
 				right = new EmptyTile();
 			} else {
@@ -420,7 +420,7 @@ public abstract class Tile implements Serializable {
 		}
 
 		// Get the tile above
-		if (tileY == Topography.CHUNK_SIZE - 1) {
+		if (tileY == CHUNK_SIZE - 1) {
 			if (map.get(chunkX).get(chunkY + 1) == null) {
 				above = new EmptyTile();
 			} else {
@@ -435,27 +435,27 @@ public abstract class Tile implements Serializable {
 			if (map.get(chunkX).get(chunkY - 1) == null) {
 				below = new EmptyTile();
 			} else {
-				below = map.get(chunkX).get(chunkY - 1).getTile(tileX, Topography.CHUNK_SIZE - 1, foreGround);
+				below = map.get(chunkX).get(chunkY - 1).getTile(tileX, CHUNK_SIZE - 1, foreGround);
 			}
 		} else {
 			below = map.get(chunkX).get(chunkY).getTile(tileX, tileY - 1, foreGround);
 		}
 		
 		// Get the tile to the top left
-		if (tileX != 0 && tileY != Topography.CHUNK_SIZE - 1) {
+		if (tileX != 0 && tileY != CHUNK_SIZE - 1) {
 			topLeft = map.get(chunkX).get(chunkY).getTile(tileX - 1, tileY + 1, foreGround);
 		} else {
-			if (tileX == 0 && tileY == Topography.CHUNK_SIZE - 1) {
+			if (tileX == 0 && tileY == CHUNK_SIZE - 1) {
 				if (map.get(chunkX - 1) == null || map.get(chunkX - 1).get(chunkY + 1) == null) {
 					topLeft = new EmptyTile();
 				} else {
-					topLeft = map.get(chunkX - 1).get(chunkY + 1).getTile(Topography.CHUNK_SIZE - 1, 0, foreGround);
+					topLeft = map.get(chunkX - 1).get(chunkY + 1).getTile(CHUNK_SIZE - 1, 0, foreGround);
 				}
 			} else if (tileX == 0) {
 				if (map.get(chunkX - 1) == null || map.get(chunkX - 1).get(chunkY) == null) {
 					topLeft = new EmptyTile();
 				} else {
-					topLeft = map.get(chunkX - 1).get(chunkY).getTile(Topography.CHUNK_SIZE - 1, tileY + 1, foreGround);
+					topLeft = map.get(chunkX - 1).get(chunkY).getTile(CHUNK_SIZE - 1, tileY + 1, foreGround);
 				}
 			} else {
 				if (map.get(chunkX).get(chunkY + 1) == null) {
@@ -500,7 +500,7 @@ public abstract class Tile implements Serializable {
 				if (map.get(chunkX - 1) == null || map.get(chunkX - 1).get(chunkY - 1) == null) {
 					bottomleft = new EmptyTile();
 				} else {
-					bottomleft = map.get(chunkX - 1).get(chunkY - 1).getTile(Topography.CHUNK_SIZE - 1, Topography.CHUNK_SIZE - 1, foreGround);
+					bottomleft = map.get(chunkX - 1).get(chunkY - 1).getTile(CHUNK_SIZE - 1, CHUNK_SIZE - 1, foreGround);
 				}
 			} else if (tileX == 0) {
 				if (map.get(chunkX - 1) == null || map.get(chunkX - 1).get(chunkY) == null) {
@@ -525,7 +525,7 @@ public abstract class Tile implements Serializable {
 				if (map.get(chunkX + 1) == null || map.get(chunkX + 1).get(chunkY - 1) == null) {
 					bottomRight = new EmptyTile();
 				} else {
-					bottomRight = map.get(chunkX + 1).get(chunkY - 1).getTile(0, Topography.CHUNK_SIZE - 1, foreGround);
+					bottomRight = map.get(chunkX + 1).get(chunkY - 1).getTile(0, CHUNK_SIZE - 1, foreGround);
 				}
 			} else if (tileX == CHUNK_SIZE - 1) {
 				if (map.get(chunkX + 1) == null || map.get(chunkX + 1).get(chunkY) == null) {
@@ -542,24 +542,28 @@ public abstract class Tile implements Serializable {
 			}
 		}
 		
-		final int aboveEdge = ((!isPlatformTile && above.isPassable()) || (above instanceof EmptyTile && isPlatformTile)) ? 2 : 0;
-		final int belowEdge = ((!isPlatformTile && below.isPassable()) || (below instanceof EmptyTile && isPlatformTile)) ? 64 : 0;
-		final int leftEdge = ((!isPlatformTile && left.isPassable()) || (left instanceof EmptyTile && isPlatformTile)) ? 8 : 0;
-		final int rightEdge = ((!isPlatformTile && right.isPassable()) || (right instanceof EmptyTile && isPlatformTile)) ? 16 : 0;
-		final int topLeftEdge = ((!isPlatformTile && topLeft.isPassable()) || (topLeft instanceof EmptyTile && isPlatformTile)) ? 1 : 0;
-		final int topRightEdge = ((!isPlatformTile && topRight.isPassable()) || (topRight instanceof EmptyTile && isPlatformTile)) ? 4 : 0;
-		final int bottomLeftEdge = ((!isPlatformTile && bottomleft.isPassable()) || (bottomleft instanceof EmptyTile && isPlatformTile)) ? 32 : 0;
-		final int bottomRightEdge = ((!isPlatformTile && bottomRight.isPassable()) || (bottomRight instanceof EmptyTile && isPlatformTile)) ? 128 : 0;
+		final int aboveEdge = ((!isPlatformTile && above.isPassable()) || (isPlatformTile)) ? 2 : 0;
+		final int belowEdge = ((!isPlatformTile && below.isPassable()) || (isPlatformTile)) ? 64 : 0;
+		final int leftEdge = ((!isPlatformTile && left.isPassable()) || (!left.isPlatformTile && isPlatformTile)) ? 8 : 0;
+		final int rightEdge = ((!isPlatformTile && right.isPassable()) || (!right.isPlatformTile && isPlatformTile)) ? 16 : 0;
+		final int topLeftEdge = ((!isPlatformTile && topLeft.isPassable()) || (isPlatformTile)) ? 1 : 0;
+		final int topRightEdge = ((!isPlatformTile && topRight.isPassable()) || (isPlatformTile)) ? 4 : 0;
+		final int bottomLeftEdge = ((!isPlatformTile && bottomleft.isPassable()) || (isPlatformTile)) ? 32 : 0;
+		final int bottomRightEdge = ((!isPlatformTile && bottomRight.isPassable()) || (isPlatformTile)) ? 128 : 0;
 
-		edge = 	!getClass().equals(EmptyTile.class) && (
-				above.isPassable() || 
-				below.isPassable() ||
-				left.isPassable() ||
-				right.isPassable() ||
-				topLeft.isPassable() ||
-				topRight.isPassable() ||
-				bottomleft.isPassable() ||
-				bottomRight.isPassable());
+		if (isPlatformTile) {
+			edge = true;
+		} else {
+			edge = 	!getClass().equals(EmptyTile.class) && (
+					above.isPassable() || 
+					below.isPassable() ||
+					left.isPassable() ||
+					right.isPassable() ||
+					topLeft.isPassable() ||
+					topRight.isPassable() ||
+					bottomleft.isPassable() ||
+					bottomRight.isPassable());
+		}
 
 		
 		if (isPlatformTile) {
@@ -586,7 +590,6 @@ public abstract class Tile implements Serializable {
 			);
 		}
 
-		
 		if (edge) {
 			int[] edge = edgeOrientationArray[255 - (aboveEdge + belowEdge + leftEdge + rightEdge + topLeftEdge + topRightEdge + bottomLeftEdge + bottomRightEdge)];
 			this.edgeIndex = edge[0];

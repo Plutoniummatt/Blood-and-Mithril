@@ -106,7 +106,6 @@ public class GoToLocationExecutor implements AITaskExecutor {
 		host.sendCommand(controls.moveRight.keyCode, false);
 		host.sendCommand(controls.moveLeft.keyCode, false);
 		host.sendCommand(controls.walk.keyCode, host.isWalking());
-		host.setJumpOffToNull();
 
 		return false;
 	}
