@@ -24,6 +24,7 @@ public class ChunkPopulator {
 		// Create the chunk and put it in the ChunkMap.
 		final Chunk newChunk = new Chunk(fTiles, bTiles, chunkX, chunkY, world.getWorldId());
 		world.getTopography().getChunkMap().addChunk(chunkX, chunkY, newChunk);
+		newChunk.calculateChunkOrientations();
 		placeProps(world, chunkX, chunkY, world.getTopography().getStructures());
 
 		// If the structure has finished generating, we can delete it from the StructureMap, otherwise, decrement the number of chunks left to be generated on the structure

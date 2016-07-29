@@ -25,7 +25,7 @@ public class WoodenPlatform extends Tile {
 	
 	@Override
 	protected float getTexCoordYSpecific() {
-		return 5;
+		return 10;
 	}
 
 	

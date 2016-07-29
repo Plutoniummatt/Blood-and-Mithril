@@ -339,7 +339,9 @@ public class TestSuperStructure extends SuperStructure {
 		if (worldTileY > getSurfaceHeight().apply(worldTileX)) {
 			return new Tile.EmptyTile();
 		} else {
-			return new OrdinarySoilTile();
+			OrdinarySoilTile ordinarySoilTile = new OrdinarySoilTile();
+			ordinarySoilTile.changeToSmoothCeiling();
+			return ordinarySoilTile;
 		}
 	}
 
@@ -349,7 +351,9 @@ public class TestSuperStructure extends SuperStructure {
 		if (worldTileY > getSurfaceHeight().apply(worldTileX)-1) {
 			return new Tile.EmptyTile();
 		} else {
-			return new OrdinarySoilTile();
+			OrdinarySoilTile ordinarySoilTile = new OrdinarySoilTile();
+			ordinarySoilTile.changeToSmoothCeiling();
+			return ordinarySoilTile;
 		}
 	}
 

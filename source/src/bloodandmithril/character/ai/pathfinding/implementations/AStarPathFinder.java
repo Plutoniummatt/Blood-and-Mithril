@@ -160,7 +160,7 @@ public final class AStarPathFinder extends PathFinder {
 					return null;
 				}
 			} else {
-				return world.getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(location, floor);
+				return world.getTopography().getLowestEmptyTileOrPlatformTileWorldCoordsOrHighestNonEmptyNonPlatform(location.x, location.y, floor);
 			}
 		}
 	}
@@ -286,7 +286,7 @@ public final class AStarPathFinder extends PathFinder {
 					}
 				}
 				cascadeDownAndProcessPlatforms(to.x, to.y - TILE_SIZE, parent, destination, height, safeHeight, world);
-				return -round(to.y - world.getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(to.x, to.y, false).y) / TILE_SIZE;
+				return -round(to.y - world.getTopography().getLowestEmptyTileOrPlatformTileWorldCoordsOrHighestNonEmptyNonPlatform(to.x, to.y, false).y) / TILE_SIZE;
 
 			// If the tile is not empty and not a platform, we check that all tiles above it (within specified height) are also empty, if so, we return 1, otherwise we return 2.
 			} else if (!tile.isPlatformTile) {

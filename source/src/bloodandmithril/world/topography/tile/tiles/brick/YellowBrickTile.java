@@ -23,7 +23,7 @@ public class YellowBrickTile extends BrickTile {
 
 	@Override
 	protected float getTexCoordYSpecific() {
-		return 8;
+		return smoothCeiling ? 9 : 8;
 	}
 
 

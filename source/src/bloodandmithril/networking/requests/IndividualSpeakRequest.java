@@ -13,10 +13,8 @@ import bloodandmithril.world.Domain;
  */
 @Copyright("Matthew Peck 2015")
 public class IndividualSpeakRequest implements Request {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -8075435361108405757L;
+	
 	private boolean speak;
 	private int individualId;
 

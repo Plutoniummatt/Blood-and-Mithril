@@ -59,14 +59,15 @@ public class ImprovedIndividualKinematicsUpdater implements IndividualKinematics
 			}
 		};
 		
-		Tile surface = world.getTopography().getSurfaceTile(position.x, position.y + individual.getHeight() / 5, excludePassable);
-		Vector2 surfaceLocation = world.getTopography().getLowestEmptyTileOrPlatformTileWorldCoordsExludeSpecified(position.x, position.y + individual.getHeight() / 5, true, excludePassable);
+		int surfaceReferenceOffset = 20;
+		Tile surface = world.getTopography().getSurfaceTile(position.x, position.y + surfaceReferenceOffset, excludePassable);
+		Vector2 surfaceLocation = world.getTopography().getLowestEmptyTileOrPlatformTileWorldCoordsExludeSpecified(position.x, position.y + surfaceReferenceOffset, true, excludePassable);
 		Vector2 surfaceVector = deriveSurfaceVector(position, surface.getCornerType());
 		terrainDetection(individual, velocity, position, surface, surfaceVector, surfaceLocation);
 		updateTileDirectlyUnder(individual, world);
 		
-		surface = world.getTopography().getSurfaceTile(position.x, position.y + individual.getHeight() / 5, excludePassable);
-		surfaceLocation = world.getTopography().getLowestEmptyTileOrPlatformTileWorldCoordsExludeSpecified(position.x, position.y + individual.getHeight() / 5, true, excludePassable);
+		surface = world.getTopography().getSurfaceTile(position.x, position.y + surfaceReferenceOffset, excludePassable);
+		surfaceLocation = world.getTopography().getLowestEmptyTileOrPlatformTileWorldCoordsExludeSpecified(position.x, position.y + surfaceReferenceOffset, true, excludePassable);
 		
 		preventAccelerationIfMidAir(position, acceleration, surfaceLocation);
 		updatePosition(delta, velocity, position, world.getTopography(), individual);

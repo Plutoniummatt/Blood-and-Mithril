@@ -218,7 +218,7 @@ public class WorldRenderer {
 		graphics.getCam().position.x = graphics.getCam().position.x - xOffset;
 		graphics.getCam().position.y = graphics.getCam().position.y - yOffset;
 		graphics.getCam().update();
-		topographyRenderer.renderForeGround(world.getTopography(), camX, camY, Shaders.pass, shader -> {}, graphics);
+		topographyRenderer.renderForeGround(world.getTopography(), camX, camY, Shaders.ignoreSlightTransparency, shader -> {}, graphics);
 		graphics.getCam().position.x = graphics.getCam().position.x + xOffset;
 		graphics.getCam().position.y = graphics.getCam().position.y + yOffset;
 		graphics.getCam().update();
@@ -301,7 +301,7 @@ public class WorldRenderer {
 		Shaders.particleTexture.setUniformf("topLeft", circle.getU(), circle.getV());
 		Shaders.particleTexture.setUniformf("bottomRight", circle.getU2(), circle.getV2());
 		if (world.getClientParticles() != null) {
-			final Wrapper<Integer> counter = new Wrapper<Integer>(0);
+			final Wrapper<Integer> counter = new Wrapper<>(0);
 			world.getClientParticles().stream().filter(p -> p.depth == depth && isOnScreen(p.position, 50f)).forEach(p -> {
 				p.render(Gdx.graphics.getDeltaTime(), circle, graphics);
 				batch.flush();
@@ -309,7 +309,7 @@ public class WorldRenderer {
 			});
 		}
 		if (world.getServerParticles() != null) {
-			final Wrapper<Integer> counter = new Wrapper<Integer>(0);
+			final Wrapper<Integer> counter = new Wrapper<>(0);
 			world.getServerParticles().values().stream().filter(p -> p.depth == depth && isOnScreen(p.position, 50f)).forEach(p -> {
 				p.render(Gdx.graphics.getDeltaTime(), circle, graphics);
 				batch.flush();

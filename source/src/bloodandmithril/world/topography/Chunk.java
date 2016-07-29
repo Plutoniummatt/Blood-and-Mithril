@@ -104,12 +104,21 @@ public final class Chunk {
 	public final void checkMesh(boolean force) {
 		if (fMesh == null || force) {
 			constructMesh(fData, fVertexAttributes, true);
-			calculateChunkOrientations(true);
+			calculateChunkOrientations(true, true);
 		}
 		if (bMesh == null || force) {
 			constructMesh(bData, bVertexAttributes, false);
-			calculateChunkOrientations(false);
+			calculateChunkOrientations(false, true);
 		}
+	}
+	
+	
+	/**
+	 * Recalculates the orientations of tiles within this chunk
+	 */
+	public final void calculateChunkOrientations() {
+		calculateChunkOrientations(true, false);
+		calculateChunkOrientations(false, false);
 	}
 
 
@@ -265,7 +274,7 @@ public final class Chunk {
 	 * @param chunkX - the x coordinate of the chunk to calculate for
 	 * @param chunkY - the y coordinate of the chunk to calculate for
 	 */
-	private final void calculateChunkOrientations(boolean foreGround) {
+	private final void calculateChunkOrientations(boolean foreGround, boolean refreshMesh) {
 		int chunkX = fData.xChunkCoord;
 		int chunkY = fData.yChunkCoord;
 
@@ -390,7 +399,7 @@ public final class Chunk {
 			bData.tiles[tileX][tileY] = toChangeTo;
 		}
 		repopulateTextureCoordinates(tileX, tileY, foreGround);
-		calculateChunkOrientations(foreGround);
+		calculateChunkOrientations(foreGround, true);
 	}
 	
 	

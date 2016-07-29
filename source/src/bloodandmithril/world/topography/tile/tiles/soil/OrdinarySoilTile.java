@@ -23,12 +23,13 @@ public class OrdinarySoilTile extends SoilTile {
 
 	@Override
 	protected float getTexCoordYSpecific() {
-		return 3;
+		return smoothCeiling ? 7 : 3;
 	}
 
 
 	@Override
 	public void changeToSmoothCeiling() {
+		this.smoothCeiling = true;
 	}
 
 

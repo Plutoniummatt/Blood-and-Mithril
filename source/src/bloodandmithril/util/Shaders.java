@@ -26,6 +26,7 @@ public class Shaders {
 	public static ShaderProgram replaceColor = replaceColorShader();
 	public static ShaderProgram filterIgnoreReplace = filterReplaceIgnoreColorShader();
 
+	public static ShaderProgram ignoreSlightTransparency = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/defaultRenderer/ignoreSlightTransparency.fp"));
 	public static ShaderProgram volumetricLighting = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/vLighting.fp"));
 	public static ShaderProgram colorize = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/colorize.fp"));
 	public static ShaderProgram invertY = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/defaultRenderer/invertYAxis.fp"));

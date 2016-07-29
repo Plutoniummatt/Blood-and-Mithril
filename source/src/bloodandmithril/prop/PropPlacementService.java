@@ -143,6 +143,10 @@ public class PropPlacementService {
 				if (grounded && (tileUnder.isPassable() || canPlaceOnTopOf != null && !canPlaceOnTopOf.apply(tileUnder))) {
 					return false;
 				}
+				
+				if (grounded && (tileUnder.edgeIndex == 1 || tileUnder.edgeIndex == 11)) {
+					return false;
+				}
 
 				for (int j = 1; j <= ySteps; j++) {
 					Tile tileOverlapping = world.getTopography().getTile(x - width / 2 + i * xIncrement, y + j * yIncrement - TILE_SIZE/2, true);
