@@ -297,7 +297,7 @@ public abstract class Tile implements Serializable {
 	protected boolean smoothCeiling = false;
 	
 	/** An 'edge' tile is a tile that is adjascent to at least one {@link EmptyTile}, adjascency is defined as, right next to, or diagonal to */
-	public boolean edge = false;
+	public transient boolean edge = false;
 	
 	/**
 	 * The corner type controls how entities move over the tile
@@ -307,10 +307,10 @@ public abstract class Tile implements Serializable {
 	 * Type 2 - Slope down from left 
 	 * Type 3 - Slope up then down 
 	 */
-	private byte cornerType = 0;
+	private transient byte cornerType = 0;
 	
 	/** Which tile texture index we should use for this edge tile, and how many CW 90 degree rotations should be applied */
-	public int edgeIndex, edgeRotation;
+	public transient int edgeIndex, edgeRotation;
 
 	/**
 	 * Protected constructor
