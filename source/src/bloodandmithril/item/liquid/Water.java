@@ -1,10 +1,12 @@
 package bloodandmithril.item.liquid;
 
+import com.badlogic.gdx.graphics.Color;
+
+import bloodandmithril.character.IndividualStateService;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.util.Util.Colors;
-
-import com.badlogic.gdx.graphics.Color;
 
 /**
  * Water, only quenches thirst
@@ -20,8 +22,8 @@ public class Water extends Liquid {
 	}
 
 	@Override
-	public void drink(float amount, Individual affected) {
-		affected.increaseThirst(amount);
+	public void drink(final float amount, final Individual affected) {
+		Wiring.injector().getInstance(IndividualStateService.class).increaseThirst(affected, amount);
 	}
 
 	@Override

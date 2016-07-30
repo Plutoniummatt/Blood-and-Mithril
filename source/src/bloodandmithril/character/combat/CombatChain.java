@@ -9,6 +9,7 @@ import com.google.common.base.Optional;
 import com.google.common.collect.Iterables;
 
 import bloodandmithril.audio.SoundService;
+import bloodandmithril.character.IndividualStateService;
 import bloodandmithril.character.individuals.Humanoid.HumanoidCombatBodyParts;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
@@ -164,7 +165,7 @@ public class CombatChain {
 		}
 		ParticleService.bloodSplat(target.getEmissionPosition(), disarmVector);
 
-		target.damage(damage);
+		Wiring.injector().getInstance(IndividualStateService.class).damage(target, damage);
 		return String.format("%.2f", damage) + (crit ? " (Crit!)" : "");
 	}
 }

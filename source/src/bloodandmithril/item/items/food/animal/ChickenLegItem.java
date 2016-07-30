@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.google.common.collect.Maps;
 
+import bloodandmithril.character.IndividualStateService;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.characters.Elf;
 import bloodandmithril.character.proficiency.proficiencies.Cooking;
@@ -15,6 +16,7 @@ import bloodandmithril.item.Craftable;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.food.Food;
+import bloodandmithril.ui.FloatingTextService;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.window.MessageWindow;
 
@@ -76,7 +78,9 @@ public class ChickenLegItem extends Food implements Craftable {
 			Wiring.injector().getInstance(UserInterface.class).addLayeredComponent(messageWindow);
 			return false;
 		}
-		consumer.increaseHunger(0.15f);
+
+		Wiring.injector().getInstance(FloatingTextService.class).addFloatingTextToIndividual(consumer, "+15 Hunger", Color.ORANGE);
+		Wiring.injector().getInstance(IndividualStateService.class).increaseHunger(consumer, 0.15f);
 		return true;
 	}
 

@@ -1,12 +1,13 @@
 package bloodandmithril.item.items.equipment.weapon;
 
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_SPEAR;
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_TWO_HANDED_WEAPON;
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_SPEAR;
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_TWO_HANDED_WEAPON;
+import static bloodandmithril.character.individuals.Action.ATTACK_LEFT_SPEAR;
+import static bloodandmithril.character.individuals.Action.ATTACK_LEFT_TWO_HANDED_WEAPON;
+import static bloodandmithril.character.individuals.Action.ATTACK_RIGHT_SPEAR;
+import static bloodandmithril.character.individuals.Action.ATTACK_RIGHT_TWO_HANDED_WEAPON;
+
+import bloodandmithril.character.individuals.Action;
 import bloodandmithril.character.individuals.Humanoid;
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.character.individuals.Individual.Action;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.item.items.equipment.Equipper.EquipmentSlot;
@@ -24,13 +25,13 @@ public abstract class TwoHandedMeleeWeapon<T extends Material> extends MeleeWeap
 	/**
 	 * Protected constructor
 	 */
-	protected TwoHandedMeleeWeapon(float mass, int volume, boolean equippable, long value, Class<T> material) {
+	protected TwoHandedMeleeWeapon(final float mass, final int volume, final boolean equippable, final long value, final Class<T> material) {
 		super(mass, volume, equippable, value, EquipmentSlot.MAINHAND, material);
 	}
 
 
 	@Override
-	public Action getAttackAction(boolean right) {
+	public Action getAttackAction(final boolean right) {
 		if (right) {
 			return stab() ? ATTACK_RIGHT_TWO_HANDED_WEAPON : ATTACK_RIGHT_SPEAR;
 		} else {
@@ -40,7 +41,7 @@ public abstract class TwoHandedMeleeWeapon<T extends Material> extends MeleeWeap
 
 
 	@Override
-	public int getRenderingIndex(Individual individual) {
+	public int getRenderingIndex(final Individual individual) {
 		if (individual instanceof Humanoid) {
 			return 5;
 		}

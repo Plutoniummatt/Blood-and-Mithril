@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import bloodandmithril.audio.SoundService;
+import bloodandmithril.character.IndividualStateService;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.UpdatedBy;
@@ -61,7 +62,7 @@ public class CarrotItem extends Food {
 	public boolean consume(final Individual consumer) {
 		SoundService.play(SoundService.crunch, consumer.getState().position, true, getVisible(consumer));
 		Wiring.injector().getInstance(FloatingTextService.class).addFloatingTextToIndividual(consumer, "+5 Hunger", Color.ORANGE);
-		consumer.increaseHunger(0.05f);
+		Wiring.injector().getInstance(IndividualStateService.class).increaseHunger(consumer, 0.05f);
 		return true;
 	}
 
@@ -177,8 +178,8 @@ public class CarrotItem extends Food {
 		public CarrotSeedProp(final float x, final float y, final SeedItem seed) {
 			super(x, y, seed, new SoilTilesOnly());
 		}
-		
-		
+
+
 		@Override
 		public TextureRegion getTextureRegion() {
 			return CARROT_SEED;

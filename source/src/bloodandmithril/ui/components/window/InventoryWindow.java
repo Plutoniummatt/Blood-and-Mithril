@@ -24,8 +24,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 
+import bloodandmithril.character.individuals.Action;
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.character.individuals.Individual.Action;
 import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.control.Controls;
 import bloodandmithril.core.Copyright;

@@ -1,8 +1,10 @@
 package bloodandmithril.character.conditions;
 
+import bloodandmithril.character.IndividualStateService;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.world.Domain;
 
 @Copyright("Matthew Peck 2014")
@@ -15,19 +17,19 @@ public class Exhaustion extends Condition {
 	/**
 	 * Constructor
 	 */
-	public Exhaustion(int affected) {
+	public Exhaustion(final int affected) {
 		this.affected = affected;
 	}
 
 
 	@Override
-	public void affect(Individual affected, float delta) {
-		affected.decreaseHunger((1 - affected.getState().stamina) * 0.00001f);
+	public void affect(final Individual affected, final float delta) {
+		Wiring.injector().getInstance(IndividualStateService.class).decreaseHunger(affected, (1 - affected.getState().stamina) * 0.00001f);
 	}
 
 
 	@Override
-	public void infect(Individual infected, float delta) {
+	public void infect(final Individual infected, final float delta) {
 		// Not infectious
 	}
 
@@ -44,7 +46,7 @@ public class Exhaustion extends Condition {
 
 
 	@Override
-	public void stack(Condition condition) {
+	public void stack(final Condition condition) {
 	}
 
 
@@ -69,8 +71,8 @@ public class Exhaustion extends Condition {
 	/**
 	 * See {@link Condition#getName()}
 	 */
-	public static String getName(float stamina) {
-		int h = Math.round(stamina * 10f);
+	public static String getName(final float stamina) {
+		final int h = Math.round(stamina * 10f);
 		switch (h) {
 			case 0: return "Exhausted";
 			case 1: return "Very tired";
@@ -83,12 +85,12 @@ public class Exhaustion extends Condition {
 			case 8: return "Rapid breathing";
 			case 9: return "Energetic";
 			case 10: return "Energetic";
-			default: throw new RuntimeException("Unexpected thirst level");
+			default: throw new RuntimeException("Unexpected stamina level");
 		}
 	}
 
 
 	@Override
-	public void clientSideEffects(Individual affected, float delta) {
+	public void clientSideEffects(final Individual affected, final float delta) {
 	}
 }

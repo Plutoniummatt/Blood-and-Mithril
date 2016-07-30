@@ -28,6 +28,7 @@ import bloodandmithril.character.ai.perception.Listener;
 import bloodandmithril.character.ai.perception.Observer;
 import bloodandmithril.character.ai.perception.SoundStimulus;
 import bloodandmithril.character.ai.perception.Visible;
+import bloodandmithril.character.individuals.Action;
 import bloodandmithril.character.individuals.Animal;
 import bloodandmithril.character.individuals.GroundTravellingIndividual;
 import bloodandmithril.character.individuals.Individual;
@@ -334,7 +335,7 @@ public class Hare extends GroundTravellingIndividual implements Listener, Observ
 
 
 	@Override
-	protected void internalKill() {
+	public void internalKill() {
 	}
 
 

@@ -221,6 +221,5 @@ public class Campfire extends CraftingStation implements Lightable {
 
 	@Override
 	public void affectIndividual(final Individual individual, final float delta) {
-		individual.decreaseThirst(delta / 600f);
 	}
 }

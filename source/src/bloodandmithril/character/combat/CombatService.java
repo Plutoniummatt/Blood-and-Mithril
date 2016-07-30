@@ -8,8 +8,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.google.common.base.Optional;
 import com.google.common.collect.Iterables;
 
+import bloodandmithril.character.individuals.Action;
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.character.individuals.Individual.Action;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.item.items.Item;

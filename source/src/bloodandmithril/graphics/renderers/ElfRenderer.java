@@ -1,24 +1,24 @@
 package bloodandmithril.graphics.renderers;
 
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON;
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON_MINE;
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON_STAB;
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_UNARMED;
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON;
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON_MINE;
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB;
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_UNARMED;
-import static bloodandmithril.character.individuals.Individual.Action.DEAD;
-import static bloodandmithril.character.individuals.Individual.Action.JUMP_LEFT;
-import static bloodandmithril.character.individuals.Individual.Action.JUMP_RIGHT;
-import static bloodandmithril.character.individuals.Individual.Action.RUN_LEFT;
-import static bloodandmithril.character.individuals.Individual.Action.RUN_RIGHT;
-import static bloodandmithril.character.individuals.Individual.Action.STAND_LEFT;
-import static bloodandmithril.character.individuals.Individual.Action.STAND_LEFT_COMBAT_ONE_HANDED;
-import static bloodandmithril.character.individuals.Individual.Action.STAND_RIGHT;
-import static bloodandmithril.character.individuals.Individual.Action.STAND_RIGHT_COMBAT_ONE_HANDED;
-import static bloodandmithril.character.individuals.Individual.Action.WALK_LEFT;
-import static bloodandmithril.character.individuals.Individual.Action.WALK_RIGHT;
+import static bloodandmithril.character.individuals.Action.ATTACK_LEFT_ONE_HANDED_WEAPON;
+import static bloodandmithril.character.individuals.Action.ATTACK_LEFT_ONE_HANDED_WEAPON_MINE;
+import static bloodandmithril.character.individuals.Action.ATTACK_LEFT_ONE_HANDED_WEAPON_STAB;
+import static bloodandmithril.character.individuals.Action.ATTACK_LEFT_UNARMED;
+import static bloodandmithril.character.individuals.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON;
+import static bloodandmithril.character.individuals.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON_MINE;
+import static bloodandmithril.character.individuals.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB;
+import static bloodandmithril.character.individuals.Action.ATTACK_RIGHT_UNARMED;
+import static bloodandmithril.character.individuals.Action.DEAD;
+import static bloodandmithril.character.individuals.Action.JUMP_LEFT;
+import static bloodandmithril.character.individuals.Action.JUMP_RIGHT;
+import static bloodandmithril.character.individuals.Action.RUN_LEFT;
+import static bloodandmithril.character.individuals.Action.RUN_RIGHT;
+import static bloodandmithril.character.individuals.Action.STAND_LEFT;
+import static bloodandmithril.character.individuals.Action.STAND_LEFT_COMBAT_ONE_HANDED;
+import static bloodandmithril.character.individuals.Action.STAND_RIGHT;
+import static bloodandmithril.character.individuals.Action.STAND_RIGHT_COMBAT_ONE_HANDED;
+import static bloodandmithril.character.individuals.Action.WALK_LEFT;
+import static bloodandmithril.character.individuals.Action.WALK_RIGHT;
 import static bloodandmithril.util.datastructure.WrapperForTwo.wrap;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
@@ -34,9 +34,9 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.google.common.collect.Maps;
 import com.google.inject.Singleton;
 
+import bloodandmithril.character.individuals.Action;
 import bloodandmithril.character.individuals.Humanoid;
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.character.individuals.Individual.Action;
 import bloodandmithril.character.individuals.characters.Elf;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.Graphics;
@@ -65,7 +65,7 @@ public class ElfRenderer extends IndividualRendererImpl {
 	public static Map<Action, List<WrapperForTwo<AnimationSwitcher, ShaderProgram>>> animationMap = newHashMap();
 
 	static {
-		boolean server = !ClientServerInterface.isClient();
+		final boolean server = !ClientServerInterface.isClient();
 
 		if (ClientServerInterface.isClient()) {
 			hairStyleFemale.put(1, new TextureRegion(Textures.INDIVIDUAL_TEXTURE, 896, 784, 64, 112));
@@ -73,19 +73,19 @@ public class ElfRenderer extends IndividualRendererImpl {
 			hairStyleFemale.put(3, new TextureRegion(Textures.INDIVIDUAL_TEXTURE, 1024, 784, 64, 112));
 		}
 
-		AnimationSwitcher dead = new AnimationSwitcher();
+		final AnimationSwitcher dead = new AnimationSwitcher();
 		dead.animations.put(individual -> {return true;}, AnimationHelper.animation(Textures.INDIVIDUAL_TEXTURE, 0, 1040, 44, 70, 1, 1f, PlayMode.LOOP));
 
-		ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> deadSequence = newArrayList(
+		final ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> deadSequence = newArrayList(
 			wrap(dead, server ? null : Shaders.pass)
 		);
 
-		AnimationSwitcher walk1 = new AnimationSwitcher();
-		AnimationSwitcher walk2 = new AnimationSwitcher();
-		AnimationSwitcher walk3 = new AnimationSwitcher();
-		AnimationSwitcher walk4 = new AnimationSwitcher();
-		AnimationSwitcher walk5 = new AnimationSwitcher();
-		AnimationSwitcher walk6 = new AnimationSwitcher();
+		final AnimationSwitcher walk1 = new AnimationSwitcher();
+		final AnimationSwitcher walk2 = new AnimationSwitcher();
+		final AnimationSwitcher walk3 = new AnimationSwitcher();
+		final AnimationSwitcher walk4 = new AnimationSwitcher();
+		final AnimationSwitcher walk5 = new AnimationSwitcher();
+		final AnimationSwitcher walk6 = new AnimationSwitcher();
 		walk1.animations.put(individual -> {return true;}, AnimationHelper.animation(Textures.INDIVIDUAL_TEXTURE, 0, 112, 64, 112, 10, 0.052f, PlayMode.LOOP));        										// HEAD
 		walk2.animations.put(individual -> {return ((Humanoid) individual).offHandEquipped();}, AnimationHelper.animation(Textures.INDIVIDUAL_TEXTURE, 0, 0, 64, 112, 10, 0.052f, PlayMode.LOOP));        	// BACK ARM
 		walk2.animations.put(individual -> {return true;}, AnimationHelper.animation(Textures.INDIVIDUAL_TEXTURE, 0, 448, 64, 112, 10, 0.052f, PlayMode.LOOP));       										// BACK ARM
@@ -94,7 +94,7 @@ public class ElfRenderer extends IndividualRendererImpl {
 		walk5.animations.put(individual -> {return true;}, AnimationHelper.animation(Textures.INDIVIDUAL_TEXTURE, 0, 560, 64, 112, 10, 0.052f, PlayMode.LOOP));        										// FRONT LEG
 		walk6.animations.put(individual -> {return true;}, AnimationHelper.animation(Textures.INDIVIDUAL_TEXTURE, 0, 336, 64, 112, 10, 0.052f, PlayMode.LOOP));        										// FRONT ARM
 
-		ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> walkSequence = newArrayList(
+		final ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> walkSequence = newArrayList(
 			wrap(walk1, server ? null : Shaders.filterIgnoreReplace),
 			wrap(walk2, server ? null : Shaders.filterIgnoreReplace),
 			wrap(walk3, server ? null : Shaders.filterIgnoreReplace),
@@ -103,12 +103,12 @@ public class ElfRenderer extends IndividualRendererImpl {
 			wrap(walk6, server ? null : Shaders.filterIgnoreReplace)
 		);
 
-		AnimationSwitcher stand1 = new AnimationSwitcher();
-		AnimationSwitcher stand2 = new AnimationSwitcher();
-		AnimationSwitcher stand3 = new AnimationSwitcher();
-		AnimationSwitcher stand4 = new AnimationSwitcher();
-		AnimationSwitcher stand5 = new AnimationSwitcher();
-		AnimationSwitcher stand6 = new AnimationSwitcher();
+		final AnimationSwitcher stand1 = new AnimationSwitcher();
+		final AnimationSwitcher stand2 = new AnimationSwitcher();
+		final AnimationSwitcher stand3 = new AnimationSwitcher();
+		final AnimationSwitcher stand4 = new AnimationSwitcher();
+		final AnimationSwitcher stand5 = new AnimationSwitcher();
+		final AnimationSwitcher stand6 = new AnimationSwitcher();
 		stand1.animations.put(individual -> {return true;}, AnimationHelper.animation(Textures.INDIVIDUAL_TEXTURE, 1152, 112, 64, 112, 1, 1f, PlayMode.LOOP));        									// HEAD
 		stand2.animations.put(individual -> {return ((Humanoid) individual).offHandEquipped();}, AnimationHelper.animation(Textures.INDIVIDUAL_TEXTURE, 1152, 0, 64, 112, 1, 1f, PlayMode.LOOP));    	// BACK ARM
 		stand2.animations.put(individual -> {return true;}, AnimationHelper.animation(Textures.INDIVIDUAL_TEXTURE, 1152, 448, 64, 112, 1, 1f, PlayMode.LOOP));        									// BACK ARM
@@ -117,7 +117,7 @@ public class ElfRenderer extends IndividualRendererImpl {
 		stand5.animations.put(individual -> {return true;}, AnimationHelper.animation(Textures.INDIVIDUAL_TEXTURE, 1152, 560, 64, 112, 1, 1f, PlayMode.LOOP));       									// FRONT LEG
 		stand6.animations.put(individual -> {return true;}, AnimationHelper.animation(Textures.INDIVIDUAL_TEXTURE, 1152, 336, 64, 112, 1, 1f, PlayMode.LOOP));       									// FRONT ARM
 
-		ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> standSequence = newArrayList(
+		final ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> standSequence = newArrayList(
 			wrap(stand1, server ? null : Shaders.filterIgnoreReplace),
 			wrap(stand2, server ? null : Shaders.filterIgnoreReplace),
 			wrap(stand3, server ? null : Shaders.filterIgnoreReplace),
@@ -126,12 +126,12 @@ public class ElfRenderer extends IndividualRendererImpl {
 			wrap(stand6, server ? null : Shaders.filterIgnoreReplace)
 		);
 
-		AnimationSwitcher jump1 = new AnimationSwitcher();
-		AnimationSwitcher jump2 = new AnimationSwitcher();
-		AnimationSwitcher jump3 = new AnimationSwitcher();
-		AnimationSwitcher jump4 = new AnimationSwitcher();
-		AnimationSwitcher jump5 = new AnimationSwitcher();
-		AnimationSwitcher jump6 = new AnimationSwitcher();
+		final AnimationSwitcher jump1 = new AnimationSwitcher();
+		final AnimationSwitcher jump2 = new AnimationSwitcher();
+		final AnimationSwitcher jump3 = new AnimationSwitcher();
+		final AnimationSwitcher jump4 = new AnimationSwitcher();
+		final AnimationSwitcher jump5 = new AnimationSwitcher();
+		final AnimationSwitcher jump6 = new AnimationSwitcher();
 		jump1.animations.put(individual -> {return true;}, AnimationHelper.animation(Textures.INDIVIDUAL_TEXTURE, 768, 112, 64, 112, 1, 1f, PlayMode.LOOP));        								// HEAD
 		jump2.animations.put(individual -> {return ((Humanoid) individual).offHandEquipped();}, AnimationHelper.animation(Textures.INDIVIDUAL_TEXTURE, 768, 0, 64, 112, 1, 1f, PlayMode.LOOP));	// BACK ARM
 		jump2.animations.put(individual -> {return true;}, AnimationHelper.animation(Textures.INDIVIDUAL_TEXTURE, 768, 448, 64, 112, 1, 1f, PlayMode.LOOP));        								// BACK ARM
@@ -140,7 +140,7 @@ public class ElfRenderer extends IndividualRendererImpl {
 		jump5.animations.put(individual -> {return true;}, AnimationHelper.animation(Textures.INDIVIDUAL_TEXTURE, 768, 560, 64, 112, 1, 1f, PlayMode.LOOP));        								// FRONT LEG
 		jump6.animations.put(individual -> {return true;}, AnimationHelper.animation(Textures.INDIVIDUAL_TEXTURE, 768, 336, 64, 112, 1, 1f, PlayMode.LOOP));        								// FRONT ARM
 
-		ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> jumpSequence = newArrayList(
+		final ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> jumpSequence = newArrayList(
 			wrap(jump1, server ? null : Shaders.filterIgnoreReplace),
 			wrap(jump2, server ? null : Shaders.filterIgnoreReplace),
 			wrap(jump3, server ? null : Shaders.filterIgnoreReplace),
@@ -149,12 +149,12 @@ public class ElfRenderer extends IndividualRendererImpl {
 			wrap(jump6, server ? null : Shaders.filterIgnoreReplace)
 		);
 
-		AnimationSwitcher standCombat1 = new AnimationSwitcher();
-		AnimationSwitcher standCombat2 = new AnimationSwitcher();
-		AnimationSwitcher standCombat3 = new AnimationSwitcher();
-		AnimationSwitcher standCombat4 = new AnimationSwitcher();
-		AnimationSwitcher standCombat5 = new AnimationSwitcher();
-		AnimationSwitcher standCombat6 = new AnimationSwitcher();
+		final AnimationSwitcher standCombat1 = new AnimationSwitcher();
+		final AnimationSwitcher standCombat2 = new AnimationSwitcher();
+		final AnimationSwitcher standCombat3 = new AnimationSwitcher();
+		final AnimationSwitcher standCombat4 = new AnimationSwitcher();
+		final AnimationSwitcher standCombat5 = new AnimationSwitcher();
+		final AnimationSwitcher standCombat6 = new AnimationSwitcher();
 		standCombat1.animations.put(individual -> {return true;}, AnimationHelper.animation(Textures.INDIVIDUAL_TEXTURE, 1216, 112, 64, 112, 1, 1f, PlayMode.LOOP));        // HEAD
 		standCombat2.animations.put(individual -> {return true;}, AnimationHelper.animation(Textures.INDIVIDUAL_TEXTURE, 1216, 448, 64, 112, 1, 1f, PlayMode.LOOP));        // BACK ARM
 		standCombat3.animations.put(individual -> {return true;}, AnimationHelper.animation(Textures.INDIVIDUAL_TEXTURE, 1216, 672, 64, 112, 1, 1f, PlayMode.LOOP));        // BACK LEG
@@ -162,7 +162,7 @@ public class ElfRenderer extends IndividualRendererImpl {
 		standCombat5.animations.put(individual -> {return true;}, AnimationHelper.animation(Textures.INDIVIDUAL_TEXTURE, 1216, 560, 64, 112, 1, 1f, PlayMode.LOOP));        // FRONT LEG
 		standCombat6.animations.put(individual -> {return true;}, AnimationHelper.animation(Textures.INDIVIDUAL_TEXTURE, 1216, 336, 64, 112, 1, 1f, PlayMode.LOOP));        // FRONT ARM
 
-		ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> standSequenceCombat = newArrayList(
+		final ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> standSequenceCombat = newArrayList(
 			wrap(standCombat1, server ? null : Shaders.filterIgnoreReplace),
 			wrap(standCombat2, server ? null : Shaders.filterIgnoreReplace),
 			wrap(standCombat3, server ? null : Shaders.filterIgnoreReplace),
@@ -171,12 +171,12 @@ public class ElfRenderer extends IndividualRendererImpl {
 			wrap(standCombat6, server ? null : Shaders.filterIgnoreReplace)
 		);
 
-		AnimationSwitcher run1 = new AnimationSwitcher();
-		AnimationSwitcher run2 = new AnimationSwitcher();
-		AnimationSwitcher run3 = new AnimationSwitcher();
-		AnimationSwitcher run4 = new AnimationSwitcher();
-		AnimationSwitcher run5 = new AnimationSwitcher();
-		AnimationSwitcher run6 = new AnimationSwitcher();
+		final AnimationSwitcher run1 = new AnimationSwitcher();
+		final AnimationSwitcher run2 = new AnimationSwitcher();
+		final AnimationSwitcher run3 = new AnimationSwitcher();
+		final AnimationSwitcher run4 = new AnimationSwitcher();
+		final AnimationSwitcher run5 = new AnimationSwitcher();
+		final AnimationSwitcher run6 = new AnimationSwitcher();
 		run1.animations.put(individual -> {return true;}, AnimationHelper.animation(Textures.INDIVIDUAL_TEXTURE, 640, 112, 64, 112, 8, 0.052f, PlayMode.LOOP));        										// HEAD
 		run2.animations.put(individual -> {return ((Humanoid) individual).offHandEquipped();}, AnimationHelper.animation(Textures.INDIVIDUAL_TEXTURE, 640, 0, 64, 112, 8, 0.052f, PlayMode.LOOP));        	// BACK ARM
 		run2.animations.put(individual -> {return true;}, AnimationHelper.animation(Textures.INDIVIDUAL_TEXTURE, 640, 448, 64, 112, 8, 0.052f, PlayMode.LOOP));       										// BACK ARM
@@ -185,7 +185,7 @@ public class ElfRenderer extends IndividualRendererImpl {
 		run5.animations.put(individual -> {return true;}, AnimationHelper.animation(Textures.INDIVIDUAL_TEXTURE, 640, 560, 64, 112, 8, 0.052f, PlayMode.LOOP));        										// FRONT LEG
 		run6.animations.put(individual -> {return true;}, AnimationHelper.animation(Textures.INDIVIDUAL_TEXTURE, 640, 336, 64, 112, 8, 0.052f, PlayMode.LOOP));        										// FRONT ARM
 
-		ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> runSequence = newArrayList(
+		final ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> runSequence = newArrayList(
 			wrap(run1, server ? null : Shaders.filterIgnoreReplace),
 			wrap(run2, server ? null : Shaders.filterIgnoreReplace),
 			wrap(run3, server ? null : Shaders.filterIgnoreReplace),
@@ -194,12 +194,12 @@ public class ElfRenderer extends IndividualRendererImpl {
 			wrap(run6, server ? null : Shaders.filterIgnoreReplace)
 		);
 
-		AnimationSwitcher stab1 = new AnimationSwitcher();
-		AnimationSwitcher stab2 = new AnimationSwitcher();
-		AnimationSwitcher stab3 = new AnimationSwitcher();
-		AnimationSwitcher stab4 = new AnimationSwitcher();
-		AnimationSwitcher stab5 = new AnimationSwitcher();
-		AnimationSwitcher stab6 = new AnimationSwitcher();
+		final AnimationSwitcher stab1 = new AnimationSwitcher();
+		final AnimationSwitcher stab2 = new AnimationSwitcher();
+		final AnimationSwitcher stab3 = new AnimationSwitcher();
+		final AnimationSwitcher stab4 = new AnimationSwitcher();
+		final AnimationSwitcher stab5 = new AnimationSwitcher();
+		final AnimationSwitcher stab6 = new AnimationSwitcher();
 		stab1.animations.put(individual -> {return true;}, AnimationHelper.animation(Textures.INDIVIDUAL_TEXTURE, 1280, 112, 64, 112, 8, 0.07f, PlayMode.NORMAL));        // HEAD
 		stab2.animations.put(individual -> {return true;}, AnimationHelper.animation(Textures.INDIVIDUAL_TEXTURE, 1280, 448, 64, 112, 8, 0.07f, PlayMode.NORMAL));        // BACK ARM
 		stab3.animations.put(individual -> {return true;}, AnimationHelper.animation(Textures.INDIVIDUAL_TEXTURE, 1280, 672, 64, 112, 8, 0.07f, PlayMode.NORMAL));        // BACK LEG
@@ -207,7 +207,7 @@ public class ElfRenderer extends IndividualRendererImpl {
 		stab5.animations.put(individual -> {return true;}, AnimationHelper.animation(Textures.INDIVIDUAL_TEXTURE, 1280, 560, 64, 112, 8, 0.07f, PlayMode.NORMAL));        // FRONT LEG
 		stab6.animations.put(individual -> {return true;}, AnimationHelper.animation(Textures.INDIVIDUAL_TEXTURE, 1280, 336, 64, 112, 8, 0.07f, PlayMode.NORMAL));        // FRONT ARM
 
-		ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> stabSequence = newArrayList(
+		final ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> stabSequence = newArrayList(
 			wrap(stab1, server ? null : Shaders.filterIgnoreReplace),
 			wrap(stab2, server ? null : Shaders.filterIgnoreReplace),
 			wrap(stab3, server ? null : Shaders.filterIgnoreReplace),
@@ -216,12 +216,12 @@ public class ElfRenderer extends IndividualRendererImpl {
 			wrap(stab6, server ? null : Shaders.filterIgnoreReplace)
 		);
 
-		AnimationSwitcher slash1 = new AnimationSwitcher();
-		AnimationSwitcher slash2 = new AnimationSwitcher();
-		AnimationSwitcher slash3 = new AnimationSwitcher();
-		AnimationSwitcher slash4 = new AnimationSwitcher();
-		AnimationSwitcher slash5 = new AnimationSwitcher();
-		AnimationSwitcher slash6 = new AnimationSwitcher();
+		final AnimationSwitcher slash1 = new AnimationSwitcher();
+		final AnimationSwitcher slash2 = new AnimationSwitcher();
+		final AnimationSwitcher slash3 = new AnimationSwitcher();
+		final AnimationSwitcher slash4 = new AnimationSwitcher();
+		final AnimationSwitcher slash5 = new AnimationSwitcher();
+		final AnimationSwitcher slash6 = new AnimationSwitcher();
 		slash1.animations.put(individual -> {return true;}, AnimationHelper.animation(Textures.INDIVIDUAL_TEXTURE, 1792, 112, 64, 112, 10, 0.07f, PlayMode.NORMAL));      // HEAD
 		slash2.animations.put(individual -> {return true;}, AnimationHelper.animation(Textures.INDIVIDUAL_TEXTURE, 1792, 448, 64, 112, 10, 0.07f, PlayMode.NORMAL));      // BACK ARM
 		slash3.animations.put(individual -> {return true;}, AnimationHelper.animation(Textures.INDIVIDUAL_TEXTURE, 1792, 672, 64, 112, 10, 0.07f, PlayMode.NORMAL));      // BACK LEG
@@ -229,7 +229,7 @@ public class ElfRenderer extends IndividualRendererImpl {
 		slash5.animations.put(individual -> {return true;}, AnimationHelper.animation(Textures.INDIVIDUAL_TEXTURE, 1792, 560, 64, 112, 10, 0.07f, PlayMode.NORMAL));      // FRONT LEG
 		slash6.animations.put(individual -> {return true;}, AnimationHelper.animation(Textures.INDIVIDUAL_TEXTURE, 1792, 336, 64, 112, 10, 0.07f, PlayMode.NORMAL));      // FRONT ARM
 
-		ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> slashSequence = newArrayList(
+		final ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> slashSequence = newArrayList(
 			wrap(slash1, server ? null : Shaders.filterIgnoreReplace),
 			wrap(slash2, server ? null : Shaders.filterIgnoreReplace),
 			wrap(slash3, server ? null : Shaders.filterIgnoreReplace),
@@ -336,9 +336,9 @@ public class ElfRenderer extends IndividualRendererImpl {
 
 
 	@Override
-	public void internalRender(Individual indi, Graphics graphics) {
-		Elf elf = (Elf) indi;
-		
+	public void internalRender(final Individual indi, final Graphics graphics) {
+		final Elf elf = (Elf) indi;
+
 		Shaders.filterIgnoreReplace.begin();
 		Shaders.filterIgnoreReplace.setUniformf("toReplace", Color.RED);
 		Shaders.filterIgnoreReplace.setUniformf("color", elf.getEyeColor().r, elf.getEyeColor().g, elf.getEyeColor().b, elf.getEyeColor().a);
@@ -368,11 +368,11 @@ public class ElfRenderer extends IndividualRendererImpl {
 
 
 	@Override
-	protected void renderCustomizations(Individual indi, int animationIndex, Graphics graphics) {
-		Elf elf = (Elf) indi;
-		
-		TextureRegion hair = hairStyleFemale.get(elf.getHairStyle());
-		SpacialConfiguration helmetConfig = elf.getHelmetSpatialConfigration();
+	protected void renderCustomizations(final Individual indi, final int animationIndex, final Graphics graphics) {
+		final Elf elf = (Elf) indi;
+
+		final TextureRegion hair = hairStyleFemale.get(elf.getHairStyle());
+		final SpacialConfiguration helmetConfig = elf.getHelmetSpatialConfigration();
 
 		graphics.getSpriteBatch().setShader(Shaders.colorize);
 		Shaders.colorize.setUniformMatrix("u_projTrans", graphics.getCam().combined);

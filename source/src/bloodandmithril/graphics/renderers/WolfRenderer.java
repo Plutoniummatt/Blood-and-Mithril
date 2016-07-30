@@ -1,7 +1,7 @@
 package bloodandmithril.graphics.renderers;
 
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_UNARMED;
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_UNARMED;
+import static bloodandmithril.character.individuals.Action.ATTACK_LEFT_UNARMED;
+import static bloodandmithril.character.individuals.Action.ATTACK_RIGHT_UNARMED;
 import static bloodandmithril.util.datastructure.WrapperForTwo.wrap;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
@@ -15,8 +15,8 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.google.inject.Singleton;
 
 import bloodandmithril.character.combat.CombatService;
+import bloodandmithril.character.individuals.Action;
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.character.individuals.Individual.Action;
 import bloodandmithril.character.individuals.characters.Wolf;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.Textures;
@@ -42,33 +42,33 @@ public class WolfRenderer extends IndividualRendererImpl {
 	public static Map<Action, Map<Integer, ParameterizedTask<Individual>>> actionFrames = newHashMap();
 
 	static {
-		boolean server = !ClientServerInterface.isClient();
+		final boolean server = !ClientServerInterface.isClient();
 
-		AnimationSwitcher bite = new AnimationSwitcher();
+		final AnimationSwitcher bite = new AnimationSwitcher();
 		bite.animations.put(individual -> {return true;}, AnimationHelper.animation(Textures.INDIVIDUAL_TEXTURE, 1260, 965, 140, 75, 7, 0.07f, PlayMode.LOOP_REVERSED));
 
-		ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> biteSequence = newArrayList(
+		final ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> biteSequence = newArrayList(
 			wrap(bite, server ? null : Shaders.pass)
 		);
 
-		AnimationSwitcher run = new AnimationSwitcher();
+		final AnimationSwitcher run = new AnimationSwitcher();
 		run.animations.put(individual -> {return true;}, AnimationHelper.animation(Textures.INDIVIDUAL_TEXTURE, 140, 965, 140, 75, 8, 0.06f, PlayMode.LOOP_REVERSED));
 
-		ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> runSequence = newArrayList(
+		final ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> runSequence = newArrayList(
 			wrap(run, server ? null : Shaders.pass)
 		);
 
-		AnimationSwitcher stand = new AnimationSwitcher();
+		final AnimationSwitcher stand = new AnimationSwitcher();
 		stand.animations.put(individual -> {return true;}, AnimationHelper.animation(Textures.INDIVIDUAL_TEXTURE, 0, 965, 140, 75, 1, 1f, PlayMode.LOOP_REVERSED));
 
-		ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> standSequence = newArrayList(
+		final ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> standSequence = newArrayList(
 			wrap(stand, server ? null : Shaders.pass)
 		);
 
-		AnimationSwitcher jump = new AnimationSwitcher();
+		final AnimationSwitcher jump = new AnimationSwitcher();
 		jump.animations.put(individual -> {return true;}, AnimationHelper.animation(Textures.INDIVIDUAL_TEXTURE, 560, 965, 140, 75, 1, 1f, PlayMode.LOOP_REVERSED));
 
-		ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> jumpSequence = newArrayList(
+		final ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> jumpSequence = newArrayList(
 			wrap(jump, server ? null : Shaders.pass)
 		);
 
@@ -89,7 +89,7 @@ public class WolfRenderer extends IndividualRendererImpl {
 		animationMap.put(Action.STAND_LEFT_COMBAT_ONE_HANDED, standSequence);
 		animationMap.put(Action.STAND_RIGHT_COMBAT_ONE_HANDED, standSequence);
 
-		Map<Integer, ParameterizedTask<Individual>> biteAction = newHashMap();
+		final Map<Integer, ParameterizedTask<Individual>> biteAction = newHashMap();
 		biteAction.put(
 			2,
 			individual -> {

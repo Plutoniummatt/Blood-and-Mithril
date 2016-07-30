@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Maps;
 
 import bloodandmithril.audio.SoundService;
+import bloodandmithril.character.IndividualStateService;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Wiring;
@@ -95,7 +96,7 @@ public class ArrowProjectile<T extends Metal> extends Projectile {
 	@Override
 	public void hit(final Individual victim) {
 		final float damage = velocity.len() / getTerminalVelocity() * (5f + 5f * Util.getRandom().nextFloat()) * Metal.getMaterial(arrowTipMaterial).getCombatMultiplier();
-		victim.damage(damage);
+		Wiring.injector().getInstance(IndividualStateService.class).damage(victim, damage);
 		Wiring.injector().getInstance(FloatingTextService.class).addFloatingTextToIndividual(victim, String.format("%.2f", damage), Color.RED);
 		ParticleService.bloodSplat(victim.getEmissionPosition(), new Vector2());
 	}

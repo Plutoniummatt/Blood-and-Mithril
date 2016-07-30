@@ -65,7 +65,6 @@ import com.google.inject.Singleton;
 
 import bloodandmithril.character.ai.AIProcessor;
 import bloodandmithril.character.ai.AITask;
-import bloodandmithril.character.ai.task.compositeaitask.CompositeAITask;
 import bloodandmithril.character.ai.task.gotolocation.GoToLocation;
 import bloodandmithril.character.ai.task.takeitem.TakeItem;
 import bloodandmithril.character.ai.task.travel.Travel;
@@ -207,7 +206,7 @@ public class UserInterface {
 	@Inject private FactionControlService factionControlService;
 	@Inject private GameClientStateTracker gameClientStateTracker;
 	@Inject private TopographyDebugRenderer topographyDebugRenderer;
-
+	@Inject private IndividualUIDecorationsRenderer individualUIDecorationsRenderer;
 
 	/**
 	 * @return a Camera that is used to display UI elements, but the coordiantes move with the main game camera
@@ -440,11 +439,11 @@ public class UserInterface {
 	}
 
 
-	private void renderEdgeTileBoxes(Topography topography, int camX, int camY) {
-		int bottomLeftX 	= (camX - Display.getWidth() / 2) / (CHUNK_SIZE * TILE_SIZE);
-		int bottomLeftY 	= (camY - Display.getHeight() / 2) / (CHUNK_SIZE * TILE_SIZE);
-		int topRightX 		= bottomLeftX + Display.getWidth() / (CHUNK_SIZE * TILE_SIZE);
-		int topRightY		= bottomLeftY + Display.getHeight() / (CHUNK_SIZE * TILE_SIZE);
+	private void renderEdgeTileBoxes(final Topography topography, final int camX, final int camY) {
+		final int bottomLeftX 	= (camX - Display.getWidth() / 2) / (CHUNK_SIZE * TILE_SIZE);
+		final int bottomLeftY 	= (camY - Display.getHeight() / 2) / (CHUNK_SIZE * TILE_SIZE);
+		final int topRightX 		= bottomLeftX + Display.getWidth() / (CHUNK_SIZE * TILE_SIZE);
+		final int topRightY		= bottomLeftY + Display.getHeight() / (CHUNK_SIZE * TILE_SIZE);
 
 		getShapeRenderer().begin(ShapeType.Line);
 		gl.glEnable(GL_BLEND);
@@ -453,25 +452,25 @@ public class UserInterface {
 		for (int x = bottomLeftX - 2; x <= topRightX + 2; x++) {
 			for (int y = bottomLeftY - 2; y <= topRightY + 2; y++) {
 				if (topography.getChunkMap().get(x) != null && topography.getChunkMap().get(x).get(y) != null) {
-					Chunk chunk = topography.getChunkMap().get(x).get(y);
-					
+					final Chunk chunk = topography.getChunkMap().get(x).get(y);
+
 					for (int tileX = 0; tileX < CHUNK_SIZE; tileX++) {
 						for (int tileY = 0; tileY < CHUNK_SIZE; tileY++) {
 							getShapeRenderer().setColor(1f, 0.3f, 0.2f, 0.4f);
 							if (chunk.getTile(tileX, tileY, false).edge) {
 								getShapeRenderer().rect(
-									worldToScreenX(CHUNK_SIZE * TILE_SIZE * x + TILE_SIZE * tileX), 
-									worldToScreenY(CHUNK_SIZE * TILE_SIZE * y + TILE_SIZE * tileY), 
-									TILE_SIZE, 
+									worldToScreenX(CHUNK_SIZE * TILE_SIZE * x + TILE_SIZE * tileX),
+									worldToScreenY(CHUNK_SIZE * TILE_SIZE * y + TILE_SIZE * tileY),
+									TILE_SIZE,
 									TILE_SIZE
 								);
 							}
 							getShapeRenderer().setColor(0.3f, 0.9f, 0.7f, 0.9f);
 							if (chunk.getTile(tileX, tileY, true).edge) {
 								getShapeRenderer().rect(
-									worldToScreenX(CHUNK_SIZE * TILE_SIZE * x + TILE_SIZE * tileX), 
-									worldToScreenY(CHUNK_SIZE * TILE_SIZE * y + TILE_SIZE * tileY), 
-									TILE_SIZE, 
+									worldToScreenX(CHUNK_SIZE * TILE_SIZE * x + TILE_SIZE * tileX),
+									worldToScreenY(CHUNK_SIZE * TILE_SIZE * y + TILE_SIZE * tileY),
+									TILE_SIZE,
 									TILE_SIZE
 								);
 							}
@@ -480,7 +479,7 @@ public class UserInterface {
 				}
 			}
 		}
-		
+
 		getShapeRenderer().end();
 		gl.glDisable(GL_BLEND);
 	}
@@ -493,29 +492,29 @@ public class UserInterface {
 		gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		getShapeRenderer().setColor(new Color(0.7f, 0.5f, 1f, 0.25f));
 
-		float baseLineHorizontal = (Graphics.getGdxHeight()/2 - graphics.getCam().position.y) % 320;
-		float lineLengthHorizontal = Graphics.getGdxWidth();
-		
-		float baseLineVertical = (Graphics.getGdxWidth()/2 - graphics.getCam().position.x) % 320;
-		float lineLengthVeritical = Graphics.getGdxHeight();
-		
+		final float baseLineHorizontal = (Graphics.getGdxHeight()/2 - graphics.getCam().position.y) % 320;
+		final float lineLengthHorizontal = Graphics.getGdxWidth();
+
+		final float baseLineVertical = (Graphics.getGdxWidth()/2 - graphics.getCam().position.x) % 320;
+		final float lineLengthVeritical = Graphics.getGdxHeight();
+
 		for (int i = 0; i < 8; i++) {
 			getShapeRenderer().line(
-				0, 
-				baseLineHorizontal + i * 320, 
-				lineLengthHorizontal, 
+				0,
+				baseLineHorizontal + i * 320,
+				lineLengthHorizontal,
 				baseLineHorizontal + i * 320
 			);
 		}
 		for (int i = 0; i < 16; i++) {
 			getShapeRenderer().line(
-				baseLineVertical + i * 320, 
-				0, 
-				baseLineVertical + i * 320, 
+				baseLineVertical + i * 320,
+				0,
+				baseLineVertical + i * 320,
 				lineLengthVeritical
 			);
 		}
-		
+
 		getShapeRenderer().end();
 	}
 
@@ -774,7 +773,7 @@ public class UserInterface {
 		getShapeRenderer().setColor(Color.GREEN);
 		getShapeRenderer().rect(x, y, TILE_SIZE, TILE_SIZE);
 		getShapeRenderer().end();
-		
+
 		gl.glDisable(GL_BLEND);
 
 		return true;
@@ -1045,20 +1044,6 @@ public class UserInterface {
 							);
 						}
 					}
-				} else if (currentTask instanceof CompositeAITask) {
-					// AITask subTask = ((CompositeAITask) currentTask).getCurrentTask();
-					// if (subTask instanceof GoToLocation) {
-					// 	 ((GoToLocation)subTask).renderPath();
-					// 	 ((GoToLocation)subTask).renderFinalWayPoint();
-					// } else if (subTask instanceof GoToMovingLocation) {
-					// 	 ((GoToMovingLocation)subTask).getCurrentGoToLocation().renderPath();
-					// 	 ((GoToMovingLocation)subTask).getCurrentGoToLocation().renderFinalWayPoint();
-					// } else if (subTask instanceof JitGoToLocation) {
-					// 	 GoToLocation goToLocation = (GoToLocation)((JitGoToLocation)subTask).getTask();
-					// 	 if (goToLocation != null) {
-					// 	 	goToLocation.renderFinalWayPoint();
-					// 	 }
-					// }
 				}
 
 				if (!(currentTask instanceof Travel)) {
@@ -1070,7 +1055,8 @@ public class UserInterface {
 					}
 				}
 			}
-			indi.renderUIDecorations(graphics, this);
+
+			individualUIDecorationsRenderer.render(indi, shapeRenderer, DEBUG, UICameraTrackingCam, UICamera);
 		}
 		graphics.getSpriteBatch().end();
 	}
@@ -1284,15 +1270,15 @@ public class UserInterface {
 		defaultFont.draw(graphics.getSpriteBatch(), "Number of tasks queued in AI/Pathfinding thread: " + Integer.toString(AIProcessor.getNumberOfOutstandingTasks()), 5, graphics.getHeight() - 125);
 		defaultFont.draw(graphics.getSpriteBatch(), "Number of tasks queued in Loader thread: " + Integer.toString(chunkLoader.loaderTasks.size()), 5, graphics.getHeight() - 145);
 		defaultFont.draw(graphics.getSpriteBatch(), "Number of tasks queued in Saver thread: " + Integer.toString(threadedTasks.saverTasks.size()), 5, graphics.getHeight() - 165);
-		
+
 		try {
 			defaultFont.draw(
-				graphics.getSpriteBatch(), 
-				"Superstructure on mouse: " + gameClientStateTracker.getActiveWorld().getTopography().getStructures().getStructure(convertToChunkCoord(getMouseWorldCoords().x), convertToChunkCoord(getMouseWorldCoords().y), true).toString(), 
-				5, 
+				graphics.getSpriteBatch(),
+				"Superstructure on mouse: " + gameClientStateTracker.getActiveWorld().getTopography().getStructures().getStructure(convertToChunkCoord(getMouseWorldCoords().x), convertToChunkCoord(getMouseWorldCoords().y), true).toString(),
+				5,
 				graphics.getHeight() - 185
 			);
-		} catch (NullPointerException e) {}
+		} catch (final NullPointerException e) {}
 
 		defaultFont.setColor(Color.CYAN);
 	}

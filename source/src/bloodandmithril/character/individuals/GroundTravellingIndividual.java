@@ -1,15 +1,15 @@
 package bloodandmithril.character.individuals;
 
-import static bloodandmithril.character.individuals.Individual.Action.JUMP_LEFT;
-import static bloodandmithril.character.individuals.Individual.Action.JUMP_RIGHT;
-import static bloodandmithril.character.individuals.Individual.Action.RUN_LEFT;
-import static bloodandmithril.character.individuals.Individual.Action.RUN_RIGHT;
-import static bloodandmithril.character.individuals.Individual.Action.STAND_LEFT;
-import static bloodandmithril.character.individuals.Individual.Action.STAND_LEFT_COMBAT_ONE_HANDED;
-import static bloodandmithril.character.individuals.Individual.Action.STAND_RIGHT;
-import static bloodandmithril.character.individuals.Individual.Action.STAND_RIGHT_COMBAT_ONE_HANDED;
-import static bloodandmithril.character.individuals.Individual.Action.WALK_LEFT;
-import static bloodandmithril.character.individuals.Individual.Action.WALK_RIGHT;
+import static bloodandmithril.character.individuals.Action.JUMP_LEFT;
+import static bloodandmithril.character.individuals.Action.JUMP_RIGHT;
+import static bloodandmithril.character.individuals.Action.RUN_LEFT;
+import static bloodandmithril.character.individuals.Action.RUN_RIGHT;
+import static bloodandmithril.character.individuals.Action.STAND_LEFT;
+import static bloodandmithril.character.individuals.Action.STAND_LEFT_COMBAT_ONE_HANDED;
+import static bloodandmithril.character.individuals.Action.STAND_RIGHT;
+import static bloodandmithril.character.individuals.Action.STAND_RIGHT_COMBAT_ONE_HANDED;
+import static bloodandmithril.character.individuals.Action.WALK_LEFT;
+import static bloodandmithril.character.individuals.Action.WALK_RIGHT;
 import static bloodandmithril.util.ComparisonUtil.obj;
 
 import java.util.List;

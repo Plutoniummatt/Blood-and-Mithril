@@ -1,9 +1,9 @@
 package bloodandmithril.character.individuals;
 
-import static bloodandmithril.character.individuals.Individual.Action.JUMP_LEFT;
-import static bloodandmithril.character.individuals.Individual.Action.JUMP_RIGHT;
-import static bloodandmithril.character.individuals.Individual.Action.STAND_LEFT;
-import static bloodandmithril.character.individuals.Individual.Action.STAND_RIGHT;
+import static bloodandmithril.character.individuals.Action.JUMP_LEFT;
+import static bloodandmithril.character.individuals.Action.JUMP_RIGHT;
+import static bloodandmithril.character.individuals.Action.STAND_LEFT;
+import static bloodandmithril.character.individuals.Action.STAND_RIGHT;
 import static bloodandmithril.util.ComparisonUtil.obj;
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static bloodandmithril.world.topography.Topography.convertToWorldTileCoord;
@@ -35,66 +35,66 @@ import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 
 /**
  * The new and improved individual position/velocity updater....
- * 
+ *
  * @author Matt
  */
 @Singleton
 @Copyright("Matthew Peck 2016")
 public class ImprovedIndividualKinematicsUpdater implements IndividualKinematicsUpdater {
-	
+
 	/**
 	 * @see bloodandmithril.character.individuals.IndividualKinematicsUpdater#update(float, bloodandmithril.world.World, bloodandmithril.character.individuals.Individual)
 	 */
 	@Override
-	public void update(float delta, World world, Individual individual) throws NoTileFoundException {
-		Vector2 velocity = individual.getState().velocity;
-		Vector2 position = individual.getState().position;
-		Vector2 acceleration = individual.getState().acceleration;
-		
-		Function<Vector2, Boolean> excludePassable = vector -> {
+	public void update(final float delta, final World world, final Individual individual) throws NoTileFoundException {
+		final Vector2 velocity = individual.getState().velocity;
+		final Vector2 position = individual.getState().position;
+		final Vector2 acceleration = individual.getState().acceleration;
+
+		final Function<Vector2, Boolean> excludePassable = vector -> {
 			try {
 				return isTilePassable(vector.x, vector.y, world.getTopography(), individual.getKinematicsData(), individual.getAI());
-			} catch (NoTileFoundException e) {
+			} catch (final NoTileFoundException e) {
 				return false;
 			}
 		};
-		
-		int surfaceReferenceOffset = 20;
+
+		final int surfaceReferenceOffset = 20;
 		Tile surface = world.getTopography().getSurfaceTile(position.x, position.y + surfaceReferenceOffset, excludePassable);
 		Vector2 surfaceLocation = world.getTopography().getLowestEmptyTileOrPlatformTileWorldCoordsExludeSpecified(position.x, position.y + surfaceReferenceOffset, true, excludePassable);
-		Vector2 surfaceVector = deriveSurfaceVector(position, surface.getCornerType());
+		final Vector2 surfaceVector = deriveSurfaceVector(position, surface.getCornerType());
 		terrainDetection(individual, velocity, position, surface, surfaceVector, surfaceLocation);
 		updateTileDirectlyUnder(individual, world);
-		
+
 		surface = world.getTopography().getSurfaceTile(position.x, position.y + surfaceReferenceOffset, excludePassable);
 		surfaceLocation = world.getTopography().getLowestEmptyTileOrPlatformTileWorldCoordsExludeSpecified(position.x, position.y + surfaceReferenceOffset, true, excludePassable);
-		
+
 		preventAccelerationIfMidAir(position, acceleration, surfaceLocation);
 		updatePosition(delta, velocity, position, world.getTopography(), individual);
 		updateTileDirectlyUnder(individual, world);
  		gravitation(delta, world, velocity, acceleration);
-		
+
 		if (!isJumping(individual)) {
 			friction(individual);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Sets the {@link IndividualKineticsProcessingData#tileDirectlyBelowX} and {@link IndividualKineticsProcessingData#tileDirectlyBelowY}
 	 */
-	private void updateTileDirectlyUnder(Individual individual, World world) {
+	private void updateTileDirectlyUnder(final Individual individual, final World world) {
 		try {
-			Vector2 surfaceLocation = world.getTopography().getLowestEmptyTileOrPlatformTileWorldCoordsOrHighestNonEmptyNonPlatform(
-				individual.getState().position.x, 
-				individual.getState().position.y + 2f, 
+			final Vector2 surfaceLocation = world.getTopography().getLowestEmptyTileOrPlatformTileWorldCoordsOrHighestNonEmptyNonPlatform(
+				individual.getState().position.x,
+				individual.getState().position.y + 2f,
 				true
 			);
-			
+
 			individual.getKinematicsData().tileDirectlyBelowX = convertToWorldTileCoord(surfaceLocation.x);
 			individual.getKinematicsData().tileDirectlyBelowY = convertToWorldTileCoord(surfaceLocation.y) - 1;
-			
-		} catch (NoTileFoundException e) {
+
+		} catch (final NoTileFoundException e) {
 			individual.getKinematicsData().tileDirectlyBelowX = null;
 			individual.getKinematicsData().tileDirectlyBelowY = null;
 		}
@@ -105,16 +105,16 @@ public class ImprovedIndividualKinematicsUpdater implements IndividualKinematics
 	 * Applies terrain detection and makes corrections
 	 */
 	private boolean terrainDetection(
-		Individual individual, 
-		Vector2 velocity, 
-		Vector2 position, 
-		Tile surface, 
-		Vector2 surfaceVector, 
-		Vector2 surfaceLocation
+		final Individual individual,
+		final Vector2 velocity,
+		final Vector2 position,
+		final Tile surface,
+		final Vector2 surfaceVector,
+		final Vector2 surfaceLocation
 	) {
 		if (position.y < surfaceLocation.y) {
-			int cornerTileOffset = deriveCornerTileOffset(position, surface);
-			
+			final int cornerTileOffset = deriveCornerTileOffset(position, surface);
+
 			if (isJumping(individual)) {
 				if (terminateJump(individual, surfaceVector, velocity)) {
 					position.y = surfaceLocation.y - cornerTileOffset;
@@ -131,7 +131,7 @@ public class ImprovedIndividualKinematicsUpdater implements IndividualKinematics
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
 
@@ -140,7 +140,7 @@ public class ImprovedIndividualKinematicsUpdater implements IndividualKinematics
 	 * @param individual
 	 * @return true if the given individual is jumping
 	 */
-	private boolean isJumping(Individual individual) {
+	private boolean isJumping(final Individual individual) {
 		return obj(individual.getCurrentAction()).oneOf(JUMP_LEFT, JUMP_RIGHT);
 	}
 
@@ -149,19 +149,19 @@ public class ImprovedIndividualKinematicsUpdater implements IndividualKinematics
 	 * @param individual
 	 * @param surfaceVector
 	 * @param velocity
-	 * 
+	 *
 	 * @return true if the jump should be terminated, given the velocity of the individual and the surface normal vector
 	 */
 	private boolean terminateJump(
-		Individual individual, 
-		Vector2 surfaceVector,
-		Vector2 velocity
+		final Individual individual,
+		final Vector2 surfaceVector,
+		final Vector2 velocity
 	) {
 		if (velocity.dot(surfaceVector) <= 0) {
 			individual.setCurrentAction(velocity.x > 0 ? STAND_RIGHT : STAND_LEFT);
 			return true;
 		}
-		
+
 		return false;
 	}
 
@@ -169,9 +169,9 @@ public class ImprovedIndividualKinematicsUpdater implements IndividualKinematics
 	/**
 	 * Derives the effective normal vector of the surface the individual is on
 	 */
-	private Vector2 deriveSurfaceVector(Vector2 position, CornerType cornerType) {
+	private Vector2 deriveSurfaceVector(final Vector2 position, final CornerType cornerType) {
 		Vector2 surfaceVector = new Vector2();
-		
+
 		switch (cornerType) {
 		case SLOPE_UP:
 			surfaceVector = new Vector2(-1f, 1f);
@@ -180,7 +180,7 @@ public class ImprovedIndividualKinematicsUpdater implements IndividualKinematics
 			surfaceVector = new Vector2(1f, 1f);
 			break;
 		case SLOPE_UP_THEN_DOWN:
-			int mod = (int) -position.x % TILE_SIZE;
+			final int mod = (int) -position.x % TILE_SIZE;
 			if (position.x < 0) {
 				surfaceVector = mod <= TILE_SIZE/2 ? new Vector2(2f, 1f) : new Vector2(-2f, 1f);
 			} else {
@@ -191,7 +191,7 @@ public class ImprovedIndividualKinematicsUpdater implements IndividualKinematics
 			surfaceVector = new Vector2(0f, 1f);
 			break;
 		}
-		
+
 		return surfaceVector;
 	}
 
@@ -199,10 +199,10 @@ public class ImprovedIndividualKinematicsUpdater implements IndividualKinematics
 	/**
 	 * Handles corner tiles, e.g. stairs
 	 */
-	private int deriveCornerTileOffset(Vector2 position, Tile surface) {
+	private int deriveCornerTileOffset(final Vector2 position, final Tile surface) {
 		int triangleTileOffset = 0;
-		int x = round(position.x);
-		
+		final int x = round(position.x);
+
 		switch (surface.getCornerType()) {
 		case SLOPE_UP:
 			if (x < -1) {
@@ -220,14 +220,14 @@ public class ImprovedIndividualKinematicsUpdater implements IndividualKinematics
 			break;
 		case SLOPE_UP_THEN_DOWN:
 			if (x < -1) {
-				int mod = (int) -position.x % TILE_SIZE;
+				final int mod = (int) -position.x % TILE_SIZE;
 				if (mod <= TILE_SIZE/2) {
 					triangleTileOffset = TILE_SIZE - 2 * mod;
 				} else {
 					triangleTileOffset = - TILE_SIZE + 2 * mod;
 				}
 			} else {
-				int mod = (int) position.x % TILE_SIZE;
+				final int mod = (int) position.x % TILE_SIZE;
 				if (mod <= TILE_SIZE/2) {
 					triangleTileOffset = TILE_SIZE - 2 * mod;
 				} else {
@@ -238,7 +238,7 @@ public class ImprovedIndividualKinematicsUpdater implements IndividualKinematics
 		case NONE:
 			break;
 		}
-		
+
 		return triangleTileOffset;
 	}
 
@@ -246,7 +246,7 @@ public class ImprovedIndividualKinematicsUpdater implements IndividualKinematics
 	/**
 	 * Prevents any movement related acceleration if we're in mid air
 	 */
-	private void preventAccelerationIfMidAir(Vector2 position, Vector2 acceleration, Vector2 surfaceLocation) {
+	private void preventAccelerationIfMidAir(final Vector2 position, final Vector2 acceleration, final Vector2 surfaceLocation) {
 		if (position.y >= surfaceLocation.y + TILE_SIZE/4) {
 			acceleration.x = 0f;
 		}
@@ -256,19 +256,19 @@ public class ImprovedIndividualKinematicsUpdater implements IndividualKinematics
 	/**
 	 * Updates the position based on velocity
 	 */
-	private void updatePosition(float delta, Vector2 velocity, Vector2 position, Topography topography, Individual individual) {
+	private void updatePosition(final float delta, final Vector2 velocity, final Vector2 position, final Topography topography, final Individual individual) {
 		final Vector2 distanceTravelled = velocity.cpy().scl(delta);
 		final Vector2 previousVel = velocity.cpy();
 
 		position.add(distanceTravelled);
-		
+
 		boolean invalid = false;
 		while (isInvalidPosition(individual, position, topography)) {
 			position.x = position.x -= velocity.x * delta;
 			position.y = position.y -= velocity.y * delta;
 			invalid = true;
 		}
-		
+
 		if (invalid) {
 			position.x = position.x -= velocity.x * delta * 10;
 			position.y = position.y -= velocity.y * delta * 10;
@@ -276,39 +276,39 @@ public class ImprovedIndividualKinematicsUpdater implements IndividualKinematics
 			velocity.x = velocity.x < 0 ? min(-60f, velocity.x) : max(60f, velocity.x);
 			velocity.y = 0;
 			individual.clearCommands();
-			
+
 			if (!isJumping(individual)) {
 				individual.getAI().setCurrentTask(new Idle());
 			}
-			
+
 			return;
 		}
 	}
 
-	
+
 	/**
 	 * @param position
 	 * @return whether the individual is at a valid position
 	 */
-	private boolean isInvalidPosition(Individual individual, Vector2 position, Topography topography) {
+	private boolean isInvalidPosition(final Individual individual, final Vector2 position, final Topography topography) {
 		final int blockspan = individual.getHeight()/TILE_SIZE + (individual.getHeight() % TILE_SIZE == 0 ? 0 : 1);
 		for (int block = isJumping(individual) ? 0 : 1; block != blockspan; block++) {
 			try {
 				final Tile tile = topography.getTile(position.x, position.y + block * TILE_SIZE + TILE_SIZE / 4, true);
-				if ((tile.getCornerType() == CornerType.NONE) && !isTilePassable(
-					position.x + block, 
-					position.y + block * TILE_SIZE + TILE_SIZE / 4, 
-					topography, 
-					individual.getKinematicsData(), 
+				if (tile.getCornerType() == CornerType.NONE && !isTilePassable(
+					position.x + block,
+					position.y + block * TILE_SIZE + TILE_SIZE / 4,
+					topography,
+					individual.getKinematicsData(),
 					individual.getAI()
 				)) {
 					return true;
 				}
-			} catch (NoTileFoundException e) {
+			} catch (final NoTileFoundException e) {
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
 
@@ -316,7 +316,7 @@ public class ImprovedIndividualKinematicsUpdater implements IndividualKinematics
 	/**
 	 * Applies gravitation to the individual
 	 */
-	private void gravitation(float delta, World world, Vector2 velocity, Vector2 acceleration) {
+	private void gravitation(final float delta, final World world, final Vector2 velocity, final Vector2 acceleration) {
 		if (abs((velocity.y - world.getGravity() * delta) * delta) < TILE_SIZE - 1) {
 			velocity.y = velocity.y - delta * world.getGravity();
 		} else {
@@ -324,14 +324,14 @@ public class ImprovedIndividualKinematicsUpdater implements IndividualKinematics
 		}
 		velocity.add(acceleration.cpy().scl(delta));
 	}
-	
-	
+
+
 	/**
 	 * Applies friction to the individual
 	 */
 	private void friction(final Individual individual) {
 		final Controls controls = Wiring.injector().getInstance(Controls.class);
-		IndividualState state = individual.getState();
+		final IndividualState state = individual.getState();
 
 		if (individual.isCommandActive(controls.moveRight.keyCode) && state.velocity.x < 0f ||
 			individual.isCommandActive(controls.moveLeft.keyCode) && state.velocity.x > 0f ||
@@ -344,44 +344,44 @@ public class ImprovedIndividualKinematicsUpdater implements IndividualKinematics
 			state.velocity.x = state.velocity.x * 0.3f;
 		}
 	}
-	
-	
+
+
 	/**
 	 * True if a {@link Tile#isPassable()}, taking into account the path
 	 */
 	private boolean isTilePassable(
-		final float x, 
-		final float y, 
-		final Topography topography, 
-		final IndividualKineticsProcessingData kinematicsBean, 
+		final float x,
+		final float y,
+		final Topography topography,
+		final IndividualKineticsProcessingData kinematicsBean,
 		final ArtificialIntelligence ai
 	) throws NoTileFoundException {
 		final AITask current = ai.getCurrentTask();
 		final Tile tile = topography.getTile(x, y, true);
-		
+
 		// If we're on an empty tile it's obviously passable
 		if (tile instanceof EmptyTile) {
 			return true;
 		}
-		
-		int tileX = Topography.convertToWorldTileCoord(x);
-		int tileY = Topography.convertToWorldTileCoord(y);
-		
+
+		final int tileX = Topography.convertToWorldTileCoord(x);
+		final int tileY = Topography.convertToWorldTileCoord(y);
+
 		// If we're on the most recently stood on tile, then non-passable
 		if (
 			kinematicsBean.mostRecentTileX != null &&
 			kinematicsBean.mostRecentTileY != null &&
-			kinematicsBean.mostRecentTileX == tileX && 
+			kinematicsBean.mostRecentTileX == tileX &&
 			kinematicsBean.mostRecentTileY == tileY
 		) {
 			return false;
 		}
-		
+
 		// Tile directly below is always not passable
 		if (
 			kinematicsBean.tileDirectlyBelowX != null &&
 			kinematicsBean.tileDirectlyBelowY != null &&
-			kinematicsBean.tileDirectlyBelowX == tileX && 
+			kinematicsBean.tileDirectlyBelowX == tileX &&
 			kinematicsBean.tileDirectlyBelowY == tileY
 		) {
 			return false;

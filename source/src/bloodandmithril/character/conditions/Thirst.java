@@ -1,8 +1,10 @@
 package bloodandmithril.character.conditions;
 
+import bloodandmithril.character.IndividualStateService;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.world.Domain;
 
 /**
@@ -20,9 +22,9 @@ public class Thirst extends Condition {
 	/**
 	 * Constructor
 	 */
-	public Thirst(int affected) {
+	public Thirst(final int affected) {
 		this.affected = affected;
-		float staminaRegen = Domain.getIndividual(affected).getState().staminaRegen;
+		final float staminaRegen = Domain.getIndividual(affected).getState().staminaRegen;
 		Domain.getIndividual(affected).changeStaminaRegen(staminaRegen * 0.5f);
 	}
 
@@ -33,15 +35,15 @@ public class Thirst extends Condition {
 	 * If thirst is zero, then individual takes 0.03 damage per second.
 	 */
 	@Override
-	public void affect(Individual affected, float delta) {
+	public void affect(final Individual affected, final float delta) {
 		if (affected.getState().thirst == 0f) {
-			affected.damage(delta * 0.03f);
+			Wiring.injector().getInstance(IndividualStateService.class).damage(affected, delta * 0.03f);
 		}
 	}
 
 
 	@Override
-	public void infect(Individual infected, float delta) {
+	public void infect(final Individual infected, final float delta) {
 		// Not infectious
 	}
 
@@ -73,8 +75,8 @@ public class Thirst extends Condition {
 	/**
 	 * See {@link Condition#getName()}
 	 */
-	public static String getName(float thirst) {
-		int h = Math.round(thirst * 10f);
+	public static String getName(final float thirst) {
+		final int h = Math.round(thirst * 10f);
 		switch (h) {
 			case 0: return "Dying of thirst";
 			case 1: return "Extremely thirsty";
@@ -98,11 +100,11 @@ public class Thirst extends Condition {
 
 
 	@Override
-	public void stack(Condition condition) {
+	public void stack(final Condition condition) {
 	}
 
 
 	@Override
-	public void clientSideEffects(Individual affected, float delta) {
+	public void clientSideEffects(final Individual affected, final float delta) {
 	}
 }

@@ -78,7 +78,7 @@ public class Furnace extends CraftingStation implements Container {
 	/**
 	 * Constructor
 	 */
-	public Furnace(Class<? extends Mineral> material, float x, float y) {
+	public Furnace(final Class<? extends Mineral> material, final float x, final float y) {
 		super(x, y, 95, 56, 0.1f);
 		this.material = material;
 	}
@@ -86,7 +86,7 @@ public class Furnace extends CraftingStation implements Container {
 
 	@Override
 	public Map<Item, Integer> getRequiredMaterials() {
-		Map<Item, Integer> requiredItems = newHashMap();
+		final Map<Item, Integer> requiredItems = newHashMap();
 		requiredItems.put(RockItem.rock(SandStone.class), 5);
 		requiredItems.put(BrickItem.brick(SandStone.class), 5);
 		return requiredItems;
@@ -168,7 +168,6 @@ public class Furnace extends CraftingStation implements Container {
 
 
 	@Override
-	public void affectIndividual(Individual individual, float delta) {
-		individual.decreaseThirst(delta / 600f);
+	public void affectIndividual(final Individual individual, final float delta) {
 	}
 }

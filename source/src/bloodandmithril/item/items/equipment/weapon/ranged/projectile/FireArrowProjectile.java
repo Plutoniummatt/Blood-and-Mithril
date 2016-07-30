@@ -8,9 +8,11 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
+import bloodandmithril.character.IndividualStateService;
 import bloodandmithril.character.conditions.Burning;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.graphics.particles.Particle.MovementMode;
 import bloodandmithril.graphics.particles.ParticleService;
@@ -68,7 +70,7 @@ public class FireArrowProjectile<T extends Metal> extends ArrowProjectile<T> {
 		super.hit(victim);
 
 		if (Util.roll(0.35f) && lit) {
-			victim.addCondition(new Burning(10f));
+			Wiring.injector().getInstance(IndividualStateService.class).addCondition(victim, new Burning(10f));
 		}
 	}
 

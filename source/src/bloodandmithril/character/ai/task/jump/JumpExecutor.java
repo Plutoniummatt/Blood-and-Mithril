@@ -8,30 +8,32 @@ import com.badlogic.gdx.math.Vector2;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import bloodandmithril.character.IndividualStateService;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.AITaskExecutor;
+import bloodandmithril.character.individuals.Action;
 import bloodandmithril.character.individuals.GroundTravellingIndividual;
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.character.individuals.Individual.Action;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.ui.UserInterface;
 
 /**
  * Executes a {@link Jump}
- * 
+ *
  * @author Matt
  */
 @Singleton
 @Copyright("Matthew Peck 2016")
 public class JumpExecutor implements AITaskExecutor {
 	private static float REQUIRED_STAMINA_TO_JUMP = 0.05f;
-	
+
 	@Inject private UserInterface userInterface;
+	@Inject private IndividualStateService individualStateService;
 
 	@Override
-	public void execute(AITask aiTask, float delta) {
-		Jump jump = (Jump) aiTask;
-		
+	public void execute(final AITask aiTask, final float delta) {
+		final Jump jump = (Jump) aiTask;
+
 		final Individual host = getIndividual(jump.getHostId().getId());
 		if (obj(host.getCurrentAction()).oneOf(Action.JUMP_LEFT, Action.JUMP_RIGHT)) {
 			return;
@@ -49,34 +51,35 @@ public class JumpExecutor implements AITaskExecutor {
 			}
 
 			host.clearCommands();
-			
-			Vector2 jumpVector = resolveJumpVector(jump);
-			
+
+			final Vector2 jumpVector = resolveJumpVector(jump);
+
 			host.getState().velocity.x = jumpVector.x;
 			host.getState().velocity.y = jumpVector.y;
-			host.decreaseStamina(REQUIRED_STAMINA_TO_JUMP);
 			host.setCurrentAction(jumpVector.x < 0f ? Action.JUMP_LEFT : Action.JUMP_RIGHT);
-			
+
+			individualStateService.decreaseStamina(host, REQUIRED_STAMINA_TO_JUMP);;
+
 			jump.jumped = true;
-		}		
+		}
 	}
-	
+
 
 	@Override
-	public boolean isComplete(AITask aiTask) {
-		Jump jump = (Jump) aiTask;
-		
+	public boolean isComplete(final AITask aiTask) {
+		final Jump jump = (Jump) aiTask;
+
 		return jump.jumped && !obj(getIndividual(jump.getHostId().getId()).getCurrentAction()).oneOf(Action.JUMP_LEFT, Action.JUMP_RIGHT);
 	}
-	
+
 
 	@Override
-	public boolean uponCompletion(AITask aiTask) {
+	public boolean uponCompletion(final AITask aiTask) {
 		return false;
 	}
 
-	
-	private Vector2 resolveJumpVector(Jump jump) {
+
+	private Vector2 resolveJumpVector(final Jump jump) {
 		final Vector2 call = jump.from.call();
 		final Vector2 difference = jump.to.cpy().sub(call);
 		final Vector2 nor = difference.cpy().nor();

@@ -9,10 +9,12 @@ import java.util.Map;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.google.common.collect.Maps;
 
+import bloodandmithril.character.IndividualStateService;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
 import bloodandmithril.core.UpdatedBy;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.RenderPropWith;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.WoodenBucketItem;
@@ -54,7 +56,7 @@ public class WorkBench extends CraftingStation {
 	/**
 	 * Constructor
 	 */
-	public WorkBench(float x, float y) {
+	public WorkBench(final float x, final float y) {
 		super(x, y, 90, 43, 0.1f);
 		setConstructionProgress(0f);
 	}
@@ -109,7 +111,7 @@ public class WorkBench extends CraftingStation {
 
 	@Override
 	public Map<Item, Integer> getRequiredMaterials() {
-		Map<Item, Integer> requiredItems = newHashMap();
+		final Map<Item, Integer> requiredItems = newHashMap();
 		requiredItems.put(PlankItem.plank(StandardWood.class), 20);
 		return requiredItems;
 	}
@@ -122,8 +124,10 @@ public class WorkBench extends CraftingStation {
 
 
 	@Override
-	public void affectIndividual(Individual individual, float delta) {
-		individual.decreaseThirst(delta / 600f);
-		individual.decreaseHunger(delta / 900f);
+	public void affectIndividual(final Individual individual, final float delta) {
+		final IndividualStateService individualStateService = Wiring.injector().getInstance(IndividualStateService.class);
+
+		individualStateService.decreaseHunger(individual, delta / 900f);
+		individualStateService.decreaseThirst(individual, delta / 600f);
 	}
 }

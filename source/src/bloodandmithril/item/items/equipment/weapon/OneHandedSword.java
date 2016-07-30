@@ -11,11 +11,13 @@ import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Maps;
 
 import bloodandmithril.audio.SoundService;
+import bloodandmithril.character.IndividualStateService;
 import bloodandmithril.character.conditions.Bleeding;
 import bloodandmithril.character.individuals.Humanoid;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.characters.Elf;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.graphics.Textures;
 import bloodandmithril.item.Craftable;
@@ -50,14 +52,14 @@ public abstract class OneHandedSword<T extends Metal> extends OneHandedMeleeWeap
 	/**
 	 * Constructor
 	 */
-	protected OneHandedSword(float mass, int volume, long value, Class<T> metal) {
+	protected OneHandedSword(final float mass, final int volume, final long value, final Class<T> metal) {
 		super(mass, volume, true, value, metal);
 	}
 
 
 	@Override
-	public void render(Vector2 position, float angle, boolean flipX, Graphics graphics) {
-		TextureRegion texture = getTextureRegion();
+	public void render(final Vector2 position, final float angle, final boolean flipX, final Graphics graphics) {
+		final TextureRegion texture = getTextureRegion();
 
 		graphics.getSpriteBatch().draw(
 			Textures.INDIVIDUAL_TEXTURE,
@@ -105,7 +107,7 @@ public abstract class OneHandedSword<T extends Metal> extends OneHandedMeleeWeap
 
 
 	@Override
-	public int getAttackNumber(Individual attacker) {
+	public int getAttackNumber(final Individual attacker) {
 		if (attacker instanceof Humanoid) {
 			return 2;
 		}
@@ -115,7 +117,7 @@ public abstract class OneHandedSword<T extends Metal> extends OneHandedMeleeWeap
 
 
 	@Override
-	public Box getActionFrameHitBox(Individual individual) {
+	public Box getActionFrameHitBox(final Individual individual) {
 		return new Box(
 			new Vector2(
 				individual.getHitBox().position.x + (individual.getCurrentAction().left() ? - individual.getHitBox().width * (3f/4f) : individual.getHitBox().width  * (3f/4f)),
@@ -146,7 +148,7 @@ public abstract class OneHandedSword<T extends Metal> extends OneHandedMeleeWeap
 
 
 	@Override
-	public WrapperForTwo<Animation, Vector2> getAttackAnimationEffects(Individual individual) {
+	public WrapperForTwo<Animation, Vector2> getAttackAnimationEffects(final Individual individual) {
 		switch (individual.getCurrentAction()) {
 			case ATTACK_LEFT_ONE_HANDED_WEAPON:
 			case ATTACK_RIGHT_ONE_HANDED_WEAPON:
@@ -199,8 +201,8 @@ public abstract class OneHandedSword<T extends Metal> extends OneHandedMeleeWeap
 
 
 	@Override
-	public void specialEffect(Individual individual) {
-		individual.addCondition(new Bleeding(0.05f));
+	public void specialEffect(final Individual individual) {
+		Wiring.injector().getInstance(IndividualStateService.class).addCondition(individual, new Bleeding(0.05f));
 	}
 
 

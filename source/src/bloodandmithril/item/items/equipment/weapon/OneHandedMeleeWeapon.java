@@ -1,12 +1,13 @@
 package bloodandmithril.item.items.equipment.weapon;
 
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON;
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON_STAB;
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON;
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB;
+import static bloodandmithril.character.individuals.Action.ATTACK_LEFT_ONE_HANDED_WEAPON;
+import static bloodandmithril.character.individuals.Action.ATTACK_LEFT_ONE_HANDED_WEAPON_STAB;
+import static bloodandmithril.character.individuals.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON;
+import static bloodandmithril.character.individuals.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB;
+
+import bloodandmithril.character.individuals.Action;
 import bloodandmithril.character.individuals.Humanoid;
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.character.individuals.Individual.Action;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.item.items.equipment.Equipper;
@@ -25,14 +26,14 @@ public abstract class OneHandedMeleeWeapon<T extends Material> extends MeleeWeap
 	/**
 	 * Protected constructor
 	 */
-	protected OneHandedMeleeWeapon(float mass, int volume, boolean equippable, long value, Class<T> material) {
+	protected OneHandedMeleeWeapon(final float mass, final int volume, final boolean equippable, final long value, final Class<T> material) {
 		super(mass, volume, equippable, value, EquipmentSlot.MAINHAND, material);
 		bounces();
 	}
 
 
 	@Override
-	public Action getAttackAction(boolean right) {
+	public Action getAttackAction(final boolean right) {
 		if (right) {
 			return stab() ? ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB : ATTACK_RIGHT_ONE_HANDED_WEAPON;
 		} else {
@@ -42,7 +43,7 @@ public abstract class OneHandedMeleeWeapon<T extends Material> extends MeleeWeap
 
 
 	@Override
-	public int getRenderingIndex(Individual individual) {
+	public int getRenderingIndex(final Individual individual) {
 		if (individual instanceof Humanoid) {
 			return 5;
 		}
@@ -60,14 +61,14 @@ public abstract class OneHandedMeleeWeapon<T extends Material> extends MeleeWeap
 	}
 
 	@Override
-	public void update(Equipper equipper, float delta) {
+	public void update(final Equipper equipper, final float delta) {
 	}
 
 	@Override
-	public void onUnequip(Equipper equipper) {
+	public void onUnequip(final Equipper equipper) {
 	}
 
 	@Override
-	public void onEquip(Equipper equipper) {
+	public void onEquip(final Equipper equipper) {
 	}
 }

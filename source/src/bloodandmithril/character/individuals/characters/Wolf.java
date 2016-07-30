@@ -18,6 +18,7 @@ import bloodandmithril.character.ai.perception.Observer;
 import bloodandmithril.character.ai.perception.Sniffer;
 import bloodandmithril.character.ai.perception.SoundStimulus;
 import bloodandmithril.character.ai.perception.Visible;
+import bloodandmithril.character.individuals.Action;
 import bloodandmithril.character.individuals.Animal;
 import bloodandmithril.character.individuals.GroundTravellingIndividual;
 import bloodandmithril.character.individuals.Individual;
@@ -49,10 +50,10 @@ public class Wolf extends GroundTravellingIndividual implements Listener, Observ
 	 * Constructor
 	 */
 	public Wolf(
-			IndividualIdentifier id,
-			IndividualState state,
-			int factionId,
-			int worldId) {
+			final IndividualIdentifier id,
+			final IndividualState state,
+			final int factionId,
+			final int worldId) {
 		super(
 			id,
 			state,
@@ -124,14 +125,14 @@ public class Wolf extends GroundTravellingIndividual implements Listener, Observ
 
 	@Override
 	public Individual copy() {
-		Wolf wolf = new Wolf(getId(), getState(), getFactionId(), getWorldId());
+		final Wolf wolf = new Wolf(getId(), getState(), getFactionId(), getWorldId());
 		wolf.copyFrom(this);
 		return wolf;
 	}
 
 
 	@Override
-	protected void internalCopyFrom(Individual other) {
+	protected void internalCopyFrom(final Individual other) {
 	}
 
 
@@ -183,7 +184,7 @@ public class Wolf extends GroundTravellingIndividual implements Listener, Observ
 
 
 	@Override
-	public void updateDescription(String updated) {
+	public void updateDescription(final String updated) {
 	}
 
 
@@ -213,7 +214,7 @@ public class Wolf extends GroundTravellingIndividual implements Listener, Observ
 
 	@Override
 	public Collection<Vector2> getVisibleLocations() {
-		LinkedList<Vector2> locations = Lists.newLinkedList();
+		final LinkedList<Vector2> locations = Lists.newLinkedList();
 		locations.add(getState().position.cpy().add(0f, 10f));
 		locations.add(getState().position.cpy().add(0f, 30f));
 		return locations;
@@ -227,7 +228,7 @@ public class Wolf extends GroundTravellingIndividual implements Listener, Observ
 
 
 	@Override
-	public void listen(SoundStimulus stimulus) {
+	public void listen(final SoundStimulus stimulus) {
 	}
 
 
@@ -256,7 +257,7 @@ public class Wolf extends GroundTravellingIndividual implements Listener, Observ
 
 
 	@Override
-	public boolean reactIfVisible(SoundStimulus stimulus) {
+	public boolean reactIfVisible(final SoundStimulus stimulus) {
 		return true;
 	}
 
@@ -268,12 +269,12 @@ public class Wolf extends GroundTravellingIndividual implements Listener, Observ
 
 
 	@Override
-	protected void internalKill() {
+	public void internalKill() {
 	}
 
 
 	@Override
-	public boolean sameAs(Visible other) {
+	public boolean sameAs(final Visible other) {
 		if (other instanceof Hare) {
 			return ((Wolf) other).getId().getId() == getId().getId();
 		}
@@ -284,6 +285,6 @@ public class Wolf extends GroundTravellingIndividual implements Listener, Observ
 	@Override
 	public void playAffirmativeSound() {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

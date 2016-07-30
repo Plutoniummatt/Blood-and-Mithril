@@ -1,15 +1,15 @@
 package bloodandmithril.item.items.equipment.weapon;
 
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.math.Vector2;
+
+import bloodandmithril.character.individuals.Action;
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.character.individuals.Individual.Action;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.item.items.equipment.Equipper.EquipmentSlot;
 import bloodandmithril.item.material.Material;
 import bloodandmithril.util.datastructure.WrapperForTwo;
-
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.math.Vector2;
 
 /**
  * A Weapon
@@ -25,20 +25,20 @@ public abstract class Weapon<T extends Material> extends Equipable {
 	/**
 	 * Constructor
 	 */
-	protected Weapon(float mass, int volume, boolean equippable, long value, EquipmentSlot slot, Class<T> material) {
+	protected Weapon(final float mass, final int volume, final boolean equippable, final long value, final EquipmentSlot slot, final Class<T> material) {
 		super(mass, volume, equippable, value, slot);
 		this.material = material;
 	}
 
 
 	@Override
-	protected String internalGetSingular(boolean firstCap) {
+	protected String internalGetSingular(final boolean firstCap) {
 		return weaponGetSingular(firstCap);
 	}
 
 
 	@Override
-	protected String internalGetPlural(boolean firstCap) {
+	protected String internalGetPlural(final boolean firstCap) {
 		return weaponGetPlural(firstCap);
 	}
 

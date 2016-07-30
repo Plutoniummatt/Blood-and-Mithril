@@ -1,13 +1,13 @@
 package bloodandmithril.character.individuals;
 
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON;
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON_MINE;
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON_STAB;
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_UNARMED;
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON;
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON_MINE;
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB;
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_UNARMED;
+import static bloodandmithril.character.individuals.Action.ATTACK_LEFT_ONE_HANDED_WEAPON;
+import static bloodandmithril.character.individuals.Action.ATTACK_LEFT_ONE_HANDED_WEAPON_MINE;
+import static bloodandmithril.character.individuals.Action.ATTACK_LEFT_ONE_HANDED_WEAPON_STAB;
+import static bloodandmithril.character.individuals.Action.ATTACK_LEFT_UNARMED;
+import static bloodandmithril.character.individuals.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON;
+import static bloodandmithril.character.individuals.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON_MINE;
+import static bloodandmithril.character.individuals.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB;
+import static bloodandmithril.character.individuals.Action.ATTACK_RIGHT_UNARMED;
 import static com.google.common.collect.Iterables.tryFind;
 import static com.google.common.collect.Maps.newHashMap;
 
@@ -59,7 +59,7 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 		private final EquipmentSlot linkedEquipmentSlot;
 		private final float chanceToHit;
 
-		private HumanoidCombatBodyParts(EquipmentSlot linkedEquipmentSlot, float chanceToHit) {
+		private HumanoidCombatBodyParts(final EquipmentSlot linkedEquipmentSlot, final float chanceToHit) {
 			this.linkedEquipmentSlot = linkedEquipmentSlot;
 			this.chanceToHit = chanceToHit;
 		}
@@ -75,10 +75,10 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 	}
 
 	static {
-		Map<Integer, ParameterizedTask<Individual>> attackUnarmed = newHashMap();
-		Map<Integer, ParameterizedTask<Individual>> attackOneHanded = newHashMap();
-		Map<Integer, ParameterizedTask<Individual>> attackOneHandedStab = newHashMap();
-		Map<Integer, ParameterizedTask<Individual>> attackTwoHandedMine = newHashMap();
+		final Map<Integer, ParameterizedTask<Individual>> attackUnarmed = newHashMap();
+		final Map<Integer, ParameterizedTask<Individual>> attackOneHanded = newHashMap();
+		final Map<Integer, ParameterizedTask<Individual>> attackOneHandedStab = newHashMap();
+		final Map<Integer, ParameterizedTask<Individual>> attackTwoHandedMine = newHashMap();
 
 		attackUnarmed.put(
 			3,
@@ -122,15 +122,15 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 		attackTwoHandedMine.put(
 			6,
 			individual -> {
-				AITask currentTask = individual.getAI().getCurrentTask();
+				final AITask currentTask = individual.getAI().getCurrentTask();
 				if (!(currentTask instanceof MineTile)) {
 					return;
 				}
 
-				MineTile mineTileTask = (MineTile) currentTask;
+				final MineTile mineTileTask = (MineTile) currentTask;
 				try {
 					Wiring.injector().getInstance(MineTileService.class).mine(individual, Topography.convertToWorldCoord(mineTileTask.tileCoordinate, false));
-				} catch (NoTileFoundException e) {}
+				} catch (final NoTileFoundException e) {}
 			}
 		);
 
@@ -148,19 +148,19 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 	 * Constructor
 	 */
 	protected Humanoid(
-			IndividualIdentifier id,
-			IndividualState state,
-			int factionId,
-			Behaviour naturalBehaviour,
-			float inventoryMassCapacity,
-			int inventoryVolumeCapacity,
-			int maxRings,
-			int width,
-			int height,
-			int safetyHeight,
-			Box interactionBox,
-			int worldId,
-			int maximumConcurrentMeleeAttackers) {
+			final IndividualIdentifier id,
+			final IndividualState state,
+			final int factionId,
+			final Behaviour naturalBehaviour,
+			final float inventoryMassCapacity,
+			final int inventoryVolumeCapacity,
+			final int maxRings,
+			final int width,
+			final int height,
+			final int safetyHeight,
+			final Box interactionBox,
+			final int worldId,
+			final int maximumConcurrentMeleeAttackers) {
 		super(id, state, factionId, naturalBehaviour, inventoryMassCapacity, inventoryVolumeCapacity, maxRings, width, height, safetyHeight, interactionBox, worldId, maximumConcurrentMeleeAttackers);
 	}
 
@@ -172,7 +172,7 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 
 
 	public SpacialConfiguration getHelmetSpatialConfigration() {
-		int frameIndex = getCurrentAnimation().get(0).a.getAnimation(this).getKeyFrameIndex(getAnimationTimer());
+		final int frameIndex = getCurrentAnimation().get(0).a.getAnimation(this).getKeyFrameIndex(getAnimationTimer());
 
 		switch(getCurrentAction()) {
 			case STAND_LEFT:
@@ -255,7 +255,7 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 
 	@Override
 	public SpacialConfiguration getOneHandedWeaponSpatialConfigration() {
-		int frameIndex = getCurrentAnimation().get(0).a.getAnimation(this).getKeyFrameIndex(getAnimationTimer());
+		final int frameIndex = getCurrentAnimation().get(0).a.getAnimation(this).getKeyFrameIndex(getAnimationTimer());
 
 		switch(getCurrentAction()) {
 			case STAND_LEFT:
@@ -380,7 +380,7 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 
 	@Override
 	public SpacialConfiguration getTwoHandedWeaponSpatialConfigration() {
-		int frameIndex = getCurrentAnimation().get(0).a.getAnimation(this).getKeyFrameIndex(getAnimationTimer());
+		final int frameIndex = getCurrentAnimation().get(0).a.getAnimation(this).getKeyFrameIndex(getAnimationTimer());
 
 		switch(getCurrentAction()) {
 			case STAND_LEFT:
@@ -450,12 +450,12 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 
 	@Override
 	public SpacialConfiguration getOffHandSpatialConfigration() {
-		int frameIndex = getCurrentAnimation().get(0).a.getAnimation(this).getKeyFrameIndex(getAnimationTimer());
+		final int frameIndex = getCurrentAnimation().get(0).a.getAnimation(this).getKeyFrameIndex(getAnimationTimer());
 
 		float angle = 0f;
 		float combatAngle = 0f;
 		if (!getAvailableEquipmentSlots().get(EquipmentSlot.OFFHAND).call()) {
-			Item offHandItem = Iterables.find(getEquipped().keySet(), offHand -> {
+			final Item offHandItem = Iterables.find(getEquipped().keySet(), offHand -> {
 				return offHand instanceof OffhandEquipment;
 			});
 			angle = ((OffhandEquipment) offHandItem).renderAngle();
@@ -544,7 +544,7 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 	@Override
 	@SuppressWarnings("rawtypes")
 	public int getConcurrentAttackNumber() {
-		Optional<Item> equippedWeapon = tryFind(getEquipped().keySet(), item -> {
+		final Optional<Item> equippedWeapon = tryFind(getEquipped().keySet(), item -> {
 			return item instanceof Weapon;
 		});
 

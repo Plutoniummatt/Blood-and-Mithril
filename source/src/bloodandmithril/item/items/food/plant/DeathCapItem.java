@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import bloodandmithril.audio.SoundService;
+import bloodandmithril.character.IndividualStateService;
 import bloodandmithril.character.conditions.Poison;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
@@ -43,10 +44,10 @@ public class DeathCapItem extends Food {
 
 		SoundService.play(SoundService.crunch, consumer.getState().position, true, getVisible(consumer));
 		if (cooked) {
-			consumer.increaseHunger(0.1f);
+			Wiring.injector().getInstance(IndividualStateService.class).increaseHunger(consumer, 0.1f);
 			floatingTextService.addFloatingTextToIndividual(consumer, "+10 Hunger", Color.ORANGE);
 		} else {
-			consumer.addCondition(new Poison(0.1f, 0.001f));
+			Wiring.injector().getInstance(IndividualStateService.class).addCondition(consumer, new Poison(0.1f, 0.001f));
 			floatingTextService.addFloatingTextToIndividual(consumer, "Poisoned!", Color.GREEN);
 		}
 		return true;

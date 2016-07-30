@@ -4,9 +4,11 @@ import java.util.Collection;
 
 import com.badlogic.gdx.graphics.Color;
 
+import bloodandmithril.character.IndividualStateService;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.graphics.particles.Particle.MovementMode;
 import bloodandmithril.graphics.particles.ParticleService;
@@ -28,19 +30,19 @@ public class Burning extends Condition {
 	/**
 	 * Constructor
 	 */
-	public Burning(float duration) {
+	public Burning(final float duration) {
 		this.duration = duration;
 	}
 
 
 	@Override
-	public void affect(Individual affected, float delta) {
-		affected.damage(delta * 2f);
+	public void affect(final Individual affected, final float delta) {
+		Wiring.injector().getInstance(IndividualStateService.class).damage(affected, delta * 2f);
 		duration -= delta;
 
-		Collection<Integer> nearbyIndividualIds = Domain.getWorld(affected.getWorldId()).getPositionalIndexMap().getNearbyEntityIds(Individual.class, affected.getState().position);
-		for (int id : nearbyIndividualIds) {
-			Individual toInfect = Domain.getIndividual(id);
+		final Collection<Integer> nearbyIndividualIds = Domain.getWorld(affected.getWorldId()).getPositionalIndexMap().getNearbyEntityIds(Individual.class, affected.getState().position);
+		for (final int id : nearbyIndividualIds) {
+			final Individual toInfect = Domain.getIndividual(id);
 			if (id != affected.getId().getId() && toInfect.getHitBox().overlapsWith(affected.getHitBox())) {
 				infect(toInfect, delta);
 			}
@@ -49,7 +51,7 @@ public class Burning extends Condition {
 
 
 	@Override
-	public void clientSideEffects(Individual affected, float delta) {
+	public void clientSideEffects(final Individual affected, final float delta) {
 		if (Util.roll(0.2f)) {
 			ParticleService.randomVelocityDiminishing(affected.getEmissionPosition(), 13f, 30f, Color.ORANGE, Color.ORANGE, Util.getRandom().nextFloat() * 6f, 10f, MovementMode.EMBER, Util.getRandom().nextInt(1000), Depth.FOREGROUND, false, Color.RED);
 			ParticleService.randomVelocityDiminishing(affected.getEmissionPosition(), 13f, 30f, Color.ORANGE, Color.ORANGE, Util.getRandom().nextFloat() * 3f, 4f, MovementMode.EMBER, Util.getRandom().nextInt(1400), Depth.FOREGROUND, false, Color.RED);
@@ -59,8 +61,8 @@ public class Burning extends Condition {
 
 
 	@Override
-	public void infect(Individual infected, float delta) {
-		infected.addCondition(this);
+	public void infect(final Individual infected, final float delta) {
+		Wiring.injector().getInstance(IndividualStateService.class).addCondition(infected, this);
 	}
 
 
@@ -76,7 +78,7 @@ public class Burning extends Condition {
 
 
 	@Override
-	public void stack(Condition condition) {
+	public void stack(final Condition condition) {
 	}
 
 

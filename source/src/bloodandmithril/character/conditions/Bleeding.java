@@ -5,9 +5,11 @@ import static bloodandmithril.util.Util.getRandom;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 
+import bloodandmithril.character.IndividualStateService;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.graphics.particles.Particle.MovementMode;
 import bloodandmithril.graphics.particles.TracerParticle;
@@ -29,13 +31,13 @@ public class Bleeding extends Condition {
 	private float severity;
 
 	/** Constructor */
-	public Bleeding(float severity) {
+	public Bleeding(final float severity) {
 		this.severity = severity;
 	}
 
 
 	@Override
-	public void clientSideEffects(Individual affected, float delta) {
+	public void clientSideEffects(final Individual affected, final float delta) {
 		if (Util.roll(severity)) {
 			Domain.getWorld(affected.getWorldId()).getClientParticles().add(
 				new TracerParticle(
@@ -56,13 +58,13 @@ public class Bleeding extends Condition {
 
 
 	@Override
-	public void affect(Individual affected, float delta) {
-		affected.damage(delta * severity);
+	public void affect(final Individual affected, final float delta) {
+		Wiring.injector().getInstance(IndividualStateService.class).damage(affected, delta * severity);
 	}
 
 
 	@Override
-	public void infect(Individual infected, float delta) {
+	public void infect(final Individual infected, final float delta) {
 		// Not infectious
 	}
 
@@ -94,7 +96,7 @@ public class Bleeding extends Condition {
 	public String getName() {
 		String severity;
 
-		int sev = Math.round(this.severity * 100)/10;
+		final int sev = Math.round(this.severity * 100)/10;
 		switch (sev) {
 			case 0:		severity = "Slight"; break;
 			case 1:		severity = "Slight"; break;
@@ -115,7 +117,7 @@ public class Bleeding extends Condition {
 
 
 	@Override
-	public void stack(Condition condition) {
+	public void stack(final Condition condition) {
 		if (!(condition instanceof Bleeding)) {
 			throw new RuntimeException("Cannot stack " + condition.getClass().getSimpleName() + " with Bleeding");
 		}

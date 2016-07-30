@@ -1,36 +1,10 @@
 package bloodandmithril.character.individuals;
 
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON;
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON_MINE;
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON_STAB;
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_SPEAR;
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_TWO_HANDED_WEAPON;
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_UNARMED;
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON;
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON_MINE;
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB;
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_SPEAR;
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_TWO_HANDED_WEAPON;
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_UNARMED;
-import static bloodandmithril.character.individuals.Individual.Action.STAND_LEFT;
-import static bloodandmithril.control.InputUtilities.getMouseScreenX;
-import static bloodandmithril.control.InputUtilities.getMouseScreenY;
 import static bloodandmithril.control.InputUtilities.getMouseWorldX;
 import static bloodandmithril.control.InputUtilities.getMouseWorldY;
-import static bloodandmithril.control.InputUtilities.isKeyPressed;
-import static bloodandmithril.control.InputUtilities.worldToScreenX;
-import static bloodandmithril.control.InputUtilities.worldToScreenY;
 import static bloodandmithril.item.items.equipment.weapon.RangedWeapon.rangeControl;
 import static bloodandmithril.util.ComparisonUtil.obj;
-import static com.badlogic.gdx.Gdx.gl;
-import static com.badlogic.gdx.graphics.GL20.GL_BLEND;
-import static com.badlogic.gdx.graphics.GL20.GL_ONE_MINUS_SRC_ALPHA;
-import static com.badlogic.gdx.graphics.GL20.GL_SRC_ALPHA;
-import static com.google.common.collect.Sets.newHashSet;
-import static java.lang.Math.PI;
-import static java.lang.Math.cos;
 import static java.lang.Math.round;
-import static java.lang.Math.sin;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -40,9 +14,7 @@ import java.util.Set;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -53,39 +25,30 @@ import bloodandmithril.character.ai.ArtificialIntelligence;
 import bloodandmithril.character.ai.perception.Visible;
 import bloodandmithril.character.ai.task.travel.Travel;
 import bloodandmithril.character.combat.CombatService;
-import bloodandmithril.character.conditions.Condition;
 import bloodandmithril.character.faction.Faction;
 import bloodandmithril.character.individuals.characters.Elf;
 import bloodandmithril.character.individuals.characters.Hare;
 import bloodandmithril.character.individuals.characters.Wolf;
 import bloodandmithril.character.proficiency.Proficiencies;
 import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
-import bloodandmithril.control.Controls;
 import bloodandmithril.core.Copyright;
-import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.core.MouseOverable;
 import bloodandmithril.core.Name;
 import bloodandmithril.core.Wiring;
-import bloodandmithril.graphics.Graphics;
 import bloodandmithril.item.FireLighter;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
-import bloodandmithril.item.items.container.ContainerImpl;
-import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.item.items.equipment.Equipper;
 import bloodandmithril.item.items.equipment.EquipperImpl;
 import bloodandmithril.item.items.equipment.weapon.OneHandedMeleeWeapon;
 import bloodandmithril.item.items.equipment.weapon.RangedWeapon;
 import bloodandmithril.item.items.equipment.weapon.TwoHandedMeleeWeapon;
 import bloodandmithril.item.items.equipment.weapon.ranged.Projectile;
-import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.construction.Construction;
 import bloodandmithril.ui.FloatingTextService;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.util.AnimationHelper.AnimationSwitcher;
-import bloodandmithril.util.Fonts;
 import bloodandmithril.util.ParameterizedTask;
-import bloodandmithril.util.Shaders;
 import bloodandmithril.util.SpacialConfiguration;
 import bloodandmithril.util.Task;
 import bloodandmithril.util.datastructure.Box;
@@ -93,7 +56,6 @@ import bloodandmithril.util.datastructure.Commands;
 import bloodandmithril.util.datastructure.WrapperForTwo;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
-import bloodandmithril.world.topography.Topography;
 
 /**
  * Class representing a character, PC or NPC.
@@ -106,7 +68,7 @@ public abstract class Individual implements Equipper, Visible, MouseOverable, Sp
 	private static final long serialVersionUID = 2821835360311044658L;
 
 	/** The current action of this individual */
-	private Action currentAction = STAND_LEFT;
+	private Action currentAction = Action.STAND_LEFT;
 
 	/** Which client number this {@link Individual} is selected by */
 	private Set<Integer> selectedByClient = Sets.newHashSet();
@@ -365,85 +327,6 @@ public abstract class Individual implements Equipper, Visible, MouseOverable, Sp
 	}
 
 
-	/** Renders any decorations for UI */
-	public final void renderUIDecorations(final Graphics graphics, final UserInterface userInterface) {
-		final SpriteBatch batch = graphics.getSpriteBatch();
-
-		if (Wiring.injector().getInstance(GameClientStateTracker.class).isIndividualSelected(this)) {
-			batch.setShader(Shaders.filter);
-
-			Shaders.filter.setUniformf("color",
-				(float)sin(PI * (1f - state.health/state.maxHealth) / 2),
-				(float)cos(PI * (1f - state.health/state.maxHealth) / 2),
-				0f,
-				1f
-			);
-
-			Shaders.filter.setUniformMatrix("u_projTrans", userInterface.getUITrackingCamera().combined);
-			batch.draw(UserInterface.currentArrow, state.position.x - 5, state.position.y + getHeight() + 10);
-		}
-
-		if (userInterface.DEBUG) {
-			userInterface.getShapeRenderer().begin(ShapeType.Line);
-			Gdx.gl.glLineWidth(2f);
-			userInterface.getShapeRenderer().setColor(Color.ORANGE);
-			userInterface.getShapeRenderer().rect(
-				worldToScreenX(interactionBox.position.x - interactionBox.width / 2),
-				worldToScreenY(interactionBox.position.y - interactionBox.height / 2),
-				interactionBox.width,
-				interactionBox.height
-			);
-			userInterface.getShapeRenderer().setColor(Color.RED);
-			userInterface.getShapeRenderer().rect(
-				worldToScreenX(getHitBox().position.x - getHitBox().width / 2),
-				worldToScreenY(getHitBox().position.y - getHitBox().height / 2),
-				getHitBox().width,
-				getHitBox().height
-			);
-			userInterface.getShapeRenderer().end();
-			
-			gl.glEnable(GL_BLEND);
-			gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-			userInterface.getShapeRenderer().begin(ShapeType.Filled);
-			userInterface.getShapeRenderer().setColor(0.2f, 0.5f, 1f, 0.8f);
-			if (kinematicsData.tileDirectlyBelowX != null && kinematicsData.tileDirectlyBelowY != null) {
-				userInterface.getShapeRenderer().rect(
-					worldToScreenX(Topography.convertToWorldCoord(kinematicsData.tileDirectlyBelowX, true)),
-					worldToScreenY(Topography.convertToWorldCoord(kinematicsData.tileDirectlyBelowY, true)),
-					Topography.TILE_SIZE,
-					Topography.TILE_SIZE
-				);
-			}
-			userInterface.getShapeRenderer().setColor(1f, 0.3f, 1f, 0.7f);
-			if (kinematicsData.mostRecentTileX != null && kinematicsData.mostRecentTileY != null) {
-				userInterface.getShapeRenderer().rect(
-					worldToScreenX(Topography.convertToWorldCoord(kinematicsData.mostRecentTileX, true)),
-					worldToScreenY(Topography.convertToWorldCoord(kinematicsData.mostRecentTileY, true)),
-					Topography.TILE_SIZE,
-					Topography.TILE_SIZE
-				);
-			}
-			userInterface.getShapeRenderer().end();
-			gl.glDisable(GL_BLEND);
-		}
-
-		final Controls controls = Wiring.injector().getInstance(Controls.class);
-		final GameClientStateTracker gameClientStateTracker = Wiring.injector().getInstance(GameClientStateTracker.class);
-
-		if (isAlive() && isMouseOver() && isKeyPressed(controls.attack.keyCode) && !isKeyPressed(controls.rangedAttack.keyCode)) {
-			if (gameClientStateTracker.getSelectedIndividuals().size() > 0 && (!gameClientStateTracker.isIndividualSelected(this) || gameClientStateTracker.getSelectedIndividuals().size() > 1)) {
-				batch.setShader(Shaders.filter);
-				Shaders.filter.setUniformMatrix("u_projTrans", userInterface.getUICamera().combined);
-				Shaders.filter.setUniformf("color", Color.BLACK);
-				Fonts.defaultFont.draw(batch, "Attack Melee", getMouseScreenX() + 14, getMouseScreenY() - 26);
-				batch.flush();
-				Shaders.filter.setUniformf("color", Color.ORANGE);
-				Fonts.defaultFont.draw(batch, "Attack Melee", getMouseScreenX() + 15, getMouseScreenY() - 25);
-			}
-		}
-	}
-
-
 	/** Deselect this {@link Individual} */
 	public final void deselect(final boolean clearTask, final int id) {
 		selectedByClient.remove(id);
@@ -496,27 +379,9 @@ public abstract class Individual implements Equipper, Visible, MouseOverable, Sp
 	}
 
 
-	/** Kills this {@link Individual} */
-	private final void kill() {
-		dead = true;
-		if (ClientServerInterface.isClient()) {
-			Wiring.injector().getInstance(GameClientStateTracker.class).removeSelectedIndividual(this);
-		}
-		getEquipped().keySet().forEach(eq -> {
-			Individual.this.unequip((Equipable ) eq);
-		});
-		getInventory().entrySet().forEach(entry -> {
-			ContainerImpl.discard(Individual.this, entry.getKey(), entry.getValue());
-		});
-		getState().currentConditions.clear();
-		deselect(true, 0);
-		clearCommands();
-		selectedByClient.clear();
-		internalKill();
-		Wiring.injector().getInstance(UserInterface.class).refreshRefreshableWindows();
-	}
+	/** Implementation specific kill logic */
+	public abstract void internalKill();
 
-	protected abstract void internalKill();
 
 	public final boolean isAISuppressed() {
 		return supressAI;
@@ -536,120 +401,10 @@ public abstract class Individual implements Equipper, Visible, MouseOverable, Sp
 	}
 
 
-	public final synchronized void decreaseThirst(final float amount) {
-		if (state.thirst - amount <= 0f) {
-			state.thirst = 0f;
-		} else {
-			state.thirst = state.thirst - amount;
-		}
-	}
-
-
-	public final synchronized void increaseThirst(final float amount) {
-		if (state.thirst + amount > 1f) {
-			state.thirst = 1f;
-		} else {
-			state.thirst = state.thirst + amount;
-		}
-	}
-
-
-	public final synchronized void damage(final float amount) {
-		if (state.health == 0f) {
-			return;
-		}
-
-		if (state.health - amount <= 0f) {
-			state.health = 0f;
-			kill();
-		} else {
-			state.health = state.health - amount;
-		}
-	}
-
-
 	/**
 	 * Play a moaning sound, indicating being hurt
 	 */
 	public abstract void moan();
-
-
-	public synchronized void heal(final float amount) {
-		if (state.health + amount > state.maxHealth) {
-			state.health = state.maxHealth;
-		} else {
-			state.health = state.health + amount;
-		}
-	}
-
-
-	public final synchronized void increaseHunger(final float amount) {
-		if (state.hunger + amount >= 1f) {
-			state.hunger = 1f;
-		} else {
-			state.hunger = state.hunger + amount;
-		}
-	}
-
-
-	public final synchronized void decreaseHunger(final float amount) {
-		if (state.hunger - amount <= 0f) {
-			state.hunger = 0f;
-		} else {
-			state.hunger = state.hunger - amount;
-		}
-	}
-
-
-	public final synchronized void increaseMana(final float amount) {
-		if (state.mana + amount >= state.maxMana) {
-			state.mana = state.maxMana;
-		} else {
-			state.mana = state.hunger + amount;
-		}
-	}
-
-
-	public final synchronized void decreaseMana(final float amount) {
-		if (state.mana - amount <= 0f) {
-			state.mana = 0f;
-		} else {
-			state.mana = state.mana - amount;
-		}
-	}
-
-
-	public final synchronized void increaseStamina(final float amount) {
-		if (state.stamina + amount >= 1f) {
-			state.stamina = 1f;
-		} else {
-			state.stamina = state.stamina + amount;
-		}
-	}
-
-
-	public final synchronized void decreaseStamina(final float amount) {
-		if (state.stamina - amount <= 0f) {
-			state.stamina = 0f;
-		} else {
-			state.stamina = state.stamina - amount;
-		}
-	}
-
-
-	/**
-	 * Add a {@link Condition} to this {@link Individual}, if there is already an existing {@link Condition}
-	 * that is of the same class as the condition trying to be added, stack them by calling {@link Condition#stack(Condition)}
-	 */
-	public final synchronized void addCondition(final Condition condition) {
-		for (final Condition existing : newHashSet(state.currentConditions)) {
-			if (condition.getClass().equals(existing.getClass())) {
-				existing.stack(condition);
-				return;
-			}
-		}
-		state.currentConditions.add(condition);
-	}
 
 
 	public final synchronized void changeStaminaRegen(final float newValue) {
@@ -921,18 +676,18 @@ public abstract class Individual implements Equipper, Visible, MouseOverable, Sp
 
 	public final boolean attacking() {
 		return obj(getCurrentAction()).oneOf(
-			ATTACK_LEFT_ONE_HANDED_WEAPON_STAB,
-			ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB,
-			ATTACK_LEFT_ONE_HANDED_WEAPON,
-			ATTACK_RIGHT_ONE_HANDED_WEAPON,
-			ATTACK_LEFT_SPEAR,
-			ATTACK_RIGHT_SPEAR,
-			ATTACK_LEFT_TWO_HANDED_WEAPON,
-			ATTACK_RIGHT_TWO_HANDED_WEAPON,
-			ATTACK_LEFT_UNARMED,
-			ATTACK_RIGHT_UNARMED,
-			ATTACK_LEFT_ONE_HANDED_WEAPON_MINE,
-			ATTACK_RIGHT_ONE_HANDED_WEAPON_MINE
+			Action.ATTACK_LEFT_ONE_HANDED_WEAPON_STAB,
+			Action.ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB,
+			Action.ATTACK_LEFT_ONE_HANDED_WEAPON,
+			Action.ATTACK_RIGHT_ONE_HANDED_WEAPON,
+			Action.ATTACK_LEFT_SPEAR,
+			Action.ATTACK_RIGHT_SPEAR,
+			Action.ATTACK_LEFT_TWO_HANDED_WEAPON,
+			Action.ATTACK_RIGHT_TWO_HANDED_WEAPON,
+			Action.ATTACK_LEFT_UNARMED,
+			Action.ATTACK_RIGHT_UNARMED,
+			Action.ATTACK_LEFT_ONE_HANDED_WEAPON_MINE,
+			Action.ATTACK_RIGHT_ONE_HANDED_WEAPON_MINE
 		);
 	}
 
@@ -1175,42 +930,8 @@ public abstract class Individual implements Equipper, Visible, MouseOverable, Sp
 	}
 
 
-	public enum Action implements Serializable {
-		DEAD(true),
-		JUMP_LEFT(true),
-		JUMP_RIGHT(false),
-		STAND_LEFT(true),
-		STAND_RIGHT(false),
-		STAND_LEFT_COMBAT_ONE_HANDED(true),
-		STAND_RIGHT_COMBAT_ONE_HANDED(false),
-		WALK_LEFT(true),
-		WALK_RIGHT(false),
-		RUN_LEFT(true),
-		RUN_RIGHT(false),
-		AIM_LEFT(true),
-		AIM_RIGHT(false),
-		ATTACK_LEFT_UNARMED(true),
-		ATTACK_RIGHT_UNARMED(false),
-		ATTACK_LEFT_ONE_HANDED_WEAPON(true),
-		ATTACK_RIGHT_ONE_HANDED_WEAPON(false),
-		ATTACK_LEFT_ONE_HANDED_WEAPON_STAB(true),
-		ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB(false),
-		ATTACK_LEFT_TWO_HANDED_WEAPON(true),
-		ATTACK_RIGHT_TWO_HANDED_WEAPON(false),
-		ATTACK_LEFT_ONE_HANDED_WEAPON_MINE(true),
-		ATTACK_RIGHT_ONE_HANDED_WEAPON_MINE(false),
-		ATTACK_LEFT_SPEAR(true),
-		ATTACK_RIGHT_SPEAR(false);
-
-		private boolean left;
-
-		private Action(final boolean left) {
-			this.left = left;
-		}
-
-		public boolean left() {
-			return left;
-		}
+	public void setDead(final boolean dead) {
+		this.dead = dead;
 	}
 
 

@@ -1,8 +1,10 @@
 package bloodandmithril.character.conditions;
 
+import bloodandmithril.character.IndividualStateService;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
+import bloodandmithril.core.Wiring;
 
 /**
  * Drains health
@@ -20,20 +22,20 @@ public class Poison extends Condition {
 	/** The decline in toxicity, per second */
 	private float persistence;
 
-	public Poison(float toxicity, float persistence) {
+	public Poison(final float toxicity, final float persistence) {
 		this.toxicity = toxicity;
 		this.persistence = persistence;
 	}
 
 	@Override
-	public void affect(Individual affected , float delta) {
-		affected.damage(delta * toxicity);
+	public void affect(final Individual affected , final float delta) {
+		Wiring.injector().getInstance(IndividualStateService.class).damage(affected, delta * toxicity);
 		toxicity = toxicity - persistence * delta <= 0 ? 0 : toxicity - persistence * delta;
 	}
 
 
 	@Override
-	public void infect(Individual infected, float delta) {
+	public void infect(final Individual infected, final float delta) {
 		// Non-infectious
 	}
 
@@ -59,7 +61,7 @@ public class Poison extends Condition {
 	public String getName() {
 		String severity;
 
-		int sev = Math.round(toxicity * 100)/10;
+		final int sev = Math.round(toxicity * 100)/10;
 		switch (sev) {
 			case 0:		severity = "Mildly"; break;
 			case 1:		severity = "Mildly"; break;
@@ -85,7 +87,7 @@ public class Poison extends Condition {
 
 
 	@Override
-	public void stack(Condition condition) {
+	public void stack(final Condition condition) {
 		if (!(condition instanceof Poison)) {
 			throw new RuntimeException("Cannot stack " + condition.getClass().getSimpleName() + " with Poison");
 		}
@@ -96,6 +98,6 @@ public class Poison extends Condition {
 
 
 	@Override
-	public void clientSideEffects(Individual affected, float delta) {
+	public void clientSideEffects(final Individual affected, final float delta) {
 	}
 }

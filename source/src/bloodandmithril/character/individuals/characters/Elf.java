@@ -1,7 +1,5 @@
 package bloodandmithril.character.individuals.characters;
 
-import static bloodandmithril.character.individuals.Individual.Action.DEAD;
-
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -20,6 +18,7 @@ import bloodandmithril.character.ai.perception.Listener;
 import bloodandmithril.character.ai.perception.Observer;
 import bloodandmithril.character.ai.perception.SoundStimulus;
 import bloodandmithril.character.ai.perception.Visible;
+import bloodandmithril.character.individuals.Action;
 import bloodandmithril.character.individuals.Humanoid;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
@@ -362,7 +361,7 @@ public class Elf extends Humanoid implements Observer, Listener {
 
 
 	@Override
-	protected void internalKill() {
+	public void internalKill() {
 		setDeathAlpha(0f);
 	}
 
@@ -372,7 +371,7 @@ public class Elf extends Humanoid implements Observer, Listener {
 		if (isAlive()) {
 			super.setAnimationTimer(animationTimer);
 		} else {
-			if (getDeathAlpha() > 2.4f && getCurrentAction() != DEAD) {
+			if (getDeathAlpha() > 2.4f && getCurrentAction() != Action.DEAD) {
 				setCurrentAction(Action.DEAD);
 				ParticleService.fireworks(getState().position.cpy().add(0, getHeight()/3), getEyeColor().getColor(), getHairColor().getColor());
 			}

@@ -10,13 +10,13 @@ import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import bloodandmithril.character.IndividualStateService;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.task.attack.Attack;
 import bloodandmithril.character.conditions.Condition;
 import bloodandmithril.character.conditions.Exhaustion;
 import bloodandmithril.character.conditions.Hunger;
 import bloodandmithril.character.conditions.Thirst;
-import bloodandmithril.character.individuals.Individual.Action;
 import bloodandmithril.control.Controls;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Wiring;
@@ -38,6 +38,7 @@ public class IndividualUpdateService {
 
 	@Inject	private PositionalIndexingService positionalIndexingService;
 	@Inject	private IndividualKinematicsUpdater individualKinematicsUpdater;
+	@Inject	private IndividualStateService individualStateService;
 
 	/**
 	 * Updates the individual
@@ -130,37 +131,37 @@ public class IndividualUpdateService {
 	 * @param indi
 	 */
 	private void updateVitals(final Individual indi, final float delta) {
-		indi.heal(delta * indi.getState().healthRegen);
+		individualStateService.heal(indi, delta * indi.getState().healthRegen);
 
-		indi.decreaseHunger(indi.hungerDrain() * (delta* 60f));
-		indi.decreaseThirst(indi.thirstDrain() * (delta* 60f));
+		individualStateService.decreaseHunger(indi, indi.hungerDrain() * (delta* 60f));
+		individualStateService.decreaseThirst(indi, indi.thirstDrain() * (delta* 60f));
 
 		final Controls controls = Wiring.injector().getInstance(Controls.class);
 
 		if (indi.isWalking()) {
 			if (indi.isCommandActive(controls.moveLeft.keyCode) || indi.isCommandActive(controls.moveRight.keyCode)) {
-				indi.increaseStamina(delta * indi.getState().staminaRegen / 2f);
+				individualStateService.increaseStamina(indi, delta * indi.getState().staminaRegen / 2f);
 			} else {
-				indi.increaseStamina(delta * indi.getState().staminaRegen);
+				individualStateService.increaseStamina(indi, delta * indi.getState().staminaRegen);
 			}
 		} else {
 			if (indi.isCommandActive(controls.moveLeft.keyCode) || indi.isCommandActive(controls.moveRight.keyCode)) {
-				indi.decreaseStamina(indi.staminaDrain() * (delta* 60f));
+				individualStateService.decreaseStamina(indi, indi.staminaDrain() * (delta* 60f));
 			} else {
-				indi.increaseStamina(delta * indi.getState().staminaRegen);
+				individualStateService.increaseStamina(indi, delta * indi.getState().staminaRegen);
 			}
 		}
 
 		if (indi.getState().hunger < 0.75f) {
-			indi.addCondition(new Hunger(indi.getId().getId()));
+			individualStateService.addCondition(indi, new Hunger(indi.getId().getId()));
 		}
 
 		if (indi.getState().thirst < 0.75f) {
-			indi.addCondition(new Thirst(indi.getId().getId()));
+			individualStateService.addCondition(indi, new Thirst(indi.getId().getId()));
 		}
 
 		if (indi.getState().stamina < 0.75f) {
-			indi.addCondition(new Exhaustion(indi.getId().getId()));
+			individualStateService.addCondition(indi, new Exhaustion(indi.getId().getId()));
 		}
 	}
 

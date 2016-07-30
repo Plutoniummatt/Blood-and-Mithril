@@ -8,11 +8,13 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.google.common.collect.Maps;
 
 import bloodandmithril.audio.SoundService;
+import bloodandmithril.character.IndividualStateService;
 import bloodandmithril.character.ai.task.idle.Idle;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
 import bloodandmithril.core.UpdatedBy;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.RenderPropWith;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.weapon.dagger.BushKnife;
@@ -57,7 +59,7 @@ public class BlacksmithWorkshop extends CraftingStation {
 	/**
 	 * Constructor
 	 */
-	public BlacksmithWorkshop(float x, float y) {
+	public BlacksmithWorkshop(final float x, final float y) {
 		super(x, y, 117, 43, 0);
 		setConstructionProgress(1f);
 	}
@@ -109,7 +111,7 @@ public class BlacksmithWorkshop extends CraftingStation {
 
 
 	@Override
-	public void synchronizeProp(Prop other) {
+	public void synchronizeProp(final Prop other) {
 		this.setSparkCountdown(((BlacksmithWorkshop) other).getSparkCountdown());
 		super.synchronizeProp(other);
 	}
@@ -128,10 +130,12 @@ public class BlacksmithWorkshop extends CraftingStation {
 
 
 	@Override
-	public void affectIndividual(Individual individual, float delta) {
-		individual.decreaseStamina(delta / 30f);
-		individual.decreaseThirst(delta / 300f);
-		individual.decreaseHunger(delta / 600f);
+	public void affectIndividual(final Individual individual, final float delta) {
+		final IndividualStateService individualStateService = Wiring.injector().getInstance(IndividualStateService.class);
+
+		individualStateService.decreaseThirst(individual, delta / 300f);
+		individualStateService.decreaseHunger(individual, delta / 600f);
+		individualStateService.decreaseStamina(individual, delta / 20f);
 
 		if (individual.getState().stamina <= 0.01f) {
 			individual.getAI().setCurrentTask(new Idle());
@@ -145,7 +149,7 @@ public class BlacksmithWorkshop extends CraftingStation {
 	}
 
 
-	public void setSparkCountdown(int sparkCountdown) {
+	public void setSparkCountdown(final int sparkCountdown) {
 		this.sparkCountdown = sparkCountdown;
 	}
 }
