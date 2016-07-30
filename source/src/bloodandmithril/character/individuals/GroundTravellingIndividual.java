@@ -17,7 +17,6 @@ import java.util.Map;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.math.Vector2;
 
 import bloodandmithril.control.Controls;
 import bloodandmithril.core.Copyright;
@@ -213,17 +212,5 @@ public abstract class GroundTravellingIndividual extends Individual {
 	protected void internalUpdate(final float delta) {
 		respondToCommands();
 		updateCurrentAction();
-	}
-
-
-	/**
-	 * Performs a jump at the specified jump vector.
-	 */
-	public void jump(final Vector2 jumpVector) {
-		getState().velocity.x = jumpVector.x;
-		getState().velocity.y = jumpVector.y;
-		// decreaseStamina(0.1f);
-
-		setCurrentAction(jumpVector.x < 0f ? Action.JUMP_LEFT : Action.JUMP_RIGHT);
 	}
 }

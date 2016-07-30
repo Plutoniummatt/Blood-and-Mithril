@@ -24,6 +24,7 @@ import bloodandmithril.ui.UserInterface;
 @Singleton
 @Copyright("Matthew Peck 2016")
 public class JumpExecutor implements AITaskExecutor {
+	private static float REQUIRED_STAMINA_TO_JUMP = 0.05f;
 	
 	@Inject private UserInterface userInterface;
 
@@ -41,14 +42,21 @@ public class JumpExecutor implements AITaskExecutor {
 		}
 
 		if (host instanceof GroundTravellingIndividual) {
-			if (host.getState().stamina < 0.1f) {
+			if (host.getState().stamina < REQUIRED_STAMINA_TO_JUMP) {
 				userInterface.addFloatingText("Not enough stamina", Color.ORANGE, host.getEmissionPosition().cpy(), false, host.getWorldId());
 				jump.jumped = true;
 				return;
 			}
 
 			host.clearCommands();
-			((GroundTravellingIndividual) host).jump(resolveJumpVector(jump));
+			
+			Vector2 jumpVector = resolveJumpVector(jump);
+			
+			host.getState().velocity.x = jumpVector.x;
+			host.getState().velocity.y = jumpVector.y;
+			host.decreaseStamina(REQUIRED_STAMINA_TO_JUMP);
+			host.setCurrentAction(jumpVector.x < 0f ? Action.JUMP_LEFT : Action.JUMP_RIGHT);
+			
 			jump.jumped = true;
 		}		
 	}
