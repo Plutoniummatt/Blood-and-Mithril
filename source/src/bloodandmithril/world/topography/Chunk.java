@@ -287,7 +287,9 @@ public final class Chunk {
 				chunkMap.get(chunkX).get(chunkY + 1).repopulateTextureCoordinates(x, 0, foreGround);
 				x++;
 			}
-			chunkMap.get(chunkX).get(chunkY + 1).refreshMesh();
+			if (refreshMesh) {
+				chunkMap.get(chunkX).get(chunkY + 1).refreshMesh();
+			}
 		}
 
 		if (chunkMap.get(chunkX).get(chunkY - 1) != null) {
@@ -297,7 +299,9 @@ public final class Chunk {
 				chunkMap.get(chunkX).get(chunkY - 1).repopulateTextureCoordinates(x, Topography.CHUNK_SIZE - 1, foreGround);
 				x++;
 			}
-			chunkMap.get(chunkX).get(chunkY - 1).refreshMesh();
+			if (refreshMesh) {
+				chunkMap.get(chunkX).get(chunkY - 1).refreshMesh();
+			}
 		}
 
 		if (chunkMap.get(chunkX - 1) != null && chunkMap.get(chunkX - 1).get(chunkY) != null) {
@@ -307,7 +311,9 @@ public final class Chunk {
 				chunkMap.get(chunkX - 1).get(chunkY).repopulateTextureCoordinates(Topography.CHUNK_SIZE - 1, y, foreGround);
 				y++;
 			}
-			chunkMap.get(chunkX - 1).get(chunkY).refreshMesh();
+			if (refreshMesh) {
+				chunkMap.get(chunkX - 1).get(chunkY).refreshMesh();
+			}
 		}
 
 		if (chunkMap.get(chunkX + 1) != null && chunkMap.get(chunkX + 1).get(chunkY) != null) {
@@ -317,35 +323,45 @@ public final class Chunk {
 				chunkMap.get(chunkX + 1).get(chunkY).repopulateTextureCoordinates(0, y, foreGround);
 				y++;
 			}
-			chunkMap.get(chunkX + 1).get(chunkY).refreshMesh();
+			if (refreshMesh) {
+				chunkMap.get(chunkX + 1).get(chunkY).refreshMesh();
+			}
 		}
 		
 		
 		if (chunkMap.get(chunkX + 1) != null && chunkMap.get(chunkX + 1).get(chunkY + 1) != null) {
 			chunkMap.get(chunkX + 1).get(chunkY + 1).getTile(0, 0, foreGround).calculateOrientationAndEdge(chunkX + 1, chunkY + 1, 0, 0, foreGround, chunkMap);
 			chunkMap.get(chunkX + 1).get(chunkY + 1).repopulateTextureCoordinates(0, 0, foreGround);
-			chunkMap.get(chunkX + 1).get(chunkY + 1).refreshMesh();
+			if (refreshMesh) {
+				chunkMap.get(chunkX + 1).get(chunkY + 1).refreshMesh();
+			}
 		}
 		
 		
 		if (chunkMap.get(chunkX + 1) != null && chunkMap.get(chunkX + 1).get(chunkY - 1) != null) {
 			chunkMap.get(chunkX + 1).get(chunkY - 1).getTile(0, CHUNK_SIZE - 1, foreGround).calculateOrientationAndEdge(chunkX + 1, chunkY - 1, 0, CHUNK_SIZE - 1, foreGround, chunkMap);
 			chunkMap.get(chunkX + 1).get(chunkY - 1).repopulateTextureCoordinates(0, CHUNK_SIZE - 1, foreGround);
-			chunkMap.get(chunkX + 1).get(chunkY - 1).refreshMesh();
+			if (refreshMesh) {
+				chunkMap.get(chunkX + 1).get(chunkY - 1).refreshMesh();
+			}
 		}
 		
 		
 		if (chunkMap.get(chunkX - 1) != null && chunkMap.get(chunkX - 1).get(chunkY + 1) != null) {
 			chunkMap.get(chunkX - 1).get(chunkY + 1).getTile(CHUNK_SIZE - 1, 0, foreGround).calculateOrientationAndEdge(chunkX - 1, chunkY + 1, CHUNK_SIZE - 1, 0, foreGround, chunkMap);
 			chunkMap.get(chunkX - 1).get(chunkY + 1).repopulateTextureCoordinates(CHUNK_SIZE - 1, 0, foreGround);
-			chunkMap.get(chunkX - 1).get(chunkY + 1).refreshMesh();
+			if (refreshMesh) {
+				chunkMap.get(chunkX - 1).get(chunkY + 1).refreshMesh();
+			}
 		}
 		
 		
 		if (chunkMap.get(chunkX - 1) != null && chunkMap.get(chunkX - 1).get(chunkY - 1) != null) {
 			chunkMap.get(chunkX - 1).get(chunkY - 1).getTile(CHUNK_SIZE - 1, CHUNK_SIZE - 1, foreGround).calculateOrientationAndEdge(chunkX - 1, chunkY - 1, CHUNK_SIZE - 1, CHUNK_SIZE - 1, foreGround, chunkMap);
 			chunkMap.get(chunkX - 1).get(chunkY - 1).repopulateTextureCoordinates(CHUNK_SIZE - 1, CHUNK_SIZE - 1, foreGround);
-			chunkMap.get(chunkX - 1).get(chunkY - 1).refreshMesh();
+			if (refreshMesh) {
+				chunkMap.get(chunkX - 1).get(chunkY - 1).refreshMesh();
+			}
 		}
 
 		for (int x = 0; x < CHUNK_SIZE; x++) {
@@ -356,7 +372,9 @@ public final class Chunk {
 			}
 		}
 		
-		chunkMap.get(chunkX).get(chunkY).refreshMesh();
+		if (refreshMesh) {
+			chunkMap.get(chunkX).get(chunkY).refreshMesh();
+		}
 	}
 
 
