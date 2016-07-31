@@ -5,10 +5,10 @@ import static bloodandmithril.character.ai.task.gotolocation.GoToLocation.goTo;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import bloodandmithril.character.IndividualStateService;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.AITaskExecutor;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
-import bloodandmithril.character.individuals.Action;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.world.Domain;
@@ -23,6 +23,7 @@ import bloodandmithril.world.Domain;
 public class GoToMovingLocationExecutor implements AITaskExecutor {
 
 	@Inject private GoToLocationExecutor goToLocationExecutor;
+	@Inject private IndividualStateService individualStateService;
 
 	@Override
 	public void execute(final AITask aiTask, final float delta) {
@@ -59,13 +60,7 @@ public class GoToMovingLocationExecutor implements AITaskExecutor {
 	@Override
 	public boolean uponCompletion(final AITask aiTask) {
 		final Individual host = Domain.getIndividual(aiTask.getHostId().getId());
-
-		if (host.inCombatStance()) {
-			host.setCurrentAction(host.getCurrentAction().left() ? Action.STAND_LEFT_COMBAT_ONE_HANDED : Action.STAND_RIGHT_COMBAT_ONE_HANDED);
-		} else {
-			host.setCurrentAction(host.getCurrentAction().left() ? Action.STAND_LEFT : Action.STAND_RIGHT);
-		}
-		host.setAnimationTimer(0f);
+		individualStateService.stopMoving(host);
 
 		return false;
 	}

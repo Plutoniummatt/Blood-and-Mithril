@@ -24,7 +24,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 
-import bloodandmithril.character.individuals.Action;
+import bloodandmithril.character.IndividualStateService;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.control.Controls;
@@ -84,6 +84,7 @@ public class InventoryWindow extends Window implements Refreshable {
 	@Inject private UserInterface userInterface;
 	@Inject private BloodAndMithrilClientInputProcessor bloodAndMithrilClientInputProcessor;
 	@Inject private Controls controls;
+	@Inject private IndividualStateService individualStateService;
 
 	/** Inventory listing maps */
 	private HashMap<ListingMenuItem<Item>, Integer> equippedItemsToDisplay = Maps.newHashMap();
@@ -732,12 +733,7 @@ public class InventoryWindow extends Window implements Refreshable {
 				if (ClientServerInterface.isServer()) {
 					if (item instanceof Weapon && host instanceof Individual) {
 						if (((Individual) host).attacking()) {
-							final Action action = ((Individual) host).getCurrentAction();
-							if (((Individual) host).inCombatStance()) {
-								((Individual) host).setCurrentAction(action.left() ? Action.STAND_LEFT_COMBAT_ONE_HANDED : Action.STAND_RIGHT_COMBAT_ONE_HANDED);
-							} else {
-								((Individual) host).setCurrentAction(action.left() ? Action.STAND_LEFT : Action.STAND_RIGHT);
-							}
+							individualStateService.stopMoving((Individual) host);
 						}
 					}
 					host.equip((Equipable)item);

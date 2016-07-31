@@ -3,8 +3,10 @@ package bloodandmithril.character.ai.task.gotolocation;
 import static java.lang.Math.abs;
 
 import com.badlogic.gdx.math.Vector2;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import bloodandmithril.character.IndividualStateService;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.AITaskExecutor;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
@@ -24,6 +26,8 @@ import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 @Singleton
 @Copyright("Matthew Peck 2016")
 public class GoToLocationExecutor implements AITaskExecutor {
+
+	@Inject private IndividualStateService individualStateService;
 
 	@Override
 	public void execute(final AITask aiTask, final float delta) {
@@ -99,12 +103,7 @@ public class GoToLocationExecutor implements AITaskExecutor {
 	public boolean uponCompletion(final AITask aiTask) {
 		final GoToLocation task = (GoToLocation) aiTask;
 		final Individual host = Domain.getIndividual(task.getHostId().getId());
-		host.setAnimationTimer(0f);
-		if (host.inCombatStance()) {
-			host.setCurrentAction(host.getCurrentAction().left() ? Action.STAND_LEFT_COMBAT_ONE_HANDED : Action.STAND_RIGHT_COMBAT_ONE_HANDED);
-		} else {
-			host.setCurrentAction(host.getCurrentAction().left() ? Action.STAND_LEFT : Action.STAND_RIGHT);
-		}
+		individualStateService.stopMoving(host);
 
 		return false;
 	}

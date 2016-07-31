@@ -12,8 +12,10 @@ import static java.lang.Math.round;
 
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.base.Function;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import bloodandmithril.character.IndividualStateService;
 import bloodandmithril.character.ai.AIProcessor.JitGoToLocation;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.ArtificialIntelligence;
@@ -38,6 +40,8 @@ import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 @Singleton
 @Copyright("Matthew Peck 2016")
 public class ImprovedIndividualKinematicsUpdater implements IndividualKinematicsUpdater {
+
+	@Inject private IndividualStateService individualStateService;
 
 	/**
 	 * @see bloodandmithril.character.individuals.IndividualKinematicsUpdater#update(float, bloodandmithril.world.World, bloodandmithril.character.individuals.Individual)
@@ -155,11 +159,7 @@ public class ImprovedIndividualKinematicsUpdater implements IndividualKinematics
 		final Vector2 velocity
 	) {
 		if (velocity.dot(surfaceVector) <= 0) {
-			if (individual.inCombatStance()) {
-				individual.setCurrentAction(individual.getCurrentAction().left() ? Action.STAND_LEFT_COMBAT_ONE_HANDED : Action.STAND_RIGHT_COMBAT_ONE_HANDED);
-			} else {
-				individual.setCurrentAction(individual.getCurrentAction().left() ? Action.STAND_LEFT : Action.STAND_RIGHT);
-			}
+			individualStateService.stopMoving(individual);
 			return true;
 		}
 

@@ -6,6 +6,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import bloodandmithril.character.conditions.Condition;
+import bloodandmithril.character.individuals.Action;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;
@@ -97,6 +98,21 @@ public class IndividualStateService {
 			}
 		}
 		individual.getState().currentConditions.add(condition);
+	}
+
+
+	/**
+	 * Orders an {@link Individual} to stop moving
+	 */
+	public void stopMoving(final Individual individual) {
+		if (!individual.attacking() && individual.isAlive()) {
+			individual.setAnimationTimer(0f);
+			if (individual.inCombatStance()) {
+				individual.setCurrentAction(individual.getCurrentAction().left() ? Action.STAND_LEFT_COMBAT_ONE_HANDED : Action.STAND_RIGHT_COMBAT_ONE_HANDED);
+			} else {
+				individual.setCurrentAction(individual.getCurrentAction().left() ? Action.STAND_LEFT : Action.STAND_RIGHT);
+			}
+		}
 	}
 
 

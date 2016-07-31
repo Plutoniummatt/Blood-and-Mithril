@@ -2,6 +2,7 @@ package bloodandmithril.character.individuals;
 
 import static bloodandmithril.character.individuals.Action.STAND_LEFT_COMBAT_ONE_HANDED;
 import static bloodandmithril.character.individuals.Action.STAND_RIGHT_COMBAT_ONE_HANDED;
+import static bloodandmithril.util.ComparisonUtil.obj;
 
 import java.util.List;
 import java.util.Map;
@@ -48,6 +49,49 @@ public abstract class GroundTravellingIndividual extends Individual {
 	 * @return the Current animated action this {@link GroundTravellingIndividual} is performing.
 	 */
 	protected void updateCurrentAction() {
+
+		final boolean attacking = attacking();
+		final Action currentAction = getCurrentAction();
+
+		if (!attacking && (currentAction == Action.WALK_LEFT || currentAction == Action.RUN_LEFT)) {
+			if (currentAction == Action.WALK_LEFT) {
+				if (!isWalking()) {
+					setCurrentAction(Action.RUN_LEFT);
+					setAnimationTimer(0f);
+				}
+			} else {
+				if (isWalking()) {
+					setCurrentAction(Action.WALK_LEFT);
+					setAnimationTimer(0f);
+				}
+			}
+		} else if (!attacking && (currentAction == Action.WALK_RIGHT || currentAction == Action.RUN_RIGHT)) {
+			if (currentAction == Action.WALK_RIGHT) {
+				if (!isWalking()) {
+					setCurrentAction(Action.RUN_RIGHT);
+					setAnimationTimer(0f);
+				}
+			} else {
+				if (isWalking()) {
+					setCurrentAction(Action.WALK_RIGHT);
+					setAnimationTimer(0f);
+				}
+			}
+		} else {
+			if (!attacking && isAlive() && !obj(getCurrentAction()).oneOf(Action.JUMP_LEFT, Action.JUMP_RIGHT)) {
+				if (inCombatStance()) {
+					if (!obj(getCurrentAction()).oneOf(Action.STAND_LEFT_COMBAT_ONE_HANDED, Action.STAND_RIGHT_COMBAT_ONE_HANDED)) {
+						setAnimationTimer(0f);
+						setCurrentAction(getCurrentAction().left() ? Action.STAND_LEFT_COMBAT_ONE_HANDED : Action.STAND_RIGHT_COMBAT_ONE_HANDED);
+					}
+				} else {
+					if (!obj(getCurrentAction()).oneOf(Action.STAND_LEFT, Action.STAND_RIGHT)) {
+						setAnimationTimer(0f);
+						setCurrentAction(getCurrentAction().left() ? Action.STAND_LEFT : Action.STAND_RIGHT);
+					}
+				}
+			}
+		}
 	}
 
 
@@ -59,72 +103,66 @@ public abstract class GroundTravellingIndividual extends Individual {
 
 		//Horizontal movement
 		final boolean attacking = attacking();
-			if (Math.abs(getState().velocity.y) < 5f) {
+		if (Math.abs(getState().velocity.y) < 5f) {
 
-				final float walkSpeed = getWalkSpeed();
-				final float runSpeed = getRunSpeed();
-				final int accel = 1000;
+			final float walkSpeed = getWalkSpeed();
+			final float runSpeed = getRunSpeed();
+			final int accel = 1000;
 
-				final Action currentAction = getCurrentAction();
+			final Action currentAction = getCurrentAction();
 
-				if (!attacking && (currentAction == Action.WALK_LEFT || currentAction == Action.RUN_LEFT)) {
-					if (currentAction == Action.WALK_LEFT) {
-						if (!isWalking()) {
-							setCurrentAction(Action.RUN_LEFT);
-							setAnimationTimer(0f);
-						}
-
-						if (getState().velocity.x > -walkSpeed) {
-							getState().acceleration.x = -accel;
-						} else {
-							getState().acceleration.x = accel;
-						}
-					} else {
-						if (isWalking()) {
-							setCurrentAction(Action.WALK_LEFT);
-							setAnimationTimer(0f);
-						}
-
-						if (getState().velocity.x > -runSpeed) {
-							getState().acceleration.x = -accel;
-						} else {
-							getState().acceleration.x = accel;
-						}
+			if (!attacking && (currentAction == Action.WALK_LEFT || currentAction == Action.RUN_LEFT)) {
+				if (currentAction == Action.WALK_LEFT) {
+					if (!isWalking()) {
+						setCurrentAction(Action.RUN_LEFT);
+						setAnimationTimer(0f);
 					}
-				} else if (!attacking && (currentAction == Action.WALK_RIGHT || currentAction == Action.RUN_RIGHT)) {
-					if (currentAction == Action.WALK_RIGHT) {
-						if (!isWalking()) {
-							setCurrentAction(Action.RUN_RIGHT);
-							setAnimationTimer(0f);
-						}
 
-						if (getState().velocity.x < walkSpeed) {
-							getState().acceleration.x = accel;
-						} else {
-							getState().acceleration.x = -accel;
-						}
+					if (getState().velocity.x > -walkSpeed) {
+						getState().acceleration.x = -accel;
 					} else {
-						if (isWalking()) {
-							setCurrentAction(Action.WALK_RIGHT);
-							setAnimationTimer(0f);
-						}
-
-						if (getState().velocity.x < runSpeed) {
-							getState().acceleration.x = accel;
-						} else {
-							getState().acceleration.x = -accel;
-						}
+						getState().acceleration.x = accel;
 					}
 				} else {
-					getState().acceleration.x = 0f;
-					setAnimationTimer(0f);
-					if (inCombatStance()) {
-						setCurrentAction(getCurrentAction().left() ? Action.STAND_LEFT_COMBAT_ONE_HANDED : Action.STAND_RIGHT_COMBAT_ONE_HANDED);
+					if (isWalking()) {
+						setCurrentAction(Action.WALK_LEFT);
+						setAnimationTimer(0f);
+					}
+
+					if (getState().velocity.x > -runSpeed) {
+						getState().acceleration.x = -accel;
 					} else {
-						setCurrentAction(getCurrentAction().left() ? Action.STAND_LEFT : Action.STAND_RIGHT);
+						getState().acceleration.x = accel;
 					}
 				}
+			} else if (!attacking && (currentAction == Action.WALK_RIGHT || currentAction == Action.RUN_RIGHT)) {
+				if (currentAction == Action.WALK_RIGHT) {
+					if (!isWalking()) {
+						setCurrentAction(Action.RUN_RIGHT);
+						setAnimationTimer(0f);
+					}
+
+					if (getState().velocity.x < walkSpeed) {
+						getState().acceleration.x = accel;
+					} else {
+						getState().acceleration.x = -accel;
+					}
+				} else {
+					if (isWalking()) {
+						setCurrentAction(Action.WALK_RIGHT);
+						setAnimationTimer(0f);
+					}
+
+					if (getState().velocity.x < runSpeed) {
+						getState().acceleration.x = accel;
+					} else {
+						getState().acceleration.x = -accel;
+					}
+				}
+			} else {
+				getState().acceleration.x = 0f;
 			}
+		}
 	}
 
 
