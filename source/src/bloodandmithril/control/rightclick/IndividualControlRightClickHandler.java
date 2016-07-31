@@ -21,6 +21,7 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.event.events.IndividualMoved;
 import bloodandmithril.networking.ClientServerInterface;
+import bloodandmithril.playerinteraction.individual.api.IndividualAttackRangedService;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
@@ -35,6 +36,7 @@ public class IndividualControlRightClickHandler implements RightClickHandler {
 	@Inject	private Controls controls;
 	@Inject	private GameClientStateTracker gameClientStateTracker;
 	@Inject	private UserInterface userInterface;
+	@Inject	private IndividualAttackRangedService individualAttackRangedService;
 
 	@Override
 	public boolean rightClick(final boolean doubleClick) {
@@ -174,11 +176,7 @@ public class IndividualControlRightClickHandler implements RightClickHandler {
 	private void rangedAttack() {
 		for (final Individual selected : gameClientStateTracker.getSelectedIndividuals()) {
 			if (selected.canAttackRanged()) {
-				if (ClientServerInterface.isServer()) {
-					selected.attackRanged(new Vector2(getMouseWorldX(), getMouseWorldY()));
-				} else {
-					ClientServerInterface.SendRequest.sendAttackRangedRequest(selected, new Vector2(getMouseWorldX(), getMouseWorldY()));
-				}
+				individualAttackRangedService.attack(selected, new Vector2(getMouseWorldX(), getMouseWorldY()));
 			}
 		}
 	}

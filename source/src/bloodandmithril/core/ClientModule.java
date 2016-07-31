@@ -7,6 +7,7 @@ import com.google.inject.Module;
 
 import bloodandmithril.playerinteraction.individual.api.IndividualAISupressionService;
 import bloodandmithril.playerinteraction.individual.api.IndividualAttackOtherService;
+import bloodandmithril.playerinteraction.individual.api.IndividualAttackRangedService;
 import bloodandmithril.playerinteraction.individual.api.IndividualChangeNicknameService;
 import bloodandmithril.playerinteraction.individual.api.IndividualFollowOtherService;
 import bloodandmithril.playerinteraction.individual.api.IndividualSelectionService;
@@ -18,6 +19,8 @@ import bloodandmithril.playerinteraction.individual.service.IndividualAISupressi
 import bloodandmithril.playerinteraction.individual.service.IndividualAISupressionServiceServerImpl;
 import bloodandmithril.playerinteraction.individual.service.IndividualAttackOtherServiceClientImpl;
 import bloodandmithril.playerinteraction.individual.service.IndividualAttackOtherServiceServerImpl;
+import bloodandmithril.playerinteraction.individual.service.IndividualAttackRangedServiceClientImpl;
+import bloodandmithril.playerinteraction.individual.service.IndividualAttackRangedServiceServerImpl;
 import bloodandmithril.playerinteraction.individual.service.IndividualChangeNicknameServiceClientImpl;
 import bloodandmithril.playerinteraction.individual.service.IndividualChangeNicknameServiceServerImpl;
 import bloodandmithril.playerinteraction.individual.service.IndividualFollowOtherServiceClientImpl;
@@ -52,5 +55,6 @@ public class ClientModule implements Module {
 		binder.bind(IndividualChangeNicknameService.class).to(isServer() ? IndividualChangeNicknameServiceServerImpl.class : IndividualChangeNicknameServiceClientImpl.class);
 		binder.bind(IndividualUpdateDescriptionService.class).to(isServer() ? IndividualUpdateDescriptionServiceServerImpl.class : IndividualUpdateDescriptionServiceClientImpl.class);
 		binder.bind(IndividualAttackOtherService.class).to(isServer() ? IndividualAttackOtherServiceServerImpl.class : IndividualAttackOtherServiceClientImpl.class);
+		binder.bind(IndividualAttackRangedService.class).to(isServer() ? IndividualAttackRangedServiceServerImpl.class : IndividualAttackRangedServiceClientImpl.class);
 	}
 }

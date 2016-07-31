@@ -16,13 +16,13 @@ import bloodandmithril.world.Domain;
 @Singleton
 @Copyright("Matthew Peck 2016")
 public class OpenCraftingStationWindowExecutor implements AITaskExecutor {
-	
+
 	@Inject private UserInterface userInterface;
-	
+
 	@Override
-	public void execute(AITask aiTask, float delta) {
-		OpenCraftingStationWindow task = (OpenCraftingStationWindow) aiTask;
-		
+	public void execute(final AITask aiTask, final float delta) {
+		final OpenCraftingStationWindow task = (OpenCraftingStationWindow) aiTask;
+
 		if (Domain.getIndividual(task.getHostId().getId()).getDistanceFrom(Domain.getWorld(task.getHost().getWorldId()).props().getProp(task.craftingStationId).position) > 64f) {
 			return;
 		}
@@ -34,22 +34,21 @@ public class OpenCraftingStationWindowExecutor implements AITaskExecutor {
 		}
 
 		task.opened = true;
-		Domain.getIndividual(task.getHostId().getId()).clearCommands();		
 	}
 
-	
+
 	@Override
-	public boolean isComplete(AITask aiTask) {
+	public boolean isComplete(final AITask aiTask) {
 		return ((OpenCraftingStationWindow) aiTask).opened;
 	}
 
-	
+
 	@Override
-	public boolean uponCompletion(AITask aiTask) {
+	public boolean uponCompletion(final AITask aiTask) {
 		return false;
 	}
-	
-	
+
+
 	public void openCraftingStationWindow(final Individual individual, final CraftingStation craftingStation) {
 		userInterface.addLayeredComponentUnique(craftingStation.getCraftingStationWindow(individual));
 	}

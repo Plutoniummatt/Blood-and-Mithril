@@ -17,9 +17,7 @@ import bloodandmithril.character.conditions.Condition;
 import bloodandmithril.character.conditions.Exhaustion;
 import bloodandmithril.character.conditions.Hunger;
 import bloodandmithril.character.conditions.Thirst;
-import bloodandmithril.control.Controls;
 import bloodandmithril.core.Copyright;
-import bloodandmithril.core.Wiring;
 import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.performance.PositionalIndexingService;
 import bloodandmithril.util.ParameterizedTask;
@@ -136,16 +134,15 @@ public class IndividualUpdateService {
 		individualStateService.decreaseHunger(indi, indi.hungerDrain() * (delta* 60f));
 		individualStateService.decreaseThirst(indi, indi.thirstDrain() * (delta* 60f));
 
-		final Controls controls = Wiring.injector().getInstance(Controls.class);
-
+		final Action currentAction = indi.getCurrentAction();
 		if (indi.isWalking()) {
-			if (indi.isCommandActive(controls.moveLeft.keyCode) || indi.isCommandActive(controls.moveRight.keyCode)) {
+			if (currentAction == Action.WALK_LEFT || currentAction == Action.WALK_RIGHT) {
 				individualStateService.increaseStamina(indi, delta * indi.getState().staminaRegen / 2f);
 			} else {
 				individualStateService.increaseStamina(indi, delta * indi.getState().staminaRegen);
 			}
 		} else {
-			if (indi.isCommandActive(controls.moveLeft.keyCode) || indi.isCommandActive(controls.moveRight.keyCode)) {
+			if (currentAction == Action.RUN_LEFT || currentAction == Action.RUN_RIGHT) {
 				individualStateService.decreaseStamina(indi, indi.staminaDrain() * (delta* 60f));
 			} else {
 				individualStateService.increaseStamina(indi, delta * indi.getState().staminaRegen);

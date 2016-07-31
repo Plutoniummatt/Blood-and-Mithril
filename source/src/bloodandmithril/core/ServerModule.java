@@ -5,6 +5,7 @@ import com.google.inject.Module;
 
 import bloodandmithril.playerinteraction.individual.api.IndividualAISupressionService;
 import bloodandmithril.playerinteraction.individual.api.IndividualAttackOtherService;
+import bloodandmithril.playerinteraction.individual.api.IndividualAttackRangedService;
 import bloodandmithril.playerinteraction.individual.api.IndividualChangeNicknameService;
 import bloodandmithril.playerinteraction.individual.api.IndividualFollowOtherService;
 import bloodandmithril.playerinteraction.individual.api.IndividualSelectionService;
@@ -14,6 +15,7 @@ import bloodandmithril.playerinteraction.individual.api.IndividualUpdateDescript
 import bloodandmithril.playerinteraction.individual.api.IndividualWalkRunToggleService;
 import bloodandmithril.playerinteraction.individual.service.IndividualAISupressionServiceServerImpl;
 import bloodandmithril.playerinteraction.individual.service.IndividualAttackOtherServiceServerImpl;
+import bloodandmithril.playerinteraction.individual.service.IndividualAttackRangedServiceServerImpl;
 import bloodandmithril.playerinteraction.individual.service.IndividualChangeNicknameServiceServerImpl;
 import bloodandmithril.playerinteraction.individual.service.IndividualFollowOtherServiceServerImpl;
 import bloodandmithril.playerinteraction.individual.service.IndividualSelectionServiceServerImpl;
@@ -31,7 +33,7 @@ import bloodandmithril.playerinteraction.individual.service.IndividualWalkRunTog
 public class ServerModule implements Module {
 
 	@Override
-	public void configure(Binder binder) {
+	public void configure(final Binder binder) {
 		binder.bind(IndividualSelectionService.class).to(IndividualSelectionServiceServerImpl.class);
 		binder.bind(IndividualAISupressionService.class).to(IndividualAISupressionServiceServerImpl.class);
 		binder.bind(IndividualWalkRunToggleService.class).to(IndividualWalkRunToggleServiceServerImpl.class);
@@ -41,5 +43,6 @@ public class ServerModule implements Module {
 		binder.bind(IndividualChangeNicknameService.class).to(IndividualChangeNicknameServiceServerImpl.class);
 		binder.bind(IndividualUpdateDescriptionService.class).to(IndividualUpdateDescriptionServiceServerImpl.class);
 		binder.bind(IndividualAttackOtherService.class).to(IndividualAttackOtherServiceServerImpl.class);
+		binder.bind(IndividualAttackRangedService.class).to(IndividualAttackRangedServiceServerImpl.class);
 	}
 }

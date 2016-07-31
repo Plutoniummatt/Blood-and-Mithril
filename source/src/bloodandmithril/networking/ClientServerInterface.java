@@ -317,7 +317,6 @@ import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.util.SerializableMappingFunction;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.datastructure.Box;
-import bloodandmithril.util.datastructure.Commands;
 import bloodandmithril.util.datastructure.ConcurrentDualKeySkipListMap;
 import bloodandmithril.util.datastructure.DualKeyHashMap;
 import bloodandmithril.util.datastructure.SerializableDoubleWrapper;
@@ -624,7 +623,6 @@ public class ClientServerInterface {
 		kryo.register(ClientConnected.class);
 		kryo.register(Coal.class);
 		kryo.register(Color.class);
-		kryo.register(Commands.class);
 		kryo.register(CompositeAITask.class);
 		kryo.register(ConcurrentDualKeySkipListMap.class);
 		kryo.register(ConcurrentHashMap.class);

@@ -5,11 +5,10 @@ import com.google.inject.Singleton;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.AITaskExecutor;
 import bloodandmithril.core.Copyright;
-import bloodandmithril.world.Domain;
 
 /**
  * Executes {@link Wait}
- * 
+ *
  * @author Matt
  */
 @Singleton
@@ -17,10 +16,9 @@ import bloodandmithril.world.Domain;
 public class WaitExecutor implements AITaskExecutor {
 
 	@Override
-	public void execute(AITask aiTask, float delta) {
-		Wait task = (Wait) aiTask;
-		
-		Domain.getIndividual(task.getHostId().getId()).clearCommands();
+	public void execute(final AITask aiTask, final float delta) {
+		final Wait task = (Wait) aiTask;
+
 		if (task.time < 0f) {
 			task.complete = true;
 			return;
@@ -29,15 +27,15 @@ public class WaitExecutor implements AITaskExecutor {
 		task.systemTimeSinceLastUpdate = System.currentTimeMillis();
 	}
 
-	
+
 	@Override
-	public boolean isComplete(AITask aiTask) {
+	public boolean isComplete(final AITask aiTask) {
 		return ((Wait) aiTask).complete;
 	}
 
-	
+
 	@Override
-	public boolean uponCompletion(AITask aiTask) {
+	public boolean uponCompletion(final AITask aiTask) {
 		return false;
 	}
 }

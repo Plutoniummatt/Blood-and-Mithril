@@ -58,6 +58,5 @@ public class IndividualSelectionServiceServerImpl implements IndividualSelection
 	public void deselect(final Individual indi) {
 		indi.deselect(false, 0);
 		gameClientStateTracker.removeSelectedIndividual(indi);
-		indi.clearCommands();
 	}
 }

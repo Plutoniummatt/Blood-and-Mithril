@@ -1,6 +1,7 @@
 package bloodandmithril.networking.requests;
 
 import com.badlogic.gdx.math.Vector2;
+import com.google.inject.Inject;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
@@ -8,6 +9,7 @@ import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.networking.Request;
 import bloodandmithril.networking.Response.Responses;
 import bloodandmithril.networking.requests.SynchronizeIndividual.SynchronizeIndividualResponse;
+import bloodandmithril.playerinteraction.individual.api.IndividualAttackRangedService;
 import bloodandmithril.world.Domain;
 
 /**
@@ -17,11 +19,10 @@ import bloodandmithril.world.Domain;
  */
 @Copyright("Matthew Peck 2015")
 public class RequestAttackRanged implements Request {
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -1811765430701225537L;
+
+	@Inject private transient IndividualAttackRangedService individualAttackRangedService;
+
 	private final int individualId;
 	private final Vector2 direction;
 
@@ -37,7 +38,7 @@ public class RequestAttackRanged implements Request {
 	@Override
 	public Responses respond() {
 		final Individual individual = Domain.getIndividual(individualId);
-		individual.attackRanged(direction);
+		individualAttackRangedService.attack(individual, direction);
 		final Responses responses = new Responses(false);
 		responses.add(new SynchronizeIndividualResponse(individualId, System.currentTimeMillis()));
 		responses.add(new RefreshWindowsResponse());

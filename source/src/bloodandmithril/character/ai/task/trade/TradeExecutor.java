@@ -22,19 +22,19 @@ import bloodandmithril.world.Domain;
 
 /**
  * Executes {@link Trade}
- * 
+ *
  * @author Matt
  */
 @Singleton
 @Copyright("Matthew Peck 2016")
 public class TradeExecutor implements AITaskExecutor {
-	
+
 	@Inject UserInterface userInterface;
 
 	@Override
-	public void execute(AITask aiTask, float delta) {
-		Trade task = (Trade) aiTask;
-		
+	public void execute(final AITask aiTask, final float delta) {
+		final Trade task = (Trade) aiTask;
+
 		if (task.proposee.isLocked()) {
 			return;
 		}
@@ -52,9 +52,7 @@ public class TradeExecutor implements AITaskExecutor {
 				openTradeWindowWithIndividual(task.proposer, proposeeCasted);
 			}
 
-			task.proposer.clearCommands();
 			task.proposer.getAI().setCurrentTask(new Trading(task.proposer.getId(), ((Individual) task.proposee).getId().getId(), TradeEntity.INDIVIDUAL));
-			proposeeCasted.clearCommands();
 			proposeeCasted.getAI().setCurrentTask(new Trading(proposeeCasted.getId(), task.proposer.getId().getId(), TradeEntity.INDIVIDUAL));
 		} else if (task.proposee instanceof Prop) {
 
@@ -68,16 +66,15 @@ public class TradeExecutor implements AITaskExecutor {
 				openTradeWindowWithProp(task.proposer, task.proposee);
 			}
 
-			task.proposer.clearCommands();
 			task.proposer.getAI().setCurrentTask(new Trading(task.proposer.getId(), ((Prop) task.proposee).id, TradeEntity.PROP));
-		}		
+		}
 	}
-	
+
 
 	@Override
-	public boolean isComplete(AITask aiTask) {
-		Trade task = (Trade) aiTask;
-		
+	public boolean isComplete(final AITask aiTask) {
+		final Trade task = (Trade) aiTask;
+
 		if (task.proposee instanceof Individual) {
 			if (!((Individual) task.proposee).isAlive()) {
 				return true;
@@ -87,13 +84,13 @@ public class TradeExecutor implements AITaskExecutor {
 		return task.proposer.getAI().getCurrentTask() instanceof Trading;
 	}
 
-	
+
 	@Override
-	public boolean uponCompletion(AITask aiTask) {
+	public boolean uponCompletion(final AITask aiTask) {
 		return false;
 	}
-	
-	
+
+
 	public static final Comparator<Item> sortOrder = new Comparator<Item>() {
 		@Override
 		public int compare(final Item o1, final Item o2) {
@@ -104,7 +101,7 @@ public class TradeExecutor implements AITaskExecutor {
 		}
 	};
 
-	
+
 	/**
 	 * Opens a {@link TradeWindow} with a {@link Prop}  is also a {@link Container}
 	 */

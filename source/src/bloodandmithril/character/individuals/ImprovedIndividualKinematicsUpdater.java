@@ -2,8 +2,6 @@ package bloodandmithril.character.individuals;
 
 import static bloodandmithril.character.individuals.Action.JUMP_LEFT;
 import static bloodandmithril.character.individuals.Action.JUMP_RIGHT;
-import static bloodandmithril.character.individuals.Action.STAND_LEFT;
-import static bloodandmithril.character.individuals.Action.STAND_RIGHT;
 import static bloodandmithril.util.ComparisonUtil.obj;
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static bloodandmithril.world.topography.Topography.convertToWorldTileCoord;
@@ -23,9 +21,8 @@ import bloodandmithril.character.ai.task.compositeaitask.CompositeAITask;
 import bloodandmithril.character.ai.task.gotolocation.GoToLocation;
 import bloodandmithril.character.ai.task.gotolocation.GoToMovingLocation;
 import bloodandmithril.character.ai.task.idle.Idle;
-import bloodandmithril.control.Controls;
 import bloodandmithril.core.Copyright;
-import bloodandmithril.core.Wiring;
+import bloodandmithril.util.ComparisonUtil;
 import bloodandmithril.world.World;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
@@ -158,7 +155,11 @@ public class ImprovedIndividualKinematicsUpdater implements IndividualKinematics
 		final Vector2 velocity
 	) {
 		if (velocity.dot(surfaceVector) <= 0) {
-			individual.setCurrentAction(velocity.x > 0 ? STAND_RIGHT : STAND_LEFT);
+			if (individual.inCombatStance()) {
+				individual.setCurrentAction(individual.getCurrentAction().left() ? Action.STAND_LEFT_COMBAT_ONE_HANDED : Action.STAND_RIGHT_COMBAT_ONE_HANDED);
+			} else {
+				individual.setCurrentAction(individual.getCurrentAction().left() ? Action.STAND_LEFT : Action.STAND_RIGHT);
+			}
 			return true;
 		}
 
@@ -275,7 +276,6 @@ public class ImprovedIndividualKinematicsUpdater implements IndividualKinematics
 			velocity.x = -previousVel.x * 0.4f;
 			velocity.x = velocity.x < 0 ? min(-60f, velocity.x) : max(60f, velocity.x);
 			velocity.y = 0;
-			individual.clearCommands();
 
 			if (!isJumping(individual)) {
 				individual.getAI().setCurrentTask(new Idle());
@@ -330,12 +330,13 @@ public class ImprovedIndividualKinematicsUpdater implements IndividualKinematics
 	 * Applies friction to the individual
 	 */
 	private void friction(final Individual individual) {
-		final Controls controls = Wiring.injector().getInstance(Controls.class);
 		final IndividualState state = individual.getState();
 
-		if (individual.isCommandActive(controls.moveRight.keyCode) && state.velocity.x < 0f ||
-			individual.isCommandActive(controls.moveLeft.keyCode) && state.velocity.x > 0f ||
-			!individual.isCommandActive(controls.moveLeft.keyCode) && !individual.isCommandActive(controls.moveRight.keyCode)) {
+		final Action currentAction = individual.getCurrentAction();
+
+		if (ComparisonUtil.obj(currentAction).oneOf(Action.WALK_RIGHT, Action.RUN_RIGHT) && state.velocity.x < 0f ||
+				ComparisonUtil.obj(currentAction).oneOf(Action.WALK_LEFT, Action.RUN_LEFT) && state.velocity.x > 0f ||
+			!ComparisonUtil.obj(currentAction).oneOf(Action.WALK_RIGHT, Action.RUN_RIGHT, Action.WALK_LEFT, Action.RUN_LEFT)) {
 
 			if (isJumping(individual)) {
 				return;

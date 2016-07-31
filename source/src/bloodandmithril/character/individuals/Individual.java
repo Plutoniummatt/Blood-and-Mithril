@@ -2,7 +2,6 @@ package bloodandmithril.character.individuals;
 
 import static bloodandmithril.control.InputUtilities.getMouseWorldX;
 import static bloodandmithril.control.InputUtilities.getMouseWorldY;
-import static bloodandmithril.item.items.equipment.weapon.RangedWeapon.rangeControl;
 import static bloodandmithril.util.ComparisonUtil.obj;
 import static java.lang.Math.round;
 
@@ -43,16 +42,12 @@ import bloodandmithril.item.items.equipment.EquipperImpl;
 import bloodandmithril.item.items.equipment.weapon.OneHandedMeleeWeapon;
 import bloodandmithril.item.items.equipment.weapon.RangedWeapon;
 import bloodandmithril.item.items.equipment.weapon.TwoHandedMeleeWeapon;
-import bloodandmithril.item.items.equipment.weapon.ranged.Projectile;
 import bloodandmithril.prop.construction.Construction;
-import bloodandmithril.ui.FloatingTextService;
-import bloodandmithril.ui.UserInterface;
 import bloodandmithril.util.AnimationHelper.AnimationSwitcher;
 import bloodandmithril.util.ParameterizedTask;
 import bloodandmithril.util.SpacialConfiguration;
 import bloodandmithril.util.Task;
 import bloodandmithril.util.datastructure.Box;
-import bloodandmithril.util.datastructure.Commands;
 import bloodandmithril.util.datastructure.WrapperForTwo;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
@@ -81,9 +76,6 @@ public abstract class Individual implements Equipper, Visible, MouseOverable, Sp
 
 	/** State of this character */
 	private IndividualState state;
-
-	/** Which actions are currently active */
-	private Commands activeCommands = new Commands();
 
 	/** The AI responsible for this character */
 	private ArtificialIntelligence ai;
@@ -198,7 +190,6 @@ public abstract class Individual implements Equipper, Visible, MouseOverable, Sp
 		this.skills = other.skills;
 		this.id = other.id;
 		this.state = other.state;
-		this.activeCommands = other.activeCommands;
 		this.setAi(other.getAI().copy());
 		synchronizeEquipper(other.equipperImpl);
 		synchronizeContainer(other.equipperImpl);
@@ -230,50 +221,89 @@ public abstract class Individual implements Equipper, Visible, MouseOverable, Sp
 		internalCopyFrom(other);
 	}
 
-	/**
-	 * @return the default (unarmed) attack period of this individual
-	 */
+	/** @return the default (unarmed) attack period of this individual */
 	public abstract float getDefaultAttackPeriod();
 
-	/**
-	 * @return the position at which items are discarded from inventory, as well as bleeding
-	 */
+	/** @return the position at which items are discarded from inventory, as well as bleeding */
 	public abstract Vector2 getEmissionPosition();
 
-	/**
-	 * @return the minimum damage dealt when unarmed
-	 */
+	/** @return the minimum damage dealt when unarmed */
 	public abstract float getUnarmedMinDamage();
 
-	/**
-	 * @return the maximum damage dealt when unarmed
-	 */
+	/** @return the maximum damage dealt when unarmed */
 	public abstract float getUnarmedMaxDamage();
 
-	/**
-	 * @return the {@link Box} that will be used to calculate overlaps with other hitboxes, when no weapon-specific hitboxes are found
-	 */
+	/** @return the {@link Box} that will be used to calculate overlaps with other hitboxes, when no weapon-specific hitboxes are found */
 	public abstract Box getDefaultAttackingHitBox();
 
-	/**
-	 * Called during the update routine when the currentAction is attacking
-	 */
+	/** Called during the update routine when the currentAction is attacking */
 	protected abstract void respondToAttackCommand();
 
-	/**
-	 * @return the map that maps from an {@link Action} to a map that maps action frames to their respective {@link Task}s
-	 */
+	/** @return the map that maps from an {@link Action} to a map that maps action frames to their respective {@link Task}s */
 	protected abstract Map<Action, Map<Integer, ParameterizedTask<Individual>>> getActionFrames();
 
-	/**
-	 * @return the current {@link AnimationSwitcher} of this {@link Individual}
-	 */
+	/** @return the current {@link AnimationSwitcher} of this {@link Individual} */
 	public abstract List<WrapperForTwo<AnimationSwitcher, ShaderProgram>> getCurrentAnimation();
 
-	/**
-	 * @return Implementation-specific copy method of this {@link Individual}
-	 */
+	/** @return Implementation-specific copy method of this {@link Individual} */
 	public abstract Individual copy();
+
+	/** The amount of hunger drained, per update tick (1/60) of a second, max hunger is 1 */
+	protected abstract float hungerDrain();
+
+	/** The amount of thirst drained, per update tick (1/60) of a second, max thirst is 1 */
+	protected abstract float thirstDrain();
+
+	/** The amount of stamina drained, per update tick (1/60) of a second, max stamina is 1 */
+	protected abstract float staminaDrain();
+
+	/** Implementation specific kill logic */
+	public abstract void internalKill();
+
+	/** See {@link #copy()} */
+	protected abstract void internalCopyFrom(Individual other);
+
+	/** Updates this character */
+	protected abstract void internalUpdate(float delta);
+
+	/** The walk speed */
+	public abstract float getWalkSpeed();
+
+	/** The run speed */
+	public abstract float getRunSpeed();
+
+	/** Responds to commands */
+	protected abstract void respondToCommands();
+
+	/** Returns the tooltip text color */
+	public abstract Color getToolTipTextColor();
+
+	/** Gets the description for this {@link Individual} */
+	public abstract String getDescription();
+
+	/** Updates the description for this {@link Individual} */
+	public abstract void updateDescription(String updated);
+
+	/** Returns the set of {@link Construction}s able to be constructed by this {@link Individual} */
+	public abstract Set<Construction> getConstructables();
+
+	/** Returns the {@link SpacialConfiguration} where {@link OneHandedMeleeWeapon} will be rendered */
+	public abstract SpacialConfiguration getOneHandedWeaponSpatialConfigration();
+
+	/** Returns the {@link SpacialConfiguration} where {@link TwoHandedMeleeWeapon} will be rendered */
+	public abstract SpacialConfiguration getTwoHandedWeaponSpatialConfigration();
+
+	/** Returns the {@link SpacialConfiguration} for off-hand equippables */
+	public abstract SpacialConfiguration getOffHandSpatialConfigration();
+
+	/** Play a moaning sound, indicating being hurt */
+	public abstract void moan();
+
+	/** Plays the audio that signals an "affirmative" */
+	public abstract void playAffirmativeSound();
+
+	/** Get the attack number this individual applies when attacking another, if the total concurrent attack number of all attackers exceed {@link #maxConcurrentAttackers}, then the individual can not be attacked */
+	public abstract int getConcurrentAttackNumber();
 
 
 	/** Returns the {@link ArtificialIntelligence} implementation of this {@link Individual} */
@@ -318,15 +348,6 @@ public abstract class Individual implements Equipper, Visible, MouseOverable, Sp
 	}
 
 
-	/** See {@link #copy()} */
-	protected abstract void internalCopyFrom(Individual other);
-
-
-	/** Setups up all individual resources */
-	public static final void setup() {
-	}
-
-
 	/** Deselect this {@link Individual} */
 	public final void deselect(final boolean clearTask, final int id) {
 		selectedByClient.remove(id);
@@ -335,32 +356,6 @@ public abstract class Individual implements Equipper, Visible, MouseOverable, Sp
 			getAI().setToAuto(clearTask);
 		}
 	}
-
-
-	/** Clears all commands */
-	public final synchronized void clearCommands() {
-		activeCommands.clear();
-	}
-
-
-	/** Handles commands */
-	public final synchronized void sendCommand(final int keyCode, final boolean val) {
-		if (val) {
-			activeCommands.activate(Integer.toString(keyCode));
-		} else {
-			activeCommands.deactivate(Integer.toString(keyCode));
-		}
-	}
-
-
-	/** The amount of hunger drained, per update tick (1/60) of a second, max hunger is 1 */
-	protected abstract float hungerDrain();
-
-	/** The amount of thirst drained, per update tick (1/60) of a second, max thirst is 1 */
-	protected abstract float thirstDrain();
-
-	/** The amount of stamina drained, per update tick (1/60) of a second, max stamina is 1 */
-	protected abstract float staminaDrain();
 
 
 	/** Calculates the distance between this individual and the Vector2 parameter */
@@ -379,10 +374,6 @@ public abstract class Individual implements Equipper, Visible, MouseOverable, Sp
 	}
 
 
-	/** Implementation specific kill logic */
-	public abstract void internalKill();
-
-
 	public final boolean isAISuppressed() {
 		return supressAI;
 	}
@@ -393,20 +384,6 @@ public abstract class Individual implements Equipper, Visible, MouseOverable, Sp
 	}
 
 
-	/**
-	 * @return true if a command is currently active
-	 */
-	public final synchronized boolean isCommandActive(final int keycode) {
-		return activeCommands.isActive(Integer.toString(keycode));
-	}
-
-
-	/**
-	 * Play a moaning sound, indicating being hurt
-	 */
-	public abstract void moan();
-
-
 	public final synchronized void changeStaminaRegen(final float newValue) {
 		state.staminaRegen = newValue;
 	}
@@ -415,38 +392,6 @@ public abstract class Individual implements Equipper, Visible, MouseOverable, Sp
 	public final synchronized void changeHealthRegen(final float newValue) {
 		state.healthRegen = newValue;
 	}
-
-
-	/** Updates this character */
-	protected abstract void internalUpdate(float delta);
-
-	public abstract float getWalkSpeed();
-
-	public abstract float getRunSpeed();
-
-	/** Responds to commands */
-	protected abstract void respondToCommands();
-
-	/** Returns the tooltip text color */
-	public abstract Color getToolTipTextColor();
-
-	/** Gets the description for this {@link Individual} */
-	public abstract String getDescription();
-
-	/** Updates the description for this {@link Individual} */
-	public abstract void updateDescription(String updated);
-
-	/** Returns the set of {@link Construction}s able to be constructed by this {@link Individual} */
-	public abstract Set<Construction> getConstructables();
-
-	/** Returns the {@link SpacialConfiguration} where {@link OneHandedMeleeWeapon} will be rendered */
-	public abstract SpacialConfiguration getOneHandedWeaponSpatialConfigration();
-
-	/** Returns the {@link SpacialConfiguration} where {@link TwoHandedMeleeWeapon} will be rendered */
-	public abstract SpacialConfiguration getTwoHandedWeaponSpatialConfigration();
-
-	/** Returns the {@link SpacialConfiguration} for off-hand equippables */
-	public abstract SpacialConfiguration getOffHandSpatialConfigration();
 
 
 	/** True if mouse is over */
@@ -671,9 +616,6 @@ public abstract class Individual implements Equipper, Visible, MouseOverable, Sp
 	}
 
 
-	public abstract int getConcurrentAttackNumber();
-
-
 	public final boolean attacking() {
 		return obj(getCurrentAction()).oneOf(
 			Action.ATTACK_LEFT_ONE_HANDED_WEAPON_STAB,
@@ -707,62 +649,6 @@ public abstract class Individual implements Equipper, Visible, MouseOverable, Sp
 	}
 
 
-	public final void attackRanged(final Vector2 target) {
-		final UserInterface userInterface = Wiring.injector().getInstance(UserInterface.class);
-		final FloatingTextService floatingTextService = Wiring.injector().getInstance(FloatingTextService.class);
-		final RangedWeapon rangedWeapon = (RangedWeapon) getEquipped().keySet().stream().filter(item -> {return item instanceof RangedWeapon;}).findAny().get();
-		if (rangedWeapon != null) {
-			final Vector2 emissionPosition = getEmissionPosition();
-			final Vector2 firingVector = target.cpy().sub(emissionPosition);
-
-			boolean hasAmmo = false;
-			final Item ammo = rangedWeapon.getAmmo();
-
-			if (ammo == null) {
-				floatingTextService.addFloatingTextToIndividual(this, "No ammo selected", Color.ORANGE);
-				return;
-			}
-
-			for (final Item item : Lists.newArrayList(getInventory().keySet())) {
-				if (ammo.sameAs(item)) {
-					hasAmmo = true;
-					takeItem(item);
-					userInterface.refreshRefreshableWindows();
-				}
-			}
-
-			if (hasAmmo) {
-				final Projectile fired = rangedWeapon.fire(
-					emissionPosition,
-					firingVector.cpy().nor().scl(
-						Math.min(
-							1f,
-							firingVector.len() / rangeControl
-						)
-					)
-				);
-
-				if (fired == null) {
-					floatingTextService.addFloatingTextToIndividual(this, "No ammo selected", Color.ORANGE);
-				} else {
-					fired.preFireDecorate(this);
-					fired.ignoreIndividual(this);
-					Domain.getWorld(getWorldId()).projectiles().addProjectile(fired);
-				}
-
-				if (has(ammo) == 0) {
-					rangedWeapon.setAmmo(null);
-					userInterface.refreshRefreshableWindows();
-				}
-			} else {
-				floatingTextService.addFloatingTextToIndividual(this, "Out of ammo", Color.ORANGE);
-				rangedWeapon.setAmmo(null);
-				userInterface.refreshRefreshableWindows();
-			}
-		}
-	}
-
-
 	public final float getTravelIconTimer() {
 		return travelIconTimer;
 	}
@@ -781,12 +667,6 @@ public abstract class Individual implements Equipper, Visible, MouseOverable, Sp
 	public final void setShutUp(final boolean shutup) {
 		this.shutup = shutup;
 	}
-
-
-	/**
-	 * Plays the audio that signals an "affirmative"
-	 */
-	public abstract void playAffirmativeSound();
 
 
 	public void sayStuck() {}

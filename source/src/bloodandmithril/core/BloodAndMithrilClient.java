@@ -13,8 +13,6 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.inject.Inject;
 
 import bloodandmithril.audio.SoundService;
-import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.character.individuals.characters.Elf;
 import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.control.Controls;
 import bloodandmithril.generation.biome.MainMenuBiomeDecider;
@@ -98,8 +96,8 @@ public class BloodAndMithrilClient implements ApplicationListener {
 		createMainMenuWorld();
 		setInputProcessor(inputProcessor);
 	}
-	
-	
+
+
 	private void setupInjector() {
 		ClientServerInterface.setClient(true);
 		Wiring.setupInjector(new CommonModule());
@@ -126,8 +124,6 @@ public class BloodAndMithrilClient implements ApplicationListener {
 	private void loadResources() {
 		worldRenderer.setup();
 		Fonts.setup();
-		Individual.setup();
-		Elf.setup();
 		PrefabricatedComponent.setup();
 		Topography.setup();
 		Shaders.setup();
@@ -151,7 +147,7 @@ public class BloodAndMithrilClient implements ApplicationListener {
 	public void render() {
 		try {
 			inputProcessor.cameraControl();
-			float deltaTime = Gdx.graphics.getDeltaTime();
+			final float deltaTime = Gdx.graphics.getDeltaTime();
 			if (!gameSaver.isSaving()) {
 				SoundService.update(deltaTime);
 			}
@@ -187,21 +183,21 @@ public class BloodAndMithrilClient implements ApplicationListener {
 
 			// UI Rendering --------------------- /
 			userInterface.render();
-			
+
 			// Timer --------------------- /
 			timers.renderUtilityTime += deltaTime;
 
 			graphics.getCam().position.x = x;
 			graphics.getCam().position.y = y;
-			
+
 			customRenderFunction();
 		} catch (final Exception e) {
 			e.printStackTrace();
 			Gdx.app.exit();
 		}
 	}
-	
-	
+
+
 	@VisibleForTesting
 	protected void customRenderFunction() {
 	}

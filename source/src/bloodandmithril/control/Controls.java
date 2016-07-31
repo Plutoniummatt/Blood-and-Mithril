@@ -43,9 +43,6 @@ public class Controls implements Serializable {
 	public MappedKey middleClick = new MappedKey("Middle click", 2, "", false);
 	public MappedKey rightClick = new MappedKey("Right click", 1, "", false);
 	public MappedKey leftClick = new MappedKey("Left click", 0, "", false);
-	public MappedKey moveLeft = new MappedKey("Move left", Input.Keys.A, "", false);
-	public MappedKey moveRight = new MappedKey("Move right", Input.Keys.D, "", false);
-	public MappedKey walk = new MappedKey("Walk", Input.Keys.SHIFT_RIGHT, "", false);
 	public MappedKey sendChatMessage = new MappedKey("Send message", Input.Keys.ENTER, "", false);
 	public MappedKey deleteCharacter = new MappedKey("Delete character", Input.Keys.BACKSPACE, "", false);
 

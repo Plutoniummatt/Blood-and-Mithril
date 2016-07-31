@@ -44,7 +44,6 @@ public class IndividualStateService {
 		});
 		individual.getState().currentConditions.clear();
 		individual.deselect(true, 0);
-		individual.clearCommands();
 		individual.getSelectedByClient().clear();
 		individual.internalKill();
 		userInterface.refreshRefreshableWindows();

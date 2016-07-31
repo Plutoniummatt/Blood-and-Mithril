@@ -50,15 +50,14 @@ public class JumpExecutor implements AITaskExecutor {
 				return;
 			}
 
-			host.clearCommands();
-
 			final Vector2 jumpVector = resolveJumpVector(jump);
 
 			host.getState().velocity.x = jumpVector.x;
 			host.getState().velocity.y = jumpVector.y;
 			host.setCurrentAction(jumpVector.x < 0f ? Action.JUMP_LEFT : Action.JUMP_RIGHT);
+			host.setAnimationTimer(0f);
 
-			individualStateService.decreaseStamina(host, REQUIRED_STAMINA_TO_JUMP);;
+			individualStateService.decreaseStamina(host, REQUIRED_STAMINA_TO_JUMP);
 
 			jump.jumped = true;
 		}

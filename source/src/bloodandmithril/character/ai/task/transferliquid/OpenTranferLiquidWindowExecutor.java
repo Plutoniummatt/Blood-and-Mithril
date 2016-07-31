@@ -11,7 +11,7 @@ import bloodandmithril.world.Domain;
 
 /**
  * Executes {@link OpenTranferLiquidWindow}
- * 
+ *
  * @author Matt
  */
 @Singleton
@@ -19,9 +19,9 @@ import bloodandmithril.world.Domain;
 public class OpenTranferLiquidWindowExecutor implements AITaskExecutor {
 
 	@Override
-	public void execute(AITask aiTask, float delta) {
-		OpenTranferLiquidWindow task = (OpenTranferLiquidWindow) aiTask;
-		
+	public void execute(final AITask aiTask, final float delta) {
+		final OpenTranferLiquidWindow task = (OpenTranferLiquidWindow) aiTask;
+
 		if (Domain.getIndividual(task.getHostId().getId()).getDistanceFrom(Domain.getWorld(task.getHost().getWorldId()).props().getProp(task.getParent().containerId).position) > 64f) {
 			return;
 		}
@@ -31,18 +31,17 @@ public class OpenTranferLiquidWindowExecutor implements AITaskExecutor {
 		}
 
 		task.opened = true;
-		Domain.getIndividual(task.getHostId().getId()).clearCommands();
 	}
 
-	
+
 	@Override
-	public boolean isComplete(AITask aiTask) {
+	public boolean isComplete(final AITask aiTask) {
 		return ((OpenTranferLiquidWindow) aiTask).opened;
 	}
 
-	
+
 	@Override
-	public boolean uponCompletion(AITask aiTask) {
+	public boolean uponCompletion(final AITask aiTask) {
 		return false;
 	}
 }

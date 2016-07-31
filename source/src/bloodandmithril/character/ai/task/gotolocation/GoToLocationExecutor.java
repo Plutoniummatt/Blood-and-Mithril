@@ -3,14 +3,13 @@ package bloodandmithril.character.ai.task.gotolocation;
 import static java.lang.Math.abs;
 
 import com.badlogic.gdx.math.Vector2;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.AITaskExecutor;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
+import bloodandmithril.character.individuals.Action;
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.control.Controls;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
@@ -19,19 +18,17 @@ import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 
 /**
  * Executes {@link GoToLocation}
- * 
+ *
  * @author Matt
  */
 @Singleton
 @Copyright("Matthew Peck 2016")
 public class GoToLocationExecutor implements AITaskExecutor {
-	
-	@Inject private Controls controls;
-	
+
 	@Override
-	public void execute(AITask aiTask, float delta) {
-		GoToLocation task = (GoToLocation) aiTask;
-		
+	public void execute(final AITask aiTask, final float delta) {
+		final GoToLocation task = (GoToLocation) aiTask;
+
 		if (!task.path.isEmpty()) {
 			if (task.fly) {
 				// TODO Flying
@@ -67,14 +64,14 @@ public class GoToLocationExecutor implements AITaskExecutor {
 					}
 				} catch (final NoTileFoundException e) {}
 			}
-		}		
+		}
 	}
-	
+
 
 	@Override
-	public boolean isComplete(AITask aiTask) {
-		GoToLocation task = (GoToLocation) aiTask;
-		
+	public boolean isComplete(final AITask aiTask) {
+		final GoToLocation task = (GoToLocation) aiTask;
+
 		if (task.function != null) {
 			if (task.function.call()) {
 				return true;
@@ -96,26 +93,28 @@ public class GoToLocationExecutor implements AITaskExecutor {
 
 		return task.path.isEmpty() || finalWayPointCheck;
 	}
-	
+
 
 	@Override
-	public boolean uponCompletion(AITask aiTask) {
-		GoToLocation task = (GoToLocation) aiTask;
+	public boolean uponCompletion(final AITask aiTask) {
+		final GoToLocation task = (GoToLocation) aiTask;
 		final Individual host = Domain.getIndividual(task.getHostId().getId());
-
-		host.sendCommand(controls.moveRight.keyCode, false);
-		host.sendCommand(controls.moveLeft.keyCode, false);
-		host.sendCommand(controls.walk.keyCode, host.isWalking());
+		host.setAnimationTimer(0f);
+		if (host.inCombatStance()) {
+			host.setCurrentAction(host.getCurrentAction().left() ? Action.STAND_LEFT_COMBAT_ONE_HANDED : Action.STAND_RIGHT_COMBAT_ONE_HANDED);
+		} else {
+			host.setCurrentAction(host.getCurrentAction().left() ? Action.STAND_LEFT : Action.STAND_RIGHT);
+		}
 
 		return false;
 	}
 
-	
+
 	/**
 	 * Goes to a {@link WayPoint} in the {@link #path}, removing it upon arrival
 	 */
 	private void goToWayPoint(final GoToLocation task, final WayPoint wayPoint, final int stuckTolerance) {
-		
+
 		final Individual host = Domain.getIndividual(task.getHostId().getId());
 
 		// If we're outside WayPoint.tolerance, then move toward WayPoint.wayPoint
@@ -136,30 +135,28 @@ public class GoToLocationExecutor implements AITaskExecutor {
 
 
 		if (notReached) {
-			host.sendCommand(controls.walk.keyCode, host.isWalking() || host.getState().stamina == 0f);
 			host.setWalking(host.isWalking() || host.getState().stamina == 0f);
-			
-			
-			
+
 			// Only change direction if we're not mid-air
 			boolean onGround = false;
 			try {
 				onGround = !(Domain.getWorld(host.getWorldId()).getTopography().getTile(host.getState().position.x, host.getState().position.y - 1, true) instanceof EmptyTile);
-			} catch (NoTileFoundException e) {
+			} catch (final NoTileFoundException e) {
 			}
-			
+
 			if (onGround) {
-				if (!host.isCommandActive(controls.moveRight.keyCode) && wayPoint.waypoint.x > host.getState().position.x) {
-					host.sendCommand(controls.moveRight.keyCode, true);
-					host.sendCommand(controls.moveLeft.keyCode, false);
+				final Action currentAction = host.getCurrentAction();
+				if (!(currentAction == Action.WALK_RIGHT || currentAction == Action.RUN_RIGHT) && wayPoint.waypoint.x > host.getState().position.x) {
+					host.setCurrentAction(host.isWalking() ? Action.WALK_RIGHT : Action.RUN_RIGHT);
+					host.setAnimationTimer(0f);
 					task.stuckCounter++;
-				} else if (!host.isCommandActive(controls.moveLeft.keyCode) && wayPoint.waypoint.x < host.getState().position.x) {
-					host.sendCommand(controls.moveRight.keyCode, false);
-					host.sendCommand(controls.moveLeft.keyCode, true);
+				} else if (!(currentAction == Action.WALK_LEFT ||  currentAction == Action.RUN_LEFT) && wayPoint.waypoint.x < host.getState().position.x) {
+					host.setCurrentAction(host.isWalking() ? Action.WALK_LEFT : Action.RUN_LEFT);
+					host.setAnimationTimer(0f);
 					task.stuckCounter++;
 				}
 			}
-			
+
 			if (task.stuckCounter > stuckTolerance) {
 				task.path.clear();
 			}

@@ -733,7 +733,11 @@ public class InventoryWindow extends Window implements Refreshable {
 					if (item instanceof Weapon && host instanceof Individual) {
 						if (((Individual) host).attacking()) {
 							final Action action = ((Individual) host).getCurrentAction();
-							((Individual) host).setCurrentAction(action.left() ? Action.STAND_LEFT : Action.STAND_RIGHT);
+							if (((Individual) host).inCombatStance()) {
+								((Individual) host).setCurrentAction(action.left() ? Action.STAND_LEFT_COMBAT_ONE_HANDED : Action.STAND_RIGHT_COMBAT_ONE_HANDED);
+							} else {
+								((Individual) host).setCurrentAction(action.left() ? Action.STAND_LEFT : Action.STAND_RIGHT);
+							}
 						}
 					}
 					host.equip((Equipable)item);
