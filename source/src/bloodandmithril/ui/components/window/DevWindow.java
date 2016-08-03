@@ -48,7 +48,6 @@ import bloodandmithril.graphics.particles.Particle.MovementMode;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.material.RockItem;
 import bloodandmithril.item.material.mineral.Coal;
-import bloodandmithril.item.material.mineral.SandStone;
 import bloodandmithril.item.material.wood.StandardWood;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.objectives.tutorial.Tutorial;
@@ -194,7 +193,7 @@ public class DevWindow extends Window {
 
 		if (keyCode == Keys.H) {
 			try {
-				Tile tile = gameClientStateTracker.getActiveWorld().getTopography().getTile(getMouseWorldCoords(), true);
+				final Tile tile = gameClientStateTracker.getActiveWorld().getTopography().getTile(getMouseWorldCoords(), true);
 				tile.changeToSmoothCeiling();
 				gameClientStateTracker.getActiveWorld().getTopography().changeTile(
 					getMouseWorldX(),
@@ -202,7 +201,7 @@ public class DevWindow extends Window {
 					true,
 					tile
 				);
-			} catch (NoTileFoundException e) {}
+			} catch (final NoTileFoundException e) {}
 		}
 
 		if (keyCode == Keys.T) {
@@ -445,7 +444,7 @@ public class DevWindow extends Window {
 						() -> {
 							final Individual individual = Domain.getIndividualsMap().get(1);
 							if (individual != null) {
-								final Furnace furnace = new Furnace(SandStone.class, individual.getState().position.x, individual.getState().position.y);
+								final Furnace furnace = new Furnace(individual.getState().position.x, individual.getState().position.y);
 								furnace.setConstructionProgress(1f);
 								for (int i = 0; i < 0; i++) {
 									furnace.giveItem(RockItem.rock(Coal.class));
@@ -616,7 +615,7 @@ public class DevWindow extends Window {
 			),
 			0
 		);
-		
+
 		newHashMap.put(
 			new ListingMenuItem<>(
 				"See Nothing",

@@ -250,11 +250,6 @@ public class WoodenChestProp extends Furniture implements Container, StaticallyR
 
 
 	@Override
-	public void preRender() {
-	}
-
-
-	@Override
 	public boolean isEmpty() {
 		return container.isEmpty();
 	}

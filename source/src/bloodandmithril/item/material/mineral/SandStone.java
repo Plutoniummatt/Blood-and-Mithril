@@ -2,7 +2,6 @@ package bloodandmithril.item.material.mineral;
 
 import java.util.Map;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.google.common.collect.Maps;
 
@@ -21,8 +20,6 @@ public class SandStone extends Mineral {
 	private static final long serialVersionUID = 3697380136082090890L;
 
 	public static TextureRegion SANDSTONE;
-
-	public static final Color color = new Color(166f/255f, 124f/255f, 82f/255f, 1f);
 
 	/**
 	 * Package protected constructor
@@ -82,10 +79,5 @@ public class SandStone extends Mineral {
 	@Override
 	public String getName() {
 		return "Sandstone";
-	}
-
-	@Override
-	public Color getColor() {
-		return color;
 	}
 }

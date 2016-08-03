@@ -58,7 +58,7 @@ public class CarrotProp extends PlantProp implements Harvestable, StaticallyRend
 		super(x, y, 12, 17, Depth.MIDDLEGROUND, new SoilTilesOnly(), false);
 	}
 
-	
+
 	@Override
 	public TextureRegion getTextureRegion() {
 		if (getGrowthProgress() < 1.0f) {
@@ -156,11 +156,6 @@ public class CarrotProp extends PlantProp implements Harvestable, StaticallyRend
 	@Override
 	public String getContextMenuItemLabel() {
 		return "Carrot";
-	}
-
-
-	@Override
-	public void preRender() {
 	}
 
 

@@ -2,14 +2,13 @@ package bloodandmithril.item.material.mineral;
 
 import java.util.Map;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.material.RockItem;
 import bloodandmithril.item.items.material.SlabItem;
 import bloodandmithril.item.material.Material;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
  * {@link Material} - Rocks
@@ -20,7 +19,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public abstract class Mineral extends Material {
 	private static final long serialVersionUID = 9102235184805389671L;
 
-	public static void minerals(Map<Class<? extends Material>, Material> materials) {
+	public static void minerals(final Map<Class<? extends Material>, Material> materials) {
 		materials.put(Hematite.class, new Hematite());
 		materials.put(Coal.class, new Coal());
 		materials.put(SandStone.class, new SandStone());
@@ -65,12 +64,7 @@ public abstract class Mineral extends Material {
 	 * @return the description of this {@link Mineral}
 	 */
 	public abstract String getMineralDescription();
-	
-	/**
-	 * @return the color of this {@link Mineral}
-	 */
-	public abstract Color getColor();
-	
+
 	@Override
 	public float getCombatMultiplier() {
 		return 0f;

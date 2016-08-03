@@ -250,11 +250,6 @@ public class SmallWoodenCrateProp extends Furniture implements Container, Static
 
 
 	@Override
-	public void preRender() {
-	}
-
-
-	@Override
 	public boolean isEmpty() {
 		return container.isEmpty();
 	}

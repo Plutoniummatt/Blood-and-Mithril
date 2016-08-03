@@ -29,7 +29,6 @@ import bloodandmithril.core.Name;
 import bloodandmithril.graphics.RenderIndividualWith;
 import bloodandmithril.graphics.particles.ParticleService;
 import bloodandmithril.graphics.renderers.ElfRenderer;
-import bloodandmithril.item.material.mineral.SandStone;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.construction.Construction;
 import bloodandmithril.prop.construction.craftingstation.BlacksmithWorkshop;
@@ -289,7 +288,7 @@ public class Elf extends Humanoid implements Observer, Listener {
 	@Override
 	public Set<Construction> getConstructables() {
 		return Sets.newHashSet(
-			new Furnace(SandStone.class, 0, 0),
+			new Furnace(0, 0),
 			new WorkBench(0, 0),
 			new BlacksmithWorkshop(0, 0),
 			new Campfire(0, 0)

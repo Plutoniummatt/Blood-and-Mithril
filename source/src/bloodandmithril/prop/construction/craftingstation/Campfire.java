@@ -106,11 +106,6 @@ public class Campfire extends CraftingStation implements Lightable {
 
 
 	@Override
-	public void preRender() {
-	}
-
-
-	@Override
 	public String getCustomMessage() {
 		return "The campfire is not lit.";
 	}

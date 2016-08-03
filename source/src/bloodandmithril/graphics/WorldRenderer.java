@@ -86,7 +86,7 @@ public class WorldRenderer {
 		if (shapeRenderer == null) {
 			shapeRenderer 						= new ShapeRenderer();
 		}
-		
+
 		circle 								= new TextureRegion(Textures.GAME_WORLD_TEXTURE, 102, 422, 100, 100);
 		fBuffer 							= new FrameBuffer(RGBA8888, Graphics.getGdxWidth() + graphics.getCamMarginX(), Graphics.getGdxHeight() + graphics.getCamMarginY(), false);
 		mBuffer 							= new FrameBuffer(RGBA8888, Graphics.getGdxWidth() + graphics.getCamMarginX(), Graphics.getGdxHeight() + graphics.getCamMarginY(), false);
@@ -123,30 +123,29 @@ public class WorldRenderer {
 		batch.setShader(Shaders.filter);
 		Shaders.filter.setUniformMatrix("u_projTrans", graphics.getCam().combined);
 		renderProps(world, batch, FOREGROUND);
-		
+
+		Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
 		world.getPositionalIndexMap().getOnScreenEntities(Item.class, graphics).stream().forEach(itemId -> {
-			
-			Item item = world.items().getItem(itemId);
+			final Item item = world.items().getItem(itemId);
 			if (item == null) {
 				world.getPositionalIndexMap().getOnScreenNodes(graphics).forEach(node -> {
 					node.removeItem(itemId);
 				});
 				return;
 			}
-			
-			Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
+
 			item.render(graphics);
 			batch.flush();
 		});
-		
+
 		batch.end();
 		Textures.INDIVIDUAL_TEXTURE.setFilter(Nearest, Nearest);
 		individualPlatformFilteringRenderer.renderIndividuals(world.getWorldId());
 		batch.begin();
 		batch.setShader(Shaders.filter);
 		Shaders.filter.setUniformMatrix("u_projTrans", graphics.getCam().combined);
+		Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
 		for (final Projectile projectile : world.projectiles().getProjectiles()) {
-			Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
 			projectile.render(batch);
 			batch.flush();
 		}
@@ -156,14 +155,7 @@ public class WorldRenderer {
 		batch.begin();
 		batch.setShader(Shaders.filter);
 		Shaders.filter.setUniformMatrix("u_projTrans", graphics.getCam().combined);
-		for (final Prop prop : world.props().getProps()) {
-			if (prop.depth == Depth.FRONT) {
-				Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
-				prop.preRender();
-				propRenderer.render(prop);
-				batch.flush();
-			}
-		}
+		renderProps(world, batch, Depth.FRONT);
 		batch.end();
 		fBuffer.end();
 	}
@@ -181,20 +173,19 @@ public class WorldRenderer {
 	}
 
 
-	private void renderProps(final World world, final SpriteBatch batch, Depth depth) {
+	private void renderProps(final World world, final SpriteBatch batch, final Depth depth) {
+		Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
 		world.getPositionalIndexMap().getOnScreenEntities(Prop.class, graphics).stream().forEach(propId -> {
-			Prop prop = world.props().getProp(propId);
-			
+			final Prop prop = world.props().getProp(propId);
+
 			if (prop == null) {
 				world.getPositionalIndexMap().getOnScreenNodes(graphics).forEach(node -> {
 					node.removeProp(propId);
 				});
 				return;
 			}
-			
+
 			if (prop.depth == depth) {
-				Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
-				prop.preRender();
 				propRenderer.render(prop);
 				batch.flush();
 			}

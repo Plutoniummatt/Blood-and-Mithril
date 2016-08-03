@@ -93,12 +93,12 @@ public class DeadDesertBush extends PlantProp implements Harvestable, Statically
 		numberOfSticksLeft = 10 + Util.getRandom().nextInt(11);
 	}
 
-	
+
 	@Override
 	public TextureRegion getTextureRegion() {
 		return textures.get(texture);
 	}
-	
+
 
 	@Override
 	public void synchronizeProp(final Prop other) {
@@ -173,11 +173,6 @@ public class DeadDesertBush extends PlantProp implements Harvestable, Statically
 	@Override
 	public String getContextMenuItemLabel() {
 		return "Dead bush";
-	}
-
-
-	@Override
-	public void preRender() {
 	}
 
 

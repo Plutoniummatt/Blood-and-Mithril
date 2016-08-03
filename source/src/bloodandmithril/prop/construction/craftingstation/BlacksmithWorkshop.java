@@ -94,11 +94,6 @@ public class BlacksmithWorkshop extends CraftingStation {
 
 
 	@Override
-	public void preRender() {
-	}
-
-
-	@Override
 	public boolean canBeUsedAsFireSource() {
 		return false;
 	}

@@ -31,7 +31,7 @@ import bloodandmithril.world.topography.tile.Tile;
 
 /**
  * Alder {@link Tree}
- * 
+ *
  * @author Matt
  */
 @Copyright("Matthew Peck 2016")
@@ -39,37 +39,37 @@ import bloodandmithril.world.topography.tile.Tile;
 @RenderPropWith(TreeRenderer.class)
 public class AlderTree extends Tree {
 	private static final long serialVersionUID = -439711190324228635L;
-	
+
 	static List<Callable<Leaves>> leaves = newArrayList();
 	static List<Callable<TreeSegment>> segments = newArrayList();
 	static List<Callable<TreeSegment>> stumps = newArrayList();
-	
+
 	static {
 		segments.add(() -> new TreeSegment(0, 44, 51));
 		segments.add(() -> new TreeSegment(1, 44, 51));
 		segments.add(() -> new TreeSegment(2, 44, 51));
-		
+
 		stumps.add(() -> new TreeSegment(3, 44, 51));
 		stumps.add(() -> new TreeSegment(4, 44, 51));
-		
+
 		leaves.add(() -> new Leaves(5));
 	}
-	
-	public AlderTree(float x, float y, float maxThinningFactor) {
+
+	public AlderTree(final float x, final float y, final float maxThinningFactor) {
 		super(x, y, 0, 0, maxThinningFactor, new SerializableMappingFunction<Tile, Boolean>() {
 			private static final long serialVersionUID = 2159543403323901068L;
 			@Override
-			public Boolean apply(Tile input) {
+			public Boolean apply(final Tile input) {
 				return true;
 			}
 		});
 		this.setStump(stumps.get(getRandom().nextInt(stumps.size())).call());
-		
-		int treeHeight = Util.getRandom().nextInt(10) + 5;
+
+		final int treeHeight = Util.getRandom().nextInt(10) + 5;
 		this.getStump().generateTree(
-			() -> segments.get(getRandom().nextInt(segments.size())).call(), 
+			() -> segments.get(getRandom().nextInt(segments.size())).call(),
 			trunkSegment -> {
-				
+
 				// Only add branches to the top half of the tree
 				if (trunkSegment.segmentHeight > treeHeight / 2) {
 					trunkSegment.addBranch(WrapperForFour.wrap(
@@ -79,7 +79,7 @@ public class AlderTree extends Tree {
 						new AlderTreeBranchingFunction(0)
 					));
 				}
-				
+
 				// Split the tip of the trunk into two branches
 				if (trunkSegment.segmentHeight == treeHeight + 1) {
 					trunkSegment.addBranch(WrapperForFour.wrap(
@@ -95,17 +95,17 @@ public class AlderTree extends Tree {
 						new AlderTreeBranchingFunction(0)
 					));
 				}
-			}, 
+			},
 			treeHeight
 		);
-		
+
 		this.width = 26;
 		this.height = (51 - getTrunkOverlap()) * getHeight();
 	}
 
 
 	@Override
-	public void synchronizeProp(Prop other) {
+	public void synchronizeProp(final Prop other) {
 	}
 
 
@@ -136,7 +136,7 @@ public class AlderTree extends Tree {
 				null
 			)
 		);
-		
+
 		menu.addMenuItem(
 			new MenuItem(
 				"Chop",
@@ -168,11 +168,6 @@ public class AlderTree extends Tree {
 	@Override
 	public String getContextMenuItemLabel() {
 		return "Alder tree";
-	}
-
-
-	@Override
-	public void preRender() {
 	}
 
 

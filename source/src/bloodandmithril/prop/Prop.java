@@ -77,7 +77,7 @@ public abstract class Prop implements Serializable, Visible, MouseOverable {
 	/**
 	 * Constructor
 	 */
-	protected Prop(float x, float y, int width, int height, boolean grounded, Depth depth, SerializableMappingFunction<Tile, Boolean> canPlaceOnTopOf, boolean preventsMining) {
+	protected Prop(final float x, final float y, final int width, final int height, final boolean grounded, final Depth depth, final SerializableMappingFunction<Tile, Boolean> canPlaceOnTopOf, final boolean preventsMining) {
 		this.width = width;
 		this.height = height;
 		this.canPlaceOnTopOf = canPlaceOnTopOf;
@@ -107,7 +107,7 @@ public abstract class Prop implements Serializable, Visible, MouseOverable {
 
 	/** Reindexes this item */
 	public void updatePositionIndex() {
-		for (PositionalIndexNode node : Domain.getWorld(worldId).getPositionalIndexMap().getNearbyNodes(position.x, position.y)) {
+		for (final PositionalIndexNode node : Domain.getWorld(worldId).getPositionalIndexMap().getNearbyNodes(position.x, position.y)) {
 			node.removeProp(id);
 		}
 
@@ -144,8 +144,8 @@ public abstract class Prop implements Serializable, Visible, MouseOverable {
 	/** True if mouse is over this {@link Prop} */
 	@Override
 	public boolean isMouseOver() {
-		float mx = getMouseWorldX();
-		float my = getMouseWorldY();
+		final float mx = getMouseWorldX();
+		final float my = getMouseWorldY();
 
 		return mx > position.x - width/2 && mx < position.x + width/2 && my > position.y && my < position.y + height;
 	}
@@ -172,27 +172,24 @@ public abstract class Prop implements Serializable, Visible, MouseOverable {
 		return worldId;
 	}
 
-	public void setWorldId(int worldId) {
+	public void setWorldId(final int worldId) {
 		this.worldId = worldId;
 	}
 
-	
+
 	public SerializableMappingFunction<Tile, Boolean> canPlaceOnTopOf() {
 		return canPlaceOnTopOf;
 	}
-	
-	
+
+
 	public SerializableMappingFunction<Tile, Boolean> canPlaceInFrontOf() {
 		return canPlaceInFrontOf;
 	}
 
 
-	protected void canPlaceInFrontOf(SerializableMappingFunction<Tile, Boolean> function) {
+	protected void canPlaceInFrontOf(final SerializableMappingFunction<Tile, Boolean> function) {
 		this.canPlaceInFrontOf = function;
 	}
-
-
-	public abstract void preRender();
 
 
 	@Override
@@ -219,7 +216,7 @@ public abstract class Prop implements Serializable, Visible, MouseOverable {
 
 
 	@Override
-	public boolean sameAs(Visible other) {
+	public boolean sameAs(final Visible other) {
 		if (other instanceof Prop) {
 			return ((Prop) other).id == id;
 		}
@@ -231,7 +228,7 @@ public abstract class Prop implements Serializable, Visible, MouseOverable {
 	public static class ReturnPropPosition implements SerializableFunction<Vector2> {
 		private static final long serialVersionUID = 6231253952557168072L;
 		private Prop prop;
-		public ReturnPropPosition(Prop prop) {
+		public ReturnPropPosition(final Prop prop) {
 			this.prop = prop;
 		}
 

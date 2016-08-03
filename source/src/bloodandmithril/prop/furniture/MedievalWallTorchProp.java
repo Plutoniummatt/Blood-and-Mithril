@@ -162,11 +162,6 @@ public class MedievalWallTorchProp extends Furniture implements Lightable, Stati
 
 
 	@Override
-	public void preRender() {
-	}
-
-
-	@Override
 	public void light() {
 		this.setBurnDurationRemaining(BURN_DURATION);
 		this.setLit(true);

@@ -102,11 +102,6 @@ public class GreenGrass extends PlantProp implements StaticallyRenderedProp {
 
 
 	@Override
-	public void preRender() {
-	}
-
-
-	@Override
 	public TextureRegion getTextureRegion() {
 		if (small) {
 			return textureRegionSmall;

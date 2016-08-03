@@ -34,7 +34,7 @@ import bloodandmithril.ui.components.window.MessageWindow;
 @RenderPropWith(GrassRenderer.class)
 public class GrassyWhiteFlowers extends PlantProp implements StaticallyRenderedProp {
 	private static final long serialVersionUID = 6275732858715186393L;
-	
+
 	public static TextureRegion textureRegionBig, textureRegionSmall;
 
 	static {
@@ -98,11 +98,6 @@ public class GrassyWhiteFlowers extends PlantProp implements StaticallyRenderedP
 	@Override
 	public String getContextMenuItemLabel() {
 		return "Weeds";
-	}
-
-
-	@Override
-	public void preRender() {
 	}
 
 

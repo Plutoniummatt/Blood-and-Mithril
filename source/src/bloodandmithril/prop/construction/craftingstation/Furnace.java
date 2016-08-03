@@ -21,16 +21,12 @@ import bloodandmithril.item.items.container.GlassBottleItem;
 import bloodandmithril.item.items.material.BrickItem;
 import bloodandmithril.item.items.material.GlassItem;
 import bloodandmithril.item.items.material.RockItem;
-import bloodandmithril.item.material.Material;
 import bloodandmithril.item.material.metal.Iron;
 import bloodandmithril.item.material.metal.Steel;
-import bloodandmithril.item.material.mineral.Mineral;
 import bloodandmithril.item.material.mineral.SandStone;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.renderservice.ConstructionRenderingService;
 import bloodandmithril.prop.updateservice.FurnaceUpdateService;
-import bloodandmithril.util.Shaders;
-import bloodandmithril.util.Util.Colors;
 
 /**
  * A Furnace
@@ -47,9 +43,6 @@ public class Furnace extends CraftingStation implements Container {
 	/** {@link TextureRegion} of the {@link Furnace} */
 	public static TextureRegion FURNACE, FURNACE_BURNING;
 	public static TextureRegion FURNACE1, FURNACE2, FURNACE3, FURNACE4, FURNACE5;
-
-	/** The {@link Mineral} this {@link Furnace} is made from */
-	private Class<? extends Mineral> material;
 
 	private static final Map<Item, Integer> craftables = Maps.newHashMap();
 	private static final TreeMap<Float, TextureRegion> inProgressTextures = Maps.newTreeMap();
@@ -78,9 +71,8 @@ public class Furnace extends CraftingStation implements Container {
 	/**
 	 * Constructor
 	 */
-	public Furnace(final Class<? extends Mineral> material, final float x, final float y) {
+	public Furnace(final float x, final float y) {
 		super(x, y, 95, 56, 0.1f);
-		this.material = material;
 	}
 
 
@@ -130,16 +122,6 @@ public class Furnace extends CraftingStation implements Container {
 	@Override
 	public Map<Item, Integer> getCraftables() {
 		return craftables;
-	}
-
-
-	@Override
-	public void preRender() {
-		if (getConstructionProgress() == 0f) {
-			Shaders.filter.setUniformf("color", Colors.modulateAlpha(Material.getMaterial(material).getColor(), 0.90f));
-		} else {
-			Shaders.filter.setUniformf("color", Material.getMaterial(material).getColor());
-		}
 	}
 
 

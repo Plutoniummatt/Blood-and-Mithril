@@ -98,11 +98,6 @@ public class DryGrass extends PlantProp implements StaticallyRenderedProp {
 
 
 	@Override
-	public void preRender() {
-	}
-
-
-	@Override
 	public TextureRegion getTextureRegion() {
 		return textureRegion;
 	}

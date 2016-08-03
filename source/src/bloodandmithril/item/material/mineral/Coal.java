@@ -2,12 +2,11 @@ package bloodandmithril.item.material.mineral;
 
 import java.util.Map;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 @Copyright("Matthew Peck 2014")
 public class Coal extends Mineral {
@@ -71,11 +70,5 @@ public class Coal extends Mineral {
 	@Override
 	public String getMineralDescription() {
 		return "Coal is a combustible black or brownish-black sedimentary rock usually occurring in rock strata in layers or veins called coal beds or coal seams.";
-	}
-
-
-	@Override
-	public Color getColor() {
-		return Color.GRAY;
 	}
 }

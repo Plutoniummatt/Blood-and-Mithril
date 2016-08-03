@@ -34,7 +34,7 @@ import bloodandmithril.ui.components.window.MessageWindow;
 @RenderPropWith(GrassRenderer.class)
 public class TallGrass extends PlantProp implements StaticallyRenderedProp {
 	private static final long serialVersionUID = -1769162065413945756L;
-	
+
 	public static TextureRegion textureRegionBig, textureRegionSmall;
 
 	static {
@@ -98,11 +98,6 @@ public class TallGrass extends PlantProp implements StaticallyRenderedProp {
 	@Override
 	public String getContextMenuItemLabel() {
 		return "Dense grass";
-	}
-
-
-	@Override
-	public void preRender() {
 	}
 
 
