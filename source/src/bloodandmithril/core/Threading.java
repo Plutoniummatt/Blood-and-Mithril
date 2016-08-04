@@ -17,6 +17,9 @@ import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
 import bloodandmithril.world.WorldUpdateService;
+import bloodandmithril.world.fluids.FluidParticle;
+import bloodandmithril.world.fluids.FluidStrip;
+import bloodandmithril.world.fluids.FluidUpdater;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.TopographyGenerationService;
 
@@ -46,6 +49,9 @@ public class Threading {
 
 	/** Thread responsible for processing events */
 	private Thread eventsProcessingThread;
+	
+	/** Thread responsible for processing fluids */
+	private Thread fluidsProcessingThread;
 
 	/** Update rate multiplier */
 	private float updateRate = 1.0f;
@@ -55,6 +61,7 @@ public class Threading {
 	private final MissionTracker missionTracker;
 	private final WorldUpdateService worldUpdateService;
 	private final TopographyGenerationService topographyGenerationService;
+	private final FluidUpdater fluidUpdater;
 
 	/**
 	 * Constructor
@@ -65,18 +72,21 @@ public class Threading {
 		final GameClientStateTracker gameClientStateTracker,
 		final MissionTracker missionTracker,
 		final WorldUpdateService worldUpdateService,
-		final TopographyGenerationService topographyGenerationService
+		final TopographyGenerationService topographyGenerationService,
+		final FluidUpdater fluidUpdater
 	) {
 		this.gameSaver = gameSaver;
 		this.gameClientStateTracker = gameClientStateTracker;
 		this.missionTracker = missionTracker;
 		this.worldUpdateService = worldUpdateService;
 		this.topographyGenerationService = topographyGenerationService;
+		this.fluidUpdater = fluidUpdater;
 
 		setupEventProcessingThread();
 		setupUpdateThread();
 		setupTopographyQueryThread();
 		setupParticleUpdateThread();
+		setupFluidProcessingThread();
 	}
 
 
@@ -188,6 +198,40 @@ public class Threading {
 		updateThread.setPriority(Thread.MAX_PRIORITY);
 		updateThread.setName("Update thread");
 		updateThread.start();
+	}
+	
+	
+	private void setupFluidProcessingThread() {
+		fluidsProcessingThread = new Thread(() -> {
+			long prevFrame = System.currentTimeMillis();
+			
+			while (true) {
+				try {
+					Thread.sleep(1);
+				} catch (final Exception e) {
+					throw new RuntimeException(e);
+				}
+
+				if (System.currentTimeMillis() - prevFrame > Math.round(16f / updateRate)) {
+					prevFrame = System.currentTimeMillis();
+					
+					World activeWorld = gameClientStateTracker.getActiveWorld();
+					if (!gameClientStateTracker.isPaused() && !gameSaver.isSaving() && activeWorld != null && !gameClientStateTracker.isLoading()) {
+						for (FluidStrip strip : activeWorld.fluids().getAllFluidStrips()) {
+							fluidUpdater.updateStrip(activeWorld, strip, 1f/60f);
+						}
+						
+						for (FluidParticle particle : activeWorld.fluids().getAllFluidParticles()) {
+							fluidUpdater.updateParticle(activeWorld, particle, 1f/60f);
+						}
+					}
+				}
+			}
+		});
+		
+		fluidsProcessingThread.setPriority(Thread.NORM_PRIORITY);
+		fluidsProcessingThread.setName("Fluids");
+		fluidsProcessingThread.start();
 	}
 
 
