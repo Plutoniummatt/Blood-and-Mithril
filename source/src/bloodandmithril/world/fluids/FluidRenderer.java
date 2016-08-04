@@ -34,9 +34,9 @@ public class FluidRenderer {
 		.map(id -> world.fluids().getFluidStrip(id))
 		.forEach(strip -> {
 			shapeRenderer.rect(
-				strip.worldTileX * TILE_SIZE,
+				(strip.worldTileX - 1) * TILE_SIZE,
 				strip.worldTileY * TILE_SIZE,
-				strip.width * TILE_SIZE,
+				(strip.width + 2) * TILE_SIZE,
 				strip.getVolume() * TILE_SIZE / strip.width
 			);
 		});

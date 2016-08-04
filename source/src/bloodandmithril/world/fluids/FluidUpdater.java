@@ -1,5 +1,8 @@
 package bloodandmithril.world.fluids;
 
+import static bloodandmithril.world.topography.Topography.TILE_SIZE;
+import static bloodandmithril.world.topography.Topography.convertToWorldCoord;
+
 import java.util.Collection;
 
 import com.badlogic.gdx.math.Vector2;
@@ -84,7 +87,7 @@ public class FluidUpdater {
 				}
 			}
 			Optional<FluidStrip> stripOn = world.fluids().getFluid(Topography.convertToWorldTileCoord(particle.position.x), Topography.convertToWorldTileCoord(particle.position.y));
-			if(stripOn.isPresent()) {
+			if(stripOn.isPresent() && particle.position.y < convertToWorldCoord(stripOn.get().worldTileY, true) + TILE_SIZE * stripOn.get().getVolume() / stripOn.get().width) {
 				stripOn.get().addVolume(PARTICLE_VOLUME);
 				world.fluids().removeFluidParticle(particle.id);
 			}
