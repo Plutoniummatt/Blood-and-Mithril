@@ -9,11 +9,11 @@ import java.util.List;
 
 import com.badlogic.gdx.graphics.Color;
 
-import bloodandmithril.RoutineTaskContextMenuProvider;
 import bloodandmithril.audio.SoundService.SuspicionLevel;
 import bloodandmithril.character.ai.Routine.RoutinePanel;
 import bloodandmithril.character.ai.RoutineContextMenusProvidedBy;
 import bloodandmithril.character.ai.RoutineTask;
+import bloodandmithril.character.ai.RoutineTaskContextMenuProvider;
 import bloodandmithril.character.ai.RoutineTasks;
 import bloodandmithril.character.ai.routine.stimulusdriven.StimulusDrivenRoutine.SuspiciousSoundAITriggerFunction;
 import bloodandmithril.core.Copyright;

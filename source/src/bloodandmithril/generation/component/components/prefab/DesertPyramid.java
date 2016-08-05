@@ -3,6 +3,7 @@ package bloodandmithril.generation.component.components.prefab;
 import com.badlogic.gdx.graphics.Color;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.generation.component.ComponentBlueprint;
 import bloodandmithril.generation.component.PrefabricatedComponent;
 import bloodandmithril.util.datastructure.Boundaries;
 import bloodandmithril.world.topography.tile.Tile;
@@ -84,5 +85,10 @@ public class DesertPyramid extends PrefabricatedComponent {
 		}
 
 		return new ComponentBlueprint(fTiles, bTiles);
+	}
+
+
+	@Override
+	public void generateInterfaces() {
 	}
 }

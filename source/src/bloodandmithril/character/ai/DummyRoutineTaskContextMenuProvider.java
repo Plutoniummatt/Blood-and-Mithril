@@ -2,7 +2,6 @@ package bloodandmithril.character.ai;
 
 import com.google.inject.Singleton;
 
-import bloodandmithril.RoutineTaskContextMenuProvider;
 import bloodandmithril.character.ai.routine.daily.DailyRoutine;
 import bloodandmithril.character.ai.routine.entityvisible.EntityVisibleRoutine;
 import bloodandmithril.character.ai.routine.individualcondition.IndividualConditionRoutine;

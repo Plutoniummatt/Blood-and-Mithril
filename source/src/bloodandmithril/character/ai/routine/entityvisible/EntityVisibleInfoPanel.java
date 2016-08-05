@@ -11,10 +11,10 @@ import java.util.Map.Entry;
 import com.badlogic.gdx.graphics.Color;
 import com.google.common.collect.Lists;
 
-import bloodandmithril.RoutineTaskContextMenuProvider;
 import bloodandmithril.character.ai.Routine.RoutinePanel;
 import bloodandmithril.character.ai.RoutineContextMenusProvidedBy;
 import bloodandmithril.character.ai.RoutineTask;
+import bloodandmithril.character.ai.RoutineTaskContextMenuProvider;
 import bloodandmithril.character.ai.RoutineTasks;
 import bloodandmithril.character.ai.perception.Visible;
 import bloodandmithril.character.ai.routine.entityvisible.EntityVisibleRoutine.IndividualEntityVisible;

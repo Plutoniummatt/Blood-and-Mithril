@@ -10,10 +10,10 @@ import java.util.List;
 import com.badlogic.gdx.graphics.Color;
 import com.google.inject.Inject;
 
-import bloodandmithril.RoutineTaskContextMenuProvider;
 import bloodandmithril.character.ai.Routine.RoutinePanel;
 import bloodandmithril.character.ai.RoutineContextMenusProvidedBy;
 import bloodandmithril.character.ai.RoutineTask;
+import bloodandmithril.character.ai.RoutineTaskContextMenuProvider;
 import bloodandmithril.character.ai.RoutineTasks;
 import bloodandmithril.character.ai.routine.individualcondition.IndividualConditionRoutine.IndividualAffectedByConditionTriggerFunction;
 import bloodandmithril.character.ai.routine.individualcondition.IndividualConditionRoutine.IndividualHealthTriggerFunction;

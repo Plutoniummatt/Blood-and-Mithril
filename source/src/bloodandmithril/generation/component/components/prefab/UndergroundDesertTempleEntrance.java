@@ -3,7 +3,9 @@ package bloodandmithril.generation.component.components.prefab;
 import com.badlogic.gdx.graphics.Color;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.generation.component.ComponentBlueprint;
 import bloodandmithril.generation.component.PrefabricatedComponent;
+import bloodandmithril.generation.component.components.stemming.interfaces.HorizontalInterface;
 import bloodandmithril.util.datastructure.Boundaries;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.tiles.wood.WoodenPlatform;
@@ -84,5 +86,15 @@ public class UndergroundDesertTempleEntrance extends PrefabricatedComponent {
 		}
 
 		return new ComponentBlueprint(fTiles, bTiles);
+	}
+
+
+	@Override
+	public void generateInterfaces() {
+		addInterface(new HorizontalInterface(
+			boundaries.left + 158, 
+			boundaries.bottom, 
+			17
+		));
 	}
 }

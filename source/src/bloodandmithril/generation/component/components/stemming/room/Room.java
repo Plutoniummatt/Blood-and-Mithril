@@ -33,4 +33,9 @@ public class Room extends Component {
 	public Tile getBackgroundTile(final int worldTileX, final int worldTileY) {
 		return null;
 	}
+
+
+	@Override
+	public void generateInterfaces() {
+	}
 }

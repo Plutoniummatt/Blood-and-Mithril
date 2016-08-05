@@ -1,10 +1,15 @@
 package bloodandmithril.generation.component;
 
+import static com.google.common.collect.Maps.newHashMap;
+
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.Map;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.ChunkGenerator;
 import bloodandmithril.generation.Structure;
+import bloodandmithril.generation.component.components.stemming.interfaces.Interface;
 import bloodandmithril.util.datastructure.Boundaries;
 import bloodandmithril.world.topography.tile.Tile;
 
@@ -22,6 +27,9 @@ public abstract class Component implements Serializable {
 
 	/** The key of the {@link Structure} this {@link Component} exists on */
 	private final int structureKey;
+	
+	/** {@link Interface}s on this {@link Component} */
+	private final Map<Interface, Component> interfaces = newHashMap();
 
 	/**
 	 * Constructor
@@ -29,6 +37,7 @@ public abstract class Component implements Serializable {
 	protected Component(final Boundaries boundaries, final int structureKey) {
 		this.boundaries = boundaries;
 		this.structureKey = structureKey;
+		generateInterfaces();
 	}
 
 
@@ -42,6 +51,12 @@ public abstract class Component implements Serializable {
 	 * Gets the background tile of this component
 	 */
 	public abstract Tile getBackgroundTile(int worldTileX, int worldTileY);
+	
+	
+	/**
+	 * Generates interfaces for this {@link Component}
+	 */
+	public abstract void generateInterfaces();
 
 
 	/**
@@ -57,5 +72,22 @@ public abstract class Component implements Serializable {
 	 */
 	public int getStructureKey() {
 		return structureKey;
+	}
+	
+	
+	/**
+	 * @param iface {@link Interface} to add
+	 */
+	public void addInterface(Interface iface) {
+		if (interfaces.containsKey(iface)) {
+			throw new IllegalStateException();
+		}
+		
+		this.interfaces.put(iface, null);
+	}
+	
+	
+	public Collection<Interface> getAllInterfaces() {
+		return interfaces.keySet();
 	}
 }

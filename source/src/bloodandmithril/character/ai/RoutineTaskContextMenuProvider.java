@@ -1,6 +1,5 @@
-package bloodandmithril;
+package bloodandmithril.character.ai;
 
-import bloodandmithril.character.ai.RoutineTask;
 import bloodandmithril.character.ai.routine.daily.DailyRoutine;
 import bloodandmithril.character.ai.routine.entityvisible.EntityVisibleRoutine;
 import bloodandmithril.character.ai.routine.individualcondition.IndividualConditionRoutine;

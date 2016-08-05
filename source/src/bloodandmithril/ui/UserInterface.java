@@ -22,6 +22,7 @@ import static bloodandmithril.util.Fonts.defaultFont;
 import static bloodandmithril.world.topography.Topography.CHUNK_SIZE;
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static bloodandmithril.world.topography.Topography.convertToChunkCoord;
+import static bloodandmithril.world.topography.Topography.convertToWorldCoord;
 import static bloodandmithril.world.topography.Topography.convertToWorldTileCoord;
 import static com.badlogic.gdx.Gdx.files;
 import static com.badlogic.gdx.Gdx.gl;
@@ -78,6 +79,9 @@ import bloodandmithril.core.ThreadedTasks;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.generation.Structure;
 import bloodandmithril.generation.Structures;
+import bloodandmithril.generation.component.components.stemming.interfaces.HorizontalInterface;
+import bloodandmithril.generation.component.components.stemming.interfaces.Interface;
+import bloodandmithril.generation.component.components.stemming.interfaces.VerticalInterface;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.EquipperImpl.AlwaysTrueFunction;
@@ -385,6 +389,7 @@ public class UserInterface {
 		if (DEBUG && isServer()) {
 			renderPositionalIndexes();
 			renderChunkBoundaries();
+			renderComponentInterfaces();
 			renderEdgeTileBoxes(gameClientStateTracker.getActiveWorld().getTopography(), (int)graphics.getCam().position.x, (int)graphics.getCam().position.y);
 			if (renderComponentBoundaries) {
 				renderComponentBoundaries();
@@ -430,6 +435,46 @@ public class UserInterface {
 
 		if (RENDER_TOPOGRAPHY) {
 			topographyDebugRenderer.render(graphics);
+		}
+	}
+
+
+	private void renderComponentInterfaces() {
+		getShapeRenderer().begin(ShapeType.Filled);
+		gl.glEnable(GL_BLEND);
+		Gdx.gl20.glLineWidth(2f);
+		gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		getShapeRenderer().setColor(new Color(0.2f, 0.6f, 1f, 0.75f));
+
+		Structures.getStructures().values().stream().forEach(structure -> {
+			structure.getComponents().forEach(component -> {
+				component.getAllInterfaces().stream().forEach(iface -> {
+					render(iface);
+				});
+			});
+		});
+
+		getShapeRenderer().end();		
+	}
+
+
+	private void render(Interface iface) {
+		if (iface instanceof VerticalInterface) {
+			shapeRenderer.rect(
+				worldToScreenX(convertToWorldCoord(((VerticalInterface) iface).tileX, true)),
+				worldToScreenY(convertToWorldCoord(((VerticalInterface) iface).tileY, true)),
+				TILE_SIZE,
+				((VerticalInterface) iface).height * TILE_SIZE
+			);
+		}
+		
+		if (iface instanceof HorizontalInterface) {
+			shapeRenderer.rect(
+				worldToScreenX(convertToWorldCoord(((HorizontalInterface) iface).tileX, true)),
+				worldToScreenY(convertToWorldCoord(((HorizontalInterface) iface).tileY, true)),
+				((HorizontalInterface) iface).width * TILE_SIZE,
+				TILE_SIZE
+			);
 		}
 	}
 

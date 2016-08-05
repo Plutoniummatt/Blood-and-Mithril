@@ -9,8 +9,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import bloodandmithril.RoutineTaskContextMenuProvider;
 import bloodandmithril.character.ai.Routine;
+import bloodandmithril.character.ai.RoutineTaskContextMenuProvider;
 import bloodandmithril.character.ai.routine.daily.DailyRoutine;
 import bloodandmithril.character.ai.routine.entityvisible.EntityVisibleRoutine;
 import bloodandmithril.character.ai.routine.entityvisible.EntityVisibleRoutine.EntityVisible;
