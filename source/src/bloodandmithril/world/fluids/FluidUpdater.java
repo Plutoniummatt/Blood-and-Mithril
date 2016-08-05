@@ -111,7 +111,6 @@ public class FluidUpdater {
 				} else {
 					Optional<FluidStrip> addedStrip = fluidStripPopulator.createFluidStrip(world, x, strip.worldTileY + 1, 0);
 					if(addedStrip.isPresent()) {
-						System.out.println("wat?");
 						stripsAbove.add(addedStrip.get().id);
 						x += addedStrip.get().width;
 					}

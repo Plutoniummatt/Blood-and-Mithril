@@ -11,6 +11,7 @@ import bloodandmithril.graphics.Graphics;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
 import bloodandmithril.world.WorldFluids;
+import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
 /**
  * @author Sam
@@ -33,12 +34,14 @@ public class FluidRenderer {
 		.distinct()
 		.map(id -> world.fluids().getFluidStrip(id))
 		.forEach(strip -> {
-			shapeRenderer.rect(
-				(strip.worldTileX - 1) * TILE_SIZE,
-				strip.worldTileY * TILE_SIZE,
-				(strip.width + 2) * TILE_SIZE,
-				strip.getVolume() * TILE_SIZE / strip.width
-			);
+			try {
+				shapeRenderer.rect(
+					(world.getTopography().getTile(strip.worldTileX - 1, strip.worldTileY, true).isPassable() ? strip.worldTileX : (strip.worldTileX - 1)) * TILE_SIZE,
+					strip.worldTileY * TILE_SIZE,
+					(world.getTopography().getTile(strip.worldTileX + strip.width + 1, strip.worldTileY, true).isPassable() ? (strip.width + 1) : (strip.width + 2)) * TILE_SIZE,
+					strip.getVolume() * TILE_SIZE / strip.width
+				);
+			} catch (NoTileFoundException e) {}
 		});
 		
 		world.fluids().getAllFluidParticles().stream().forEach(particle -> {
