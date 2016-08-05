@@ -42,7 +42,7 @@ public class PlaceProp extends CompositeAITask {
 				goToWithTerminationFunction(
 					host,
 					host.getState().position.cpy(),
-					new WayPoint(PathFinder.getGroundAboveOrBelowClosestEmptyOrPlatformSpace(position, 10, Domain.getWorld(host.getWorldId())), 0),
+					new WayPoint(PathFinder.getGroundAboveOrBelowClosestEmptyOrPlatformSpace(position, 10, Domain.getWorld(host.getWorldId())).get(), 0),
 					false,
 					new WithinInteractionBox(),
 					true

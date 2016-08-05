@@ -11,6 +11,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import com.badlogic.gdx.math.Vector2;
+import com.google.common.base.Optional;
 
 import bloodandmithril.character.ai.pathfinding.Path;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
@@ -153,9 +154,9 @@ public final class AStarPathFinder extends PathFinder {
 			return convertToWorldCoord(location, floor);
 		} else {
 			if (finish) {
-				Vector2 result = getGroundAboveOrBelowClosestEmptyOrPlatformSpace(location, 10, world);
-				if (result != null) {
-					return convertToWorldCoord(result, floor);
+				Optional<Vector2> result = getGroundAboveOrBelowClosestEmptyOrPlatformSpace(location, 10, world);
+				if (result.isPresent()) {
+					return convertToWorldCoord(result.get(), floor);
 				} else {
 					return null;
 				}

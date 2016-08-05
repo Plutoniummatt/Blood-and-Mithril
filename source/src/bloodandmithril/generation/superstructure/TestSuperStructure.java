@@ -9,6 +9,7 @@ import bloodandmithril.generation.ChunkGenerator;
 import bloodandmithril.generation.Structures;
 import bloodandmithril.generation.component.components.prefab.DesertPyramid;
 import bloodandmithril.generation.component.components.prefab.UndergroundDesertTempleEntrance;
+import bloodandmithril.generation.component.components.stemming.room.RoomBuilder;
 import bloodandmithril.generation.tools.PerlinNoiseGenerator1D;
 import bloodandmithril.generation.tools.RectangularSpaceCalculator;
 import bloodandmithril.persistence.ParameterPersistenceService;
@@ -111,15 +112,27 @@ public class TestSuperStructure extends SuperStructure {
 			getSurfaceHeight().apply(24 + entranceX) + 80
 		);
 
-		getComponents().add(new UndergroundDesertTempleEntrance(
+		UndergroundDesertTempleEntrance undergroundDesertTempleEntrance = new UndergroundDesertTempleEntrance(
 			entranceX,
 			entranceY,
 			getStructureKey(),
 			false,
 			GreyBrickTile.class,
 			GreyBrickTile.class
-		));
-
+		);
+		
+		getComponents().add(undergroundDesertTempleEntrance);
+		getComponents().add(
+			new RoomBuilder()
+			.withHeight(20)
+			.withWidth(10)
+			.withWallThickness(2)
+			.withWallTile(YellowBrickTile.class)
+			.withBottomLeftCorner(entranceY - 30, entranceX)
+			.withStructureKey(getStructureKey())
+			.build()
+		);
+		
 		startingLocations.add(new TwoInts(entranceX + 40, entranceY - 40));
 	}
 
@@ -148,8 +161,11 @@ public class TestSuperStructure extends SuperStructure {
 		}
 
 		setSurfaceHeight(new DesertSurfaceFunction(startingHeight, generatingToRight, rightMostTile, leftMostTile));
+		placeProps(rightMostTile, leftMostTile);
+	}
 
-		//place props
+
+	private void placeProps(final int rightMostTile, final int leftMostTile) {
 		for (int x = leftMostTile; x <= rightMostTile; x++) {
 			if (Util.roll(0.04f)) {
 				Structures.get(getStructureKey()).addProp(

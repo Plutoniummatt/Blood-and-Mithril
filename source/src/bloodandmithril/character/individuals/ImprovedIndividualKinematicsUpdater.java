@@ -271,6 +271,8 @@ public class ImprovedIndividualKinematicsUpdater implements IndividualKinematics
 		}
 
 		if (invalid) {
+			individualStateService.stopMoving(individual);
+			
 			position.x = position.x -= velocity.x * delta * 10;
 			position.y = position.y -= velocity.y * delta * 10;
 			velocity.x = -previousVel.x * 0.4f;

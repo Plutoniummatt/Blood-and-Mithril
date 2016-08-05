@@ -77,7 +77,7 @@ public class LightLightable extends CompositeAITask implements RoutineTask {
 		GoToLocation.goToWithTerminationFunction(
 			host,
 			host.getState().position.cpy(),
-			new WayPoint(PathFinder.getGroundAboveOrBelowClosestEmptyOrPlatformSpace(((Prop) lightable).position, 10, Domain.getWorld(host.getWorldId())), 0f),
+			new WayPoint(PathFinder.getGroundAboveOrBelowClosestEmptyOrPlatformSpace(((Prop) lightable).position, 10, Domain.getWorld(host.getWorldId())).get(), 0f),
 			false,
 			new WithinInteractionBox(),
 			true
@@ -263,7 +263,7 @@ public class LightLightable extends CompositeAITask implements RoutineTask {
 			final World world = getWorld(individual.getWorldId());
 			final List<Integer> propsWithinBounds = world.getPositionalIndexMap().getEntitiesWithinBounds(Prop.class, left, right, top, bottom);
 
-			final Wrapper<LightLightable> task = new Wrapper<LightLightable>(null);
+			final Wrapper<LightLightable> task = new Wrapper<>(null);
 
 			propsWithinBounds
 			.stream()

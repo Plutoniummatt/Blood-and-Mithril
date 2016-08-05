@@ -52,7 +52,7 @@ public abstract class ArtificialIntelligence implements Serializable {
 	private float aiRoutineProcessingTimer;
 
 	/** Stimuli as perceived by the host */
-	private LinkedBlockingQueue<Stimulus> stimuli = new LinkedBlockingQueue<Stimulus>();
+	private LinkedBlockingQueue<Stimulus> stimuli = new LinkedBlockingQueue<>();
 
 	private LinkedList<Routine> aiRoutines = new LinkedList<>();
 
@@ -61,7 +61,7 @@ public abstract class ArtificialIntelligence implements Serializable {
 		internalCopy.hostId = hostId;
 		internalCopy.currentTask = currentTask;
 		internalCopy.mode = mode;
-		internalCopy.stimuli = new LinkedBlockingQueue<Stimulus>(stimuli);
+		internalCopy.stimuli = new LinkedBlockingQueue<>(stimuli);
 		internalCopy.aiRoutines = new LinkedList<>(aiRoutines);
 
 		return internalCopy;
@@ -283,7 +283,7 @@ public abstract class ArtificialIntelligence implements Serializable {
 								),
 								10,
 								Domain.getWorld(host.getWorldId())
-							),
+							).get(),
 							true
 						)
 					),

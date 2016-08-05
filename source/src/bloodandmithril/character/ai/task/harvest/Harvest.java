@@ -78,7 +78,7 @@ public final class Harvest extends CompositeAITask implements RoutineTask {
 			goTo(
 				host,
 				host.getState().position.cpy(),
-				new WayPoint(PathFinder.getGroundAboveOrBelowClosestEmptyOrPlatformSpace(((Prop) harvestable).position, 10, Domain.getWorld(host.getWorldId())), 3 * Topography.TILE_SIZE),
+				new WayPoint(PathFinder.getGroundAboveOrBelowClosestEmptyOrPlatformSpace(((Prop) harvestable).position, 10, Domain.getWorld(host.getWorldId())).get(), 3 * Topography.TILE_SIZE),
 				false,
 				50f,
 				true
@@ -268,7 +268,7 @@ public final class Harvest extends CompositeAITask implements RoutineTask {
 			final World world = getWorld(individual.getWorldId());
 			final List<Integer> propsWithinBounds = world.getPositionalIndexMap().getEntitiesWithinBounds(Prop.class, left, right, top, bottom);
 
-			final Wrapper<Harvest> task = new Wrapper<Harvest>(null);
+			final Wrapper<Harvest> task = new Wrapper<>(null);
 
 			propsWithinBounds
 			.stream()

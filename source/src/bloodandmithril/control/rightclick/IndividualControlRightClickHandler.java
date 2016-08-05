@@ -6,12 +6,14 @@ import static bloodandmithril.control.InputUtilities.getMouseWorldY;
 import static bloodandmithril.control.InputUtilities.isKeyPressed;
 
 import com.badlogic.gdx.math.Vector2;
+import com.google.common.base.Optional;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import bloodandmithril.character.ai.AIProcessor;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
+import bloodandmithril.character.ai.task.ImpossibleToSetTaskException;
 import bloodandmithril.character.ai.task.attack.Attack;
 import bloodandmithril.character.ai.task.minetile.MineTile;
 import bloodandmithril.character.individuals.Individual;
@@ -74,28 +76,31 @@ public class IndividualControlRightClickHandler implements RightClickHandler {
 	private void moveIndividual(final Individual indi) throws NoTileFoundException {
 		final float spread = Math.min(indi.getWidth() * (Util.getRandom().nextFloat() - 0.5f) * 0.5f * (gameClientStateTracker.getSelectedIndividuals().size() - 1), Controls.INDIVIDUAL_SPREAD);
 		if (ClientServerInterface.isServer()) {
-			AIProcessor.sendPathfindingRequest(
-				indi,
-				new WayPoint(
-					Topography.convertToWorldCoord(
-						getGroundAboveOrBelowClosestEmptyOrPlatformSpace(
-							new Vector2(
-								getMouseWorldX() + (isKeyPressed(controls.forceMove.keyCode) ? 0f : spread),
-								getMouseWorldY()
-							),
-							10,
-							Domain.getWorld(indi.getWorldId())
-						),
-						true
-					)
+			Optional<Vector2> groundAboveOrBelowClosestEmptyOrPlatformSpace = getGroundAboveOrBelowClosestEmptyOrPlatformSpace(
+				new Vector2(
+					getMouseWorldX() + (isKeyPressed(controls.forceMove.keyCode) ? 0f : spread),
+					getMouseWorldY()
 				),
-				false,
-				150f,
-				!isKeyPressed(controls.forceMove.keyCode),
-				isKeyPressed(controls.addWayPoint.keyCode)
+				10,
+				Domain.getWorld(indi.getWorldId())
 			);
-
-			Domain.getWorld(indi.getWorldId()).addEvent(new IndividualMoved(indi));
+			
+			if (groundAboveOrBelowClosestEmptyOrPlatformSpace.isPresent()) {
+				AIProcessor.sendPathfindingRequest(
+					indi,
+					new WayPoint(
+						Topography.convertToWorldCoord(
+							groundAboveOrBelowClosestEmptyOrPlatformSpace.get(),
+							true
+						)
+					),
+					false,
+					150f,
+					!isKeyPressed(controls.forceMove.keyCode),
+					isKeyPressed(controls.addWayPoint.keyCode)
+				);
+				Domain.getWorld(indi.getWorldId()).addEvent(new IndividualMoved(indi));
+			}
 		} else {
 			ClientServerInterface.SendRequest.sendMoveIndividualRequest(
 				indi.getId().getId(),
@@ -107,7 +112,7 @@ public class IndividualControlRightClickHandler implements RightClickHandler {
 						),
 						10,
 						Domain.getWorld(indi.getWorldId())
-					),
+					).get(),
 					true
 				),
 				!isKeyPressed(controls.forceMove.keyCode),
@@ -142,7 +147,9 @@ public class IndividualControlRightClickHandler implements RightClickHandler {
 
 	private void mineTile(final Vector2 mouseCoordinate, final Individual indi) {
 		if (ClientServerInterface.isServer()) {
-			indi.getAI().setCurrentTask(new MineTile(indi, mouseCoordinate));
+			try {
+				indi.getAI().setCurrentTask(new MineTile(indi, mouseCoordinate));
+			} catch (ImpossibleToSetTaskException e) {}
 		} else {
 			ClientServerInterface.SendRequest.sendMineTileRequest(indi.getId().getId(), new Vector2(getMouseWorldX(), getMouseWorldY()));
 		}

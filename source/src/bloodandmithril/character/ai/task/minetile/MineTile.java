@@ -3,12 +3,14 @@ package bloodandmithril.character.ai.task.minetile;
 import static bloodandmithril.character.ai.task.gotolocation.GoToLocation.goToWithTerminationFunction;
 
 import com.badlogic.gdx.math.Vector2;
+import com.google.common.base.Optional;
 import com.google.inject.Inject;
 
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.ExecutedBy;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.pathfinding.PathFinder;
+import bloodandmithril.character.ai.task.ImpossibleToSetTaskException;
 import bloodandmithril.character.ai.task.compositeaitask.CompositeAITask;
 import bloodandmithril.character.ai.task.compositeaitask.CompositeAITaskExecutor;
 import bloodandmithril.character.ai.task.gotolocation.GoToLocation;
@@ -35,7 +37,7 @@ import bloodandmithril.world.topography.tile.Tile;
 @ExecutedBy(CompositeAITaskExecutor.class)
 public class MineTile extends CompositeAITask {
 	private static final long serialVersionUID = -4098496856332182430L;
-
+	
 	/** Coordinate of the tile to mine */
 	public Vector2 tileCoordinate;
 	
@@ -49,24 +51,43 @@ public class MineTile extends CompositeAITask {
 	 *
 	 * @param coordinate - World pixel coordinate of the tile to mine, does not have to be a converted tile coordinate
 	 */
-	public MineTile(final Individual host, final Vector2 coordinate) {
+	public MineTile(final Individual host, final Vector2 coordinate) throws ImpossibleToSetTaskException {
 		super(
 			host.getId(),
 			"Mining"
 		);
 
 		try {
-			appendTask(
-				goToWithTerminationFunction(
-					host,
-					host.getState().position.cpy(),
-					new WayPoint(PathFinder.getGroundAboveOrBelowClosestEmptyOrPlatformSpace(coordinate, 10, Domain.getWorld(host.getWorldId())), 0f),
-					false,
-					new WithinInteractionBox(),
-					true
-				)
+			Optional<Vector2> groundAboveOrBelowClosestEmptyOrPlatformSpace = PathFinder.getGroundAboveOrBelowClosestEmptyOrPlatformSpace(
+				coordinate, 
+				10, 
+				Domain.getWorld(host.getWorldId())
 			);
+			
+			if (!groundAboveOrBelowClosestEmptyOrPlatformSpace.isPresent()) {
+				groundAboveOrBelowClosestEmptyOrPlatformSpace = PathFinder.getGroundAboveOrBelowClosestEmptyOrPlatformSpace(
+					coordinate.x > host.getState().position.x ? coordinate.cpy().sub(Topography.TILE_SIZE, 0) : coordinate.cpy().add(Topography.TILE_SIZE, 0), 
+					10, 
+					Domain.getWorld(host.getWorldId())
+				);
+			}
+			
+			if (groundAboveOrBelowClosestEmptyOrPlatformSpace.isPresent()) {
+				appendTask(
+					goToWithTerminationFunction(
+						host,
+						host.getState().position.cpy(),
+						new WayPoint(groundAboveOrBelowClosestEmptyOrPlatformSpace.get(), 0f),
+						false,
+						new WithinInteractionBox(),
+						true
+					)
+				);
+			} else {
+				throw new ImpossibleToSetTaskException();
+			}
 		} catch (final NoTileFoundException e) {}
+		
 		appendTask(new AttemptMine(hostId));
 
 		try {

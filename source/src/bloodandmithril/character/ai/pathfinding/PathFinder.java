@@ -3,6 +3,7 @@ package bloodandmithril.character.ai.pathfinding;
 import java.io.Serializable;
 
 import com.badlogic.gdx.math.Vector2;
+import com.google.common.base.Optional;
 
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.individuals.Individual;
@@ -40,14 +41,19 @@ public abstract class PathFinder implements Serializable {
 
 
 	/** Get the location of the ground above or below the closest empty or platform space */
-	public static final Vector2 getGroundAboveOrBelowClosestEmptyOrPlatformSpace(Vector2 location, int radius, World world) throws NoTileFoundException {
+	public static final Optional<Vector2> getGroundAboveOrBelowClosestEmptyOrPlatformSpace(Vector2 location, int radius, World world) throws NoTileFoundException {
 		Vector2 closestEmptyOrPlatformSpace = getClosestEmptyOrPlatformSpace(location, radius, world);
 
 		if (closestEmptyOrPlatformSpace == null) {
-			return null;
+			return Optional.absent();
 		} else {
 			Vector2 groundLocation = getGroundLocation(closestEmptyOrPlatformSpace, radius * 2, world);
-			return groundLocation;
+			
+			if (groundLocation == null) {
+				return Optional.absent();
+			} else {
+				return Optional.of(groundLocation);
+			}
 		}
 	}
 

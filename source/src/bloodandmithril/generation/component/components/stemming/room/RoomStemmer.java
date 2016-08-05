@@ -9,7 +9,7 @@ import bloodandmithril.generation.component.components.stemming.ComponentStemmer
  * @author Matt
  */
 @Copyright("Matthew Peck 2016")
-public class RoomFactory implements ComponentStemmer<RoomBuilder, Room> {
+public class RoomStemmer implements ComponentStemmer<RoomBuilder, Room> {
 
 	private final RoomBuilder roomBuilder = new RoomBuilder();
 

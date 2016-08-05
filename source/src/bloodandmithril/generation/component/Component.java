@@ -1,5 +1,6 @@
 package bloodandmithril.generation.component;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
 
 import java.io.Serializable;
@@ -72,6 +73,20 @@ public abstract class Component implements Serializable {
 	 */
 	public int getStructureKey() {
 		return structureKey;
+	}
+	
+	
+	/**
+	 * @return free {@link Interface}s
+	 */
+	public Collection<Interface> getFreeInterfaces() {
+		Collection<Interface> interfacesToReturn = newArrayList();
+		
+		interfaces.entrySet().stream().filter(entry -> entry.getValue() == null).forEach(entry -> {
+			interfacesToReturn.add(entry.getKey());
+		});
+				
+		return interfacesToReturn;
 	}
 	
 	

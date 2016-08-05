@@ -63,7 +63,7 @@ public class PlantSeed extends CompositeAITask implements RoutineTask {
 			goTo(
 				host,
 				host.getState().position.cpy(),
-				new WayPoint(getGroundAboveOrBelowClosestEmptyOrPlatformSpace(toPlant.position, 10, Domain.getWorld(host.getWorldId())), Topography.TILE_SIZE),
+				new WayPoint(getGroundAboveOrBelowClosestEmptyOrPlatformSpace(toPlant.position, 10, Domain.getWorld(host.getWorldId())).get(), Topography.TILE_SIZE),
 				false,
 				50f,
 				true

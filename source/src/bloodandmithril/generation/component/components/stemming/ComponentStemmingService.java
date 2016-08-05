@@ -13,4 +13,11 @@ import bloodandmithril.generation.component.Component;
 @Singleton
 @Copyright("Matthew Peck 2016")
 public class ComponentStemmingService {
+	
+	/**
+	 * @param component to stem from
+	 */
+	public StemFrom stemFrom(Component component) {
+		return new StemFrom(component);
+	}
 }

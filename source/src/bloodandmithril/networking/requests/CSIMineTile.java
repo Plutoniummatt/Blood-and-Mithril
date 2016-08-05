@@ -1,13 +1,14 @@
 package bloodandmithril.networking.requests;
 
+import com.badlogic.gdx.math.Vector2;
+
+import bloodandmithril.character.ai.task.ImpossibleToSetTaskException;
 import bloodandmithril.character.ai.task.minetile.MineTile;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.Request;
 import bloodandmithril.networking.Response.Responses;
 import bloodandmithril.world.Domain;
-
-import com.badlogic.gdx.math.Vector2;
 
 /**
  * A CSI {@link Request} to MineTile
@@ -36,9 +37,11 @@ public class CSIMineTile implements Request {
 	@Override
 	public Responses respond() {
 		Individual individual = Domain.getIndividual(individualId);
-		individual.getAI().setCurrentTask(
-			new MineTile(individual, location)
-		);
+		try {
+			individual.getAI().setCurrentTask(
+				new MineTile(individual, location)
+			);
+		} catch (ImpossibleToSetTaskException e) {}
 
 		Responses responses = new Responses(false);
 		return responses;
