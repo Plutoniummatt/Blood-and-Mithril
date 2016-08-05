@@ -78,7 +78,6 @@ import bloodandmithril.core.ThreadedTasks;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.generation.Structure;
 import bloodandmithril.generation.Structures;
-import bloodandmithril.generation.component.interfaces.Interface;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.EquipperImpl.AlwaysTrueFunction;
@@ -133,8 +132,6 @@ public class UserInterface {
 
 	/** UI colors */
 	private static final Color DARK_SCREEN_COLOR = new Color(0f, 0f, 0f, 0.8f);
-	private static final Color EXISTING_INTERFACE_COLOR = new Color(1f, 0.2f, 0f, 0.5f);
-	private static final Color AVAILABLE_INTERFACE_COLOR = new Color(0.2f, 1f, 0f, 0.5f);
 	private static final Color COMPONENT_BOUNDARY_COLOR = new Color(1f, 1f, 1f, 0.5f);
 	private static final Color COMPONENT_FILL_COLOR = new Color(0f, 1f, 0f, 0.15f);
 
@@ -144,7 +141,6 @@ public class UserInterface {
 
 	//---DEBUG----------------------------------------------------------------------
 	/** A flag to indicate whether we should render the available interfaces or existing interfaces */
-	public boolean renderAvailableInterfaces = true;
 	public boolean renderComponentBoundaries = true;
 
 	/** Whether to render debug UI */
@@ -387,7 +383,6 @@ public class UserInterface {
 		Shaders.text.setUniformMatrix("u_projTrans", UICamera.combined);
 
 		if (DEBUG && isServer()) {
-			renderComponentInterfaces();
 			renderPositionalIndexes();
 			renderChunkBoundaries();
 			renderEdgeTileBoxes(gameClientStateTracker.getActiveWorld().getTopography(), (int)graphics.getCam().position.x, (int)graphics.getCam().position.y);
@@ -777,32 +772,6 @@ public class UserInterface {
 		gl.glDisable(GL_BLEND);
 
 		return true;
-	}
-
-
-	private void renderComponentInterfaces() {
-		gl.glEnable(GL_BLEND);
-		gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		Gdx.gl20.glLineWidth(2f);
-		for (final Structure struct : Structures.getStructures().values()) {
-			for (final bloodandmithril.generation.component.Component comp : newArrayList(struct.getComponents())) {
-				if (renderAvailableInterfaces) {
-					for (final Interface in : newArrayList(comp.getAvailableInterfaces())) {
-						if (in != null) {
-							in.render(AVAILABLE_INTERFACE_COLOR);
-						}
-					}
-				} else {
-					for (final Interface in : newArrayList(comp.getExistingInterfaces())) {
-						if (in != null) {
-
-							in.render(EXISTING_INTERFACE_COLOR);
-						}
-					}
-				}
-			}
-		}
-		gl.glDisable(GL_BLEND);
 	}
 
 

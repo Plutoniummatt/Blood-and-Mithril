@@ -3,12 +3,7 @@ package bloodandmithril.generation.component.components.prefab;
 import com.badlogic.gdx.graphics.Color;
 
 import bloodandmithril.core.Copyright;
-import bloodandmithril.generation.component.Component;
 import bloodandmithril.generation.component.PrefabricatedComponent;
-import bloodandmithril.generation.component.components.Stairs;
-import bloodandmithril.generation.component.components.Stairs.StairsCreationCustomization;
-import bloodandmithril.generation.component.interfaces.Interface;
-import bloodandmithril.generation.component.interfaces.RectangularInterface.RectangularInterfaceCustomization;
 import bloodandmithril.util.datastructure.Boundaries;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.tiles.wood.WoodenPlatform;
@@ -27,33 +22,31 @@ public class UndergroundDesertTempleEntrance extends PrefabricatedComponent {
 	/**
 	 * Constructor
 	 */
-	public UndergroundDesertTempleEntrance(int worldX, int worldY, int structureKey, boolean inverted, Class<? extends Tile> wallTile, Class<? extends Tile> backgroundTile) {
+	public UndergroundDesertTempleEntrance(final int worldX, final int worldY, final int structureKey, final boolean inverted, final Class<? extends Tile> wallTile, final Class<? extends Tile> backgroundTile) {
 		super(
 			blueprint(backgroundTile, wallTile),
 			boundaries(worldX, worldY),
 			structureKey,
 			inverted
 		);
-
-		generateInterfaces();
 	}
 
 
-	private static Boundaries boundaries(int worldX, int worldY) {
+	private static Boundaries boundaries(final int worldX, final int worldY) {
 		return new Boundaries(worldY, worldY - height - 1, worldX, worldX + width - 1);
 	}
 
 
-	private static ComponentBlueprint blueprint(Class<? extends Tile> backgroundTile, Class<? extends Tile> wallTile) {
+	private static ComponentBlueprint blueprint(final Class<? extends Tile> backgroundTile, final Class<? extends Tile> wallTile) {
 
-		Tile[][] fTiles = new Tile[width][height];
-		Tile[][] bTiles = new Tile[width][height];
+		final Tile[][] fTiles = new Tile[width][height];
+		final Tile[][] bTiles = new Tile[width][height];
 
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
 
-				int fPixel = PrefabricatedComponent.prefabPixmap.getPixel(x, y);
-				int bPixel = PrefabricatedComponent.prefabPixmap.getPixel(x, y + height);
+				final int fPixel = PrefabricatedComponent.prefabPixmap.getPixel(x, y);
+				final int bPixel = PrefabricatedComponent.prefabPixmap.getPixel(x, y + height);
 
 				try {
 					if (fPixel == Color.rgba8888(Color.RED)) {
@@ -63,10 +56,10 @@ public class UndergroundDesertTempleEntrance extends PrefabricatedComponent {
 					} else if (fPixel == Color.rgba8888(Color.BLUE)) {
 						fTiles[x][height - 1 - y] = new WoodenPlatform();
 					} else if (fPixel == Color.rgba8888(Color.MAGENTA)) {
-						Tile tile = wallTile.newInstance();
+						final Tile tile = wallTile.newInstance();
 						fTiles[x][height - 1 - y] = tile;
 					} else if (fPixel == Color.rgba8888(Color.BLACK)) {
-						Tile tile = wallTile.newInstance();
+						final Tile tile = wallTile.newInstance();
 						tile.changeToSmoothCeiling();
 						fTiles[x][height - 1 - y] = tile;
 					} else {
@@ -76,7 +69,7 @@ public class UndergroundDesertTempleEntrance extends PrefabricatedComponent {
 					if (bPixel == Color.rgba8888(Color.BLACK)) {
 						bTiles[x][height - 1 - y] = backgroundTile.newInstance();
 					} else if (bPixel == Color.rgba8888(Color.RED)) {
-						Tile tile = backgroundTile.newInstance();
+						final Tile tile = backgroundTile.newInstance();
 						tile.changeToSmoothCeiling();
 						bTiles[x][height - 1 - y] = tile;
 					} else if (bPixel == Color.rgba8888(Color.WHITE)) {
@@ -84,51 +77,12 @@ public class UndergroundDesertTempleEntrance extends PrefabricatedComponent {
 					} else {
 						bTiles[x][height - 1 - y] = null;
 					}
-				} catch (Exception e) {
+				} catch (final Exception e) {
 					throw new RuntimeException(e);
 				}
 			}
 		}
 
 		return new ComponentBlueprint(fTiles, bTiles);
-	}
-
-
-	@Override
-	protected void generateInterfaces() {
-		// Generate the bottom interface
-		if (inverted) {
-			generateUnitThicknessHorizontalInterfaces(boundaries.top - 101, boundaries.left + 212, boundaries.left + 228);
-		} else {
-			generateUnitThicknessHorizontalInterfaces(boundaries.top - 101, boundaries.right - 228, boundaries.right - 212);
-		}
-	}
-
-
-	@Override
-	protected <T extends Component> Component internalStem(Class<T> with, ComponentCreationCustomization<T> custom) {
-		if (with.equals(Stairs.class)) {
-			return stemStairs(custom);
-		}
-
-		return null;
-	}
-
-
-	/**
-	 * Stem some {@link Stairs} from this component
-	 */
-	@SuppressWarnings("rawtypes")
-	private Component stemStairs(ComponentCreationCustomization custom) {
-		final StairsCreationCustomization stairsCustomization = (StairsCreationCustomization)custom;
-		stairsCustomization.stemRight = this.inverted;
-		stairsCustomization.slopeGradient = stairsCustomization.stemRight ? -stairsCustomization.slopeGradient : stairsCustomization.slopeGradient;
-
-		// Create the connected interface from an available one, then create the component from the created interface
-		Interface createdInterface = getAvailableInterfaces().get(0).createConnectedInterface(new RectangularInterfaceCustomization(1, stairsCustomization.corridorHeight - 1, 0, 0));
-		Component createdComponent = createdInterface.createComponent(Stairs.class, stairsCustomization, getStructureKey());
-
-		// Check for overlaps
-		return checkForOverlaps(createdInterface, createdComponent);
 	}
 }

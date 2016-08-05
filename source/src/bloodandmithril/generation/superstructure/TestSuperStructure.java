@@ -7,12 +7,6 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.generation.ChunkGenerator;
 import bloodandmithril.generation.Structures;
-import bloodandmithril.generation.component.components.Corridor;
-import bloodandmithril.generation.component.components.Corridor.CorridorCreationCustomization;
-import bloodandmithril.generation.component.components.Room;
-import bloodandmithril.generation.component.components.Room.RoomCreationCustomization;
-import bloodandmithril.generation.component.components.Stairs;
-import bloodandmithril.generation.component.components.Stairs.StairsCreationCustomization;
 import bloodandmithril.generation.component.components.prefab.DesertPyramid;
 import bloodandmithril.generation.component.components.prefab.UndergroundDesertTempleEntrance;
 import bloodandmithril.generation.tools.PerlinNoiseGenerator1D;
@@ -25,7 +19,6 @@ import bloodandmithril.prop.plant.grass.GrassyWhiteFlowers;
 import bloodandmithril.prop.plant.grass.GreenGrass;
 import bloodandmithril.prop.plant.grass.TallGrass;
 import bloodandmithril.prop.plant.tree.alder.AlderTree;
-import bloodandmithril.util.Function;
 import bloodandmithril.util.SerializableMappingFunction;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.datastructure.Boundaries;
@@ -59,7 +52,7 @@ public class TestSuperStructure extends SuperStructure {
 	 * @param cHeight - The Height of the desert in chunks.
 	 * @param tDuneVariationHeight - How much the surface height can vary by.
 	 */
-	public TestSuperStructure(int worldId, int cWidth, int cHeight, int tDuneVariationHeight) {
+	public TestSuperStructure(final int worldId, final int cWidth, final int cHeight, final int tDuneVariationHeight) {
 		super(worldId);
 		this.cWidth = cWidth;
 		this.cHeight = cHeight;
@@ -68,7 +61,7 @@ public class TestSuperStructure extends SuperStructure {
 
 
 	@Override
-	protected Boundaries findSpace(int startingChunkX, int startingChunkY) {
+	protected Boundaries findSpace(final int startingChunkX, final int startingChunkY) {
 		//calculates where the structure can go
 		return RectangularSpaceCalculator.calculateBoundariesConfineWithinTwoHeights(
 			true,
@@ -84,9 +77,9 @@ public class TestSuperStructure extends SuperStructure {
 
 
 	@Override
-	protected void internalGenerate(boolean generatingToRight) {
-		int rightMostTile = Topography.convertToWorldTileCoord(getBoundaries().right, 19);
-		int leftMostTile = Topography.convertToWorldTileCoord(getBoundaries().left, 0);
+	protected void internalGenerate(final boolean generatingToRight) {
+		final int rightMostTile = Topography.convertToWorldTileCoord(getBoundaries().right, 19);
+		final int leftMostTile = Topography.convertToWorldTileCoord(getBoundaries().left, 0);
 
 		generateSurface(generatingToRight, rightMostTile, leftMostTile);
 		generateDungeon();
@@ -97,8 +90,8 @@ public class TestSuperStructure extends SuperStructure {
 	private void generateDungeon() {
 
 		// Add pyraid somewhere
-		int pyramidX = (getBoundaries().left + 3) * Topography.CHUNK_SIZE;
-		int pyramidY = max(
+		final int pyramidX = (getBoundaries().left + 3) * Topography.CHUNK_SIZE;
+		final int pyramidY = max(
 			getSurfaceHeight().apply(184 + pyramidX) + 70,
 			getSurfaceHeight().apply(24 + pyramidX) + 70
 		);
@@ -112,8 +105,8 @@ public class TestSuperStructure extends SuperStructure {
 		));
 
 		// Add the entrance in the middle of this desert
-		int entranceX = (getBoundaries().left + getBoundaries().right) / 2 * Topography.CHUNK_SIZE;
-		int entranceY = max(
+		final int entranceX = (getBoundaries().left + getBoundaries().right) / 2 * Topography.CHUNK_SIZE;
+		final int entranceY = max(
 			getSurfaceHeight().apply(366 + entranceX) + 80,
 			getSurfaceHeight().apply(24 + entranceX) + 80
 		);
@@ -128,135 +121,25 @@ public class TestSuperStructure extends SuperStructure {
 		));
 
 		startingLocations.add(new TwoInts(entranceX + 40, entranceY - 40));
-
-		getComponents().get(0).stem(
-			this,
-			Stairs.class,
-			new Function<StairsCreationCustomization>() {
-				@Override
-				public StairsCreationCustomization call() {
-					return new StairsCreationCustomization(
-						false,
-						false,
-						Util.getRandom().nextBoolean(),
-						Util.getRandom().nextInt(30) + 20,
-						1,
-						17,
-						3,
-						YellowBrickTile.class,
-						YellowBrickTile.class
-					);
-				}
-			}
-		).stem(
-			this,
-			Stairs.class,
-			new Function<StairsCreationCustomization>() {
-				@Override
-				public StairsCreationCustomization call() {
-					return new StairsCreationCustomization(
-						Util.getRandom().nextBoolean(),
-						Util.getRandom().nextBoolean(),
-						Util.getRandom().nextBoolean(),
-						Util.getRandom().nextInt(30) + 20,
-						1,
-						17,
-						3,
-						YellowBrickTile.class,
-						YellowBrickTile.class
-					);
-				}
-			}
-		).stem(
-			this,
-			Stairs.class,
-			new Function<StairsCreationCustomization>() {
-				@Override
-				public StairsCreationCustomization call() {
-					return new StairsCreationCustomization(
-						Util.getRandom().nextBoolean(),
-						Util.getRandom().nextBoolean(),
-						true,
-						Util.getRandom().nextInt(30) + 20,
-						1,
-						17,
-						3,
-						YellowBrickTile.class,
-						YellowBrickTile.class
-					);
-				}
-			}
-		).stem(
-			this,
-			Corridor.class,
-			new Function<CorridorCreationCustomization>() {
-				@Override
-				public CorridorCreationCustomization call() {
-					return new CorridorCreationCustomization(
-						Util.getRandom().nextBoolean(),
-						3,
-						3,
-						20 + Util.getRandom().nextInt(10),
-						17,
-						YellowBrickTile.class
-					);
-				}
-			}
-		).stem(
-			this,
-			Room.class,
-			new Function<RoomCreationCustomization>() {
-				@Override
-				public RoomCreationCustomization call() {
-					return new RoomCreationCustomization(
-						Util.getRandom().nextBoolean(),
-						20 + Util.getRandom().nextInt(10),
-						20 + Util.getRandom().nextInt(10),
-						3,
-						YellowBrickTile.class
-					);
-				}
-			}
-		).stem(
-			this,
-			Stairs.class,
-			new Function<StairsCreationCustomization>() {
-				@Override
-				public StairsCreationCustomization call() {
-					return new StairsCreationCustomization(
-						Util.getRandom().nextBoolean(),
-						Util.getRandom().nextBoolean(),
-						Util.getRandom().nextBoolean(),
-						Util.getRandom().nextInt(20) + 15,
-						1,
-						17,
-						3,
-						YellowBrickTile.class,
-						YellowBrickTile.class
-					);
-				}
-			},
-			10
-		);
 	}
 
 
 	/** Generates the surface layer */
-	protected void generateSurface(boolean generatingToRight, int rightMostTile, int leftMostTile) {
-		Structures structures = Domain.getWorld(worldId).getTopography().getStructures();
+	protected void generateSurface(final boolean generatingToRight, final int rightMostTile, final int leftMostTile) {
+		final Structures structures = Domain.getWorld(worldId).getTopography().getStructures();
 		int startingHeight;
-		int dafaultSurfaceHeight = 100;
+		final int dafaultSurfaceHeight = 100;
 
 		// set starting height
 		if (generatingToRight) {
-			SuperStructure superStructure = (SuperStructure) structures.getStructure(convertToChunkCoord(leftMostTile - 1), 0, true);
+			final SuperStructure superStructure = (SuperStructure) structures.getStructure(convertToChunkCoord(leftMostTile - 1), 0, true);
 			if (superStructure != null && superStructure.getSurfaceHeight().apply(leftMostTile - 1) != null) {
 				startingHeight = superStructure.getSurfaceHeight().apply(leftMostTile - 1);
 			} else {
 				startingHeight = dafaultSurfaceHeight;
 			}
 		} else {
-			SuperStructure superStructure = (SuperStructure) structures.getStructure(convertToChunkCoord(rightMostTile + 1), 0, true);
+			final SuperStructure superStructure = (SuperStructure) structures.getStructure(convertToChunkCoord(rightMostTile + 1), 0, true);
 			if (superStructure != null && superStructure.getSurfaceHeight().apply(rightMostTile + 1) != null) {
 				startingHeight = superStructure.getSurfaceHeight().apply(rightMostTile + 1);
 			} else {
@@ -335,11 +218,11 @@ public class TestSuperStructure extends SuperStructure {
 
 
 	@Override
-	protected Tile internalGetForegroundTile(int worldTileX, int worldTileY) {
+	protected Tile internalGetForegroundTile(final int worldTileX, final int worldTileY) {
 		if (worldTileY > getSurfaceHeight().apply(worldTileX)) {
 			return new Tile.EmptyTile();
 		} else {
-			OrdinarySoilTile ordinarySoilTile = new OrdinarySoilTile();
+			final OrdinarySoilTile ordinarySoilTile = new OrdinarySoilTile();
 			ordinarySoilTile.changeToSmoothCeiling();
 			return ordinarySoilTile;
 		}
@@ -347,11 +230,11 @@ public class TestSuperStructure extends SuperStructure {
 
 
 	@Override
-	protected Tile internalGetBackgroundTile(int worldTileX, int worldTileY) {
+	protected Tile internalGetBackgroundTile(final int worldTileX, final int worldTileY) {
 		if (worldTileY > getSurfaceHeight().apply(worldTileX)-1) {
 			return new Tile.EmptyTile();
 		} else {
-			OrdinarySoilTile ordinarySoilTile = new OrdinarySoilTile();
+			final OrdinarySoilTile ordinarySoilTile = new OrdinarySoilTile();
 			ordinarySoilTile.changeToSmoothCeiling();
 			return ordinarySoilTile;
 		}
@@ -366,7 +249,7 @@ public class TestSuperStructure extends SuperStructure {
 		private int rightMostTile;
 		private int leftMostTile;
 
-		private DesertSurfaceFunction(int startingHeight, boolean generatingToRight, int rightMostTile, int leftMostTile) {
+		private DesertSurfaceFunction(final int startingHeight, final boolean generatingToRight, final int rightMostTile, final int leftMostTile) {
 			this.startingHeight = startingHeight;
 			this.generatingToRight = generatingToRight;
 			this.rightMostTile = rightMostTile;
@@ -374,7 +257,7 @@ public class TestSuperStructure extends SuperStructure {
 		}
 
 		@Override
-		public Integer apply(Integer x) {
+		public Integer apply(final Integer x) {
 			return (int)(startingHeight + tDuneVariationHeight * perlinSurfaceGenerator.generate(x, 1) - tDuneVariationHeight * perlinSurfaceGenerator.generate(generatingToRight ? leftMostTile : rightMostTile, 1));
 		}
 	}

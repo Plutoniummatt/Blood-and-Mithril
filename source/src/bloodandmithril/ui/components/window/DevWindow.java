@@ -529,29 +529,6 @@ public class DevWindow extends Window {
 
 		newHashMap.put(
 			new ListingMenuItem<>(
-				"Render component interfaces",
-				new Button(
-					"Render component interfaces",
-					Fonts.defaultFont,
-					0,
-					0,
-					310,
-					16,
-					() -> {
-						userInterface.renderAvailableInterfaces = !userInterface.renderAvailableInterfaces;
-					},
-					userInterface.renderAvailableInterfaces ? Color.GREEN : Color.RED,
-					Color.WHITE,
-					Color.GREEN,
-					UIRef.BL
-				),
-				null
-			),
-			0
-		);
-
-		newHashMap.put(
-			new ListingMenuItem<>(
 				"Change time of day",
 				new Button(
 					"Change time of day",
