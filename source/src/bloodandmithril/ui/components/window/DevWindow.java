@@ -222,7 +222,7 @@ public class DevWindow extends Window {
 			);
 		}
 
-		if (keyCode == Keys.D) {
+		if (keyCode == Keys.F) {
 			gameClientStateTracker.getActiveWorld().getTopography().deleteTile(
 				getMouseWorldX(),
 				getMouseWorldY(),
@@ -230,6 +230,16 @@ public class DevWindow extends Window {
 				false
 			);
 		}
+		
+		if (keyCode == Keys.G) {
+			gameClientStateTracker.getActiveWorld().getTopography().deleteTile(
+				getMouseWorldX(),
+				getMouseWorldY(),
+				false,
+				false
+			);
+		}
+
 
 		if (keyCode == Keys.E) {
 			final IndividualState state = new IndividualState.IndividualStateBuilder()

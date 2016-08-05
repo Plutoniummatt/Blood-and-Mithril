@@ -448,7 +448,7 @@ public class UserInterface {
 
 		Structures.getStructures().values().stream().forEach(structure -> {
 			structure.getComponents().forEach(component -> {
-				component.getAllInterfaces().stream().forEach(iface -> {
+				component.getInterfaces().stream().forEach(iface -> {
 					render(iface);
 				});
 			});

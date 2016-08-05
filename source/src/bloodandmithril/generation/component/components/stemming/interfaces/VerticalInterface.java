@@ -11,13 +11,21 @@ import bloodandmithril.core.Copyright;
 public class VerticalInterface implements Interface {
 
 	public final int tileX, tileY, height;
+	private final StemmingDirection direction;
 	
 	/**
 	 * Constructor
 	 */
-	public VerticalInterface(int tileX, int tileY, int height) {
+	public VerticalInterface(int tileX, int tileY, int height, StemmingDirection direction) {
 		this.tileX = tileX;
 		this.tileY = tileY;
 		this.height = height;
+		this.direction = direction;
+	}
+
+	
+	@Override
+	public StemmingDirection getStemmingDirection() {
+		return direction;
 	}
 }

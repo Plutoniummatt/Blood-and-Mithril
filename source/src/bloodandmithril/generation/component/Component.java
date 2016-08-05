@@ -1,15 +1,14 @@
 package bloodandmithril.generation.component;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static com.google.common.collect.Maps.newHashMap;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.Map;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.ChunkGenerator;
 import bloodandmithril.generation.Structure;
+import bloodandmithril.generation.component.components.stemming.StemFrom;
 import bloodandmithril.generation.component.components.stemming.interfaces.Interface;
 import bloodandmithril.util.datastructure.Boundaries;
 import bloodandmithril.world.topography.tile.Tile;
@@ -30,7 +29,7 @@ public abstract class Component implements Serializable {
 	private final int structureKey;
 	
 	/** {@link Interface}s on this {@link Component} */
-	private final Map<Interface, Component> interfaces = newHashMap();
+	private final Collection<Interface> interfaces = newArrayList();
 
 	/**
 	 * Constructor
@@ -38,7 +37,6 @@ public abstract class Component implements Serializable {
 	protected Component(final Boundaries boundaries, final int structureKey) {
 		this.boundaries = boundaries;
 		this.structureKey = structureKey;
-		generateInterfaces();
 	}
 
 
@@ -79,14 +77,8 @@ public abstract class Component implements Serializable {
 	/**
 	 * @return free {@link Interface}s
 	 */
-	public Collection<Interface> getFreeInterfaces() {
-		Collection<Interface> interfacesToReturn = newArrayList();
-		
-		interfaces.entrySet().stream().filter(entry -> entry.getValue() == null).forEach(entry -> {
-			interfacesToReturn.add(entry.getKey());
-		});
-				
-		return interfacesToReturn;
+	public Collection<Interface> getInterfaces() {
+		return interfaces;
 	}
 	
 	
@@ -94,15 +86,14 @@ public abstract class Component implements Serializable {
 	 * @param iface {@link Interface} to add
 	 */
 	public void addInterface(Interface iface) {
-		if (interfaces.containsKey(iface)) {
-			throw new IllegalStateException();
-		}
-		
-		this.interfaces.put(iface, null);
+		this.interfaces.add(iface);
 	}
 	
 	
-	public Collection<Interface> getAllInterfaces() {
-		return interfaces.keySet();
+	/**
+	 * @return a {@link StemFrom} to begin stemming from this {@link Component}
+	 */
+	public StemFrom stemFrom() {
+		return new StemFrom(this);
 	}
 }

@@ -7,8 +7,11 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.generation.ChunkGenerator;
 import bloodandmithril.generation.Structures;
+import bloodandmithril.generation.component.Component;
 import bloodandmithril.generation.component.components.prefab.DesertPyramid;
 import bloodandmithril.generation.component.components.prefab.UndergroundDesertTempleEntrance;
+import bloodandmithril.generation.component.components.stemming.interfaces.StemmingDirection;
+import bloodandmithril.generation.component.components.stemming.room.Room;
 import bloodandmithril.generation.component.components.stemming.room.RoomBuilder;
 import bloodandmithril.generation.tools.PerlinNoiseGenerator1D;
 import bloodandmithril.generation.tools.RectangularSpaceCalculator;
@@ -20,6 +23,7 @@ import bloodandmithril.prop.plant.grass.GrassyWhiteFlowers;
 import bloodandmithril.prop.plant.grass.GreenGrass;
 import bloodandmithril.prop.plant.grass.TallGrass;
 import bloodandmithril.prop.plant.tree.alder.AlderTree;
+import bloodandmithril.util.Operator;
 import bloodandmithril.util.SerializableMappingFunction;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.datastructure.Boundaries;
@@ -89,23 +93,73 @@ public class TestSuperStructure extends SuperStructure {
 
 	/** Generates the desert dungeon */
 	private void generateDungeon() {
-
 		// Add pyraid somewhere
-		final int pyramidX = (getBoundaries().left + 3) * Topography.CHUNK_SIZE;
-		final int pyramidY = max(
-			getSurfaceHeight().apply(184 + pyramidX) + 70,
-			getSurfaceHeight().apply(24 + pyramidX) + 70
-		);
+		addPyramid();
 
-		getComponents().add(new DesertPyramid(
-			pyramidX,
-			pyramidY,
-			getStructureKey(),
-			YellowBrickTile.class,
-			YellowBrickTile.class
-		));
-
-		// Add the entrance in the middle of this desert
+		Operator<Component> roomFunction = component -> {
+			component
+			.stemFrom()
+			.fromAnyInterface()
+			.withDirection(Util.randomOneOf(StemmingDirection.RIGHT, StemmingDirection.LEFT))
+			.specifyOffset(0)
+			.using(RoomBuilder.class)
+			.withHeight(Util.getRandom().nextInt(5) + 10)
+			.withWidth(Util.getRandom().nextInt(5) + 10)
+			.withWallThickness(2)
+			.withWallTile(GreyBrickTile.class, fTile -> {fTile.changeToSmoothCeiling();}, bTile -> {})
+			.withStructureKey(getStructureKey())
+			.build();
+		};
+		
+		Operator<Component> horizontalCorridorFunction = component -> {
+			component
+			.stemFrom()
+			.fromAnyInterface()
+			.withDirection(Util.randomOneOf(StemmingDirection.LEFT, StemmingDirection.RIGHT))
+			.specifyOffset(0)
+			.using(RoomBuilder.class)
+			.withHeight(7)
+			.withWidth(Util.getRandom().nextInt(25) + 10)
+			.withWallThickness(1)
+			.withWallTile(GreyBrickTile.class, fTile -> {fTile.changeToSmoothCeiling();}, bTile -> {})
+			.withStructureKey(getStructureKey())
+			.withStemmingFunction(roomFunction)
+			.build();
+		};
+		
+		Operator<Component> verticalCorridorFunction = component -> {
+			component
+			.stemFrom()
+			.fromAnyInterface()
+			.withDirection(StemmingDirection.DOWN)
+			.specifyOffset(Util.getRandom().nextInt(100))
+			.using(RoomBuilder.class)
+			.withHeight(Util.getRandom().nextInt(20) + 50)
+			.withWidth(7)
+			.withWallThickness(1)
+			.withWallTile(GreyBrickTile.class, fTile -> {fTile.changeToSmoothCeiling();}, bTile -> {})
+			.withStructureKey(getStructureKey())
+			.withStemmingFunction(horizontalCorridorFunction)
+			.build();
+		};
+		
+		addTemple()
+		.stemFrom()
+		.fromAnyInterface()
+		.withDirection(StemmingDirection.DOWN)
+		.specifyOffset(-Util.getRandom().nextInt(150))
+		.using(RoomBuilder.class)
+		.withHeight(7)
+		.withWidth(Util.getRandom().nextInt(150) + 100)
+		.withWallThickness(1)
+		.withWallTile(GreyBrickTile.class, fTile -> {fTile.changeToSmoothCeiling();}, bTile -> {})
+		.withStructureKey(getStructureKey())
+		.withStemmingFunction(verticalCorridorFunction)
+		.build();
+	}
+	
+	
+	private Component addTemple() {
 		final int entranceX = (getBoundaries().left + getBoundaries().right) / 2 * Topography.CHUNK_SIZE;
 		final int entranceY = max(
 			getSurfaceHeight().apply(366 + entranceX) + 80,
@@ -120,20 +174,40 @@ public class TestSuperStructure extends SuperStructure {
 			GreyBrickTile.class,
 			GreyBrickTile.class
 		);
-		
+		undergroundDesertTempleEntrance.generateInterfaces();
 		getComponents().add(undergroundDesertTempleEntrance);
-		getComponents().add(
-			new RoomBuilder()
-			.withHeight(20)
-			.withWidth(10)
-			.withWallThickness(2)
-			.withWallTile(YellowBrickTile.class)
-			.withBottomLeftCorner(entranceY - 30, entranceX)
-			.withStructureKey(getStructureKey())
-			.build()
-		);
+		
+		Room room = new RoomBuilder()
+		.withHeight(10)
+		.withWidth(20)
+		.withWallThickness(2)
+		.withWallTile(GreyBrickTile.class, fTile -> {}, bTile -> {})
+		.withBottomLeftCorner(entranceY - 80, entranceX + 100)
+		.withStructureKey(getStructureKey())
+		.build()
+		.get();
+		getComponents().add(room);
 		
 		startingLocations.add(new TwoInts(entranceX + 40, entranceY - 40));
+		
+		return undergroundDesertTempleEntrance;
+	}
+
+
+	private void addPyramid() {
+		final int pyramidX = (getBoundaries().left + 3) * Topography.CHUNK_SIZE;
+		final int pyramidY = max(
+			getSurfaceHeight().apply(184 + pyramidX) + 70,
+			getSurfaceHeight().apply(24 + pyramidX) + 70
+		);
+
+		getComponents().add(new DesertPyramid(
+			pyramidX,
+			pyramidY,
+			getStructureKey(),
+			YellowBrickTile.class,
+			YellowBrickTile.class
+		));
 	}
 
 

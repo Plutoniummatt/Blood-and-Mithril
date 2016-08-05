@@ -11,13 +11,21 @@ import bloodandmithril.core.Copyright;
 public class HorizontalInterface implements Interface {
 
 	public final int tileX, tileY, width;
+	private final StemmingDirection stemmingDirection;
 	
 	/**
 	 * Constructor
 	 */
-	public HorizontalInterface(int tileX, int tileY, int width) {
+	public HorizontalInterface(int tileX, int tileY, int width, StemmingDirection stemmingDirection) {
 		this.tileX = tileX;
 		this.tileY = tileY;
 		this.width = width;
+		this.stemmingDirection = stemmingDirection;
+	}
+
+	
+	@Override
+	public StemmingDirection getStemmingDirection() {
+		return stemmingDirection;
 	}
 }

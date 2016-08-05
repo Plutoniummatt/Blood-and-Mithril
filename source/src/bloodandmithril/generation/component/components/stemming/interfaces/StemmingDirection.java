@@ -4,15 +4,11 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.component.Component;
 
 /**
- * An interface between stemmed {@link Component}s
+ * Specifies a direction an {@link Interface} should generate {@link Component}s in
  * 
  * @author Matt
  */
 @Copyright("Matthew Peck 2016")
-public interface Interface {
-	
-	/**
-	 * @return the {@link StemmingDirection} of this {@link Interface}
-	 */
-	public StemmingDirection getStemmingDirection();
+public enum StemmingDirection {
+	UP, DOWN, LEFT, RIGHT
 }
