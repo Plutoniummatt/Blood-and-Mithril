@@ -31,6 +31,7 @@ public class FluidUpdater {
 	private static final float SPEW_RADIUS = 3f;
 	
 	@Inject private FluidStripPopulator fluidStripPopulator;
+	@Inject FluidParticlePopulator fluidParticlePopulator;
 	
 	/**
 	 * Updates a {@link FluidStrip}
@@ -131,14 +132,9 @@ public class FluidUpdater {
 	private void spreFromRightOfStrip(World world, FluidStrip strip) {
 		try {
 			if(world.getTopography().getTile(strip.worldTileX + strip.width + 1, strip.worldTileY, true).isPassable()) {
-				final Vector2 rotate = new Vector2(Util.getRandom().nextFloat() * 200f, 0f).rotate(Util.getRandom().nextFloat() * 360f).add(200f,0f);
-				FluidParticle particle = new FluidParticle(
-					new Vector2(Topography.convertToWorldCoord(strip.worldTileX + strip.width, true) + 1f, Topography.convertToWorldCoord(strip.worldTileY, true) + 0.5f),
-					rotate,
-					SPEW_RADIUS,
-					world.getWorldId()
-				);
-				world.fluids().addFluidParticle(particle);
+				final Vector2 position = new Vector2(Topography.convertToWorldCoord(strip.worldTileX + strip.width, true) + 1f, Topography.convertToWorldCoord(strip.worldTileY, true) + 0.5f);
+				final Vector2 velocity = new Vector2(Util.getRandom().nextFloat() * 200f, 0f).rotate(Util.getRandom().nextFloat() * 360f).add(200f,0f);
+				fluidParticlePopulator.createFluidParticle(position, velocity, SPEW_RADIUS, world);
 				strip.addVolume(-PARTICLE_VOLUME);
 			}
 		} catch (NoTileFoundException e) {}
@@ -148,14 +144,9 @@ public class FluidUpdater {
 	private void spewFromLeftOfStrip(World world, FluidStrip strip) {
 		try {
 			if(world.getTopography().getTile(strip.worldTileX - 1, strip.worldTileY, true).isPassable()) {
-				final Vector2 rotate = new Vector2(Util.getRandom().nextFloat() * 200f, 0f).rotate(Util.getRandom().nextFloat() * 360f).add(-200f,0f);
-				FluidParticle particle = new FluidParticle(
-					new Vector2(Topography.convertToWorldCoord(strip.worldTileX, true) - 1f, Topography.convertToWorldCoord(strip.worldTileY, true) + 0.5f),
-					rotate,
-					SPEW_RADIUS,
-					world.getWorldId()
-				);
-				world.fluids().addFluidParticle(particle);
+				final Vector2 position = new Vector2(Topography.convertToWorldCoord(strip.worldTileX, true) - 1f, Topography.convertToWorldCoord(strip.worldTileY, true) + 0.5f);
+				final Vector2 velocity = new Vector2(Util.getRandom().nextFloat() * 200f, 0f).rotate(Util.getRandom().nextFloat() * 360f).add(-200f,0f);
+				fluidParticlePopulator.createFluidParticle(position, velocity, SPEW_RADIUS, world);
 				strip.addVolume(-PARTICLE_VOLUME);
 			}
 		} catch (NoTileFoundException e) {}
@@ -167,34 +158,22 @@ public class FluidUpdater {
 			Optional<FluidStrip> tempStrip = world.fluids().getFluid(x, strip.worldTileY - 1);
 			if (tempStrip.isPresent()) {
 				if(tempStrip.get().getVolume() < tempStrip.get().width) {
-					
 					//particles for each strip tile
 					for(int i = tempStrip.get().worldTileX; i < tempStrip.get().worldTileX + tempStrip.get().width; i++) {
-						final Vector2 rotate = new Vector2(Util.getRandom().nextFloat() * 200f, 0f).rotate(Util.getRandom().nextFloat() * 360f).add(0f,-200f);
-						FluidParticle particle = new FluidParticle(
-							new Vector2(i, strip.worldTileY - 1),
-							rotate,
-							SPEW_RADIUS,
-							world.getWorldId()
-						);
-						world.fluids().addFluidParticle(particle);
+						final Vector2 position = new Vector2(i, strip.worldTileY - 1);
+						final Vector2 velocity = new Vector2(Util.getRandom().nextFloat() * 200f, 0f).rotate(Util.getRandom().nextFloat() * 360f).add(0f,-200f);
+						fluidParticlePopulator.createFluidParticle(position, velocity, SPEW_RADIUS, world);
 						strip.addVolume(-PARTICLE_VOLUME);
 					}
 				}
-				
 				x += tempStrip.get().width - 1;
 			} else {
 				try {
 					if(world.getTopography().getTile(x, strip.worldTileY - 1, true).isPassable()) {
 						//particles below this tile
-						final Vector2 rotate = new Vector2(Util.getRandom().nextFloat() * 200f, 0f).rotate(Util.getRandom().nextFloat() * 360f).add(0f,-200f);
-						FluidParticle particle = new FluidParticle(
-							new Vector2(Topography.convertToWorldCoord(x, true)+0.5f, Topography.convertToWorldCoord(strip.worldTileY, true)-1),
-							rotate,
-							SPEW_RADIUS,
-							world.getWorldId()
-						);
-						world.fluids().addFluidParticle(particle);
+						final Vector2 position = new Vector2(Topography.convertToWorldCoord(x, true)+0.5f, Topography.convertToWorldCoord(strip.worldTileY, true)-1);
+						final Vector2 velocity = new Vector2(Util.getRandom().nextFloat() * 200f, 0f).rotate(Util.getRandom().nextFloat() * 360f).add(0f,-200f);
+						fluidParticlePopulator.createFluidParticle(position, velocity, SPEW_RADIUS, world);
 						strip.addVolume(-PARTICLE_VOLUME);
 					}
 				} catch (NoTileFoundException e) {}
@@ -216,7 +195,6 @@ public class FluidUpdater {
 				x += tempStrip.get().width - 1;
 			}
 		}
-		
 		if (!stripsBelow.isEmpty()) {
 			for (Integer key : stripsBelow) {
 				FluidStrip tempStrip = world.fluids().getFluidStrip(key);
