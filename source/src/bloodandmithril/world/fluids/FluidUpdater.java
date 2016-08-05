@@ -31,7 +31,7 @@ public class FluidUpdater {
 	private static final float SPEW_RADIUS = 3f;
 	
 	@Inject private FluidStripPopulator fluidStripPopulator;
-	@Inject FluidParticlePopulator fluidParticlePopulator;
+	@Inject private FluidParticlePopulator fluidParticlePopulator;
 	
 	/**
 	 * Updates a {@link FluidStrip}
