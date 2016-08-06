@@ -9,7 +9,8 @@ import bloodandmithril.core.Copyright;
  */
 @Copyright("Matthew Peck 2016")
 public class VerticalInterface implements Interface {
-
+	private static final long serialVersionUID = 1685616961384556030L;
+	
 	public final int tileX, tileY, height;
 	private final StemmingDirection direction;
 	

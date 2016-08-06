@@ -64,7 +64,7 @@ public class ImprovedIndividualKinematicsUpdater implements IndividualKinematics
 		Tile surface = world.getTopography().getSurfaceTile(position.x, position.y + surfaceReferenceOffset, excludePassable);
 		Vector2 surfaceLocation = world.getTopography().getLowestEmptyTileOrPlatformTileWorldCoordsExludeSpecified(position.x, position.y + surfaceReferenceOffset, true, excludePassable);
 		final Vector2 surfaceVector = deriveSurfaceVector(position, surface.getCornerType());
-		terrainDetection(individual, velocity, position, surface, surfaceVector, surfaceLocation);
+		boolean terrainDetected = terrainDetection(individual, velocity, position, surface, surfaceVector, surfaceLocation);
 		updateTileDirectlyUnder(individual, world);
 
 		surface = world.getTopography().getSurfaceTile(position.x, position.y + surfaceReferenceOffset, excludePassable);
@@ -75,7 +75,7 @@ public class ImprovedIndividualKinematicsUpdater implements IndividualKinematics
 		updateTileDirectlyUnder(individual, world);
  		gravitation(delta, world, velocity, acceleration);
 
-		if (!isJumping(individual)) {
+		if (!isJumping(individual) && terrainDetected) {
 			friction(individual);
 		}
 	}
@@ -206,14 +206,14 @@ public class ImprovedIndividualKinematicsUpdater implements IndividualKinematics
 
 		switch (surface.getCornerType()) {
 		case SLOPE_UP:
-			if (x < -1) {
+			if (position.x <= 0) {
 				triangleTileOffset = - (int) position.x % TILE_SIZE;
 			} else {
 				triangleTileOffset = TILE_SIZE - (int) position.x % TILE_SIZE;
 			}
 			break;
 		case SLOPE_DOWN:
-			if (x < -1) {
+			if (position.x <= 0) {
 				triangleTileOffset = TILE_SIZE + (int) position.x % TILE_SIZE;
 			} else {
 				triangleTileOffset = (int) position.x % TILE_SIZE;
@@ -275,7 +275,7 @@ public class ImprovedIndividualKinematicsUpdater implements IndividualKinematics
 			
 			position.x = position.x -= velocity.x * delta * 10;
 			position.y = position.y -= velocity.y * delta * 10;
-			velocity.x = -previousVel.x * 0.4f;
+ 			velocity.x = -previousVel.x * 0.3f;
 			velocity.x = velocity.x < 0 ? min(-60f, velocity.x) : max(60f, velocity.x);
 			velocity.y = 0;
 

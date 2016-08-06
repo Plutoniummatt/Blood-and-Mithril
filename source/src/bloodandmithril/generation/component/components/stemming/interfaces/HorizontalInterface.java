@@ -9,7 +9,8 @@ import bloodandmithril.core.Copyright;
  */
 @Copyright("Matthew Peck 2016")
 public class HorizontalInterface implements Interface {
-
+	private static final long serialVersionUID = 6387432191883112054L;
+	
 	public final int tileX, tileY, width;
 	private final StemmingDirection stemmingDirection;
 	
