@@ -695,11 +695,7 @@ public class UserInterface {
 				Iterables.transform(
 					gameClientStateTracker.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(FluidStrip.class, getMouseWorldX(), getMouseWorldY()),
 					id -> {
-						if(gameClientStateTracker.getActiveWorld().fluids().getFluidStrip(id).isPresent()) {
-							return gameClientStateTracker.getActiveWorld().fluids().getFluidStrip(id).get();
-						} else {
-							return null;
-						}
+						return gameClientStateTracker.getActiveWorld().fluids().getFluidStrip(id).get();
 					}
 				)
 			)

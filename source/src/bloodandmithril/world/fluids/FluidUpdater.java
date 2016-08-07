@@ -26,8 +26,7 @@ import bloodandmithril.world.topography.tile.Tile;
 @Singleton
 @Copyright("Matthew Peck 2016")
 public class FluidUpdater {
-	private static final float PARTICLE_VOLUME = 0.1f;
-	private static final float SPEW_RADIUS = 3f;
+	private static final float MAX_PARTICLE_VOLUME = 0.1f;
 	
 	@Inject private FluidStripPopulator fluidStripPopulator;
 	@Inject private FluidParticlePopulator fluidParticlePopulator;
@@ -94,12 +93,12 @@ public class FluidUpdater {
 			}
 		} catch (NoTileFoundException e) {}
 		
-		transferFromStripToStripsBelow(world, strip, delta);
+		transferFromStripToStripsBelow(world, strip);
 		
 		if(strip.getVolume() > 0) {
 			spewFromBottomOfStrip(world, strip);
 			spewFromLeftOfStrip(world, strip);
-			spreFromRightOfStrip(world, strip);
+			spewFromRightOfStrip(world, strip);
 		}
 		
 		transferFromStripToStripAbove(world, strip);
@@ -147,7 +146,7 @@ public class FluidUpdater {
 			Optional<FluidStrip> stripOn = world.fluids().getFluidStrip(Topography.convertToWorldTileCoord(particle.position.x), Topography.convertToWorldTileCoord(particle.position.y));
 			if(stripOn.isPresent()) {
 				if((particle.position.y < convertToWorldCoord(stripOn.get().worldTileY, true) + TILE_SIZE * stripOn.get().getVolume() / stripOn.get().width) || stripOn.get().getVolume() == 0f) {
-					stripOn.get().addVolume(PARTICLE_VOLUME);
+					stripOn.get().addVolume(particle.getVolume());
 					world.fluids().removeFluidParticle(particle.id);
 				}
 			}
@@ -187,13 +186,15 @@ public class FluidUpdater {
 	}
 
 	
-	private void spreFromRightOfStrip(World world, FluidStrip strip) {
+	private void spewFromRightOfStrip(World world, FluidStrip strip) {
 		try {
 			if(world.getTopography().getTile(strip.worldTileX + strip.width, strip.worldTileY, true).isPassable()) {
 				final Vector2 position = new Vector2(Topography.convertToWorldCoord(strip.worldTileX + strip.width, true) + 1f, Topography.convertToWorldCoord(strip.worldTileY, true) + 8f);
 				final Vector2 velocity = new Vector2(Util.getRandom().nextFloat() * 200f, 0f).rotate(Util.getRandom().nextFloat() * 360f).add(200f,0f);
-				fluidParticlePopulator.createFluidParticle(position, velocity, SPEW_RADIUS, world);
-				strip.addVolume(-PARTICLE_VOLUME);
+				Optional<FluidStrip> rightStrip = world.fluids().getFluidStrip(strip.worldTileX + strip.width, strip.worldTileY);
+				if(!rightStrip.isPresent() || strip.getVolume() / strip.width > rightStrip.get().getVolume() / rightStrip.get().width) {
+					fluidParticlePopulator.createFluidParticle(position, velocity, -strip.addVolume(-MAX_PARTICLE_VOLUME), world);
+				}
 			}
 		} catch (NoTileFoundException e) {}
 	}
@@ -204,8 +205,10 @@ public class FluidUpdater {
 			if(world.getTopography().getTile(strip.worldTileX - 1, strip.worldTileY, true).isPassable()) {
 				final Vector2 position = new Vector2(Topography.convertToWorldCoord(strip.worldTileX, true) - 1f, Topography.convertToWorldCoord(strip.worldTileY, true) + 8f);
 				final Vector2 velocity = new Vector2(Util.getRandom().nextFloat() * 200f, 0f).rotate(Util.getRandom().nextFloat() * 360f).add(-200f,0f);
-				fluidParticlePopulator.createFluidParticle(position, velocity, SPEW_RADIUS, world);
-				strip.addVolume(-PARTICLE_VOLUME);
+				Optional<FluidStrip> leftStrip = world.fluids().getFluidStrip(strip.worldTileX - 1, strip.worldTileY);
+				if(!leftStrip.isPresent() || strip.getVolume() / strip.width > leftStrip.get().getVolume() / leftStrip.get().width) {
+					fluidParticlePopulator.createFluidParticle(position, velocity, -strip.addVolume(-MAX_PARTICLE_VOLUME), world);
+				}
 			}
 		} catch (NoTileFoundException e) {}
 	}
@@ -220,19 +223,17 @@ public class FluidUpdater {
 					for(int i = tempStrip.get().worldTileX; i < tempStrip.get().worldTileX + tempStrip.get().width; i++) {
 						final Vector2 position = new Vector2(i, strip.worldTileY - 1);
 						final Vector2 velocity = new Vector2(Util.getRandom().nextFloat() * 200f, 0f).rotate(Util.getRandom().nextFloat() * 360f).add(0f,-200f);
-						fluidParticlePopulator.createFluidParticle(position, velocity, SPEW_RADIUS, world);
-						strip.addVolume(-PARTICLE_VOLUME);
+						fluidParticlePopulator.createFluidParticle(position, velocity, -strip.addVolume(-MAX_PARTICLE_VOLUME), world);
 					}
 				}
-				x += tempStrip.get().width - 1;
+				x += tempStrip.get().width;
 			} else {
 				try {
 					if(world.getTopography().getTile(x, strip.worldTileY - 1, true).isPassable()) {
 						//particles below this tile
 						final Vector2 position = new Vector2(Topography.convertToWorldCoord(x, true)+0.5f, Topography.convertToWorldCoord(strip.worldTileY, true)-1);
 						final Vector2 velocity = new Vector2(Util.getRandom().nextFloat() * 200f, 0f).rotate(Util.getRandom().nextFloat() * 360f).add(0f,-200f);
-						fluidParticlePopulator.createFluidParticle(position, velocity, SPEW_RADIUS, world);
-						strip.addVolume(-PARTICLE_VOLUME);
+						fluidParticlePopulator.createFluidParticle(position, velocity, -strip.addVolume(-MAX_PARTICLE_VOLUME), world);
 					}
 				} catch (NoTileFoundException e) {}
 			}
@@ -240,27 +241,23 @@ public class FluidUpdater {
 	}
 
 	
-	private void transferFromStripToStripsBelow(World world, FluidStrip strip, float delta) {
+	private void transferFromStripToStripsBelow(World world, FluidStrip strip) {
 		Collection<Integer> stripsBelow = Sets.newConcurrentHashSet();
 		for (int x = strip.worldTileX; x < strip.worldTileX + strip.width; x++) { 
 			Optional<FluidStrip> tempStrip = world.fluids().getFluidStrip(x, strip.worldTileY-1);
 			if (
 				tempStrip.isPresent() && 
-				!stripsBelow.contains(tempStrip.get().id) && 
+				!stripsBelow.contains(tempStrip.get().id) &&
 				tempStrip.get().getVolume() < tempStrip.get().width
 			) {
 				stripsBelow.add(tempStrip.get().id);
-				x += tempStrip.get().width - 1;
+				x += tempStrip.get().width;
 			}
 		}
 		if (!stripsBelow.isEmpty()) {
-			if(strip.getVolume() == 0f) {
-				world.fluids().removeFluidStrip(strip.id);
-				return;
-			}
 			for (Integer key : stripsBelow) {
 				FluidStrip tempStrip = world.fluids().getFluidStrip(key).get();
-				float transferVolume = Math.min(tempStrip.width - tempStrip.getVolume(), tempStrip.width*delta);
+				float transferVolume = Math.min(tempStrip.width - tempStrip.getVolume(), tempStrip.width*MAX_PARTICLE_VOLUME);
 				tempStrip.addVolume(-strip.addVolume(-transferVolume));
 			}
 		}

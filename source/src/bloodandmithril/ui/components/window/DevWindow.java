@@ -70,7 +70,7 @@ import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuIte
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
-import bloodandmithril.world.fluids.FluidParticle;
+import bloodandmithril.world.fluids.FluidParticlePopulator;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickTile;
@@ -90,6 +90,7 @@ public class DevWindow extends Window {
 	@Inject private GameClientStateTracker gameClientStateTracker;
 	@Inject private AddIndividualService addIndividualService;
 	@Inject private UserInterface userInterface;
+	@Inject private FluidParticlePopulator fluidParticlePopulator;
 
 	/**
 	 * Constructor
@@ -160,15 +161,13 @@ public class DevWindow extends Window {
 		
 		
 		if (isKeyPressed(Keys.K)) {
-			for (int i = 0; i < 1; i++) {
+			for (int i = 0; i < 20; i++) {
 				final Vector2 rotate = new Vector2(Util.getRandom().nextFloat() * 200f, 0f).rotate(Util.getRandom().nextFloat() * 360f);
-				FluidParticle particle = new FluidParticle(
+				fluidParticlePopulator.createFluidParticle(
 					getMouseWorldCoords(),
 					rotate,
-					3,
-					gameClientStateTracker.getActiveWorld().getWorldId()
-				);
-				gameClientStateTracker.getActiveWorld().fluids().addFluidParticle(particle);
+					0.5f,
+					gameClientStateTracker.getActiveWorld());
 			}
 		}
 	}

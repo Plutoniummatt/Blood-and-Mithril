@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.persistence.ParameterPersistenceService;
+import bloodandmithril.world.topography.Topography;
 
 /**
  * Represents a fluid particle
@@ -21,15 +22,18 @@ public class FluidParticle implements Serializable {
 	public final int worldId;
 	public final long id;
 	
+	private float volume;
 	private float radius;
+
 	
 	/**
 	 * Constructor
 	 */
-	public FluidParticle(Vector2 position, Vector2 velocity, float radius, int worldId) {
+	public FluidParticle(Vector2 position, Vector2 velocity, float volume, int worldId) {
 		this.position = position;
 		this.velocity = velocity;
-		this.setRadius(radius);
+		this.setVolume(volume);
+		this.setRadius((float)(Math.sqrt(Math.pow(Topography.TILE_SIZE,2) * volume / Math.PI)));
 		this.worldId = worldId;
 		this.id = Wiring.injector().getInstance(ParameterPersistenceService.class).getParameters().getNextFluidParticleId();
 	}
@@ -42,5 +46,15 @@ public class FluidParticle implements Serializable {
 	
 	public void setRadius(float radius) {
 		this.radius = radius;
+	}
+
+
+	public float getVolume() {
+		return volume;
+	}
+
+
+	public void setVolume(float volume) {
+		this.volume = volume;
 	}
 }

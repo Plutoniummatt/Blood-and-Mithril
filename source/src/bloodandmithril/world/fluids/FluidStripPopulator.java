@@ -97,7 +97,7 @@ public class FluidStripPopulator {
 	
 					if (stripBelow.isPresent()) {
 						int restrictedLeft = Math.max(left + 1, stripBelow.get().worldTileX);
-						int restrictedRight = Math.min(right - 1, stripBelow.get().worldTileX + stripBelow.get().width);
+						int restrictedRight = Math.min(right, stripBelow.get().worldTileX + stripBelow.get().width);
 						FluidStrip strip = new FluidStrip(restrictedLeft, tileY, restrictedRight - restrictedLeft, volume, world.getWorldId());
 						world.fluids().addFluidStrip(strip);
 						return Optional.of(strip);
