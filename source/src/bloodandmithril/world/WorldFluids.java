@@ -37,8 +37,12 @@ public class WorldFluids implements Serializable {
 	/**
 	 * @return the {@link FluidStrip} with the given id
 	 */
-	public final FluidStrip getFluidStrip(int id) {
-		return fluidStrips.get(id);
+	public final Optional<FluidStrip> getFluidStrip(int id) {
+		if(fluidStrips.get(id) == null) {
+			return Optional.absent();
+		} else {
+			return Optional.of(fluidStrips.get(id));
+		}
 	}
 	
 	
@@ -48,7 +52,7 @@ public class WorldFluids implements Serializable {
 	 * 
 	 * @return The strip which occupies this tile
 	 */
-	public final Optional<FluidStrip> getFluid(int worldTileX, int worldTileY) {
+	public final Optional<FluidStrip> getFluidStrip(int worldTileX, int worldTileY) {
 		for (Integer stripKey : Domain.getWorld(worldId).getPositionalIndexMap().getWithTileCoords(worldTileX, worldTileY).getAllEntitiesForType(FluidStrip.class)) {
 			if (fluidStrips.get(stripKey).occupies(worldTileX, worldTileY)) {
 				return Optional.of(fluidStrips.get(stripKey));
@@ -89,11 +93,12 @@ public class WorldFluids implements Serializable {
 	/**
 	 * @param key of the strip to remove
 	 */
-	public final void removeFluidStrip(int key) {
-		FluidStrip removed = fluidStrips.remove(key);
-		for (int x = convertToChunkCoord(removed.worldTileX); x <= convertToChunkCoord(removed.worldTileX + removed.width); x++) {
-			Domain.getWorld(removed.worldId).getPositionalIndexMap().getWithChunkCoords(x, convertToChunkCoord(removed.worldTileY)).addFluidStrip(removed.id);
+	public final synchronized void removeFluidStrip(int key) {
+		FluidStrip toRemove = fluidStrips.get(key);
+		for (int x = convertToChunkCoord(toRemove.worldTileX); x <= convertToChunkCoord(toRemove.worldTileX + toRemove.width); x++) {
+			Domain.getWorld(toRemove.worldId).getPositionalIndexMap().getWithChunkCoords(x, convertToChunkCoord(toRemove.worldTileY)).removeFluidStrip(toRemove.id);
 		}
+		fluidStrips.remove(key);
 	}
 
 	

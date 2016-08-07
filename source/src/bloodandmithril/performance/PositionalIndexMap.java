@@ -187,7 +187,7 @@ public class PositionalIndexMap implements Serializable {
 		} else if (clazz.equals(Item.class)) {
 			function = id -> (T) Domain.getWorld(worldId).items().getItem(id);
 		} else if (clazz.equals(FluidStrip.class)) {
-			function = id -> (T) Domain.getWorld(worldId).fluids().getFluidStrip(id);
+			function = id -> (T) Domain.getWorld(worldId).fluids().getFluidStrip(id).get();
 		} else {
 			throw new RuntimeException("Unrecongized class : " + clazz.getSimpleName());
 		}

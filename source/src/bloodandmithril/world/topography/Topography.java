@@ -17,6 +17,7 @@ import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.datastructure.ConcurrentDualKeyHashMap;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
+import bloodandmithril.world.fluids.FluidStripPopulator;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 
@@ -52,6 +53,8 @@ public final class Topography {
 
 	/** The current chunk coordinates that have already been requested for generation */
 	private final ConcurrentDualKeyHashMap<Integer, Integer, Boolean> requestedForGeneration = new ConcurrentDualKeyHashMap<>();
+	
+	private final FluidStripPopulator fluidStripPopulator = new FluidStripPopulator();
 
 	/**
 	 * @param generator - The type of generator to use
@@ -207,6 +210,7 @@ public final class Topography {
 	 *
 	 * @param worldX
 	 * @param worldY
+	 * @return The tile which was deleted.
 	 */
 	public synchronized final Tile deleteTile(float worldX, float worldY, boolean foreGround, boolean forceRemove) {
 		int chunkX = convertToChunkCoord(worldX);
@@ -227,6 +231,14 @@ public final class Topography {
 			Logger.generalDebug("Deleting tile at (" + convertToWorldTileCoord(chunkX, tileX) + ", " + convertToWorldTileCoord(chunkY, tileY) + "), World coord: (" + worldX + ", " + worldY + ")", LogLevel.TRACE);
 			if (!forceRemove) {
 				removeProps(worldX, worldY);
+			}
+			if(
+				Domain.getWorld(worldId).fluids().getFluidStrip(convertToWorldTileCoord(worldX) - 1, convertToWorldTileCoord(worldY)).isPresent() ||
+				Domain.getWorld(worldId).fluids().getFluidStrip(convertToWorldTileCoord(worldX) + 1, convertToWorldTileCoord(worldY)).isPresent()
+			) {
+				fluidStripPopulator.createFluidStrip(Domain.getWorld(worldId), convertToWorldTileCoord(worldX), convertToWorldTileCoord(worldY), 0f);
+			} else {
+				fluidStripPopulator.createFluidStripIfBase(Domain.getWorld(worldId), convertToWorldTileCoord(worldX), convertToWorldTileCoord(worldY), 0f);
 			}
 			return tile;
 

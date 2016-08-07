@@ -166,7 +166,7 @@ public class ChunkProvider {
 	 * Create fluid strips at any valid "base" layers where fluids can validly exist
 	 */
 	private void createFluidStrips(World world, int chunkX, int chunkY) {
-		for(int x = 0; x < Topography.CHUNK_SIZE; x++) {
+		for(int x = -1; x <= Topography.CHUNK_SIZE; x++) {
 			for(int y = 0; y < Topography.CHUNK_SIZE; y++) {
 				try {
 					fluidStripPopulator.createFluidStripIfBase(
@@ -175,9 +175,7 @@ public class ChunkProvider {
 						Topography.convertToWorldTileCoord(chunkY, y), 
 						0.8f
 					);
-				} catch (NoTileFoundException e) {
-					throw new RuntimeException(e);
-				}
+				} catch (NoTileFoundException e) {}
 			}
 		}
 	}

@@ -218,7 +218,9 @@ public class Threading {
 					World activeWorld = gameClientStateTracker.getActiveWorld();
 					if (!gameClientStateTracker.isPaused() && !gameSaver.isSaving() && activeWorld != null && !gameClientStateTracker.isLoading()) {
 						for (FluidStrip strip : activeWorld.fluids().getAllFluidStrips()) {
-							fluidUpdater.updateStrip(activeWorld, strip, 1f/60f);
+							if(activeWorld.fluids().getFluidStrip(strip.id).isPresent()) {
+								fluidUpdater.updateStrip(activeWorld, strip, 1f/60f);
+							}
 						}
 						
 						for (FluidParticle particle : activeWorld.fluids().getAllFluidParticles()) {

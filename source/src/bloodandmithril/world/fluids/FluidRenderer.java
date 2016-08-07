@@ -34,14 +34,18 @@ public class FluidRenderer {
 		.distinct()
 		.map(id -> world.fluids().getFluidStrip(id))
 		.forEach(strip -> {
-			try {
-				shapeRenderer.rect(
-					(world.getTopography().getTile(strip.worldTileX - 1, strip.worldTileY, true).isPassable() ? strip.worldTileX : (strip.worldTileX - 1)) * TILE_SIZE,
-					strip.worldTileY * TILE_SIZE,
-					(world.getTopography().getTile(strip.worldTileX + strip.width + 1, strip.worldTileY, true).isPassable() ? (strip.width + 1) : (strip.width + 2)) * TILE_SIZE,
-					strip.getVolume() * TILE_SIZE / strip.width
-				);
-			} catch (NoTileFoundException e) {}
+			if(strip.isPresent()) {
+				try {
+					shapeRenderer.rect(
+						(world.getTopography().getTile(strip.get().worldTileX - 1, strip.get().worldTileY, true).isPassable() ? strip.get().worldTileX : (strip.get().worldTileX - 1)) * TILE_SIZE,
+						strip.get().worldTileY * TILE_SIZE,
+						((world.getTopography().getTile(strip.get().worldTileX + strip.get().width, strip.get().worldTileY, true).isPassable() ? (strip.get().width) : (strip.get().width + 1)) +
+						(world.getTopography().getTile(strip.get().worldTileX - 1, strip.get().worldTileY, true).isPassable() ? 0 : 1))
+						* TILE_SIZE,
+						Math.min(strip.get().getVolume() / strip.get().width, 1f) * TILE_SIZE 
+					);
+				} catch (NoTileFoundException e) {}
+			}
 		});
 		
 		world.fluids().getAllFluidParticles().stream().forEach(particle -> {
