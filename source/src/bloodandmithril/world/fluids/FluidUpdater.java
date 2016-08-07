@@ -163,14 +163,14 @@ public class FluidUpdater {
 				if (tempStrip.isPresent()) {
 					if (!stripsAbove.contains(tempStrip.get().id)) {
 						stripsAbove.add(tempStrip.get().id);
-						x += tempStrip.get().width;
+						x = tempStrip.get().worldTileX + tempStrip.get().width;
 					}
 				//if not, try to make one
 				} else {
 					Optional<FluidStrip> addedStrip = fluidStripPopulator.createFluidStrip(world, x, strip.worldTileY + 1, 0f);
 					if(addedStrip.isPresent()) {
 						stripsAbove.add(addedStrip.get().id);
-						x += addedStrip.get().width;
+						x = addedStrip.get().worldTileX + addedStrip.get().width;
 					}
 				}
 			}
@@ -221,17 +221,17 @@ public class FluidUpdater {
 				if(tempStrip.get().getVolume() < tempStrip.get().width) {
 					//particles for each strip tile
 					for(int i = tempStrip.get().worldTileX; i < tempStrip.get().worldTileX + tempStrip.get().width; i++) {
-						final Vector2 position = new Vector2(i, strip.worldTileY - 1);
+						final Vector2 position = new Vector2(i + Topography.TILE_SIZE / 2f, strip.worldTileY - 1);
 						final Vector2 velocity = new Vector2(Util.getRandom().nextFloat() * 200f, 0f).rotate(Util.getRandom().nextFloat() * 360f).add(0f,-200f);
 						fluidParticlePopulator.createFluidParticle(position, velocity, -strip.addVolume(-MAX_PARTICLE_VOLUME), world);
 					}
 				}
-				x += tempStrip.get().width;
+				x = tempStrip.get().worldTileX + tempStrip.get().width;
 			} else {
 				try {
 					if(world.getTopography().getTile(x, strip.worldTileY - 1, true).isPassable()) {
 						//particles below this tile
-						final Vector2 position = new Vector2(Topography.convertToWorldCoord(x, true)+0.5f, Topography.convertToWorldCoord(strip.worldTileY, true)-1);
+						final Vector2 position = new Vector2(Topography.convertToWorldCoord(x, true) + Topography.TILE_SIZE / 2f, Topography.convertToWorldCoord(strip.worldTileY, true)-1);
 						final Vector2 velocity = new Vector2(Util.getRandom().nextFloat() * 200f, 0f).rotate(Util.getRandom().nextFloat() * 360f).add(0f,-200f);
 						fluidParticlePopulator.createFluidParticle(position, velocity, -strip.addVolume(-MAX_PARTICLE_VOLUME), world);
 					}
@@ -251,13 +251,13 @@ public class FluidUpdater {
 				tempStrip.get().getVolume() < tempStrip.get().width
 			) {
 				stripsBelow.add(tempStrip.get().id);
-				x += tempStrip.get().width;
+				x = tempStrip.get().worldTileX + tempStrip.get().width;
 			}
 		}
 		if (!stripsBelow.isEmpty()) {
 			for (Integer key : stripsBelow) {
 				FluidStrip tempStrip = world.fluids().getFluidStrip(key).get();
-				float transferVolume = Math.min(tempStrip.width - tempStrip.getVolume(), tempStrip.width*MAX_PARTICLE_VOLUME);
+				float transferVolume = tempStrip.width - tempStrip.getVolume();
 				tempStrip.addVolume(-strip.addVolume(-transferVolume));
 			}
 		}

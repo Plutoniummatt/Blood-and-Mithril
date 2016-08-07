@@ -199,7 +199,7 @@ public class Threading {
 		updateThread.setName("Update thread");
 		updateThread.start();
 	}
-	
+
 	
 	private void setupFluidProcessingThread() {
 		fluidsProcessingThread = new Thread(() -> {
@@ -217,12 +217,15 @@ public class Threading {
 					
 					World activeWorld = gameClientStateTracker.getActiveWorld();
 					if (!gameClientStateTracker.isPaused() && !gameSaver.isSaving() && activeWorld != null && !gameClientStateTracker.isLoading()) {
-						for (FluidStrip strip : activeWorld.fluids().getAllFluidStrips()) {
+						activeWorld.fluids().getAllFluidStrips()
+						.stream()
+						.distinct()
+						.sorted((FluidStrip strip1, FluidStrip strip2) -> Integer.compare(strip1.worldTileY, strip2.worldTileY))
+						.forEach(strip -> {
 							if(activeWorld.fluids().getFluidStrip(strip.id).isPresent()) {
 								fluidUpdater.updateStrip(activeWorld, strip, 1f/60f);
 							}
-						}
-						
+						});
 						for (FluidParticle particle : activeWorld.fluids().getAllFluidParticles()) {
 							fluidUpdater.updateParticle(activeWorld, particle, 1f/60f);
 						}
