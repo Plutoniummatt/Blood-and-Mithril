@@ -161,10 +161,8 @@ public class FluidUpdater {
 				Optional<FluidStrip> tempStrip = world.fluids().getFluidStrip(x, strip.worldTileY + 1);
 				//if there's a strip there already, use it
 				if (tempStrip.isPresent()) {
-					if (!stripsAbove.contains(tempStrip.get().id)) {
-						stripsAbove.add(tempStrip.get().id);
-						x = tempStrip.get().worldTileX + tempStrip.get().width;
-					}
+					stripsAbove.add(tempStrip.get().id);
+					x = tempStrip.get().worldTileX + tempStrip.get().width;
 				//if not, try to make one
 				} else {
 					Optional<FluidStrip> addedStrip = fluidStripPopulator.createFluidStrip(world, x, strip.worldTileY + 1, 0f);
@@ -193,7 +191,7 @@ public class FluidUpdater {
 				final Vector2 velocity = new Vector2(Util.getRandom().nextFloat() * 200f, 0f).rotate(Util.getRandom().nextFloat() * 360f).add(200f,0f);
 				Optional<FluidStrip> rightStrip = world.fluids().getFluidStrip(strip.worldTileX + strip.width, strip.worldTileY);
 				if(!rightStrip.isPresent() || strip.getVolume() / strip.width > rightStrip.get().getVolume() / rightStrip.get().width) {
-					fluidParticlePopulator.createFluidParticle(position, velocity, -strip.addVolume(-MAX_PARTICLE_VOLUME), world);
+					spewParticle(world, strip, position, velocity);
 				}
 			}
 		} catch (NoTileFoundException e) {}
@@ -207,18 +205,13 @@ public class FluidUpdater {
 				final Vector2 velocity = new Vector2(Util.getRandom().nextFloat() * 200f, 0f).rotate(Util.getRandom().nextFloat() * 360f).add(-200f,0f);
 				Optional<FluidStrip> leftStrip = world.fluids().getFluidStrip(strip.worldTileX - 1, strip.worldTileY);
 				if(!leftStrip.isPresent() || strip.getVolume() / strip.width > leftStrip.get().getVolume() / leftStrip.get().width) {
-					int particlesToSpew = (int)(strip.pressureCounter + getPressure(world, strip));
-					fluidParticlePopulator.createFluidParticle(position, velocity, -strip.addVolume(-MAX_PARTICLE_VOLUME), world);
+					spewParticle(world, strip, position, velocity);
 				}
 			}
 		} catch (NoTileFoundException e) {}
 	}
-	
-	private float getPressure(World world, FluidStrip strip) {
-		return 3 * strip.getVolume()/strip.width;
-	}
 
-	
+
 	private void spewFromBottomOfStrip(World world, FluidStrip strip) {
 		for (int x = strip.worldTileX; x < strip.worldTileX + strip.width; x++) { 
 			Optional<FluidStrip> tempStrip = world.fluids().getFluidStrip(x, strip.worldTileY - 1);
@@ -228,7 +221,7 @@ public class FluidUpdater {
 					for(int i = tempStrip.get().worldTileX; i < tempStrip.get().worldTileX + tempStrip.get().width; i++) {
 						final Vector2 position = new Vector2(i + Topography.TILE_SIZE / 2f, strip.worldTileY - 1);
 						final Vector2 velocity = new Vector2(Util.getRandom().nextFloat() * 200f, 0f).rotate(Util.getRandom().nextFloat() * 360f).add(0f,-200f);
-						fluidParticlePopulator.createFluidParticle(position, velocity, -strip.addVolume(-MAX_PARTICLE_VOLUME), world);
+						spewParticle(world, strip, position, velocity);
 					}
 				}
 				x = tempStrip.get().worldTileX + tempStrip.get().width;
@@ -238,7 +231,7 @@ public class FluidUpdater {
 						//particles below this tile
 						final Vector2 position = new Vector2(Topography.convertToWorldCoord(x, true) + Topography.TILE_SIZE / 2f, Topography.convertToWorldCoord(strip.worldTileY, true)-1);
 						final Vector2 velocity = new Vector2(Util.getRandom().nextFloat() * 200f, 0f).rotate(Util.getRandom().nextFloat() * 360f).add(0f,-200f);
-						fluidParticlePopulator.createFluidParticle(position, velocity, -strip.addVolume(-MAX_PARTICLE_VOLUME), world);
+						spewParticle(world, strip, position, velocity);
 					}
 				} catch (NoTileFoundException e) {}
 			}
@@ -266,5 +259,79 @@ public class FluidUpdater {
 				tempStrip.addVolume(-strip.addVolume(-transferVolume));
 			}
 		}
+	}
+
+	
+	/**
+	 * @param world
+	 * @param strip
+	 * @param position
+	 * @param velocity
+	 * 
+	 * Spews some particles according to the pressure of the strip.
+	 */
+	private void spewParticle(World world, FluidStrip strip, final Vector2 position, final Vector2 velocity) {
+		int particlesToSpew = (int)(strip.pressureCounter + getPressure(world, strip));
+		strip.pressureCounter = (strip.pressureCounter + getPressure(world, strip))%1;
+		for(int p = particlesToSpew; p > 0; p--) {
+			fluidParticlePopulator.createFluidParticle(position, velocity, -strip.addVolume(-MAX_PARTICLE_VOLUME), world);
+		}
+	}
+	
+	
+	/**
+	 * @param world
+	 * @param strip
+	 * @return The number of particles to spew.
+	 */
+	private float getPressure(World world, FluidStrip strip) {
+		return getDepth(world, strip) * 3; //max 3 per tile depth
+	}
+	
+	
+	/**
+	 * @param world
+	 * @param strip
+	 * @return the depth of the strips above the given strip at the deepest level.
+	 */
+	private float getDepth(World world, FluidStrip strip) {
+		int count = -1; // because we count the one we're on
+		float extra = 0f;
+		Collection<FluidStrip> currentStrips = Sets.newConcurrentHashSet();
+		currentStrips.add(strip);
+		while(!currentStrips.isEmpty()) {
+			count++;
+			Collection<FluidStrip> nextStrips = Sets.newConcurrentHashSet();
+			for(FluidStrip currentStrip : currentStrips) {
+				nextStrips.addAll(getStripsAbove(world, currentStrip)); // can have duplicates, this doesn't matter
+			}
+			if(nextStrips.isEmpty()) {
+				for(FluidStrip nextStrip : currentStrips) {
+					extra = Math.max(nextStrip.getVolume()/nextStrip.width, extra);
+				}
+			}
+			currentStrips = nextStrips;
+		}
+		
+		return count + extra;
+	}
+
+
+	/**
+	 * @param world
+	 * @param strip
+	 * @return a collection of the Fluid Strips one tile above the given strip which are connected.
+	 */
+	private Collection<FluidStrip> getStripsAbove(World world, FluidStrip strip) {
+		Collection<FluidStrip> stripsAbove = Sets.newConcurrentHashSet();
+		for (int x = strip.worldTileX; x < strip.worldTileX + strip.width; x++) {
+			Optional<FluidStrip> tempStrip = world.fluids().getFluidStrip(x, strip.worldTileY + 1);
+			//if there's a strip there, put it in the list
+			if (tempStrip.isPresent()) {
+				stripsAbove.add(tempStrip.get());
+				x = tempStrip.get().worldTileX + tempStrip.get().width;
+			}
+		}
+		return stripsAbove;
 	}
 }
