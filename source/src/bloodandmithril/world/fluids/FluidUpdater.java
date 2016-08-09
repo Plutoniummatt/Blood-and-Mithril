@@ -207,10 +207,15 @@ public class FluidUpdater {
 				final Vector2 velocity = new Vector2(Util.getRandom().nextFloat() * 200f, 0f).rotate(Util.getRandom().nextFloat() * 360f).add(-200f,0f);
 				Optional<FluidStrip> leftStrip = world.fluids().getFluidStrip(strip.worldTileX - 1, strip.worldTileY);
 				if(!leftStrip.isPresent() || strip.getVolume() / strip.width > leftStrip.get().getVolume() / leftStrip.get().width) {
+					int particlesToSpew = (int)(strip.pressureCounter + getPressure(world, strip));
 					fluidParticlePopulator.createFluidParticle(position, velocity, -strip.addVolume(-MAX_PARTICLE_VOLUME), world);
 				}
 			}
 		} catch (NoTileFoundException e) {}
+	}
+	
+	private float getPressure(World world, FluidStrip strip) {
+		return 3 * strip.getVolume()/strip.width;
 	}
 
 	

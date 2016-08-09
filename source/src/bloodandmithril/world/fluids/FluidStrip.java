@@ -30,6 +30,9 @@ public class FluidStrip implements Serializable {
 	/** Volume of this strip, measured in tiles */
 	private float volume;
 	
+	/** This is incremented by a pressure factor when we try to expel a particle, a particle is expelled every time this reaches 1, then the value is reset to 0 */
+	public float pressureCounter = 0f;
+	
 	/**
 	 * Constructor
 	 */
