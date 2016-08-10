@@ -6,6 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.base.Function;
+import com.google.common.base.Optional;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Wiring;
@@ -17,6 +18,7 @@ import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.datastructure.ConcurrentDualKeyHashMap;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
+import bloodandmithril.world.fluids.FluidStrip;
 import bloodandmithril.world.fluids.FluidStripPopulator;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.Tile.EmptyTile;
@@ -336,6 +338,23 @@ public final class Topography {
 		} catch (NullPointerException e) {
 			Logger.generalDebug("can't change a null tile", LogLevel.WARN);
 		}
+		
+		Optional<FluidStrip> stripOn = Domain.getWorld(worldId).fluids().getFluidStrip(convertToWorldTileCoord(worldX), convertToWorldTileCoord(worldY));
+		if(stripOn.isPresent()) {
+				if(!fluidStripPopulator.splitFluidStrip(Domain.getWorld(worldId), stripOn.get(), convertToWorldTileCoord(worldX))) {
+					Optional<FluidStrip> stripAbove = Domain.getWorld(worldId).fluids().getFluidStrip(convertToWorldTileCoord(worldX), convertToWorldTileCoord(worldY) + 1);
+					if(stripAbove.isPresent()) {
+						stripAbove.get().addVolume(stripOn.get().getVolume());
+					} else {
+						fluidStripPopulator.createFluidStrip(Domain.getWorld(worldId), convertToWorldTileCoord(worldX), convertToWorldTileCoord(worldY) + 1, stripOn.get().getVolume());
+					}
+					Domain.getWorld(worldId).fluids().removeFluidStrip(stripOn.get().id);
+				}
+			} else {
+				fluidStripPopulator.createFluidStrip(Domain.getWorld(worldId), convertToWorldTileCoord(worldX) - 1, convertToWorldTileCoord(worldY), 0f);
+				fluidStripPopulator.createFluidStrip(Domain.getWorld(worldId), convertToWorldTileCoord(worldX) + 1, convertToWorldTileCoord(worldY), 0f);
+				fluidStripPopulator.createFluidStrip(Domain.getWorld(worldId), convertToWorldTileCoord(worldX), convertToWorldTileCoord(worldY) + 1, 0f);
+			}
 	}
 
 

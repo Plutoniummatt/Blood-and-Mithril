@@ -110,4 +110,46 @@ public class FluidStripPopulator {
 
 		return Optional.absent();
 	}
+	
+	
+	/**
+	 * @param strip
+	 * @param x
+	 * @return false if strip could not be split.
+	 * Splits the given {@link FluidStrip} leaving a gap at the x coordinate given
+	 */
+	public boolean splitFluidStrip(World world, FluidStrip strip, int x) {
+		Optional<FluidStrip> leftStrip = Optional.absent();
+		Optional<FluidStrip> rightStrip = Optional.absent();
+		if (x - strip.worldTileX > 0) {
+			leftStrip = Optional.of(
+				new FluidStrip(
+					strip.worldTileX,
+					strip.worldTileY,
+					x - strip.worldTileX,
+					strip.getVolume() * (x - strip.worldTileX + 0.5f) / strip.width,
+					world.getWorldId()
+				)
+			);
+			world.fluids().addFluidStrip(leftStrip.get());
+		}
+		if(strip.worldTileX + strip.width - x - 1 > 0) {
+			rightStrip = Optional.of(
+				new FluidStrip(
+					x + 1,
+					strip.worldTileY,
+					strip.worldTileX + strip.width - x - 1,
+					strip.getVolume() * (strip.worldTileX + strip.width - x - 0.5f) / strip.width,
+					world.getWorldId()
+				)
+			);
+			world.fluids().addFluidStrip(rightStrip.get());
+		}
+		if (leftStrip.isPresent() || rightStrip.isPresent()) {
+			world.fluids().removeFluidStrip(strip.id);
+			return true;
+		} else {
+			return false;
+		}
+	}
 }
