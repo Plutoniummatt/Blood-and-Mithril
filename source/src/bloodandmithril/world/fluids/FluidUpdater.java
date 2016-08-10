@@ -255,7 +255,7 @@ public class FluidUpdater {
 		if (!stripsBelow.isEmpty()) {
 			for (Integer key : stripsBelow) {
 				FluidStrip tempStrip = world.fluids().getFluidStrip(key).get();
-				float transferVolume = tempStrip.width - tempStrip.getVolume();
+				float transferVolume = Math.min(tempStrip.width - tempStrip.getVolume(),strip.getVolume()/stripsBelow.size());
 				tempStrip.addVolume(-strip.addVolume(-transferVolume));
 			}
 		}
