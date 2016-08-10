@@ -395,8 +395,8 @@ public class UserInterface {
 			if (renderComponentBoundaries) {
 				renderComponentBoundaries();
 			}
-			renderMouseOverTileHighlightBox(false);
 			renderFluidStripHighightBoxes();
+			renderMouseOverTileHighlightBox(false);
 		}
 
 
@@ -801,7 +801,11 @@ public class UserInterface {
 		gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		Gdx.gl20.glLineWidth(2f);
 		getShapeRenderer().begin(ShapeType.Line);
-		getShapeRenderer().setColor(Color.GREEN);
+		if(gameClientStateTracker.getActiveWorld().fluids().getFluidStrip(convertToWorldTileCoord(getMouseWorldX()), convertToWorldTileCoord(getMouseWorldY())).isPresent()) {
+			getShapeRenderer().setColor(Color.PINK);
+		} else {
+			getShapeRenderer().setColor(Color.GREEN);
+		}
 		getShapeRenderer().rect(x, y, TILE_SIZE, TILE_SIZE);
 		getShapeRenderer().end();
 
