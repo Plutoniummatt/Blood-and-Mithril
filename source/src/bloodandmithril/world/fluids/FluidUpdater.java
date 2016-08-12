@@ -3,6 +3,7 @@ package bloodandmithril.world.fluids;
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static bloodandmithril.world.topography.Topography.convertToWorldCoord;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import com.badlogic.gdx.math.Vector2;
@@ -30,6 +31,7 @@ public class FluidUpdater {
 	
 	@Inject private FluidStripPopulator fluidStripPopulator;
 	@Inject private FluidParticlePopulator fluidParticlePopulator;
+	private ArrayList<Integer> flaggedForDeletion = new ArrayList<>();
 	
 	/**
 	 * Updates a {@link FluidStrip}
@@ -85,9 +87,17 @@ public class FluidUpdater {
 					return;
 				}
 				for (int x = strip.worldTileX; x < strip.worldTileX + strip.width; x++) { 
-					if(world.getTopography().getTile(x, strip.worldTileY - 1, true).isPassable()) {
-						world.fluids().removeFluidStrip(strip.id);
-						return;
+					if(
+						world.getTopography().getTile(x, strip.worldTileY - 1, true).isPassable() &&
+						!world.fluids().getFluidStrip(strip.worldTileX - 1, strip.worldTileY).isPresent() &&
+						!world.fluids().getFluidStrip(strip.worldTileX + strip.width, strip.worldTileY).isPresent()
+					) {
+						if(flaggedForDeletion.contains(strip.id)) { // to make sure it's updated at least once before being deleted.
+							world.fluids().removeFluidStrip(strip.id);
+							return;
+						} else {
+							flaggedForDeletion.add(strip.id);
+						}
 					}
 				}
 			}
