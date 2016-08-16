@@ -18,7 +18,6 @@ import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
 import bloodandmithril.world.WorldUpdateService;
 import bloodandmithril.world.fluids.FluidParticle;
-import bloodandmithril.world.fluids.FluidStrip;
 import bloodandmithril.world.fluids.FluidUpdater;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.TopographyGenerationService;
@@ -49,7 +48,7 @@ public class Threading {
 
 	/** Thread responsible for processing events */
 	private Thread eventsProcessingThread;
-	
+
 	/** Thread responsible for processing fluids */
 	private Thread fluidsProcessingThread;
 
@@ -200,11 +199,11 @@ public class Threading {
 		updateThread.start();
 	}
 
-	
+
 	private void setupFluidProcessingThread() {
 		fluidsProcessingThread = new Thread(() -> {
 			long prevFrame = System.currentTimeMillis();
-			
+
 			while (true) {
 				try {
 					Thread.sleep(1);
@@ -214,26 +213,25 @@ public class Threading {
 
 				if (System.currentTimeMillis() - prevFrame > Math.round(16f / updateRate)) {
 					prevFrame = System.currentTimeMillis();
-					
-					World activeWorld = gameClientStateTracker.getActiveWorld();
+
+					final World activeWorld = gameClientStateTracker.getActiveWorld();
 					if (!gameClientStateTracker.isPaused() && !gameSaver.isSaving() && activeWorld != null && !gameClientStateTracker.isLoading()) {
 						activeWorld.fluids().getAllFluidStrips()
 						.stream()
-						.distinct()
-						.sorted((FluidStrip strip1, FluidStrip strip2) -> Integer.compare(strip1.worldTileY, strip2.worldTileY))
+						.sorted((strip1, strip2) -> Integer.compare(strip1.worldTileY, strip2.worldTileY))
 						.forEach(strip -> {
 							if(activeWorld.fluids().getFluidStrip(strip.id).isPresent()) {
 								fluidUpdater.updateStrip(activeWorld, strip, 1f/60f);
 							}
 						});
-						for (FluidParticle particle : activeWorld.fluids().getAllFluidParticles()) {
+						for (final FluidParticle particle : activeWorld.fluids().getAllFluidParticles()) {
 							fluidUpdater.updateParticle(activeWorld, particle, 1f/60f);
 						}
 					}
 				}
 			}
 		});
-		
+
 		fluidsProcessingThread.setPriority(Thread.NORM_PRIORITY);
 		fluidsProcessingThread.setName("Fluids");
 		fluidsProcessingThread.start();
