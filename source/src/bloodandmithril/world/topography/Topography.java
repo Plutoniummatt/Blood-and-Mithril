@@ -234,13 +234,15 @@ public final class Topography {
 			if (!forceRemove) {
 				removeProps(worldX, worldY);
 			}
-			if(
-				Domain.getWorld(worldId).fluids().getFluidStrip(convertToWorldTileCoord(worldX) - 1, convertToWorldTileCoord(worldY)).isPresent() ||
-				Domain.getWorld(worldId).fluids().getFluidStrip(convertToWorldTileCoord(worldX) + 1, convertToWorldTileCoord(worldY)).isPresent()
-			) {
-				fluidStripPopulator.createFluidStrip(Domain.getWorld(worldId), convertToWorldTileCoord(worldX), convertToWorldTileCoord(worldY), 0f);
-			} else {
-				fluidStripPopulator.createFluidStripIfBase(Domain.getWorld(worldId), convertToWorldTileCoord(worldX), convertToWorldTileCoord(worldY), 0f);
+			if(foreGround) {
+				if(
+					Domain.getWorld(worldId).fluids().getFluidStrip(convertToWorldTileCoord(worldX) - 1, convertToWorldTileCoord(worldY)).isPresent() ||
+					Domain.getWorld(worldId).fluids().getFluidStrip(convertToWorldTileCoord(worldX) + 1, convertToWorldTileCoord(worldY)).isPresent()
+				) {
+					fluidStripPopulator.createFluidStrip(Domain.getWorld(worldId), convertToWorldTileCoord(worldX), convertToWorldTileCoord(worldY), 0f);
+				} else {
+					fluidStripPopulator.createFluidStripIfBase(Domain.getWorld(worldId), convertToWorldTileCoord(worldX), convertToWorldTileCoord(worldY), 0f);
+				}
 			}
 			return tile;
 
@@ -338,9 +340,9 @@ public final class Topography {
 		} catch (NullPointerException e) {
 			Logger.generalDebug("can't change a null tile", LogLevel.WARN);
 		}
-		
-		Optional<FluidStrip> stripOn = Domain.getWorld(worldId).fluids().getFluidStrip(convertToWorldTileCoord(worldX), convertToWorldTileCoord(worldY));
-		if(stripOn.isPresent()) {
+		if(foreGround) {
+			Optional<FluidStrip> stripOn = Domain.getWorld(worldId).fluids().getFluidStrip(convertToWorldTileCoord(worldX), convertToWorldTileCoord(worldY));
+			if(stripOn.isPresent()) {
 				if(!fluidStripPopulator.splitFluidStrip(Domain.getWorld(worldId), stripOn.get(), convertToWorldTileCoord(worldX))) {
 					Optional<FluidStrip> stripAbove = Domain.getWorld(worldId).fluids().getFluidStrip(convertToWorldTileCoord(worldX), convertToWorldTileCoord(worldY) + 1);
 					if(stripAbove.isPresent()) {
@@ -355,6 +357,7 @@ public final class Topography {
 				fluidStripPopulator.createFluidStrip(Domain.getWorld(worldId), convertToWorldTileCoord(worldX) + 1, convertToWorldTileCoord(worldY), 0f);
 				fluidStripPopulator.createFluidStrip(Domain.getWorld(worldId), convertToWorldTileCoord(worldX), convertToWorldTileCoord(worldY) + 1, 0f);
 			}
+		}
 	}
 
 
