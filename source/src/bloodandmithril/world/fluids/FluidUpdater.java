@@ -96,6 +96,7 @@ public class FluidUpdater {
 					) {
 						if(flaggedForDeletion.contains(strip.id)) { // to make sure it's updated at least once before being deleted.
 							world.fluids().removeFluidStrip(strip.id);
+							flaggedForDeletion.remove(strip.id);
 							return;
 						} else {
 							flaggedForDeletion.add(strip.id);
