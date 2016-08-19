@@ -25,6 +25,7 @@ import bloodandmithril.character.ai.task.gotolocation.GoToMovingLocation;
 import bloodandmithril.character.ai.task.idle.Idle;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.util.ComparisonUtil;
+import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
@@ -47,7 +48,9 @@ public class ImprovedIndividualKinematicsUpdater implements IndividualKinematics
 	 * @see bloodandmithril.character.individuals.IndividualKinematicsUpdater#update(float, bloodandmithril.world.World, bloodandmithril.character.individuals.Individual)
 	 */
 	@Override
-	public void update(final float delta, final World world, final Individual individual) throws NoTileFoundException {
+	public void update(final Individual individual, final float delta) throws NoTileFoundException {
+		final World world = Domain.getWorld(individual.getWorldId());
+
 		final Vector2 velocity = individual.getState().velocity;
 		final Vector2 position = individual.getState().position;
 		final Vector2 acceleration = individual.getState().acceleration;
@@ -64,7 +67,7 @@ public class ImprovedIndividualKinematicsUpdater implements IndividualKinematics
 		Tile surface = world.getTopography().getSurfaceTile(position.x, position.y + surfaceReferenceOffset, excludePassable);
 		Vector2 surfaceLocation = world.getTopography().getLowestEmptyTileOrPlatformTileWorldCoordsExludeSpecified(position.x, position.y + surfaceReferenceOffset, true, excludePassable);
 		final Vector2 surfaceVector = deriveSurfaceVector(position, surface.getCornerType());
-		boolean terrainDetected = terrainDetection(individual, velocity, position, surface, surfaceVector, surfaceLocation);
+		final boolean terrainDetected = terrainDetection(individual, velocity, position, surface, surfaceVector, surfaceLocation);
 		updateTileDirectlyUnder(individual, world);
 
 		surface = world.getTopography().getSurfaceTile(position.x, position.y + surfaceReferenceOffset, excludePassable);
@@ -272,7 +275,7 @@ public class ImprovedIndividualKinematicsUpdater implements IndividualKinematics
 
 		if (invalid) {
 			individualStateService.stopMoving(individual);
-			
+
 			position.x = position.x -= velocity.x * delta * 10;
 			position.y = position.y -= velocity.y * delta * 10;
  			velocity.x = -previousVel.x * 0.3f;

@@ -3,7 +3,6 @@ package bloodandmithril.character.individuals;
 import com.google.inject.ImplementedBy;
 
 import bloodandmithril.core.Copyright;
-import bloodandmithril.world.World;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
 /**
@@ -18,5 +17,5 @@ public interface IndividualKinematicsUpdater {
 	/**
 	 * Updates the individual's kinematics data
 	 */
-	public void update(final float delta, final World world, final Individual individual) throws NoTileFoundException;
+	public void update(final Individual individual, final float delta) throws NoTileFoundException;
 }

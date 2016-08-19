@@ -110,7 +110,7 @@ public class IndividualUpdateService {
 		}
 
 		try {
-			individualKinematicsUpdater.update(delta, Domain.getWorld(indi.getWorldId()), indi);
+			individualKinematicsUpdater.update(indi, delta);
 		} catch (final NoTileFoundException e) {
 
 		}
