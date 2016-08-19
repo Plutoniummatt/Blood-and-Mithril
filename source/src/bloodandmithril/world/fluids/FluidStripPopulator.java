@@ -16,9 +16,6 @@ import bloodandmithril.world.topography.Topography.NoTileFoundException;
 public class FluidStripPopulator {
 
 
-	private FluidStripPopulator() {}
-
-
 	/**
 	 * Given tileX and tileY, determines if position is valid for a {@link FluidStrip}, instantiating one if valid, and populates the {@link WorldFluids}
 	 * with a full width {@link FluidStrip} that covers the bottom most empty "layer" that is valid for a {@link FluidStrip}
