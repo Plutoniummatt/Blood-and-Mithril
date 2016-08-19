@@ -69,7 +69,7 @@ public class GameLoader {
 			loadWorlds();
 			loadFactions();
 			individualLoader.loadAll();
-			
+
 			if (ClientServerInterface.isClient()) {
 				loadCameraPosition();
 			}
@@ -77,7 +77,7 @@ public class GameLoader {
 			graphics.getCam().position.y = cameraTracker.getWorldcamcoordinates().get(parameterPersistenceService.getParameters().getActiveWorldId()).y;
 		}
 	}
-	
+
 	/**
 	 * Loads generation data
 	 **/
@@ -94,9 +94,9 @@ public class GameLoader {
 		} catch (final Exception e) {
 			Logger.loaderDebug("Failed to load layers", LogLevel.DEBUG);
 		}
-	}	
-	
-	
+	}
+
+
 	/**
 	 * Loads all worlds
 	 */
@@ -113,7 +113,7 @@ public class GameLoader {
 
 		if (!Domain.getAllWorlds().isEmpty()) {
 			for (final World world : Domain.getAllWorlds()) {
-				world.setTopography(new Topography(world.getWorldId()));
+				world.setTopography(new Topography());
 
 				try {
 					final ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, Integer>> keys = decode(Gdx.files.local(persistenceParameters.getSavePath() + "/world/world" + Integer.toString(world.getWorldId()) + "/superStructureKeys.txt"));

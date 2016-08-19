@@ -28,6 +28,7 @@ public class MineTileService {
 
 	@Inject	private TopographyTaskExecutor topographyTaskExecutor;
 	@Inject	private UserInterface userInterface;
+	@Inject	private DeleteTileService deleteTileService;
 
 	/**
 	 * Mines the tile
@@ -60,7 +61,7 @@ public class MineTileService {
 						final Item mined = tileToBeDeleted.mine();
 						ParticleService.mineExplosion(tileCoordinate, tileToBeDeleted.getMineExplosionColor());
 						if (ClientServerInterface.isServer() && ClientServerInterface.isClient()) {
-							if (topography.deleteTile(tileCoordinate.x, tileCoordinate.y, true, false) != null) {
+							if (deleteTileService.deleteTile(miner.getWorldId(), tileCoordinate.x, tileCoordinate.y, true, false) != null) {
 								if (miner.canReceive(mined)) {
 									miner.giveItem(mined);
 								} else {
@@ -70,7 +71,7 @@ public class MineTileService {
 								userInterface.refreshRefreshableWindows();
 							}
 						} else if (ClientServerInterface.isServer()) {
-							if (topography.deleteTile(tileCoordinate.x, tileCoordinate.y, true, false) != null) {
+							if (deleteTileService.deleteTile(miner.getWorldId(), tileCoordinate.x, tileCoordinate.y, true, false) != null) {
 								ClientServerInterface.SendNotification.notifyTileMined(-1, tileCoordinate, true, miner.getWorldId());
 
 								if (miner.canReceive(mined)) {

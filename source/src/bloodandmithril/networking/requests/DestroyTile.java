@@ -1,34 +1,34 @@
 package bloodandmithril.networking.requests;
 
+import com.badlogic.gdx.math.Vector2;
+import com.google.inject.Inject;
+
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.Request;
 import bloodandmithril.networking.Response;
 import bloodandmithril.networking.Response.Responses;
-import bloodandmithril.world.Domain;
+import bloodandmithril.world.topography.DeleteTileService;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.tile.Tile;
-
-import com.badlogic.gdx.math.Vector2;
 
 /**
  * A {@link Request} to destroy a {@link Tile} from {@link Topography}
  */
 @Copyright("Matthew Peck 2014")
 public class DestroyTile implements Request {
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -3447787166708764634L;
+
 	public final float worldX, worldY;
 	public final boolean foreground;
 	private int worldId;
 
+	@Inject	private transient DeleteTileService deleteTileService;
+
 	/**
 	 * Constructor
 	 */
-	public DestroyTile(float worldX, float worldY, boolean foreground, int worldId) {
+	public DestroyTile(final float worldX, final float worldY, final boolean foreground, final int worldId) {
 		this.worldX = worldX;
 		this.worldY = worldY;
 		this.foreground = foreground;
@@ -38,9 +38,9 @@ public class DestroyTile implements Request {
 
 	@Override
 	public Responses respond() {
-		Domain.getWorld(worldId).getTopography().deleteTile(worldX, worldY, foreground, false);
-		Response destroyTileResponse = new DestroyTileResponse(worldX, worldY, foreground, worldId);
-		Responses responses = new Response.Responses(false);
+		deleteTileService.deleteTile(worldId, worldX, worldY, foreground, false);
+		final Response destroyTileResponse = new DestroyTileResponse(worldX, worldY, foreground, worldId);
+		final Responses responses = new Response.Responses(false);
 		responses.add(destroyTileResponse);
 		return responses;
 	}
@@ -53,16 +53,14 @@ public class DestroyTile implements Request {
 
 
 	public static class DestroyTileResponse implements Response {
-
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = 4100572243042514921L;
 		public final float worldX, worldY;
 		public final boolean foreground;
 		private int worldId;
 
-		public DestroyTileResponse(float worldX, float worldY, boolean foreground, int worldId) {
+		@Inject	private transient DeleteTileService deleteTileService;
+
+		public DestroyTileResponse(final float worldX, final float worldY, final boolean foreground, final int worldId) {
 			this.worldX = worldX;
 			this.worldY = worldY;
 			this.foreground = foreground;
@@ -77,7 +75,8 @@ public class DestroyTile implements Request {
 				false,
 				null
 			);
-			Domain.getWorld(worldId).getTopography().deleteTile(worldX, worldY, foreground, false);
+
+			deleteTileService.deleteTile(worldId, worldX, worldY, foreground, false);
 		}
 
 		@Override
