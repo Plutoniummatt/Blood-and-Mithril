@@ -69,6 +69,9 @@ import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuIte
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.fluids.FluidParticlePopulator;
+import bloodandmithril.world.topography.ChangeTileService;
+import bloodandmithril.world.topography.DeleteTileService;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickTile;
@@ -88,6 +91,9 @@ public class DevWindow extends Window {
 	@Inject private GameClientStateTracker gameClientStateTracker;
 	@Inject private AddIndividualService addIndividualService;
 	@Inject private UserInterface userInterface;
+	@Inject private FluidParticlePopulator fluidParticlePopulator;
+	@Inject private DeleteTileService deleteTileService;
+	@Inject private ChangeTileService changeTileService;
 
 	/**
 	 * Constructor
@@ -155,6 +161,18 @@ public class DevWindow extends Window {
 				).bounce());
 			}
 		}
+
+
+		if (isKeyPressed(Keys.K)) {
+			for (int i = 0; i < 20; i++) {
+				final Vector2 rotate = new Vector2(Util.getRandom().nextFloat() * 200f, 0f).rotate(Util.getRandom().nextFloat() * 360f);
+				fluidParticlePopulator.createFluidParticle(
+					getMouseWorldCoords(),
+					rotate,
+					0.5f,
+					gameClientStateTracker.getActiveWorld());
+			}
+		}
 	}
 
 
@@ -195,7 +213,9 @@ public class DevWindow extends Window {
 			try {
 				final Tile tile = gameClientStateTracker.getActiveWorld().getTopography().getTile(getMouseWorldCoords(), true);
 				tile.changeToSmoothCeiling();
-				gameClientStateTracker.getActiveWorld().getTopography().changeTile(
+
+				changeTileService.changeTile(
+					gameClientStateTracker.getActiveWorldId(),
 					getMouseWorldX(),
 					getMouseWorldY(),
 					true,
@@ -205,7 +225,9 @@ public class DevWindow extends Window {
 		}
 
 		if (keyCode == Keys.T) {
-			gameClientStateTracker.getActiveWorld().getTopography().changeTile(
+
+			changeTileService.changeTile(
+				gameClientStateTracker.getActiveWorldId(),
 				getMouseWorldX(),
 				getMouseWorldY(),
 				true,
@@ -214,7 +236,8 @@ public class DevWindow extends Window {
 		}
 
 		if (keyCode == Keys.P) {
-			gameClientStateTracker.getActiveWorld().getTopography().changeTile(
+			changeTileService.changeTile(
+				gameClientStateTracker.getActiveWorldId(),
 				getMouseWorldX(),
 				getMouseWorldY(),
 				true,
@@ -222,17 +245,19 @@ public class DevWindow extends Window {
 			);
 		}
 
-		if (keyCode == Keys.F) {
-			gameClientStateTracker.getActiveWorld().getTopography().deleteTile(
+		if (keyCode == Keys.D) {
+			deleteTileService.deleteTile(
+				gameClientStateTracker.getActiveWorldId(),
 				getMouseWorldX(),
 				getMouseWorldY(),
 				true,
 				false
 			);
 		}
-		
+
 		if (keyCode == Keys.G) {
-			gameClientStateTracker.getActiveWorld().getTopography().deleteTile(
+			deleteTileService.deleteTile(
+				gameClientStateTracker.getActiveWorldId(),
 				getMouseWorldX(),
 				getMouseWorldY(),
 				false,

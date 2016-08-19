@@ -3,7 +3,6 @@ package bloodandmithril.performance;
 import static bloodandmithril.world.topography.Topography.CHUNK_SIZE;
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static bloodandmithril.world.topography.Topography.convertToChunkCoord;
-import static bloodandmithril.world.topography.Topography.convertToWorldTileCoord;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -22,6 +21,7 @@ import bloodandmithril.item.items.Item;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.util.datastructure.ConcurrentDualKeyHashMap;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.fluids.FluidStrip;
 
 /**
  * A map that holds {@link PositionalIndexNode}s, maps chunks to indexes
@@ -181,17 +181,13 @@ public class PositionalIndexMap implements Serializable {
 
 		Function<Integer, T> function;
 		if (clazz.equals(Individual.class)) {
-			function = id -> {
-				return (T) Domain.getIndividual(id);
-			};
+			function = id -> (T) Domain.getIndividual(id);
 		} else if (clazz.equals(Prop.class)) {
-			function = id -> {
-				return (T) Domain.getWorld(worldId).props().getProp(id);
-			};
+			function = id -> (T) Domain.getWorld(worldId).props().getProp(id);
 		} else if (clazz.equals(Item.class)) {
-			function = id -> {
-				return (T) Domain.getWorld(worldId).items().getItem(id);
-			};
+			function = id -> (T) Domain.getWorld(worldId).items().getItem(id);
+		} else if (clazz.equals(FluidStrip.class)) {
+			function = id -> (T) Domain.getWorld(worldId).fluids().getFluidStrip(id).get();
 		} else {
 			throw new RuntimeException("Unrecongized class : " + clazz.getSimpleName());
 		}
@@ -208,8 +204,28 @@ public class PositionalIndexMap implements Serializable {
 	 * @return the {@link PositionalIndexNode} given the world coords
 	 */
 	public PositionalIndexNode get(float x, float y) {
-		int chunkX = convertToChunkCoord(convertToWorldTileCoord(x));
-		int chunkY = convertToChunkCoord(convertToWorldTileCoord(y));
+		return getWithChunkCoords(
+			convertToChunkCoord(x), 
+			convertToChunkCoord(y)
+		);
+	}
+	
+	
+	/**
+	 * @return the {@link PositionalIndexNode} given the world coords
+	 */
+	public PositionalIndexNode getWithTileCoords(int tileX, int tileY) {
+		return getWithChunkCoords(
+			convertToChunkCoord(tileX), 
+			convertToChunkCoord(tileY)
+		);
+	}
+	
+	
+	/**
+	 * @return the {@link PositionalIndexNode} given the world coords
+	 */
+	public PositionalIndexNode getWithChunkCoords(int chunkX, int chunkY) {
 		PositionalIndexNode positionalIndex = indexes.get(chunkX, chunkY);
 
 		if (positionalIndex == null) {

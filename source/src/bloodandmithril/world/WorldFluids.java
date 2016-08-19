@@ -1,0 +1,127 @@
+package bloodandmithril.world;
+
+import static bloodandmithril.world.topography.Topography.convertToChunkCoord;
+
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.concurrent.ConcurrentHashMap;
+
+import com.google.common.base.Optional;
+
+import bloodandmithril.core.Copyright;
+import bloodandmithril.world.fluids.FluidParticle;
+import bloodandmithril.world.fluids.FluidStrip;
+
+/**
+ * World fluids
+ *
+ * @author Sam
+ */
+@Copyright("Matthew Peck 2016")
+public class WorldFluids implements Serializable {
+	private static final long serialVersionUID = 1244924890817492679L;
+
+	public final int worldId;
+
+	/**
+	 * Maps fluid strip ID to the {@link FluidStrip}
+	 */
+	private final ConcurrentHashMap<Integer, FluidStrip> fluidStrips = new ConcurrentHashMap<>();
+
+	/**
+	 * Maps fluid particle ID to a {@link FluidParticle}
+	 */
+	private final ConcurrentHashMap<Long, FluidParticle> fluidParticles = new ConcurrentHashMap<>();
+
+
+	/**
+	 * Constructor
+	 */
+	public WorldFluids(final int worldId) {
+		this.worldId = worldId;
+	}
+
+
+	/**
+	 * @return the {@link FluidStrip} with the given id
+	 */
+	public final Optional<FluidStrip> getFluidStrip(final int id) {
+		if(fluidStrips.get(id) == null) {
+			return Optional.absent();
+		} else {
+			return Optional.of(fluidStrips.get(id));
+		}
+	}
+
+
+	/**
+	 * @param worldTileX
+	 * @param worldTileY
+	 *
+	 * @return The strip which occupies this tile
+	 */
+	public final Optional<FluidStrip> getFluidStrip(final int worldTileX, final int worldTileY) {
+		for (final Integer stripKey : Domain.getWorld(worldId).getPositionalIndexMap().getWithTileCoords(worldTileX, worldTileY).getAllEntitiesForType(FluidStrip.class)) {
+			if (fluidStrips.get(stripKey).occupies(worldTileX, worldTileY)) {
+				return Optional.of(fluidStrips.get(stripKey));
+			}
+		}
+
+		return Optional.absent();
+	}
+
+
+	/**
+	 * @return all fluid strips
+	 */
+	public final Collection<FluidStrip> getAllFluidStrips() {
+		return fluidStrips.values();
+	}
+
+
+	/**
+	 * @return all fluid particles
+	 */
+	public final Collection<FluidParticle> getAllFluidParticles() {
+		return fluidParticles.values();
+	}
+
+
+	/**
+	 * @param strip to add
+	 */
+	public final void addFluidStrip(final FluidStrip strip) {
+		fluidStrips.put(strip.id, strip);
+		for (int x = convertToChunkCoord(strip.worldTileX); x <= convertToChunkCoord(strip.worldTileX + strip.width); x++) {
+			Domain.getWorld(strip.worldId).getPositionalIndexMap().getWithChunkCoords(x, convertToChunkCoord(strip.worldTileY)).addFluidStrip(strip.id);
+		}
+	}
+
+
+	/**
+	 * @param key of the strip to remove
+	 */
+	public final synchronized void removeFluidStrip(final int key) {
+		final FluidStrip toRemove = fluidStrips.get(key);
+		for (int x = convertToChunkCoord(toRemove.worldTileX); x <= convertToChunkCoord(toRemove.worldTileX + toRemove.width); x++) {
+			Domain.getWorld(toRemove.worldId).getPositionalIndexMap().getWithChunkCoords(x, convertToChunkCoord(toRemove.worldTileY)).removeFluidStrip(toRemove.id);
+		}
+		fluidStrips.remove(key);
+	}
+
+
+	/**
+	 * @param toAdd the {@link FluidParticle} to add
+	 */
+	public final void addFluidParticle(final FluidParticle toAdd) {
+		fluidParticles.put(toAdd.id, toAdd);
+	}
+
+
+	/**
+	 * @param key of the {@link FluidParticle} to remove
+	 */
+	public final void removeFluidParticle(final long key) {
+		fluidParticles.remove(key);
+	}
+}

@@ -21,8 +21,11 @@ import bloodandmithril.util.Task;
 import bloodandmithril.util.datastructure.ConcurrentDualKeyHashMap;
 import bloodandmithril.util.datastructure.WrapperForTwo;
 import bloodandmithril.world.World;
+import bloodandmithril.world.fluids.FluidStripPopulator;
 import bloodandmithril.world.topography.Chunk;
 import bloodandmithril.world.topography.Chunk.ChunkData;
+import bloodandmithril.world.topography.Topography;
+import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile;
 
 /**
@@ -46,6 +49,7 @@ public class ChunkProvider {
 	@Inject private PersistenceParameters persistenceParameters;
 	@Inject private ChunkGenerator chunkGenerator;
 	@Inject private ChunkPopulator chunkPopulator;
+	@Inject private FluidStripPopulator fluidStripPopulator;
 	
 	/**
 	 * Constructor
@@ -123,7 +127,7 @@ public class ChunkProvider {
 				final ZipFile zipFile = new ZipFile(persistenceParameters.getSavePath() + "/world/world" + Integer.toString(world.getWorldId()) + "/chunkData.zip");
 
 				final boolean newCol = world.getTopography().getChunkMap().get(chunkX) == null;
-				final HashMap<Integer, Chunk> col = newCol ? new HashMap<Integer, Chunk>() : world.getTopography().getChunkMap().get(chunkX);
+				final HashMap<Integer, Chunk> col = newCol ? new HashMap<>() : world.getTopography().getChunkMap().get(chunkX);
 
 				final ChunkData fData = decode(ZipHelper.readEntry(zipFile, "column" + chunkX + "/f" + chunkY + "/fData"));
 				final ChunkData bData = decode(ZipHelper.readEntry(zipFile, "column" + chunkX + "/b" + chunkY + "/bData"));
@@ -144,10 +148,35 @@ public class ChunkProvider {
 					// Populate the world with the generated chunk
 					chunkPopulator.populateChunkMap(chunk.a, chunk.b, world, chunkX, chunkY);
 				}
+				
+				createFluidStrips(world, chunkX, chunkY);
 			}
 
 			// Remove chunk from queue.
 			chunksInQueue.remove(chunkX, chunkY);
+		}
+	}
+
+
+	/**
+	 * @param world
+	 * @param chunkX
+	 * @param chunkY
+	 * 
+	 * Create fluid strips at any valid "base" layers where fluids can validly exist
+	 */
+	private void createFluidStrips(World world, int chunkX, int chunkY) {
+		for(int x = -1; x <= Topography.CHUNK_SIZE; x++) {
+			for(int y = 0; y < Topography.CHUNK_SIZE; y++) {
+				try {
+					fluidStripPopulator.createFluidStripIfBase(
+						world, 
+						Topography.convertToWorldTileCoord(chunkX, x), 
+						Topography.convertToWorldTileCoord(chunkY, y), 
+						0.8f
+					);
+				} catch (NoTileFoundException e) {}
+			}
 		}
 	}
 }

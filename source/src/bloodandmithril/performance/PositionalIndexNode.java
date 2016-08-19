@@ -4,12 +4,13 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Set;
 
+import com.google.common.collect.Sets;
+
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.prop.Prop;
-
-import com.google.common.collect.Sets;
+import bloodandmithril.world.fluids.FluidStrip;
 
 /**
  * A positional index node is an entity which holds references to world objects depending on their world positions.  This will be used as a 'search index' so to speak
@@ -24,6 +25,7 @@ public class PositionalIndexNode implements Serializable {
 	private Set<Integer> props = Sets.newConcurrentHashSet();
 	private Set<Integer> individuals = Sets.newConcurrentHashSet();
 	private Set<Integer> items = Sets.newConcurrentHashSet();
+	private Set<Integer> fluidStrips = Sets.newConcurrentHashSet();
 
 	/**
 	 * Constructor
@@ -44,6 +46,10 @@ public class PositionalIndexNode implements Serializable {
 
 		if (clazz.equals(Prop.class)) {
 			return props;
+		}
+		
+		if (clazz.equals(FluidStrip.class)) {
+			return fluidStrips;
 		}
 
 		throw new RuntimeException("Unrecognised class: " + clazz.getSimpleName());
@@ -78,11 +84,22 @@ public class PositionalIndexNode implements Serializable {
 	public void addItem(int key) {
 		items.add(key);
 	}
+	
+	
+	public void addFluidStrip(int key) {
+		fluidStrips.add(key);
+	}
+	
+	
+	public void removeFluidStrip(int key) {
+		fluidStrips.remove(key);
+	}
 
 
 	public void clear() {
 		props.clear();
 		individuals.clear();
 		items.clear();
+		fluidStrips.clear();
 	}
 }

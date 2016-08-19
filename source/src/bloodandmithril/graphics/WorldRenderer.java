@@ -26,6 +26,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -38,6 +39,7 @@ import bloodandmithril.prop.PropRenderer;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.datastructure.Wrapper;
 import bloodandmithril.world.World;
+import bloodandmithril.world.fluids.FluidRenderer;
 import bloodandmithril.world.topography.TopographyRenderer;
 
 /**
@@ -70,6 +72,7 @@ public class WorldRenderer {
 	@Inject private IndividualPlatformFilteringRenderer individualPlatformFilteringRenderer;
 	@Inject private TopographyRenderer topographyRenderer;
 	@Inject private GaussianLightingRenderer gaussianLightingRenderer;
+	@Inject private FluidRenderer fluidRenderer;
 
 	public void dispose() {
 		fBuffer.dispose();
@@ -151,6 +154,14 @@ public class WorldRenderer {
 		}
 		renderParticles(Depth.FOREGROUND, world);
 		batch.end();
+		
+		Gdx.gl.glEnable(GL20.GL_BLEND);
+		Gdx.gl.glBlendFuncSeparate(GL20.GL_SRC_COLOR, GL20.GL_DST_COLOR, GL20.GL_SRC_ALPHA, GL20.GL_DST_ALPHA);
+		shapeRenderer.begin(ShapeType.Filled);
+		fluidRenderer.render(shapeRenderer, world.fluids());
+		shapeRenderer.end();
+		Gdx.gl.glDisable(GL20.GL_BLEND);
+		
 		topographyRenderer.renderForeGround(world.getTopography(), camX, camY, Shaders.pass, shader -> {}, graphics);
 		batch.begin();
 		batch.setShader(Shaders.filter);

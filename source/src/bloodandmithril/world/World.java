@@ -46,7 +46,7 @@ public final class World implements Serializable {
 	private final BackgroundImages 								backgroundImages 		= new BackgroundImages();
 
 	/** Individuals that are currently in this {@link World} */
-	private final ConcurrentSkipListSet<Integer>				individuals 			= new ConcurrentSkipListSet<Integer>();
+	private final ConcurrentSkipListSet<Integer>				individuals 			= new ConcurrentSkipListSet<>();
 
 	/** The positional indexing map of this {@link World} */
 	private PositionalIndexMap 									positionalIndexMap;
@@ -66,6 +66,9 @@ public final class World implements Serializable {
 	/** The projectiles of this {@link World} */
 	private final WorldProjectiles projectiles;
 
+	/** The fluids of this {@link World} */
+	private final WorldFluids fluids;
+
 	/** Epoch of this world */
 	private Epoch epoch;
 
@@ -74,10 +77,10 @@ public final class World implements Serializable {
 
 	/** Biome decider of this {@link World} */
 	private final Class<? extends BiomeDecider> 				biomeDecider;
-	
+
 	/** {@link Cloud}s on this world */
 	private final List<Cloud>	 								clouds					= Lists.newLinkedList();
-	
+
 	/** The {@link WeatherState} of this world */
 	private final WeatherState 									weatherState			= new WeatherState();
 
@@ -100,9 +103,10 @@ public final class World implements Serializable {
 		this.items = new WorldItems(worldId);
 		this.props = new WorldProps(worldId);
 		this.projectiles = new WorldProjectiles(worldId);
-		this.topography = new Topography(worldId);
+		this.fluids = new WorldFluids(worldId);
+		this.topography = new Topography();
 		this.positionalIndexMap = new PositionalIndexMap(worldId);
-		
+
 		clouds.add(new Cloud(1, 0, -300));
 		clouds.add(new Cloud(2, 0, 0));
 		clouds.add(new Cloud(3, 0, 300));
@@ -246,5 +250,10 @@ public final class World implements Serializable {
 
 	public WeatherState getWeatherState() {
 		return weatherState;
+	}
+
+
+	public WorldFluids fluids() {
+		return fluids;
 	}
 }

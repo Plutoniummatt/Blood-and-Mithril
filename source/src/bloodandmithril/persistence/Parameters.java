@@ -12,6 +12,7 @@ import bloodandmithril.graphics.particles.Particle;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.weapon.ranged.Projectile;
 import bloodandmithril.prop.Prop;
+import bloodandmithril.world.fluids.FluidStrip;
 
 /**
  * Parameters that require saving
@@ -32,9 +33,12 @@ public class Parameters implements Serializable {
 	private int itemCounter = 0;
 	private int projectileCounter = 0;
 	private int activeWorldId = 0;
+	private int fluidStripId = 0;
 	private long particleCounter = 0;
+	private long fluidParticleId = 0;
 
 	private Map<Integer, Vector2> cameraPositions;
+
 
 	/**
 	 * Package-protected constructor, only {@link ParameterPersistenceService} has access
@@ -124,6 +128,24 @@ public class Parameters implements Serializable {
 	public synchronized int getNextPropId() {
 		propIdCounter++;
 		return propIdCounter;
+	}
+	
+	
+	/**
+	 * Returns the next unique identifier to use for {@link FluidStrip}
+	 */
+	public synchronized int getNextFluidStripId() {
+		fluidStripId++;
+		return fluidStripId;
+	}
+
+	
+	/**
+	 * Returns the next unique identifier to use for {@link FluidStrip}
+	 */
+	public synchronized long getNextFluidParticleId() {
+		fluidParticleId++;
+		return fluidParticleId;
 	}
 
 
