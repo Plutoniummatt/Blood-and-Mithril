@@ -5,6 +5,11 @@ import static bloodandmithril.world.topography.Topography.convertToWorldCoord;
 import static com.google.common.collect.Sets.newHashSet;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import com.badlogic.gdx.math.Vector2;
@@ -115,6 +120,7 @@ public class FluidUpdater {
 		}
 
 		transferFromStripToStripAbove(world, strip);
+		equalizeLevels(world, strip);
 	}
 
 
@@ -288,6 +294,46 @@ public class FluidUpdater {
 		strip.pressureCounter = (strip.pressureCounter + getPressure(world, strip))%1;
 		for(int p = particlesToSpew; p > 0; p--) {
 			fluidParticlePopulator.createFluidParticle(position, velocity, -strip.addVolume(-MAX_PARTICLE_VOLUME), world);
+		}
+	}
+	
+	private void equalizeLevels(World world, FluidStrip strip) {
+		final Collection<Integer> stripsAbove = Sets.newConcurrentHashSet();
+		for (int x = strip.worldTileX; x < strip.worldTileX + strip.width; x++) {
+			final Optional<FluidStrip> tempStrip = world.fluids().getFluidStrip(x, strip.worldTileY + 1);
+			// if there's a strip there already, use it
+			if(tempStrip.isPresent()) {
+				stripsAbove.add(tempStrip.get().id);
+				x = tempStrip.get().worldTileX + tempStrip.get().width;
+			//if not, try to make one
+			} else {
+				final Optional<FluidStrip> addedStrip = fluidStripPopulator.createFluidStrip(world, x, strip.worldTileY + 1, 0f);
+				if(addedStrip.isPresent()) {
+					stripsAbove.add(addedStrip.get().id);
+					x = addedStrip.get().worldTileX + addedStrip.get().width;
+				}
+			}
+		}
+		if(!stripsAbove.isEmpty()) {
+			Map<Integer, Float> depths = new HashMap<>();
+			for (final Integer key : stripsAbove) {
+				final FluidStrip tempStrip = world.fluids().getFluidStrip(key).get();
+				depths.put(tempStrip.id, getDepth(world, tempStrip));
+			}
+			Entry<Integer, Float> min = Collections.min(depths.entrySet(), new Comparator<Entry<Integer, Float>>() {
+			    public int compare(Entry<Integer, Float> entry1, Entry<Integer, Float> entry2) {
+			        return entry1.getValue().compareTo(entry2.getValue());
+			    }
+			});
+			final FluidStrip minStrip = world.fluids().getFluidStrip(min.getKey()).get();
+			for (final Integer key : stripsAbove) {
+				if(key != min.getKey()) {
+					final FluidStrip tempStrip = world.fluids().getFluidStrip(key).get();
+					if(depths.get(key) > min.getValue()) {
+						minStrip.addVolume(-tempStrip.addVolume(-Math.min(depths.get(key) - min.getValue(), MAX_PARTICLE_VOLUME)));
+					}
+				}
+			}
 		}
 	}
 
