@@ -2,7 +2,6 @@ package bloodandmithril.world.fluids;
 
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static bloodandmithril.world.topography.Topography.convertToWorldCoord;
-import static com.google.common.collect.Sets.newHashSet;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -10,7 +9,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
+import java.util.TreeSet;
 
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.base.Optional;
@@ -37,8 +36,6 @@ public class FluidUpdater {
 
 	@Inject private FluidStripPopulator fluidStripPopulator;
 	@Inject private FluidParticlePopulator fluidParticlePopulator;
-
-	private Set<Integer> flaggedForDeletion = newHashSet();
 
 	/**
 	 * Updates a {@link FluidStrip}
@@ -99,13 +96,8 @@ public class FluidUpdater {
 						!world.fluids().getFluidStrip(strip.worldTileX - 1, strip.worldTileY).isPresent() &&
 						!world.fluids().getFluidStrip(strip.worldTileX + strip.width, strip.worldTileY).isPresent()
 					) {
-						if(flaggedForDeletion.contains(strip.id)) { // to make sure it's updated at least once before being deleted.
-							world.fluids().removeFluidStrip(strip.id);
-							flaggedForDeletion.remove(strip.id);
-							return;
-						} else {
-							flaggedForDeletion.add(strip.id);
-						}
+						world.fluids().removeFluidStrip(strip.id);
+						return;
 					}
 				}
 			}
@@ -298,39 +290,42 @@ public class FluidUpdater {
 	}
 	
 	private void equalizeLevels(World world, FluidStrip strip) {
-		final Collection<Integer> stripsAbove = Sets.newConcurrentHashSet();
-		for (int x = strip.worldTileX; x < strip.worldTileX + strip.width; x++) {
-			final Optional<FluidStrip> tempStrip = world.fluids().getFluidStrip(x, strip.worldTileY + 1);
-			// if there's a strip there already, use it
-			if(tempStrip.isPresent()) {
-				stripsAbove.add(tempStrip.get().id);
-				x = tempStrip.get().worldTileX + tempStrip.get().width;
-			//if not, try to make one
-			} else {
-				final Optional<FluidStrip> addedStrip = fluidStripPopulator.createFluidStrip(world, x, strip.worldTileY + 1, 0f);
-				if(addedStrip.isPresent()) {
-					stripsAbove.add(addedStrip.get().id);
-					x = addedStrip.get().worldTileX + addedStrip.get().width;
+		if(strip.getVolume() == strip.width) {
+			final Collection<Integer> stripsAbove = Sets.newConcurrentHashSet();
+			for (int x = strip.worldTileX; x < strip.worldTileX + strip.width; x++) {
+				final Optional<FluidStrip> tempStrip = world.fluids().getFluidStrip(x, strip.worldTileY + 1);
+				// if there's a strip there already, use it
+				if(tempStrip.isPresent()) {
+					stripsAbove.add(tempStrip.get().id);
+					x = tempStrip.get().worldTileX + tempStrip.get().width;
+				//if not, try to make one
+				} else {
+					final Optional<FluidStrip> addedStrip = fluidStripPopulator.createFluidStrip(world, x, strip.worldTileY + 1, 0f);
+					if(addedStrip.isPresent()) {
+						stripsAbove.add(addedStrip.get().id);
+						x = addedStrip.get().worldTileX + addedStrip.get().width;
+					}
 				}
 			}
-		}
-		if(!stripsAbove.isEmpty()) {
-			Map<Integer, Float> depths = new HashMap<>();
-			for (final Integer key : stripsAbove) {
-				final FluidStrip tempStrip = world.fluids().getFluidStrip(key).get();
-				depths.put(tempStrip.id, getDepth(world, tempStrip));
-			}
-			Entry<Integer, Float> min = Collections.min(depths.entrySet(), new Comparator<Entry<Integer, Float>>() {
-			    public int compare(Entry<Integer, Float> entry1, Entry<Integer, Float> entry2) {
-			        return entry1.getValue().compareTo(entry2.getValue());
-			    }
-			});
-			final FluidStrip minStrip = world.fluids().getFluidStrip(min.getKey()).get();
-			for (final Integer key : stripsAbove) {
-				if(key != min.getKey()) {
+			if(stripsAbove.size() > 1) {
+				Map<Integer, Float> depths = new HashMap<>();
+				for (final Integer key : stripsAbove) {
 					final FluidStrip tempStrip = world.fluids().getFluidStrip(key).get();
-					if(depths.get(key) > min.getValue()) {
-						minStrip.addVolume(-tempStrip.addVolume(-Math.min(depths.get(key) - min.getValue(), MAX_PARTICLE_VOLUME)));
+					depths.put(tempStrip.id, getDepth(world, tempStrip));
+				}
+				Entry<Integer, Float> min = Collections.min(depths.entrySet(), new Comparator<Entry<Integer, Float>>() {
+				    public int compare(Entry<Integer, Float> entry1, Entry<Integer, Float> entry2) {
+				        return entry1.getValue().compareTo(entry2.getValue());
+				    }
+				});
+				final FluidStrip minStrip = world.fluids().getFluidStrip(min.getKey()).get();
+				for (final Integer key : stripsAbove) {
+					if(key != min.getKey()) {
+						final FluidStrip tempStrip = world.fluids().getFluidStrip(key).get();
+						if(depths.get(key) > min.getValue()) {
+							System.out.println(String.format("%.10f", (depths.get(key) - min.getValue())/2));
+							minStrip.addVolume(-tempStrip.addVolume(-Math.min((depths.get(key) - min.getValue())/2, MAX_PARTICLE_VOLUME)));
+						}
 					}
 				}
 			}
@@ -354,25 +349,24 @@ public class FluidUpdater {
 	 * @return the depth of the strips above the given strip at the deepest level.
 	 */
 	private float getDepth(final World world, final FluidStrip strip) {
-		int count = -1; // because we count the one we're on
-		float extra = 0f;
-		Collection<FluidStrip> currentStrips = Sets.newConcurrentHashSet();
+		float depth = 0f;
+		Comparator<FluidStrip> byVolume = new Comparator<FluidStrip>() {
+			public int compare(FluidStrip strip1, FluidStrip strip2) {
+				return Float.compare(strip1.getVolume(), strip2.getVolume());
+			}
+		};
+		TreeSet<FluidStrip> currentStrips = Sets.newTreeSet(byVolume);
 		currentStrips.add(strip);
+		
 		while(!currentStrips.isEmpty()) {
-			count++;
-			final Collection<FluidStrip> nextStrips = Sets.newConcurrentHashSet();
+			depth += currentStrips.last().getVolume()/currentStrips.last().width;
+			final TreeSet<FluidStrip> nextStrips = Sets.newTreeSet(byVolume);
 			for(final FluidStrip currentStrip : currentStrips) {
 				nextStrips.addAll(getStripsAbove(world, currentStrip)); // can have duplicates, this doesn't matter
 			}
-			if(nextStrips.isEmpty()) {
-				for(final FluidStrip nextStrip : currentStrips) {
-					extra = Math.max(nextStrip.getVolume()/nextStrip.width, extra);
-				}
-			}
 			currentStrips = nextStrips;
 		}
-
-		return count + extra;
+		return depth;
 	}
 
 
