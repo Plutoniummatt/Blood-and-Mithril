@@ -290,7 +290,7 @@ public class FluidUpdater {
 	}
 	
 	private void equalizeLevels(World world, FluidStrip strip) {
-		if(strip.getVolume() == strip.width) {
+		if(strip.getVolume() - strip.width > -0.01f) {
 			final Collection<Integer> stripsAbove = Sets.newConcurrentHashSet();
 			for (int x = strip.worldTileX; x < strip.worldTileX + strip.width; x++) {
 				final Optional<FluidStrip> tempStrip = world.fluids().getFluidStrip(x, strip.worldTileY + 1);
