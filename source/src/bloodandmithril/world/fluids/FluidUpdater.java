@@ -4,11 +4,9 @@ import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static bloodandmithril.world.topography.Topography.convertToWorldCoord;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.TreeSet;
 
 import com.badlogic.gdx.math.Vector2;
@@ -312,19 +310,17 @@ public class FluidUpdater {
 				for (final Integer key : stripsAbove) {
 					final FluidStrip tempStrip = world.fluids().getFluidStrip(key).get();
 					depths.put(tempStrip.id, getDepth(world, tempStrip));
+					
 				}
-				Entry<Integer, Float> min = Collections.min(depths.entrySet(), new Comparator<Entry<Integer, Float>>() {
-				    public int compare(Entry<Integer, Float> entry1, Entry<Integer, Float> entry2) {
-				        return entry1.getValue().compareTo(entry2.getValue());
-				    }
-				});
-				final FluidStrip minStrip = world.fluids().getFluidStrip(min.getKey()).get();
-				for (final Integer key : stripsAbove) {
-					if(key != min.getKey()) {
-						final FluidStrip tempStrip = world.fluids().getFluidStrip(key).get();
-						if(depths.get(key) > min.getValue()) {
-							System.out.println(String.format("%.10f", (depths.get(key) - min.getValue())/2));
-							minStrip.addVolume(-tempStrip.addVolume(-Math.min((depths.get(key) - min.getValue())/2, MAX_PARTICLE_VOLUME)));
+				for (final Integer keyFrom : stripsAbove) {
+					final FluidStrip tempStripFrom = world.fluids().getFluidStrip(keyFrom).get();
+					for (final Integer keyTo : stripsAbove) {
+						if(keyTo != keyFrom) {
+							Float depthToTransfer = (depths.get(keyFrom) - depths.get(keyTo))/2;
+							if(depthToTransfer > 0) {
+								final FluidStrip tempStripTo = world.fluids().getFluidStrip(keyTo).get();
+								tempStripTo.addVolume(-tempStripFrom.addVolume(-Math.min(tempStripFrom.getVolume(), depthToTransfer)/(stripsAbove.size() - 1)));
+							}
 						}
 					}
 				}
