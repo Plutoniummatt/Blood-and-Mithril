@@ -224,17 +224,7 @@ public class FluidUpdater {
 	private void spewFromBottomOfStrip(final World world, final FluidStrip strip) {
 		for (int x = strip.worldTileX; x < strip.worldTileX + strip.width; x++) {
 			final Optional<FluidStrip> tempStrip = world.fluids().getFluidStrip(x, strip.worldTileY - 1);
-			if (tempStrip.isPresent()) {
-				if(tempStrip.get().getVolume() < tempStrip.get().width) {
-					//particles for each strip tile
-					for(int i = tempStrip.get().worldTileX; i < tempStrip.get().worldTileX + tempStrip.get().width; i++) {
-						final Vector2 position = new Vector2(i + Topography.TILE_SIZE / 2f, strip.worldTileY - 1);
-						final Vector2 velocity = new Vector2(Util.getRandom().nextFloat() * 200f, 0f).rotate(Util.getRandom().nextFloat() * 360f).add(0f,-200f);
-						spewParticle(world, strip, position, velocity);
-					}
-				}
-				x = tempStrip.get().worldTileX + tempStrip.get().width;
-			} else {
+			if (!tempStrip.isPresent()) {
 				try {
 					if(world.getTopography().getTile(x, strip.worldTileY - 1, true).isPassable()) {
 						//particles below this tile
@@ -263,9 +253,20 @@ public class FluidUpdater {
 		}
 		if (!stripsBelow.isEmpty()) {
 			for (final Integer key : stripsBelow) {
-				final FluidStrip tempStrip = world.fluids().getFluidStrip(key).get();
-				final float transferVolume = Math.min(tempStrip.width - tempStrip.getVolume(),strip.getVolume()/stripsBelow.size());
-				tempStrip.addVolume(-strip.addVolume(-transferVolume));
+				final FluidStrip tempBelow = world.fluids().getFluidStrip(key).get();
+				if (tempBelow.getVolume() < tempBelow.width) {
+					final Collection<FluidStrip> stripsAbove = getStripsAbove(world, tempBelow);
+					if (stripsAbove.size() > 1) {
+						float spaceBelow = tempBelow.width - tempBelow.getVolume();
+						for(FluidStrip tempAbove : stripsAbove) {
+							final float transferVolume = Math.min(spaceBelow,tempAbove.getVolume()/stripsBelow.size())/stripsAbove.size();
+							tempBelow.addVolume(-tempAbove.addVolume(-transferVolume));
+						}
+					} else {
+						final float transferVolume = Math.min(tempBelow.width - tempBelow.getVolume(),strip.getVolume()/stripsBelow.size());
+						tempBelow.addVolume(-strip.addVolume(-transferVolume));
+					}
+				}
 			}
 		}
 	}
