@@ -66,9 +66,6 @@ public final class World implements Serializable {
 	/** The projectiles of this {@link World} */
 	private final WorldProjectiles projectiles;
 
-	/** The fluids of this {@link World} */
-	private final WorldFluids fluids;
-
 	/** Epoch of this world */
 	private Epoch epoch;
 
@@ -103,7 +100,6 @@ public final class World implements Serializable {
 		this.items = new WorldItems(worldId);
 		this.props = new WorldProps(worldId);
 		this.projectiles = new WorldProjectiles(worldId);
-		this.fluids = new WorldFluids(worldId);
 		this.topography = new Topography();
 		this.positionalIndexMap = new PositionalIndexMap(worldId);
 
@@ -250,10 +246,5 @@ public final class World implements Serializable {
 
 	public WeatherState getWeatherState() {
 		return weatherState;
-	}
-
-
-	public WorldFluids fluids() {
-		return fluids;
 	}
 }

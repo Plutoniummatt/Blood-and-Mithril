@@ -21,7 +21,6 @@ import bloodandmithril.item.items.Item;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.util.datastructure.ConcurrentDualKeyHashMap;
 import bloodandmithril.world.Domain;
-import bloodandmithril.world.fluids.FluidStrip;
 
 /**
  * A map that holds {@link PositionalIndexNode}s, maps chunks to indexes
@@ -39,7 +38,7 @@ public class PositionalIndexMap implements Serializable {
 	/**
 	 * Constructor
 	 */
-	public PositionalIndexMap(int worldId) {
+	public PositionalIndexMap(final int worldId) {
 		this.worldId = worldId;
 	}
 
@@ -47,10 +46,10 @@ public class PositionalIndexMap implements Serializable {
 	/**
 	 * @return a {@link Collection} of nearby entities of the same type, nearby meaning in the same or adjacent/diagonal chunk
 	 */
-	public Collection<Integer> getNearbyEntityIds(Class<?> clazz, float x, float y) {
-		LinkedList<Integer> entities = Lists.newLinkedList();
+	public Collection<Integer> getNearbyEntityIds(final Class<?> clazz, final float x, final float y) {
+		final LinkedList<Integer> entities = Lists.newLinkedList();
 
-		int i = CHUNK_SIZE * TILE_SIZE;
+		final int i = CHUNK_SIZE * TILE_SIZE;
 		entities.addAll(get(x, y).getAllEntitiesForType(clazz));
 		entities.addAll(get(x, y + i).getAllEntitiesForType(clazz));
 		entities.addAll(get(x + i, y + i).getAllEntitiesForType(clazz));
@@ -68,7 +67,7 @@ public class PositionalIndexMap implements Serializable {
 	/**
 	 * @return a {@link Collection} of entities of the same type, that are on screen
 	 */
-	public Collection<Integer> getOnScreenEntities(Class<?> clazz, Graphics graphics) {
+	public Collection<Integer> getOnScreenEntities(final Class<?> clazz, final Graphics graphics) {
 		return getEntitiesWithinBounds(
 			clazz,
 			graphics.getCam().position.x - graphics.getWidth(),
@@ -77,12 +76,12 @@ public class PositionalIndexMap implements Serializable {
 			graphics.getCam().position.y - graphics.getHeight()
 		);
 	}
-	
-	
+
+
 	/**
 	 * @return a {@link Collection} of {@link PositionalIndexNode} that are on screen
 	 */
-	public Collection<PositionalIndexNode> getOnScreenNodes(Graphics graphics) {
+	public Collection<PositionalIndexNode> getOnScreenNodes(final Graphics graphics) {
 		return getNodesWithinBounds(
 			graphics.getCam().position.x - graphics.getWidth(),
 			graphics.getCam().position.x + graphics.getWidth(),
@@ -90,20 +89,20 @@ public class PositionalIndexMap implements Serializable {
 			graphics.getCam().position.y - graphics.getHeight()
 		);
 	}
-	
-	
+
+
 	/**
 	 * @return a {@link Collection} of {@link PositionalIndexNode}s of that are contained (roughly) within a defined box.
 	 *
 	 * Roughly because the indexing nodes are quantised.
 	 */
-	public Collection<PositionalIndexNode> getNodesWithinBounds(float left, float right, float top, float bottom) {
-		int i = CHUNK_SIZE * TILE_SIZE;
+	public Collection<PositionalIndexNode> getNodesWithinBounds(final float left, final float right, final float top, final float bottom) {
+		final int i = CHUNK_SIZE * TILE_SIZE;
 
-		int xSteps = (int)(right - left) / i + 1;
-		int ySteps = (int)(top - bottom) / i + 1;
-		
-		Collection<PositionalIndexNode> nodes = Lists.newLinkedList();
+		final int xSteps = (int)(right - left) / i + 1;
+		final int ySteps = (int)(top - bottom) / i + 1;
+
+		final Collection<PositionalIndexNode> nodes = Lists.newLinkedList();
 
 		for (int x = 0; x <= xSteps; x++) {
 			for (int y = 0; y <= ySteps; y++) {
@@ -120,13 +119,13 @@ public class PositionalIndexMap implements Serializable {
 	 *
 	 * Roughly because the indexing nodes are quantised.
 	 */
-	public List<Integer> getEntitiesWithinBounds(Class<?> clazz, float left, float right, float top, float bottom) {
-		LinkedList<Integer> entities = Lists.newLinkedList();
+	public List<Integer> getEntitiesWithinBounds(final Class<?> clazz, final float left, final float right, final float top, final float bottom) {
+		final LinkedList<Integer> entities = Lists.newLinkedList();
 
-		int i = CHUNK_SIZE * TILE_SIZE;
+		final int i = CHUNK_SIZE * TILE_SIZE;
 
-		int xSteps = (int)(right - left) / i + 1;
-		int ySteps = (int)(top - bottom) / i + 1;
+		final int xSteps = (int)(right - left) / i + 1;
+		final int ySteps = (int)(top - bottom) / i + 1;
 
 		for (int x = 0; x <= xSteps; x++) {
 			for (int y = 0; y <= ySteps; y++) {
@@ -138,10 +137,10 @@ public class PositionalIndexMap implements Serializable {
 	}
 
 
-	public Collection<PositionalIndexNode> getNearbyNodes(float x, float y) {
-		LinkedList<PositionalIndexNode> nodes = Lists.newLinkedList();
+	public Collection<PositionalIndexNode> getNearbyNodes(final float x, final float y) {
+		final LinkedList<PositionalIndexNode> nodes = Lists.newLinkedList();
 
-		int i = CHUNK_SIZE * TILE_SIZE;
+		final int i = CHUNK_SIZE * TILE_SIZE;
 		nodes.add(get(x, y));
 		nodes.add(get(x, y + i));
 		nodes.add(get(x + i, y + i));
@@ -159,7 +158,7 @@ public class PositionalIndexMap implements Serializable {
 	/**
 	 * @return a {@link Collection} of nearby entities of the same type, nearby meaning in the same or adjacent/diagonal chunk
 	 */
-	public Collection<Integer> getNearbyEntityIds(Class<?> clazz, Vector2 position) {
+	public Collection<Integer> getNearbyEntityIds(final Class<?> clazz, final Vector2 position) {
 		return getNearbyEntityIds(clazz, position.x, position.y);
 	}
 
@@ -167,7 +166,7 @@ public class PositionalIndexMap implements Serializable {
 	/**
 	 * @return a {@link Collection} of nearby entities of the same type, nearby meaning in the same or adjacent/diagonal chunk
 	 */
-	public <T extends MouseOverable> Collection<T> getNearbyEntities(Class<T> clazz, Vector2 position) {
+	public <T extends MouseOverable> Collection<T> getNearbyEntities(final Class<T> clazz, final Vector2 position) {
 		return getNearbyEntities(clazz, position.x, position.y);
 	}
 
@@ -176,8 +175,8 @@ public class PositionalIndexMap implements Serializable {
 	 * @return a {@link Collection} of nearby entities of the same type, nearby meaning in the same or adjacent/diagonal chunk
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends MouseOverable> Collection<T> getNearbyEntities(Class<T> clazz, float x, float y) {
-		Collection<T> ts = Lists.newLinkedList();
+	public <T extends MouseOverable> Collection<T> getNearbyEntities(final Class<T> clazz, final float x, final float y) {
+		final Collection<T> ts = Lists.newLinkedList();
 
 		Function<Integer, T> function;
 		if (clazz.equals(Individual.class)) {
@@ -186,13 +185,11 @@ public class PositionalIndexMap implements Serializable {
 			function = id -> (T) Domain.getWorld(worldId).props().getProp(id);
 		} else if (clazz.equals(Item.class)) {
 			function = id -> (T) Domain.getWorld(worldId).items().getItem(id);
-		} else if (clazz.equals(FluidStrip.class)) {
-			function = id -> (T) Domain.getWorld(worldId).fluids().getFluidStrip(id).get();
 		} else {
 			throw new RuntimeException("Unrecongized class : " + clazz.getSimpleName());
 		}
 
-		for (int id : getNearbyEntityIds(clazz, x, y)) {
+		for (final int id : getNearbyEntityIds(clazz, x, y)) {
 			ts.add(function.apply(id));
 		}
 
@@ -203,33 +200,33 @@ public class PositionalIndexMap implements Serializable {
 	/**
 	 * @return the {@link PositionalIndexNode} given the world coords
 	 */
-	public PositionalIndexNode get(float x, float y) {
+	public PositionalIndexNode get(final float x, final float y) {
 		return getWithChunkCoords(
-			convertToChunkCoord(x), 
+			convertToChunkCoord(x),
 			convertToChunkCoord(y)
 		);
 	}
-	
-	
+
+
 	/**
 	 * @return the {@link PositionalIndexNode} given the world coords
 	 */
-	public PositionalIndexNode getWithTileCoords(int tileX, int tileY) {
+	public PositionalIndexNode getWithTileCoords(final int tileX, final int tileY) {
 		return getWithChunkCoords(
-			convertToChunkCoord(tileX), 
+			convertToChunkCoord(tileX),
 			convertToChunkCoord(tileY)
 		);
 	}
-	
-	
+
+
 	/**
 	 * @return the {@link PositionalIndexNode} given the world coords
 	 */
-	public PositionalIndexNode getWithChunkCoords(int chunkX, int chunkY) {
-		PositionalIndexNode positionalIndex = indexes.get(chunkX, chunkY);
+	public PositionalIndexNode getWithChunkCoords(final int chunkX, final int chunkY) {
+		final PositionalIndexNode positionalIndex = indexes.get(chunkX, chunkY);
 
 		if (positionalIndex == null) {
-			PositionalIndexNode value = new PositionalIndexNode();
+			final PositionalIndexNode value = new PositionalIndexNode();
 			indexes.put(chunkX, chunkY, value);
 			return value;
 		}

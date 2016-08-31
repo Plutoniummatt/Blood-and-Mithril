@@ -110,7 +110,6 @@ import bloodandmithril.util.Task;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.util.datastructure.Boundaries;
 import bloodandmithril.world.Domain;
-import bloodandmithril.world.fluids.FluidStrip;
 import bloodandmithril.world.topography.Chunk;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
@@ -395,7 +394,6 @@ public class UserInterface {
 			if (renderComponentBoundaries) {
 				renderComponentBoundaries();
 			}
-			renderFluidStripHighightBoxes();
 			renderMouseOverTileHighlightBox(false);
 		}
 
@@ -456,11 +454,11 @@ public class UserInterface {
 			});
 		});
 
-		getShapeRenderer().end();		
+		getShapeRenderer().end();
 	}
 
 
-	private void render(Interface iface) {
+	private void render(final Interface iface) {
 		if (iface instanceof VerticalInterface) {
 			shapeRenderer.rect(
 				worldToScreenX(convertToWorldCoord(((VerticalInterface) iface).tileX, true)),
@@ -469,7 +467,7 @@ public class UserInterface {
 				((VerticalInterface) iface).height * TILE_SIZE
 			);
 		}
-		
+
 		if (iface instanceof HorizontalInterface) {
 			shapeRenderer.rect(
 				worldToScreenX(convertToWorldCoord(((HorizontalInterface) iface).tileX, true)),
@@ -688,20 +686,6 @@ public class UserInterface {
 			}
 		}
 	}
-	
-	
-	private void renderFluidStripHighightBoxes() {
-		gl.glEnable(GL_BLEND);
-		gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		Gdx.gl20.glLineWidth(2f);
-		for(FluidStrip strip : gameClientStateTracker.getActiveWorld().fluids().getAllFluidStrips()) {
-			getShapeRenderer().begin(ShapeType.Line);
-			getShapeRenderer().setColor(Color.PURPLE);
-			getShapeRenderer().rect(worldToScreenX(strip.worldTileX * TILE_SIZE), worldToScreenY(strip.worldTileY * TILE_SIZE), strip.width * TILE_SIZE, TILE_SIZE);
-			getShapeRenderer().end();
-		}
-		gl.glDisable(GL_BLEND);
-	}
 
 
 	private void renderPositionalIndexes() {
@@ -729,17 +713,6 @@ public class UserInterface {
 				)
 			)
 		);
-		
-		nearbyEntities.addAll(
-			Lists.newArrayList(
-				Iterables.transform(
-					gameClientStateTracker.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(FluidStrip.class, getMouseWorldX(), getMouseWorldY()),
-					id -> {
-						return gameClientStateTracker.getActiveWorld().fluids().getFluidStrip(id).get();
-					}
-				)
-			)
-		);
 
 		int position = graphics.getHeight() - 270;
 		graphics.getSpriteBatch().begin();
@@ -751,10 +724,6 @@ public class UserInterface {
 
 			if (nearbyEntity instanceof Prop) {
 				Fonts.defaultFont.draw(graphics.getSpriteBatch(), ((Prop) nearbyEntity).getClass().getSimpleName() + " " + ((Prop) nearbyEntity).id, 5, position);
-			}
-			
-			if (nearbyEntity instanceof FluidStrip) {
-				Fonts.defaultFont.draw(graphics.getSpriteBatch(), ((FluidStrip) nearbyEntity).getClass().getSimpleName() + " " + ((FluidStrip) nearbyEntity).id, 5, position);
 			}
 			position = position - 20;
 		}
@@ -841,11 +810,6 @@ public class UserInterface {
 		gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		Gdx.gl20.glLineWidth(2f);
 		getShapeRenderer().begin(ShapeType.Line);
-		if(gameClientStateTracker.getActiveWorld().fluids().getFluidStrip(convertToWorldTileCoord(getMouseWorldX()), convertToWorldTileCoord(getMouseWorldY())).isPresent()) {
-			getShapeRenderer().setColor(Color.PINK);
-		} else {
-			getShapeRenderer().setColor(Color.GREEN);
-		}
 		getShapeRenderer().rect(x, y, TILE_SIZE, TILE_SIZE);
 		getShapeRenderer().end();
 

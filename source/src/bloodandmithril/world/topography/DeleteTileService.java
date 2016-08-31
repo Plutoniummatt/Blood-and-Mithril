@@ -17,7 +17,6 @@ import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
-import bloodandmithril.world.fluids.FluidStripPopulator;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.Tile.EmptyTile;
@@ -31,7 +30,6 @@ import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 @Copyright("Matthew Peck 2016")
 public class DeleteTileService {
 
-	@Inject private FluidStripPopulator fluidStripPopulator;
 	@Inject private ChangeTileService changeTileService;
 
 	/**
@@ -63,16 +61,6 @@ public class DeleteTileService {
 				Logger.generalDebug("Deleting tile at (" + convertToWorldTileCoord(chunkX, tileX) + ", " + convertToWorldTileCoord(chunkY, tileY) + "), World coord: (" + worldX + ", " + worldY + ")", LogLevel.TRACE);
 				if (!forceRemove) {
 					removeProps(worldId, worldX, worldY);
-				}
-				if(foreGround) {
-					if(
-						Domain.getWorld(worldId).fluids().getFluidStrip(convertToWorldTileCoord(worldX) - 1, convertToWorldTileCoord(worldY)).isPresent() ||
-						Domain.getWorld(worldId).fluids().getFluidStrip(convertToWorldTileCoord(worldX) + 1, convertToWorldTileCoord(worldY)).isPresent()
-					) {
-						fluidStripPopulator.createFluidStrip(Domain.getWorld(worldId), convertToWorldTileCoord(worldX), convertToWorldTileCoord(worldY), 0f);
-					} else {
-						fluidStripPopulator.createFluidStripIfBase(Domain.getWorld(worldId), convertToWorldTileCoord(worldX), convertToWorldTileCoord(worldY), 0f);
-					}
 				}
 				return tile;
 

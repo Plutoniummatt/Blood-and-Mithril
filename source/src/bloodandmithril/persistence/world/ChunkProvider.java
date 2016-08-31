@@ -21,11 +21,8 @@ import bloodandmithril.util.Task;
 import bloodandmithril.util.datastructure.ConcurrentDualKeyHashMap;
 import bloodandmithril.util.datastructure.WrapperForTwo;
 import bloodandmithril.world.World;
-import bloodandmithril.world.fluids.FluidStripPopulator;
 import bloodandmithril.world.topography.Chunk;
 import bloodandmithril.world.topography.Chunk.ChunkData;
-import bloodandmithril.world.topography.Topography;
-import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile;
 
 /**
@@ -45,12 +42,11 @@ public class ChunkProvider {
 
 	/** The current chunk coordinates that is in the queue to be loaded/generated */
 	private final ConcurrentDualKeyHashMap<Integer, Integer, Boolean> chunksInQueue = new ConcurrentDualKeyHashMap<>();
-            
+
 	@Inject private PersistenceParameters persistenceParameters;
 	@Inject private ChunkGenerator chunkGenerator;
 	@Inject private ChunkPopulator chunkPopulator;
-	@Inject private FluidStripPopulator fluidStripPopulator;
-	
+
 	/**
 	 * Constructor
 	 */
@@ -93,7 +89,7 @@ public class ChunkProvider {
 
 	/**
 	 * Attempts to laod the chunk from disk, if loading fails, the chunk is generated
-	 * 
+	 *
 	 * @param chunkX - Chunk x-coord to load
 	 * @param chunkY - Chunk y-coord to load
 	 *
@@ -140,43 +136,18 @@ public class ChunkProvider {
 				}
 			} catch (final Exception e) {
 				Logger.loaderDebug("No chunk found on disk, generating new chunk: " + chunkX + ", " + chunkY, LogLevel.DEBUG);
-				
+
 				// If load was unsuccessful, the chunk in question remains null and we generate it.
-				WrapperForTwo<Tile[][], Tile[][]> chunk = chunkGenerator.generate(chunkX, chunkY, world);
-				
+				final WrapperForTwo<Tile[][], Tile[][]> chunk = chunkGenerator.generate(chunkX, chunkY, world);
+
 				if (populateChunkMap) {
 					// Populate the world with the generated chunk
 					chunkPopulator.populateChunkMap(chunk.a, chunk.b, world, chunkX, chunkY);
 				}
-				
-				createFluidStrips(world, chunkX, chunkY);
 			}
 
 			// Remove chunk from queue.
 			chunksInQueue.remove(chunkX, chunkY);
-		}
-	}
-
-
-	/**
-	 * @param world
-	 * @param chunkX
-	 * @param chunkY
-	 * 
-	 * Create fluid strips at any valid "base" layers where fluids can validly exist
-	 */
-	private void createFluidStrips(World world, int chunkX, int chunkY) {
-		for(int x = -1; x <= Topography.CHUNK_SIZE; x++) {
-			for(int y = 0; y < Topography.CHUNK_SIZE; y++) {
-				try {
-					fluidStripPopulator.createFluidStripIfBase(
-						world, 
-						Topography.convertToWorldTileCoord(chunkX, x), 
-						Topography.convertToWorldTileCoord(chunkY, y), 
-						0.8f
-					);
-				} catch (NoTileFoundException e) {}
-			}
 		}
 	}
 }

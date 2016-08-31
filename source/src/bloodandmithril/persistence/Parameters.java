@@ -12,7 +12,6 @@ import bloodandmithril.graphics.particles.Particle;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.weapon.ranged.Projectile;
 import bloodandmithril.prop.Prop;
-import bloodandmithril.world.fluids.FluidStrip;
 
 /**
  * Parameters that require saving
@@ -33,9 +32,7 @@ public class Parameters implements Serializable {
 	private int itemCounter = 0;
 	private int projectileCounter = 0;
 	private int activeWorldId = 0;
-	private int fluidStripId = 0;
 	private long particleCounter = 0;
-	private long fluidParticleId = 0;
 
 	private Map<Integer, Vector2> cameraPositions;
 
@@ -45,7 +42,7 @@ public class Parameters implements Serializable {
 	 */
 	Parameters() {
 		super();
-		Random random = new Random();
+		final Random random = new Random();
 		initialSeed = random.nextInt();
 	}
 
@@ -129,24 +126,6 @@ public class Parameters implements Serializable {
 		propIdCounter++;
 		return propIdCounter;
 	}
-	
-	
-	/**
-	 * Returns the next unique identifier to use for {@link FluidStrip}
-	 */
-	public synchronized int getNextFluidStripId() {
-		fluidStripId++;
-		return fluidStripId;
-	}
-
-	
-	/**
-	 * Returns the next unique identifier to use for {@link FluidStrip}
-	 */
-	public synchronized long getNextFluidParticleId() {
-		fluidParticleId++;
-		return fluidParticleId;
-	}
 
 
 	/**
@@ -168,7 +147,7 @@ public class Parameters implements Serializable {
 	/**
 	 * Sets the saved camera position
 	 */
-	public void setSavedCameraPosition(Map<Integer, Vector2> cameraPositions) {
+	public void setSavedCameraPosition(final Map<Integer, Vector2> cameraPositions) {
 		this.cameraPositions = cameraPositions;
 	}
 
@@ -184,7 +163,7 @@ public class Parameters implements Serializable {
 	/**
 	 * Returns the saved active world id
 	 */
-	public void setActiveWorldId(int activeWorldId) {
+	public void setActiveWorldId(final int activeWorldId) {
 		this.activeWorldId = activeWorldId;
 	}
 }
