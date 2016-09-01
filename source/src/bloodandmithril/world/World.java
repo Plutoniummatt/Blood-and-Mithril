@@ -63,6 +63,9 @@ public final class World implements Serializable {
 	/** The props of this {@link World} */
 	private final WorldProps props;
 
+	/** The fluid of this {@link World} */
+	private final WorldFluids fluids;
+
 	/** The projectiles of this {@link World} */
 	private final WorldProjectiles projectiles;
 
@@ -99,6 +102,7 @@ public final class World implements Serializable {
 		this.biomeDecider = biomeDecider;
 		this.items = new WorldItems(worldId);
 		this.props = new WorldProps(worldId);
+		this.fluids = new WorldFluids(worldId);
 		this.projectiles = new WorldProjectiles(worldId);
 		this.topography = new Topography();
 		this.positionalIndexMap = new PositionalIndexMap(worldId);
@@ -151,6 +155,14 @@ public final class World implements Serializable {
 	 */
 	public final WorldItems items() {
 		return items;
+	}
+
+
+	/**
+	 * @return The {@link WorldFluids}
+	 */
+	public final WorldFluids fluids() {
+		return fluids;
 	}
 
 

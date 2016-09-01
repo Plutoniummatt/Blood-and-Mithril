@@ -8,6 +8,8 @@ import bloodandmithril.item.items.Item;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
+import bloodandmithril.world.fluids.FluidColumn;
+import bloodandmithril.world.topography.Topography;
 
 /**
  * Service to re-index indexable entities.
@@ -36,9 +38,48 @@ public class PositionalIndexingService {
 			}
 
 			for (final Prop prop : world.props().getProps()) {
-				prop.updatePositionIndex();
+				indexProp(prop);
+			}
+
+			for (final FluidColumn fluidColumn : world.fluids().getAllFluids()) {
+				indexFluidColumn(fluidColumn, world.getWorldId());
 			}
 		}
+	}
+
+
+	public void indexFluidColumn(final FluidColumn fluidColumn, final int worldId) {
+		final int height = fluidColumn.getHeight();
+		final float worldX = Topography.convertToWorldCoord(fluidColumn.getX(), false);
+
+		// Removal
+		for (int y = fluidColumn.getY(); y < fluidColumn.getY() + height; y++) {
+			for (final PositionalIndexNode node : Domain.getWorld(worldId).getPositionalIndexMap().getNearbyNodes(worldX,  Topography.convertToWorldCoord(y, false))) {
+				node.removeFluidColumn(fluidColumn.getId());
+			}
+		}
+
+		for (final PositionalIndexNode node : Domain.getWorld(worldId).getPositionalIndexMap().getNearbyNodes(worldX,  Topography.convertToWorldCoord(fluidColumn.getY() + height, false))) {
+			node.removeFluidColumn(fluidColumn.getId());
+		}
+
+		// Addition
+		for (int y = fluidColumn.getY(); y < fluidColumn.getY() + height; y++) {
+			Domain.getWorld(worldId).getPositionalIndexMap().get(worldX, Topography.convertToWorldCoord(y, false)).addFluidColumn(fluidColumn.getId());
+		}
+
+		Domain.getWorld(worldId).getPositionalIndexMap().get(worldX, Topography.convertToWorldCoord(fluidColumn.getY() + height, false)).addFluidColumn(fluidColumn.getId());
+	}
+
+
+	public void indexProp(final Prop prop) {
+		final int worldId = prop.getWorldId();
+
+		for (final PositionalIndexNode node : Domain.getWorld(worldId).getPositionalIndexMap().getNearbyNodes(prop.position.x, prop.position.y)) {
+			node.removeProp(prop.id);
+		}
+
+		Domain.getWorld(worldId).getPositionalIndexMap().get(prop.position.x, prop.position.y).addProp(prop.id);
 	}
 
 

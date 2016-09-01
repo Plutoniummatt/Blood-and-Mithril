@@ -21,6 +21,7 @@ import bloodandmithril.item.items.Item;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.util.datastructure.ConcurrentDualKeyHashMap;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.fluids.FluidColumn;
 
 /**
  * A map that holds {@link PositionalIndexNode}s, maps chunks to indexes
@@ -185,6 +186,8 @@ public class PositionalIndexMap implements Serializable {
 			function = id -> (T) Domain.getWorld(worldId).props().getProp(id);
 		} else if (clazz.equals(Item.class)) {
 			function = id -> (T) Domain.getWorld(worldId).items().getItem(id);
+		} else if (clazz.equals(FluidColumn.class)) {
+			function = id -> (T) Domain.getWorld(worldId).fluids().getFluid(id);
 		} else {
 			throw new RuntimeException("Unrecongized class : " + clazz.getSimpleName());
 		}

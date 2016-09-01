@@ -20,7 +20,6 @@ import bloodandmithril.graphics.RenderPropWith;
 import bloodandmithril.graphics.Textures;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.item.items.food.plant.CarrotItem.CarrotSeedProp;
-import bloodandmithril.performance.PositionalIndexNode;
 import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.prop.construction.Construction;
 import bloodandmithril.prop.construction.craftingstation.BlacksmithWorkshop;
@@ -36,7 +35,6 @@ import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.util.SerializableMappingFunction;
 import bloodandmithril.util.datastructure.Box;
-import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.tile.Tile;
 
 /**
@@ -103,15 +101,6 @@ public abstract class Prop implements Serializable, Visible, MouseOverable {
 	/** Returns the string title of this {@link Prop} */
 	public String getTitle() {
 		return getContextMenuItemLabel();
-	}
-
-	/** Reindexes this item */
-	public void updatePositionIndex() {
-		for (final PositionalIndexNode node : Domain.getWorld(worldId).getPositionalIndexMap().getNearbyNodes(position.x, position.y)) {
-			node.removeProp(id);
-		}
-
-		Domain.getWorld(worldId).getPositionalIndexMap().get(position.x, position.y).addProp(id);
 	}
 
 	/** Returns the label to use for the right click context menu */

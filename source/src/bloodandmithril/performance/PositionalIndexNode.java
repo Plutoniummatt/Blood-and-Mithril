@@ -10,6 +10,7 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.prop.Prop;
+import bloodandmithril.world.fluids.FluidColumn;
 
 /**
  * A positional index node is an entity which holds references to world objects depending on their world positions.  This will be used as a 'search index' so to speak
@@ -24,6 +25,7 @@ public class PositionalIndexNode implements Serializable {
 	private Set<Integer> props = Sets.newConcurrentHashSet();
 	private Set<Integer> individuals = Sets.newConcurrentHashSet();
 	private Set<Integer> items = Sets.newConcurrentHashSet();
+	private Set<Integer> fluidColumns = Sets.newConcurrentHashSet();
 
 	/**
 	 * Constructor
@@ -46,6 +48,10 @@ public class PositionalIndexNode implements Serializable {
 			return props;
 		}
 
+		if (clazz.equals(FluidColumn.class)) {
+			return fluidColumns;
+		}
+
 		throw new RuntimeException("Unrecognised class: " + clazz.getSimpleName());
 	}
 
@@ -65,6 +71,11 @@ public class PositionalIndexNode implements Serializable {
 	}
 
 
+	public void removeFluidColumn(final int key) {
+		items.remove(key);
+	}
+
+
 	public void addIndividual(final int key) {
 		individuals.add(key);
 	}
@@ -80,9 +91,15 @@ public class PositionalIndexNode implements Serializable {
 	}
 
 
+	public void addFluidColumn(final int key) {
+		fluidColumns.add(key);
+	}
+
+
 	public void clear() {
 		props.clear();
 		individuals.clear();
 		items.clear();
+		fluidColumns.clear();
 	}
 }

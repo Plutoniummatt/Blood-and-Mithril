@@ -12,6 +12,7 @@ import bloodandmithril.graphics.particles.Particle;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.weapon.ranged.Projectile;
 import bloodandmithril.prop.Prop;
+import bloodandmithril.world.fluids.FluidColumn;
 
 /**
  * Parameters that require saving
@@ -33,6 +34,7 @@ public class Parameters implements Serializable {
 	private int projectileCounter = 0;
 	private int activeWorldId = 0;
 	private long particleCounter = 0;
+	private int fluidColumnCounter = 0;
 
 	private Map<Integer, Vector2> cameraPositions;
 
@@ -98,6 +100,15 @@ public class Parameters implements Serializable {
 	public synchronized int getNextItemId() {
 		itemCounter++;
 		return itemCounter;
+	}
+
+
+	/**
+	 * Returns the next unique identifier to use for {@link FluidColumn}
+	 */
+	public synchronized int getNextFluidColumnId() {
+		fluidColumnCounter++;
+		return fluidColumnCounter;
 	}
 
 
