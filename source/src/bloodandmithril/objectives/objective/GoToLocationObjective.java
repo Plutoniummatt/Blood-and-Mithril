@@ -68,7 +68,7 @@ public class GoToLocationObjective implements Objective {
 			return ObjectiveStatus.FAILED;
 		}
 
-		for (final Individual individual : Domain.getWorld(worldId).getPositionalIndexMap().getNearbyEntities(Individual.class, location.call())) {
+		for (final Individual individual : Domain.getWorld(worldId).getPositionalIndexChunkMap().getNearbyEntities(Individual.class, location.call())) {
 			if (individualIdentificationFunction.apply(individual)) {
 				if (individual.getState().position.cpy().sub(location.call().cpy()).len() <= tolerance) {
 					return ObjectiveStatus.COMPLETE;

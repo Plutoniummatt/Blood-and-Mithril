@@ -91,7 +91,7 @@ public class DeleteTileService {
 		b.setValue(false);
 
 		final World world = Domain.getWorld(worldId);
-		world.getPositionalIndexMap().getNearbyEntityIds(Prop.class, worldX, worldY).forEach(id -> {
+		world.getPositionalIndexChunkMap().getNearbyEntityIds(Prop.class, worldX, worldY).forEach(id -> {
 			final Prop prop = world.props().getProp(id);
 
 			boolean canPlace = false;
@@ -116,7 +116,7 @@ public class DeleteTileService {
 		final Tile deletedTile = deleteTile(worldId, worldX, worldY, true, true);
 
 		final World world = Domain.getWorld(worldId);
-		world.getPositionalIndexMap().getNearbyEntityIds(Prop.class, worldX, worldY).forEach(id -> {
+		world.getPositionalIndexChunkMap().getNearbyEntityIds(Prop.class, worldX, worldY).forEach(id -> {
 			final Prop prop = world.props().getProp(id);
 
 			boolean canPlace = false;

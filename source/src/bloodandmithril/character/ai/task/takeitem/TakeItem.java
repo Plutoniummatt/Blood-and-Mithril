@@ -233,7 +233,7 @@ public class TakeItem extends CompositeAITask implements RoutineTask {
 		public AITask apply(final Object input) {
 			final Individual individual = getIndividual(hostId);
 			final World world = getWorld(individual.getWorldId());
-			final List<Integer> itemsWithinBounds = world.getPositionalIndexMap().getEntitiesWithinBounds(Item.class, left, right, top, bottom);
+			final List<Integer> itemsWithinBounds = world.getPositionalIndexChunkMap().getEntitiesWithinBounds(Item.class, left, right, top, bottom);
 
 			final List<Item> itemsToLoot = Lists.newLinkedList();
 

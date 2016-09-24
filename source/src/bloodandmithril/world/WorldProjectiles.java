@@ -56,7 +56,7 @@ public final class WorldProjectiles implements Serializable {
 
 	public final void removeProjectile(Integer id) {
 		Projectile projectile = projectiles.get(id);
-		Domain.getWorld(worldId).getPositionalIndexMap().get(projectile.getPosition().x, projectile.getPosition().y).removeItem(id);
+		Domain.getWorld(worldId).getPositionalIndexChunkMap().get(projectile.getPosition().x, projectile.getPosition().y).removeItem(id);
 		projectiles.remove(id);
 	}
 }

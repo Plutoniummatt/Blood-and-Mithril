@@ -180,7 +180,7 @@ public class Torch extends OffhandEquipment implements FireLighter, Craftable {
 			}
 
 			final World world = Domain.getWorld(((Individual) equipper).getWorldId());
-			for (final int propId : world.getPositionalIndexMap().getNearbyEntityIds(Prop.class, ((Individual) equipper).getState().position)) {
+			for (final int propId : world.getPositionalIndexChunkMap().getNearbyEntityIds(Prop.class, ((Individual) equipper).getState().position)) {
 				final Prop prop = world.props().getProp(propId);
 				if (prop.canBeUsedAsFireSource() && ((Individual) equipper).getInteractionBox().overlapsWith(new Box(prop.position.cpy().add(0, prop.height/2), prop.width, prop.height))) {
 					burning = true;
@@ -188,7 +188,7 @@ public class Torch extends OffhandEquipment implements FireLighter, Craftable {
 				}
 			}
 
-			for (final int individualId : world.getPositionalIndexMap().getNearbyEntityIds(Individual.class, ((Individual) equipper).getState().position)) {
+			for (final int individualId : world.getPositionalIndexChunkMap().getNearbyEntityIds(Individual.class, ((Individual) equipper).getState().position)) {
 				final Individual nearbyIndividual = Domain.getIndividual(individualId);
 				if (nearbyIndividual.canBeUsedAsFireSource()) {
 					burning = true;

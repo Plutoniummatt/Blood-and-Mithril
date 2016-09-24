@@ -1,6 +1,7 @@
 package bloodandmithril.world;
 
 import static bloodandmithril.world.topography.Topography.convertToChunkCoord;
+import static bloodandmithril.world.topography.Topography.convertToWorldTileCoord;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -61,7 +62,7 @@ public class WorldFluids implements Serializable {
 	 * @return The strip which occupies this tile
 	 */
 	public final Optional<FluidStrip> getFluidStrip(final int worldTileX, final int worldTileY) {
-		for (final Integer stripKey : Domain.getWorld(worldId).getPositionalIndexMap().getWithTileCoords(worldTileX, worldTileY).getAllEntitiesForType(FluidStrip.class)) {
+		for (final Integer stripKey : Domain.getWorld(worldId).getPositionalIndexChunkMap().getWithTileCoords(worldTileX, worldTileY).getAllEntitiesForType(FluidStrip.class)) {
 			if (fluidStrips.get(stripKey).occupies(worldTileX, worldTileY)) {
 				return Optional.of(fluidStrips.get(stripKey));
 			}
@@ -93,7 +94,7 @@ public class WorldFluids implements Serializable {
 	public final void addFluidStrip(final FluidStrip strip) {
 		fluidStrips.put(strip.id, strip);
 		for (int x = convertToChunkCoord(strip.worldTileX); x <= convertToChunkCoord(strip.worldTileX + strip.width); x++) {
-			Domain.getWorld(strip.worldId).getPositionalIndexMap().getWithChunkCoords(x, convertToChunkCoord(strip.worldTileY)).addFluidStrip(strip.id);
+			Domain.getWorld(strip.worldId).getPositionalIndexChunkMap().getWithChunkCoords(x, convertToChunkCoord(strip.worldTileY)).addFluidStrip(strip.id);
 		}
 	}
 
@@ -104,7 +105,7 @@ public class WorldFluids implements Serializable {
 	public final synchronized void removeFluidStrip(final int key) {
 		final FluidStrip toRemove = fluidStrips.get(key);
 		for (int x = convertToChunkCoord(toRemove.worldTileX); x <= convertToChunkCoord(toRemove.worldTileX + toRemove.width); x++) {
-			Domain.getWorld(toRemove.worldId).getPositionalIndexMap().getWithChunkCoords(x, convertToChunkCoord(toRemove.worldTileY)).removeFluidStrip(toRemove.id);
+			Domain.getWorld(toRemove.worldId).getPositionalIndexChunkMap().getWithChunkCoords(x, convertToChunkCoord(toRemove.worldTileY)).removeFluidStrip(toRemove.id);
 		}
 		fluidStrips.remove(key);
 	}
@@ -115,6 +116,20 @@ public class WorldFluids implements Serializable {
 	 */
 	public final void addFluidParticle(final FluidParticle toAdd) {
 		fluidParticles.put(toAdd.id, toAdd);
+		indexFluidParticle(toAdd);
+	}
+	
+	
+	public final void indexFluidParticle(final FluidParticle toAdd) {
+		for(int x = convertToWorldTileCoord(toAdd.position.x - toAdd.getRadius()); x <= convertToWorldTileCoord(toAdd.position.x + toAdd.getRadius()); x++) {
+			
+			float topY = toAdd.position.y + (float)Math.sqrt(Math.pow(toAdd.getRadius(), 2) - Math.pow(x - toAdd.position.x, 2));
+			float bottomY = toAdd.position.y - (float)Math.sqrt(Math.pow(toAdd.getRadius(), 2) - Math.pow(x - toAdd.position.x, 2));
+			
+			for(int y = convertToWorldTileCoord(bottomY); y <= convertToWorldTileCoord(topY); y++) {
+				Domain.getWorld(toAdd.worldId).getPositionalIndexChunkMap().getWithChunkCoords(x, y);
+			}
+		}
 	}
 
 
@@ -123,5 +138,14 @@ public class WorldFluids implements Serializable {
 	 */
 	public final void removeFluidParticle(final long key) {
 		fluidParticles.remove(key);
+	}
+
+
+	public Optional<FluidParticle> getFluidParticle(Long id) {
+		if(fluidParticles.get(id) == null) {
+			return Optional.absent();
+		} else {
+			return Optional.of(fluidParticles.get(id));
+		}
 	}
 }

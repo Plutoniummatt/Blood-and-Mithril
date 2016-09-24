@@ -29,7 +29,7 @@ public class FluidRenderer {
 		World world = Domain.getWorld(fluids.worldId);
 		
 		shapeRenderer.setColor(0.1f, 0.3f, 0.5f, 0.8f);
-		world.getPositionalIndexMap().getOnScreenEntities(FluidStrip.class, graphics)
+		world.getPositionalIndexChunkMap().getOnScreenEntities(FluidStrip.class, graphics)
 		.stream()
 		.distinct()
 		.map(id -> world.fluids().getFluidStrip(id))

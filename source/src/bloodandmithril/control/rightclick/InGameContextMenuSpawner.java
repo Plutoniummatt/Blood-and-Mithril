@@ -40,7 +40,7 @@ public class InGameContextMenuSpawner implements RightClickHandler {
 		userInterface.getContextMenus().clear();
 		final ContextMenu newMenu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
 
-		for (final int indiKey : gameClientStateTracker.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Individual.class, getMouseWorldX(), getMouseWorldY())) {
+		for (final int indiKey : gameClientStateTracker.getActiveWorld().getPositionalIndexChunkMap().getNearbyEntityIds(Individual.class, getMouseWorldX(), getMouseWorldY())) {
 			final Individual indi = Domain.getIndividual(indiKey);
 			if (indi.isMouseOver()) {
 				final ContextMenu secondaryMenu = individualContextMenuService.getContextMenu(indi);
@@ -60,7 +60,7 @@ public class InGameContextMenuSpawner implements RightClickHandler {
 			}
 		}
 
-		for (final int propKey : gameClientStateTracker.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Prop.class, getMouseWorldX(), getMouseWorldY())) {
+		for (final int propKey : gameClientStateTracker.getActiveWorld().getPositionalIndexChunkMap().getNearbyEntityIds(Prop.class, getMouseWorldX(), getMouseWorldY())) {
 			final Prop prop = gameClientStateTracker.getActiveWorld().props().getProp(propKey);
 			if (prop.isMouseOver()) {
 				final ContextMenu secondaryMenu = prop.getContextMenu();
@@ -80,7 +80,7 @@ public class InGameContextMenuSpawner implements RightClickHandler {
 			}
 		}
 
-		for (final Integer itemId : gameClientStateTracker.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Item.class, getMouseWorldX(), getMouseWorldY())) {
+		for (final Integer itemId : gameClientStateTracker.getActiveWorld().getPositionalIndexChunkMap().getNearbyEntityIds(Item.class, getMouseWorldX(), getMouseWorldY())) {
 			final Item item = gameClientStateTracker.getActiveWorld().items().getItem(itemId);
 			if (item.isMouseOver()) {
 				final ContextMenu secondaryMenu = item.getContextMenu();

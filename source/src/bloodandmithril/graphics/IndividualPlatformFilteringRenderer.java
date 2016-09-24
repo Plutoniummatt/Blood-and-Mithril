@@ -73,7 +73,7 @@ public class IndividualPlatformFilteringRenderer {
 	/** Renders all individuals, ones that are on platforms are rendered first */
 	public void renderIndividuals(final int worldId) {
 		try {
-			Domain.getWorld(worldId).getPositionalIndexMap().getOnScreenEntities(Individual.class, graphics)
+			Domain.getWorld(worldId).getPositionalIndexChunkMap().getOnScreenEntities(Individual.class, graphics)
 			.stream()
 			.map(id -> Domain.getIndividual(id))
 			.sorted(renderPrioritySorter)
@@ -82,7 +82,7 @@ public class IndividualPlatformFilteringRenderer {
 				IndividualRenderer.render(individual, graphics);
 			});
 			
-			Domain.getWorld(worldId).getPositionalIndexMap().getOnScreenEntities(Individual.class, graphics)
+			Domain.getWorld(worldId).getPositionalIndexChunkMap().getOnScreenEntities(Individual.class, graphics)
 			.stream()
 			.map(id -> Domain.getIndividual(id))
 			.sorted(renderPrioritySorter)

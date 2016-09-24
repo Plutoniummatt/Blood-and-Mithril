@@ -43,21 +43,21 @@ public interface Observer extends Serializable {
 		float viewDistance = getViewDistance();
 
 		World world = Domain.getWorld(worldId);
-		List<Integer> individualsWithinBounds = world.getPositionalIndexMap().getEntitiesWithinBounds(
+		List<Integer> individualsWithinBounds = world.getPositionalIndexChunkMap().getEntitiesWithinBounds(
 			Individual.class,
 			eyes.x - viewDistance,
 			eyes.x + viewDistance,
 			eyes.y + viewDistance,
 			eyes.y - viewDistance
 		);
-		List<Integer> propsWithinBounds = world.getPositionalIndexMap().getEntitiesWithinBounds(
+		List<Integer> propsWithinBounds = world.getPositionalIndexChunkMap().getEntitiesWithinBounds(
 			Prop.class,
 			eyes.x - viewDistance,
 			eyes.x + viewDistance,
 			eyes.y + viewDistance,
 			eyes.y - viewDistance
 		);
-		List<Integer> itemsWithinBounds = world.getPositionalIndexMap().getEntitiesWithinBounds(
+		List<Integer> itemsWithinBounds = world.getPositionalIndexChunkMap().getEntitiesWithinBounds(
 			Item.class,
 			eyes.x - viewDistance,
 			eyes.x + viewDistance,

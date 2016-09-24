@@ -34,7 +34,7 @@ public class ProjectileUpdateService {
 
 		final float length = projectile.pPosition.dst(projectile.position);
 		final Vector2 nor = projectile.pPosition.cpy().sub(projectile.position).nor();
-		final Optional<Integer> findAny = Domain.getWorld(projectile.getWorldId()).getPositionalIndexMap().getNearbyEntityIds(Individual.class, projectile.position).stream().filter(individual -> {
+		final Optional<Integer> findAny = Domain.getWorld(projectile.getWorldId()).getPositionalIndexChunkMap().getNearbyEntityIds(Individual.class, projectile.position).stream().filter(individual -> {
 			for (float l = 0f; l < length; l += 4f) {
 				final Vector2 test = projectile.position.cpy().add(nor.cpy().scl(l));
 				final Individual target = Domain.getIndividual(individual);

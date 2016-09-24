@@ -87,7 +87,7 @@ import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.EquipperImpl.AlwaysTrueFunction;
 import bloodandmithril.item.items.equipment.EquipperImpl.FalseFunction;
 import bloodandmithril.networking.ClientServerInterface;
-import bloodandmithril.performance.PositionalIndexMap;
+import bloodandmithril.performance.PositionalIndexChunkMap;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.persistence.world.ChunkProvider;
 import bloodandmithril.playerinteraction.individual.api.IndividualSelectionService;
@@ -645,7 +645,7 @@ public class UserInterface {
 	private void renderHint() {
 		if (!gameClientStateTracker.isLoading() && inputProcessor.getCursorBoundTask() == null && contextMenus.isEmpty() && gameClientStateTracker.getActiveWorld() != null && !isKeyPressed(Keys.ANY_KEY)) {
 			boolean renderHint = false;
-			final PositionalIndexMap positionalIndexMap = gameClientStateTracker.getActiveWorld().getPositionalIndexMap();
+			final PositionalIndexChunkMap positionalIndexMap = gameClientStateTracker.getActiveWorld().getPositionalIndexChunkMap();
 			for (final int id : positionalIndexMap.getNearbyEntityIds(Individual.class, getMouseWorldX(), getMouseWorldY())) {
 				if (Domain.getIndividual(id).isMouseOver()) {
 					renderHint = true;
@@ -711,7 +711,7 @@ public class UserInterface {
 		nearbyEntities.addAll(
 			Lists.newArrayList(
 				Iterables.transform(
-					gameClientStateTracker.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Individual.class, getMouseWorldX(), getMouseWorldY()),
+					gameClientStateTracker.getActiveWorld().getPositionalIndexChunkMap().getNearbyEntityIds(Individual.class, getMouseWorldX(), getMouseWorldY()),
 					id -> {
 						return Domain.getIndividual(id);
 					}
@@ -722,7 +722,7 @@ public class UserInterface {
 		nearbyEntities.addAll(
 			Lists.newArrayList(
 				Iterables.transform(
-					gameClientStateTracker.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Prop.class, getMouseWorldX(), getMouseWorldY()),
+					gameClientStateTracker.getActiveWorld().getPositionalIndexChunkMap().getNearbyEntityIds(Prop.class, getMouseWorldX(), getMouseWorldY()),
 					id -> {
 						return gameClientStateTracker.getActiveWorld().props().getProp(id);
 					}
@@ -733,7 +733,7 @@ public class UserInterface {
 		nearbyEntities.addAll(
 			Lists.newArrayList(
 				Iterables.transform(
-					gameClientStateTracker.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(FluidStrip.class, getMouseWorldX(), getMouseWorldY()),
+					gameClientStateTracker.getActiveWorld().getPositionalIndexChunkMap().getNearbyEntityIds(FluidStrip.class, getMouseWorldX(), getMouseWorldY()),
 					id -> {
 						if(gameClientStateTracker.getActiveWorld().fluids().getFluidStrip(id).isPresent()){
 							return gameClientStateTracker.getActiveWorld().fluids().getFluidStrip(id).get();
@@ -984,7 +984,7 @@ public class UserInterface {
 			final List<Item> items = Lists.newLinkedList();
 
 			Lists.newLinkedList(Iterables.transform(
-				gameClientStateTracker.getActiveWorld().getPositionalIndexMap().getEntitiesWithinBounds(
+				gameClientStateTracker.getActiveWorld().getPositionalIndexChunkMap().getEntitiesWithinBounds(
 					Item.class,
 					screenToWorldX(left),
 					screenToWorldX(right),

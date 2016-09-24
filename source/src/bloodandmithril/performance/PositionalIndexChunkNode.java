@@ -19,7 +19,7 @@ import bloodandmithril.world.fluids.FluidStrip;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
-public class PositionalIndexNode implements Serializable {
+public class PositionalIndexChunkNode implements Serializable {
 	private static final long serialVersionUID = -8256634999855942751L;
 
 	private Set<Integer> props = Sets.newConcurrentHashSet();
@@ -30,7 +30,7 @@ public class PositionalIndexNode implements Serializable {
 	/**
 	 * Constructor
 	 */
-	public PositionalIndexNode() {}
+	public PositionalIndexChunkNode() {}
 
 	/**
 	 * @return all entities that are indexed by this node.

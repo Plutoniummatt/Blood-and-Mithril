@@ -119,7 +119,7 @@ public class FollowRoutineContextMenuProvider implements RoutineTaskContextMenuP
 					@Override
 					public void execute(final Object... args) {
 						if (gameClientStateTracker.getActiveWorld() != null) {
-							for (final int indiKey : gameClientStateTracker.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Individual.class, getMouseWorldX(), getMouseWorldY())) {
+							for (final int indiKey : gameClientStateTracker.getActiveWorld().getPositionalIndexChunkMap().getNearbyEntityIds(Individual.class, getMouseWorldX(), getMouseWorldY())) {
 								final Individual indi = Domain.getIndividual(indiKey);
 								if (indi.isMouseOver()) {
 									toChooseFrom.addMenuItem(
@@ -163,7 +163,7 @@ public class FollowRoutineContextMenuProvider implements RoutineTaskContextMenuP
 					@Override
 					public boolean executionConditionMet() {
 						if (gameClientStateTracker.getActiveWorld() != null) {
-							for (final int indiKey : gameClientStateTracker.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Individual.class, getMouseWorldX(), getMouseWorldY())) {
+							for (final int indiKey : gameClientStateTracker.getActiveWorld().getPositionalIndexChunkMap().getNearbyEntityIds(Individual.class, getMouseWorldX(), getMouseWorldY())) {
 								final Individual indi = Domain.getIndividual(indiKey);
 								if (indi.isMouseOver()) {
 									return true;

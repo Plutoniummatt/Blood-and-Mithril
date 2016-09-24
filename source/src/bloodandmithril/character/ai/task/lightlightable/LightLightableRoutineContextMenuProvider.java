@@ -163,7 +163,7 @@ public class LightLightableRoutineContextMenuProvider implements RoutineTaskCont
 							}
 							@Override
 							public boolean executionConditionMet() {
-								for (final Prop prop : Wiring.injector().getInstance(GameClientStateTracker.class).getActiveWorld().getPositionalIndexMap().getNearbyEntities(Prop.class, getMouseWorldX(), getMouseWorldY())) {
+								for (final Prop prop : Wiring.injector().getInstance(GameClientStateTracker.class).getActiveWorld().getPositionalIndexChunkMap().getNearbyEntities(Prop.class, getMouseWorldX(), getMouseWorldY())) {
 									if (Lightable.class.isAssignableFrom(prop.getClass())) {
 										return true;
 									}

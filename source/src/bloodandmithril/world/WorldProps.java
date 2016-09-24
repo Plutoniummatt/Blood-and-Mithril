@@ -74,7 +74,7 @@ public final class WorldProps implements Serializable {
 	public final void addProp(Prop prop) {
 		prop.setWorldId(worldId);
 		props.put(prop.id, prop);
-		Domain.getWorld(worldId).getPositionalIndexMap().get(prop.position.x, prop.position.y).addProp(prop.id);
+		Domain.getWorld(worldId).getPositionalIndexChunkMap().get(prop.position.x, prop.position.y).addProp(prop.id);
 
 		if (prop instanceof Construction) {
 			if (((Construction) prop).getConstructionProgress() == 1f) {
@@ -89,7 +89,7 @@ public final class WorldProps implements Serializable {
 	 */
 	public final Prop removeProp(int key) {
 		Prop prop = props.get(key);
-		Domain.getWorld(worldId).getPositionalIndexMap().get(prop.position.x, prop.position.y).removeProp(prop.id);
+		Domain.getWorld(worldId).getPositionalIndexChunkMap().get(prop.position.x, prop.position.y).removeProp(prop.id);
 		return props.remove(key);
 	}
 }

@@ -261,7 +261,7 @@ public class LightLightable extends CompositeAITask implements RoutineTask {
 		public final AITask apply(final Object input) {
 			final Individual individual = getIndividual(hostId);
 			final World world = getWorld(individual.getWorldId());
-			final List<Integer> propsWithinBounds = world.getPositionalIndexMap().getEntitiesWithinBounds(Prop.class, left, right, top, bottom);
+			final List<Integer> propsWithinBounds = world.getPositionalIndexChunkMap().getEntitiesWithinBounds(Prop.class, left, right, top, bottom);
 
 			final Wrapper<LightLightable> task = new Wrapper<>(null);
 

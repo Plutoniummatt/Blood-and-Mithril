@@ -40,7 +40,7 @@ public abstract class ChooseMultipleEntityCursorBoundTask<F extends MouseOverabl
 		super(null, isWorldCoordinate);
 
 		setTask(args -> {
-			final Collection<F> nearbyEntities = Wiring.injector().getInstance(GameClientStateTracker.class).getActiveWorld().getPositionalIndexMap().getNearbyEntities(clazz, getMouseWorldX(), getMouseWorldY());
+			final Collection<F> nearbyEntities = Wiring.injector().getInstance(GameClientStateTracker.class).getActiveWorld().getPositionalIndexChunkMap().getNearbyEntities(clazz, getMouseWorldX(), getMouseWorldY());
 			final List<T> availableEntities = Lists.newLinkedList();
 
 			for (final F entity : Lists.newArrayList(nearbyEntities)) {

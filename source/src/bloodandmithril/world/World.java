@@ -17,7 +17,8 @@ import bloodandmithril.event.Event;
 import bloodandmithril.generation.biome.BiomeDecider;
 import bloodandmithril.graphics.background.BackgroundImages;
 import bloodandmithril.graphics.particles.Particle;
-import bloodandmithril.performance.PositionalIndexMap;
+import bloodandmithril.performance.PositionalIndexChunkMap;
+import bloodandmithril.performance.PositionalIndexTileMap;
 import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.world.topography.Topography;
@@ -48,8 +49,11 @@ public final class World implements Serializable {
 	/** Individuals that are currently in this {@link World} */
 	private final ConcurrentSkipListSet<Integer>				individuals 			= new ConcurrentSkipListSet<>();
 
-	/** The positional indexing map of this {@link World} */
-	private PositionalIndexMap 									positionalIndexMap;
+	/** The chunk positional indexing map of this {@link World} */
+	private PositionalIndexChunkMap 									positionalIndexChunkMap;
+	
+	/** The tile positional indexing map of this {@link World} */
+	private PositionalIndexTileMap 									positionalIndexTileMap;
 
 	/** Particles on this {@link World} */
 	private transient Collection<Particle> 						clientParticles			= new ConcurrentLinkedDeque<>();
@@ -105,7 +109,8 @@ public final class World implements Serializable {
 		this.projectiles = new WorldProjectiles(worldId);
 		this.fluids = new WorldFluids(worldId);
 		this.topography = new Topography();
-		this.positionalIndexMap = new PositionalIndexMap(worldId);
+		this.positionalIndexChunkMap = new PositionalIndexChunkMap(worldId);
+		this.positionalIndexTileMap = new PositionalIndexTileMap(worldId);
 
 		clouds.add(new Cloud(1, 0, -300));
 		clouds.add(new Cloud(2, 0, 0));
@@ -220,8 +225,16 @@ public final class World implements Serializable {
 	/**
 	 * @return the positional index map of this {@link World}
 	 */
-	public final PositionalIndexMap getPositionalIndexMap() {
-		return positionalIndexMap;
+	public final PositionalIndexChunkMap getPositionalIndexChunkMap() {
+		return positionalIndexChunkMap;
+	}
+
+
+	/**
+	 * @return the positionalIndexTileMap
+	 */
+	public PositionalIndexTileMap getPositionalIndexTileMap() {
+		return positionalIndexTileMap;
 	}
 
 

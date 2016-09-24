@@ -60,7 +60,7 @@ public class CoreInGameLeftClickHandler implements LeftClickHandler {
 
 			Individual individualClicked = null;
 			if (gameClientStateTracker.getActiveWorld() != null) {
-				for (final int indiKey : gameClientStateTracker.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Individual.class, getMouseWorldX(), getMouseWorldY())) {
+				for (final int indiKey : gameClientStateTracker.getActiveWorld().getPositionalIndexChunkMap().getNearbyEntityIds(Individual.class, getMouseWorldX(), getMouseWorldY())) {
 					final Individual indi = Domain.getIndividual(indiKey);
 					if (indi.isMouseOver()) {
 						individualClicked = indi;

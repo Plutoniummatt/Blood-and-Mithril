@@ -169,7 +169,7 @@ public class HarvestRoutineContextMenuProvider implements RoutineTaskContextMenu
 							}
 							@Override
 							public boolean executionConditionMet() {
-								final Collection<Prop> nearbyEntities = gameClientStateTracker.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Prop.class, getMouseWorldX(), getMouseWorldY());
+								final Collection<Prop> nearbyEntities = gameClientStateTracker.getActiveWorld().getPositionalIndexChunkMap().getNearbyEntities(Prop.class, getMouseWorldX(), getMouseWorldY());
 								for (final Prop p : nearbyEntities) {
 									if (p.isMouseOver() && Harvestable.class.isAssignableFrom(p.getClass())) {
 										return true;

@@ -61,7 +61,7 @@ public final class WorldItems implements Serializable {
 
 	public final void removeItem(Integer id) {
 		Item item = items.get(id);
-		Domain.getWorld(worldId).getPositionalIndexMap().get(item.getPosition().x, item.getPosition().y).removeItem(id);
+		Domain.getWorld(worldId).getPositionalIndexChunkMap().get(item.getPosition().x, item.getPosition().y).removeItem(id);
 		items.remove(id);
 	}
 

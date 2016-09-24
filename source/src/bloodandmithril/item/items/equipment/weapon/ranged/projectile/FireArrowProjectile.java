@@ -79,7 +79,7 @@ public class FireArrowProjectile<T extends Metal> extends ArrowProjectile<T> {
 	public void preFireDecorate(final Individual individual) {
 		final World world = Domain.getWorld(individual.getWorldId());
 
-		for (final int propId : world.getPositionalIndexMap().getNearbyEntityIds(Prop.class, individual.getState().position)) {
+		for (final int propId : world.getPositionalIndexChunkMap().getNearbyEntityIds(Prop.class, individual.getState().position)) {
 			final Prop prop = world.props().getProp(propId);
 			if (prop.canBeUsedAsFireSource() && individual.getInteractionBox().overlapsWith(new Box(prop.position.cpy().add(0, prop.height/2), prop.width, prop.height))) {
 				lit = true;
@@ -87,7 +87,7 @@ public class FireArrowProjectile<T extends Metal> extends ArrowProjectile<T> {
 			}
 		}
 
-		for (final int individualId : world.getPositionalIndexMap().getNearbyEntityIds(Individual.class, individual.getState().position)) {
+		for (final int individualId : world.getPositionalIndexChunkMap().getNearbyEntityIds(Individual.class, individual.getState().position)) {
 			final Individual nearbyIndividual = Domain.getIndividual(individualId);
 			if (nearbyIndividual.canBeUsedAsFireSource() && nearbyIndividual.getInteractionBox().isWithinBox(individual.getState().position)) {
 				lit = true;

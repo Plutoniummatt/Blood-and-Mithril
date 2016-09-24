@@ -134,7 +134,7 @@ public class SoundService {
 
 	private static final void triggerListeners(final Vector2 location, final float triggerRadius, final int sound, final Visible source) {
 		final GameClientStateTracker gameClientStateTracker = Wiring.injector().getInstance(GameClientStateTracker.class);
-		Wiring.injector().getInstance(GameClientStateTracker.class).getActiveWorld().getPositionalIndexMap().getEntitiesWithinBounds(
+		Wiring.injector().getInstance(GameClientStateTracker.class).getActiveWorld().getPositionalIndexChunkMap().getEntitiesWithinBounds(
 			Individual.class,
 			location.x - triggerRadius,
 			location.x + triggerRadius,

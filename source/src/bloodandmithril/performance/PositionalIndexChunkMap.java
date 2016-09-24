@@ -24,22 +24,22 @@ import bloodandmithril.world.Domain;
 import bloodandmithril.world.fluids.FluidStrip;
 
 /**
- * A map that holds {@link PositionalIndexNode}s, maps chunks to indexes
+ * A map that holds {@link PositionalIndexChunkNode}s, maps chunks to indexes
  *
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
-public class PositionalIndexMap implements Serializable {
+public class PositionalIndexChunkMap implements Serializable {
 	private static final long serialVersionUID = 3198970349534676023L;
 	private final int worldId;
 
 	/** Index datastructure */
-	private ConcurrentDualKeyHashMap<Integer, Integer, PositionalIndexNode> indexes = new ConcurrentDualKeyHashMap<>();
+	private ConcurrentDualKeyHashMap<Integer, Integer, PositionalIndexChunkNode> indexes = new ConcurrentDualKeyHashMap<>();
 
 	/**
 	 * Constructor
 	 */
-	public PositionalIndexMap(int worldId) {
+	public PositionalIndexChunkMap(int worldId) {
 		this.worldId = worldId;
 	}
 
@@ -80,9 +80,9 @@ public class PositionalIndexMap implements Serializable {
 	
 	
 	/**
-	 * @return a {@link Collection} of {@link PositionalIndexNode} that are on screen
+	 * @return a {@link Collection} of {@link PositionalIndexChunkNode} that are on screen
 	 */
-	public Collection<PositionalIndexNode> getOnScreenNodes(Graphics graphics) {
+	public Collection<PositionalIndexChunkNode> getOnScreenNodes(Graphics graphics) {
 		return getNodesWithinBounds(
 			graphics.getCam().position.x - graphics.getWidth(),
 			graphics.getCam().position.x + graphics.getWidth(),
@@ -93,17 +93,17 @@ public class PositionalIndexMap implements Serializable {
 	
 	
 	/**
-	 * @return a {@link Collection} of {@link PositionalIndexNode}s of that are contained (roughly) within a defined box.
+	 * @return a {@link Collection} of {@link PositionalIndexChunkNode}s of that are contained (roughly) within a defined box.
 	 *
 	 * Roughly because the indexing nodes are quantised.
 	 */
-	public Collection<PositionalIndexNode> getNodesWithinBounds(float left, float right, float top, float bottom) {
+	public Collection<PositionalIndexChunkNode> getNodesWithinBounds(float left, float right, float top, float bottom) {
 		int i = CHUNK_SIZE * TILE_SIZE;
 
 		int xSteps = (int)(right - left) / i + 1;
 		int ySteps = (int)(top - bottom) / i + 1;
 		
-		Collection<PositionalIndexNode> nodes = Lists.newLinkedList();
+		Collection<PositionalIndexChunkNode> nodes = Lists.newLinkedList();
 
 		for (int x = 0; x <= xSteps; x++) {
 			for (int y = 0; y <= ySteps; y++) {
@@ -138,8 +138,8 @@ public class PositionalIndexMap implements Serializable {
 	}
 
 
-	public Collection<PositionalIndexNode> getNearbyNodes(float x, float y) {
-		LinkedList<PositionalIndexNode> nodes = Lists.newLinkedList();
+	public Collection<PositionalIndexChunkNode> getNearbyNodes(float x, float y) {
+		LinkedList<PositionalIndexChunkNode> nodes = Lists.newLinkedList();
 
 		int i = CHUNK_SIZE * TILE_SIZE;
 		nodes.add(get(x, y));
@@ -201,9 +201,9 @@ public class PositionalIndexMap implements Serializable {
 
 
 	/**
-	 * @return the {@link PositionalIndexNode} given the world coords
+	 * @return the {@link PositionalIndexChunkNode} given the world coords
 	 */
-	public PositionalIndexNode get(float x, float y) {
+	public PositionalIndexChunkNode get(float x, float y) {
 		return getWithChunkCoords(
 			convertToChunkCoord(x), 
 			convertToChunkCoord(y)
@@ -212,9 +212,9 @@ public class PositionalIndexMap implements Serializable {
 	
 	
 	/**
-	 * @return the {@link PositionalIndexNode} given the world coords
+	 * @return the {@link PositionalIndexChunkNode} given the world coords
 	 */
-	public PositionalIndexNode getWithTileCoords(int tileX, int tileY) {
+	public PositionalIndexChunkNode getWithTileCoords(int tileX, int tileY) {
 		return getWithChunkCoords(
 			convertToChunkCoord(tileX), 
 			convertToChunkCoord(tileY)
@@ -223,13 +223,13 @@ public class PositionalIndexMap implements Serializable {
 	
 	
 	/**
-	 * @return the {@link PositionalIndexNode} given the world coords
+	 * @return the {@link PositionalIndexChunkNode} given the world coords
 	 */
-	public PositionalIndexNode getWithChunkCoords(int chunkX, int chunkY) {
-		PositionalIndexNode positionalIndex = indexes.get(chunkX, chunkY);
+	public PositionalIndexChunkNode getWithChunkCoords(int chunkX, int chunkY) {
+		PositionalIndexChunkNode positionalIndex = indexes.get(chunkX, chunkY);
 
 		if (positionalIndex == null) {
-			PositionalIndexNode value = new PositionalIndexNode();
+			PositionalIndexChunkNode value = new PositionalIndexChunkNode();
 			indexes.put(chunkX, chunkY, value);
 			return value;
 		}
@@ -238,7 +238,7 @@ public class PositionalIndexMap implements Serializable {
 	}
 
 
-	public Collection<PositionalIndexNode> getAllNodes() {
+	public Collection<PositionalIndexChunkNode> getAllNodes() {
 		return indexes.getAllValues();
 	}
 }

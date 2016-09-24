@@ -158,7 +158,7 @@ public class IndividualControlRightClickHandler implements RightClickHandler {
 
 	private boolean meleeAttack() {
 		if (!gameClientStateTracker.getSelectedIndividuals().isEmpty()) {
-			for (final int indiKey : gameClientStateTracker.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Individual.class, getMouseWorldX(), getMouseWorldY())) {
+			for (final int indiKey : gameClientStateTracker.getActiveWorld().getPositionalIndexChunkMap().getNearbyEntityIds(Individual.class, getMouseWorldX(), getMouseWorldY())) {
 				final Individual indi = Domain.getIndividual(indiKey);
 				if (indi.isMouseOver() && indi.isAlive()) {
 					for (final Individual selected : gameClientStateTracker.getSelectedIndividuals()) {

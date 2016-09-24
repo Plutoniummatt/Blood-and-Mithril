@@ -128,10 +128,10 @@ public class WorldRenderer {
 		renderProps(world, batch, FOREGROUND);
 
 		Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
-		world.getPositionalIndexMap().getOnScreenEntities(Item.class, graphics).stream().forEach(itemId -> {
+		world.getPositionalIndexChunkMap().getOnScreenEntities(Item.class, graphics).stream().forEach(itemId -> {
 			final Item item = world.items().getItem(itemId);
 			if (item == null) {
-				world.getPositionalIndexMap().getOnScreenNodes(graphics).forEach(node -> {
+				world.getPositionalIndexChunkMap().getOnScreenNodes(graphics).forEach(node -> {
 					node.removeItem(itemId);
 				});
 				return;
@@ -186,11 +186,11 @@ public class WorldRenderer {
 
 	private void renderProps(final World world, final SpriteBatch batch, final Depth depth) {
 		Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
-		world.getPositionalIndexMap().getOnScreenEntities(Prop.class, graphics).stream().forEach(propId -> {
+		world.getPositionalIndexChunkMap().getOnScreenEntities(Prop.class, graphics).stream().forEach(propId -> {
 			final Prop prop = world.props().getProp(propId);
 
 			if (prop == null) {
-				world.getPositionalIndexMap().getOnScreenNodes(graphics).forEach(node -> {
+				world.getPositionalIndexChunkMap().getOnScreenNodes(graphics).forEach(node -> {
 					node.removeProp(propId);
 				});
 				return;

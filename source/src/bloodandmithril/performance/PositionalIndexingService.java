@@ -23,7 +23,7 @@ public class PositionalIndexingService {
 	 */
 	public void reindex() {
 		for (final World world : Domain.getAllWorlds()) {
-			for (final PositionalIndexNode node : world.getPositionalIndexMap().getAllNodes()) {
+			for (final PositionalIndexChunkNode node : world.getPositionalIndexChunkMap().getAllNodes()) {
 				node.clear();
 			}
 
@@ -43,19 +43,19 @@ public class PositionalIndexingService {
 
 
 	public void indexInvidivual(final Individual indi) {
-		for (final PositionalIndexNode node : Domain.getWorld(indi.getWorldId()).getPositionalIndexMap().getNearbyNodes(indi.getState().position.x, indi.getState().position.y)) {
+		for (final PositionalIndexChunkNode node : Domain.getWorld(indi.getWorldId()).getPositionalIndexChunkMap().getNearbyNodes(indi.getState().position.x, indi.getState().position.y)) {
 			node.removeIndividual(indi.getId().getId());
 		}
 
-		Domain.getWorld(indi.getWorldId()).getPositionalIndexMap().get(indi.getState().position.x, indi.getState().position.y).addIndividual(indi.getId().getId());
+		Domain.getWorld(indi.getWorldId()).getPositionalIndexChunkMap().get(indi.getState().position.x, indi.getState().position.y).addIndividual(indi.getId().getId());
 	}
 
 
 	public void indexItem(final Item item) {
-		for (final PositionalIndexNode node : Domain.getWorld(item.getWorldId()).getPositionalIndexMap().getNearbyNodes(item.getPosition().x, item.getPosition().y)) {
+		for (final PositionalIndexChunkNode node : Domain.getWorld(item.getWorldId()).getPositionalIndexChunkMap().getNearbyNodes(item.getPosition().x, item.getPosition().y)) {
 			node.removeItem(item.getId());
 		}
 
-		Domain.getWorld(item.getWorldId()).getPositionalIndexMap().get(item.getPosition().x, item.getPosition().y).addItem(item.getId());
+		Domain.getWorld(item.getWorldId()).getPositionalIndexChunkMap().get(item.getPosition().x, item.getPosition().y).addItem(item.getId());
 	}
 }

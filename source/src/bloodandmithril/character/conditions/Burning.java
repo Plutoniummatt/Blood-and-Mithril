@@ -40,7 +40,7 @@ public class Burning extends Condition {
 		Wiring.injector().getInstance(IndividualStateService.class).damage(affected, delta * 2f);
 		duration -= delta;
 
-		final Collection<Integer> nearbyIndividualIds = Domain.getWorld(affected.getWorldId()).getPositionalIndexMap().getNearbyEntityIds(Individual.class, affected.getState().position);
+		final Collection<Integer> nearbyIndividualIds = Domain.getWorld(affected.getWorldId()).getPositionalIndexChunkMap().getNearbyEntityIds(Individual.class, affected.getState().position);
 		for (final int id : nearbyIndividualIds) {
 			final Individual toInfect = Domain.getIndividual(id);
 			if (id != affected.getId().getId() && toInfect.getHitBox().overlapsWith(affected.getHitBox())) {

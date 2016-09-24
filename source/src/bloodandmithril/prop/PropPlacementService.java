@@ -77,7 +77,7 @@ public class PropPlacementService {
 	 */
 	public boolean canPlaceAt(Prop propToPlace, Vector2 position) throws NoTileFoundException {
 		return canPlaceAt(position.x, position.y, propToPlace.width, propToPlace.height, propToPlace.canPlaceOnTopOf(), propToPlace.canPlaceInFrontOf(), propToPlace.grounded, () -> {
-			for (Integer propId : Domain.getWorld(propToPlace.getWorldId()).getPositionalIndexMap().getNearbyEntityIds(Prop.class, position.x, position.y)) {
+			for (Integer propId : Domain.getWorld(propToPlace.getWorldId()).getPositionalIndexChunkMap().getNearbyEntityIds(Prop.class, position.x, position.y)) {
 				Prop prop = Domain.getWorld(propToPlace.getWorldId()).props().getProp(propId);
 				if (Domain.getWorld(propToPlace.getWorldId()).props().hasProp(propId)) {
 					propToPlace.position.x = position.x;

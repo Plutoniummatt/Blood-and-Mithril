@@ -146,7 +146,7 @@ public class AttackRoutineContextMenuProvider implements RoutineTaskContextMenuP
 						}
 						@Override
 						public boolean executionConditionMet() {
-							final Collection<Individual> nearbyEntities = Domain.getWorld(host.getWorldId()).getPositionalIndexMap().getNearbyEntities(Individual.class, getMouseWorldX(), getMouseWorldY());
+							final Collection<Individual> nearbyEntities = Domain.getWorld(host.getWorldId()).getPositionalIndexChunkMap().getNearbyEntities(Individual.class, getMouseWorldX(), getMouseWorldY());
 							for (final Individual indi : nearbyEntities) {
 								if (indi.isMouseOver()) {
 									return true;
