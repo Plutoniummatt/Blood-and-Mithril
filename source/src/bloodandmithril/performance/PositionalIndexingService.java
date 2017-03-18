@@ -68,11 +68,32 @@ public class PositionalIndexingService {
 	}
 	
 	
-	public void indexFluidParticle(final FluidParticle fluidParticle) {
-		for (final PositionalIndexTileNode node : Domain.getWorld(fluidParticle.getWorldId()).getPositionalIndexTileMap().getNearbyNodes(fluidParticle.getPosition().x, fluidParticle.getPosition().y)) {
-			node.removeFluidParticle(fluidParticle.getId());
+	public void removeFluidParticleIndex(final FluidParticle fluidParticle) {
+		if (fluidParticle.getRadius() < TILE_SIZE) {
+			for(int x = convertToWorldTileCoord(fluidParticle.getPosition().x - fluidParticle.getRadius()); x <= convertToWorldTileCoord(fluidParticle.getPosition().x + fluidParticle.getRadius()); x++) {
+				for(int y = convertToWorldTileCoord(fluidParticle.getPosition().y - fluidParticle.getRadius()); y <= convertToWorldTileCoord(fluidParticle.getPosition().y + fluidParticle.getRadius()); y++) {
+					Domain.getWorld(fluidParticle.getWorldId()).getPositionalIndexTileMap().getWithTileCoords(x, y).removeFluidParticle(fluidParticle.getId());
+				}
+			}
+		} else {		
+			for(int x = convertToWorldTileCoord(fluidParticle.getPosition().x - fluidParticle.getRadius()); x <= convertToWorldTileCoord(fluidParticle.getPosition().x + fluidParticle.getRadius()); x++) {
+				
+				float xDifference = fluidParticle.getPosition().x - (x + (
+						x * TILE_SIZE > fluidParticle.getPosition().x - fluidParticle.getRadius() &&
+						x * TILE_SIZE < fluidParticle.getPosition().x + fluidParticle.getRadius() ? 0 : 1
+								)) * TILE_SIZE;
+				float topY = fluidParticle.getPosition().y + (float)Math.sqrt(Math.pow(fluidParticle.getRadius(), 2) - Math.pow(xDifference, 2));
+				float bottomY = fluidParticle.getPosition().y - (float)Math.sqrt(Math.pow(fluidParticle.getRadius(), 2) - Math.pow(xDifference, 2));
+				
+				for(int y = convertToWorldTileCoord(bottomY); y <= convertToWorldTileCoord(topY); y++) {
+					Domain.getWorld(fluidParticle.getWorldId()).getPositionalIndexTileMap().getWithTileCoords(x, y).removeFluidParticle(fluidParticle.getId());
+				}
+			}
 		}
-		
+	}
+	
+	
+	public void indexFluidParticle(final FluidParticle fluidParticle) {
 		if (fluidParticle.getRadius() < TILE_SIZE) {
 			for(int x = convertToWorldTileCoord(fluidParticle.getPosition().x - fluidParticle.getRadius()); x <= convertToWorldTileCoord(fluidParticle.getPosition().x + fluidParticle.getRadius()); x++) {
 				for(int y = convertToWorldTileCoord(fluidParticle.getPosition().y - fluidParticle.getRadius()); y <= convertToWorldTileCoord(fluidParticle.getPosition().y + fluidParticle.getRadius()); y++) {

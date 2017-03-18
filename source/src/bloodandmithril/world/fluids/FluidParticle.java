@@ -19,6 +19,7 @@ public class FluidParticle implements Serializable {
 	private static final long serialVersionUID = -8620078003575928127L;
 
 	private final Vector2 position, velocity;
+	private final Vector2 nextPosition, nextVelocity;
 	private final int worldId;
 	private final long id;
 	
@@ -32,6 +33,8 @@ public class FluidParticle implements Serializable {
 	public FluidParticle(Vector2 position, Vector2 velocity, float volume, int worldId) {
 		this.position = position;
 		this.velocity = velocity;
+		this.nextPosition = position.cpy();
+		this.nextVelocity = velocity.cpy();
 		this.setVolume(volume);
 		this.setRadius((float)(Math.sqrt(Math.pow(Topography.TILE_SIZE,2) * volume / Math.PI)));
 		this.worldId = worldId;
@@ -56,6 +59,16 @@ public class FluidParticle implements Serializable {
 
 	public Vector2 getVelocity() {
 		return velocity;
+	}
+
+
+	public Vector2 getNextPosition() {
+		return nextPosition;
+	}
+
+
+	public Vector2 getNextVelocity() {
+		return nextVelocity;
 	}
 
 

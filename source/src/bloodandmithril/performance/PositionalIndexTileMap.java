@@ -13,7 +13,6 @@ import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 
 import bloodandmithril.core.Copyright;
-import bloodandmithril.core.MouseOverable;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.util.datastructure.ConcurrentDualKeyHashMap;
 import bloodandmithril.world.Domain;
@@ -163,7 +162,7 @@ public class PositionalIndexTileMap implements Serializable {
 	/**
 	 * @return a {@link Collection} of nearby entities of the same type, nearby meaning in the same or adjacent/diagonal tile
 	 */
-	public <T extends MouseOverable> Collection<T> getNearbyEntities(Class<T> clazz, Vector2 position) {
+	public <T> Collection<T> getNearbyEntities(Class<T> clazz, Vector2 position) {
 		return getNearbyEntities(clazz, position.x, position.y);
 	}
 
@@ -172,20 +171,30 @@ public class PositionalIndexTileMap implements Serializable {
 	 * @return a {@link Collection} of nearby entities of the same type, nearby meaning in the same or adjacent/diagonal tile
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends MouseOverable> Collection<T> getNearbyEntities(Class<T> clazz, float x, float y) {
+	public <T> Collection<T> getNearbyEntities(Class<T> clazz, float x, float y) {
 		Collection<T> ts = Lists.newLinkedList();
 
 		Function<Long, T> function;
 		if (clazz.equals(FluidParticle.class)) {
-			function = id -> (T) Domain.getWorld(worldId).fluids().getFluidParticle(id).get();
-		} else {
+			function = id -> {
+				if(Domain.getWorld(worldId).fluids().getFluidParticle(id).isPresent()) {
+					return (T) Domain.getWorld(worldId).fluids().getFluidParticle(id).get();
+				} else {
+					return null;
+				}
+			};
+		}
+		
+		 else {
 			throw new RuntimeException("Unrecongized class : " + clazz.getSimpleName());
 		}
 
 		for (long id : getNearbyEntityIds(clazz, x, y)) {
-			ts.add(function.apply(id));
+			if(function.apply(id) != null) {
+				ts.add(function.apply(id));
+			}
 		}
-
+			
 		return ts;
 	}
 

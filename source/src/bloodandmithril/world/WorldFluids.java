@@ -1,6 +1,7 @@
 package bloodandmithril.world;
 
 import static bloodandmithril.world.topography.Topography.convertToChunkCoord;
+import static bloodandmithril.world.topography.Topography.convertToWorldTileCoord;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -9,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.google.common.base.Optional;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.performance.PositionalIndexTileNode;
 import bloodandmithril.world.fluids.FluidParticle;
 import bloodandmithril.world.fluids.FluidStrip;
 
@@ -122,12 +124,21 @@ public class WorldFluids implements Serializable {
 	 * @param key of the {@link FluidParticle} to remove
 	 */
 	public final void removeFluidParticle(final long key) {
+		final FluidParticle toRemove = fluidParticles.get(key);
+		for(int x = convertToWorldTileCoord(toRemove.getPosition().x) - 1; x < convertToWorldTileCoord(toRemove.getPosition().x) + 1; x++) {
+			for(int y = convertToWorldTileCoord(toRemove.getPosition().y) - 1; y < convertToWorldTileCoord(toRemove.getPosition().y) + 1; y++) {
+				Domain.getWorld(toRemove.getWorldId()).getPositionalIndexTileMap().getWithTileCoords(x, y).removeFluidParticle(key);
+			}
+		}
 		fluidParticles.remove(key);
 	}
 
 
 	public Optional<FluidParticle> getFluidParticle(Long id) {
 		if(fluidParticles.get(id) == null) {
+			for(PositionalIndexTileNode node : Domain.getWorld(worldId).getPositionalIndexTileMap().getAllNodes()) {
+				node.removeFluidParticle(id);
+			}
 			return Optional.absent();
 		} else {
 			return Optional.of(fluidParticles.get(id));

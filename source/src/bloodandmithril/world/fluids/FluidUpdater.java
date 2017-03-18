@@ -114,56 +114,113 @@ public class FluidUpdater {
 		transferFromStripToStripAbove(world, strip);
 		equalizeLevels(world, strip);
 	}
+	
+	
+	public boolean areParticlesColliding(final FluidParticle particle1, final FluidParticle particle2) {
+		float distanceToTouch = particle1.getRadius() + particle2.getRadius();
+		if( //basic box check first, it's a little more performant to do this first i think
+			Math.abs(particle1.getPosition().x - particle2.getPosition().x) <= distanceToTouch &&
+			Math.abs(particle1.getPosition().y - particle2.getPosition().y) <= distanceToTouch
+		) {
+			if(
+				particle1.getPosition().sub(particle2.getPosition()).len() <= distanceToTouch
+			) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
+	}
 
+	
+	public void resolveCollision(final FluidParticle particle1, final FluidParticle particle2) {
+		particle1.getNextVelocity().set(
+				(particle1.getVelocity().x * (particle1.getVolume() - particle2.getVolume()) + (2 * particle2.getVolume() * particle2.getVelocity().x)) / (particle1.getVolume() + particle2.getVolume()),
+				(particle1.getVelocity().y * (particle1.getVolume() - particle2.getVolume()) + (2 * particle2.getVolume() * particle2.getVelocity().y)) / (particle1.getVolume() + particle2.getVolume())
+		);
+		
+		particle2.getNextVelocity().set(
+				(particle2.getVelocity().x * (particle2.getVolume() - particle1.getVolume()) + (2 * particle1.getVolume() * particle1.getVelocity().x)) / (particle1.getVolume() + particle2.getVolume()),
+				(particle2.getVelocity().y * (particle2.getVolume() - particle1.getVolume()) + (2 * particle1.getVolume() * particle1.getVelocity().y)) / (particle1.getVolume() + particle2.getVolume())
+		);
+		
+		//separate particles too close together
+		if (particle1.getPosition().sub(particle2.getPosition()).len() < (particle1.getRadius() + particle2.getRadius())) {
+			particle1.getNextVelocity().add(particle1.getPosition().sub(particle2.getPosition()).scl(20f));
+			particle2.getNextVelocity().add(particle2.getPosition().sub(particle1.getPosition()).scl(20f));
+		}
+	}
+	
 
+	public void calculateParticleMovement(final World world, final FluidParticle particle1, final float delta) {
+		for (final FluidParticle particle2 : world.getPositionalIndexTileMap().getNearbyEntities(FluidParticle.class, particle1.getPosition())) {
+			if (particle1.getId() != particle2.getId()) {
+				if (areParticlesColliding(particle1, particle2)) {
+					resolveCollision(particle1, particle2);
+				}
+			}
+		}
+		try {
+			particle1.getNextPosition().add(particle1.getVelocity().cpy().scl(0.016f));
+
+			particle1.getNextPosition().add(particle1.getVelocity().cpy().scl(delta));
+			final float gravity = world.getGravity();
+			if (particle1.getNextVelocity().len() > 2000f) {
+				particle1.getNextVelocity().add(0f, -gravity * delta).scl(0.95f);
+			} else {
+				particle1.getNextVelocity().add(0f, -gravity * delta);
+			}
+
+			final Tile tile = world.getTopography().getTile(particle1.getNextPosition().x,
+					particle1.getNextPosition().y - 1, true);
+			if (!tile.isPassable()) {
+				particle1.getNextVelocity().y = 0f;
+			}
+
+			final Tile tileUnder = world.getTopography().getTile(particle1.getNextPosition().x,
+					particle1.getNextPosition().y, true);
+			if (!tileUnder.isPassable()) {
+				final Vector2 trial = particle1.getNextPosition().cpy();
+				trial.y += -particle1.getNextVelocity().y * delta;
+
+				if (world.getTopography().getTile(trial.x, trial.y, true).isPassable()) {
+					particle1.getNextPosition().x = particle1.getPosition().x;
+					particle1.getNextPosition().y = particle1.getPosition().y;
+					particle1.getNextVelocity().y = -particle1.getNextVelocity().y * 0.25f;
+				} else {
+					particle1.getNextVelocity().x = -particle1.getNextVelocity().x;
+					particle1.getNextPosition().x = particle1.getPosition().x;
+					particle1.getNextPosition().y = particle1.getPosition().y;
+				}
+			}
+			final Optional<FluidStrip> stripOn = world.fluids().getFluidStrip(
+					Topography.convertToWorldTileCoord(particle1.getNextPosition().x),
+					Topography.convertToWorldTileCoord(particle1.getNextPosition().y));
+			if (stripOn.isPresent()) {
+				if (particle1.getNextPosition().y < convertToWorldCoord(stripOn.get().worldTileY, true)
+						+ TILE_SIZE * stripOn.get().getVolume() / stripOn.get().width
+						|| stripOn.get().getVolume() == 0f) {
+					stripOn.get().addVolume(particle1.getVolume());
+					positionalIndexingService.removeFluidParticleIndex(particle1);
+					world.fluids().removeFluidParticle(particle1.getId());
+				}
+			}
+		} catch (final NoTileFoundException e) {
+
+		}
+	}
+	
+	
 	/**
 	 * Updates a {@link FluidParticle}
 	 */
 	public void updateParticle(final World world, final FluidParticle particle, final float delta) {
-		try {
-			final Vector2 previousPosition = particle.getPosition().cpy();
-			final Vector2 previousVelocity = particle.getVelocity().cpy();
-
-			particle.getPosition().add(particle.getVelocity().cpy().scl(0.016f));
-
-			particle.getPosition().add(particle.getVelocity().cpy().scl(delta));
-			final float gravity = world.getGravity();
-			if (particle.getVelocity().len() > 2000f) {
-				particle.getVelocity().add(0f, -gravity * delta).scl(0.95f);
-			} else {
-				particle.getVelocity().add(0f, -gravity * delta);
-			}
-
-			final Tile tile = world.getTopography().getTile(particle.getPosition().x, particle.getPosition().y - 1, true);
-			if (!tile.isPassable()) {
-				particle.getVelocity().y = 0f;
-			}
-
-			final Tile tileUnder = world.getTopography().getTile(particle.getPosition().x, particle.getPosition().y, true);
-			if (!tileUnder.isPassable()) {
-				final Vector2 trial = particle.getPosition().cpy();
-				trial.y += -previousVelocity.y*delta;
-
-				if (world.getTopography().getTile(trial.x, trial.y, true).isPassable()) {
-					particle.getPosition().x = previousPosition.x;
-					particle.getPosition().y = previousPosition.y;
-					particle.getVelocity().y = -previousVelocity.y * 0.25f;
-				} else {
-					particle.getVelocity().x = -particle.getVelocity().x;
-					particle.getPosition().x = previousPosition.x;
-					particle.getPosition().y = previousPosition.y;
-				}
-			}
-			final Optional<FluidStrip> stripOn = world.fluids().getFluidStrip(Topography.convertToWorldTileCoord(particle.getPosition().x), Topography.convertToWorldTileCoord(particle.getPosition().y));
-			if(stripOn.isPresent()) {
-				if(particle.getPosition().y < convertToWorldCoord(stripOn.get().worldTileY, true) + TILE_SIZE * stripOn.get().getVolume() / stripOn.get().width || stripOn.get().getVolume() == 0f) {
-					stripOn.get().addVolume(particle.getVolume());
-					world.fluids().removeFluidParticle(particle.getId());
-				}
-			}
-			
-			positionalIndexingService.indexFluidParticle(particle);
-		} catch (final NoTileFoundException e) {}
+		positionalIndexingService.removeFluidParticleIndex(particle);
+		particle.getPosition().set(particle.getNextPosition().cpy());
+		particle.getVelocity().set(particle.getNextVelocity().cpy());
+		positionalIndexingService.indexFluidParticle(particle);
 	}
 
 

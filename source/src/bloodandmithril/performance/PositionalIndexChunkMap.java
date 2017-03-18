@@ -15,7 +15,6 @@ import com.google.common.collect.Lists;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
-import bloodandmithril.core.MouseOverable;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.prop.Prop;
@@ -167,7 +166,7 @@ public class PositionalIndexChunkMap implements Serializable {
 	/**
 	 * @return a {@link Collection} of nearby entities of the same type, nearby meaning in the same or adjacent/diagonal chunk
 	 */
-	public <T extends MouseOverable> Collection<T> getNearbyEntities(Class<T> clazz, Vector2 position) {
+	public <T> Collection<T> getNearbyEntities(Class<T> clazz, Vector2 position) {
 		return getNearbyEntities(clazz, position.x, position.y);
 	}
 
@@ -176,7 +175,7 @@ public class PositionalIndexChunkMap implements Serializable {
 	 * @return a {@link Collection} of nearby entities of the same type, nearby meaning in the same or adjacent/diagonal chunk
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends MouseOverable> Collection<T> getNearbyEntities(Class<T> clazz, float x, float y) {
+	public <T> Collection<T> getNearbyEntities(Class<T> clazz, float x, float y) {
 		Collection<T> ts = Lists.newLinkedList();
 
 		Function<Integer, T> function;
