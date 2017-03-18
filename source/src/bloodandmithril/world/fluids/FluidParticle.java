@@ -18,9 +18,9 @@ import bloodandmithril.world.topography.Topography;
 public class FluidParticle implements Serializable {
 	private static final long serialVersionUID = -8620078003575928127L;
 
-	public final Vector2 position, velocity;
-	public final int worldId;
-	public final long id;
+	private final Vector2 position, velocity;
+	private final int worldId;
+	private final long id;
 	
 	private float volume;
 	private float radius;
@@ -37,13 +37,33 @@ public class FluidParticle implements Serializable {
 		this.worldId = worldId;
 		this.id = Wiring.injector().getInstance(ParameterPersistenceService.class).getParameters().getNextFluidParticleId();
 	}
-
 	
+	
+	public int getWorldId() {
+		return worldId;
+	}
+	
+	
+	public long getId() {
+		return id;
+	}
+
+
+	public Vector2 getPosition() {
+		return position;
+	}
+
+
+	public Vector2 getVelocity() {
+		return velocity;
+	}
+
+
 	public float getRadius() {
 		return radius;
 	}
 
-	
+
 	public void setRadius(float radius) {
 		this.radius = radius;
 	}

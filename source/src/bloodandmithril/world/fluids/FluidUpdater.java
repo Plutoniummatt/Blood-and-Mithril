@@ -16,6 +16,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.performance.PositionalIndexingService;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.World;
 import bloodandmithril.world.topography.Topography;
@@ -34,6 +35,7 @@ public class FluidUpdater {
 
 	@Inject private FluidStripPopulator fluidStripPopulator;
 	@Inject private FluidParticlePopulator fluidParticlePopulator;
+	@Inject private PositionalIndexingService positionalIndexingService;
 
 	/**
 	 * Updates a {@link FluidStrip}
@@ -119,46 +121,48 @@ public class FluidUpdater {
 	 */
 	public void updateParticle(final World world, final FluidParticle particle, final float delta) {
 		try {
-			final Vector2 previousPosition = particle.position.cpy();
-			final Vector2 previousVelocity = particle.velocity.cpy();
+			final Vector2 previousPosition = particle.getPosition().cpy();
+			final Vector2 previousVelocity = particle.getVelocity().cpy();
 
-			particle.position.add(particle.velocity.cpy().scl(0.016f));
+			particle.getPosition().add(particle.getVelocity().cpy().scl(0.016f));
 
-			particle.position.add(particle.velocity.cpy().scl(delta));
+			particle.getPosition().add(particle.getVelocity().cpy().scl(delta));
 			final float gravity = world.getGravity();
-			if (particle.velocity.len() > 2000f) {
-				particle.velocity.add(0f, -gravity * delta).scl(0.95f);
+			if (particle.getVelocity().len() > 2000f) {
+				particle.getVelocity().add(0f, -gravity * delta).scl(0.95f);
 			} else {
-				particle.velocity.add(0f, -gravity * delta);
+				particle.getVelocity().add(0f, -gravity * delta);
 			}
 
-			final Tile tile = world.getTopography().getTile(particle.position.x, particle.position.y - 1, true);
+			final Tile tile = world.getTopography().getTile(particle.getPosition().x, particle.getPosition().y - 1, true);
 			if (!tile.isPassable()) {
-				particle.velocity.y = 0f;
+				particle.getVelocity().y = 0f;
 			}
 
-			final Tile tileUnder = world.getTopography().getTile(particle.position.x, particle.position.y, true);
+			final Tile tileUnder = world.getTopography().getTile(particle.getPosition().x, particle.getPosition().y, true);
 			if (!tileUnder.isPassable()) {
-				final Vector2 trial = particle.position.cpy();
+				final Vector2 trial = particle.getPosition().cpy();
 				trial.y += -previousVelocity.y*delta;
 
 				if (world.getTopography().getTile(trial.x, trial.y, true).isPassable()) {
-					particle.position.x = previousPosition.x;
-					particle.position.y = previousPosition.y;
-					particle.velocity.y = -previousVelocity.y * 0.25f;
+					particle.getPosition().x = previousPosition.x;
+					particle.getPosition().y = previousPosition.y;
+					particle.getVelocity().y = -previousVelocity.y * 0.25f;
 				} else {
-					particle.velocity.x = -particle.velocity.x;
-					particle.position.x = previousPosition.x;
-					particle.position.y = previousPosition.y;
+					particle.getVelocity().x = -particle.getVelocity().x;
+					particle.getPosition().x = previousPosition.x;
+					particle.getPosition().y = previousPosition.y;
 				}
 			}
-			final Optional<FluidStrip> stripOn = world.fluids().getFluidStrip(Topography.convertToWorldTileCoord(particle.position.x), Topography.convertToWorldTileCoord(particle.position.y));
+			final Optional<FluidStrip> stripOn = world.fluids().getFluidStrip(Topography.convertToWorldTileCoord(particle.getPosition().x), Topography.convertToWorldTileCoord(particle.getPosition().y));
 			if(stripOn.isPresent()) {
-				if(particle.position.y < convertToWorldCoord(stripOn.get().worldTileY, true) + TILE_SIZE * stripOn.get().getVolume() / stripOn.get().width || stripOn.get().getVolume() == 0f) {
+				if(particle.getPosition().y < convertToWorldCoord(stripOn.get().worldTileY, true) + TILE_SIZE * stripOn.get().getVolume() / stripOn.get().width || stripOn.get().getVolume() == 0f) {
 					stripOn.get().addVolume(particle.getVolume());
-					world.fluids().removeFluidParticle(particle.id);
+					world.fluids().removeFluidParticle(particle.getId());
 				}
 			}
+			
+			positionalIndexingService.indexFluidParticle(particle);
 		} catch (final NoTileFoundException e) {}
 	}
 

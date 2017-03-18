@@ -110,6 +110,7 @@ import bloodandmithril.util.Task;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.util.datastructure.Boundaries;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.fluids.FluidParticle;
 import bloodandmithril.world.fluids.FluidStrip;
 import bloodandmithril.world.topography.Chunk;
 import bloodandmithril.world.topography.Topography;
@@ -744,6 +745,21 @@ public class UserInterface {
 				)
 			)
 		);
+		
+		nearbyEntities.addAll(
+				Lists.newArrayList(
+					Iterables.transform(
+						gameClientStateTracker.getActiveWorld().getPositionalIndexTileMap().getNearbyEntityIds(FluidParticle.class, getMouseWorldX(), getMouseWorldY()),
+						id -> {
+							if(gameClientStateTracker.getActiveWorld().fluids().getFluidParticle(id).isPresent()){
+								return gameClientStateTracker.getActiveWorld().fluids().getFluidParticle(id).get();
+							} else {
+								return null;
+							}
+						}
+					)
+				)
+			);
 
 		int position = graphics.getHeight() - 270;
 		graphics.getSpriteBatch().begin();
@@ -759,6 +775,10 @@ public class UserInterface {
 			
 			if (nearbyEntity instanceof FluidStrip) {
 				Fonts.defaultFont.draw(graphics.getSpriteBatch(), ((FluidStrip) nearbyEntity).getClass().getSimpleName() + " " + ((FluidStrip) nearbyEntity).id, 5, position);
+			}
+			
+			if (nearbyEntity instanceof FluidParticle) {
+				Fonts.defaultFont.draw(graphics.getSpriteBatch(), ((FluidParticle) nearbyEntity).getClass().getSimpleName() + " " + ((FluidParticle) nearbyEntity).getId(), 5, position);
 			}
 			position = position - 20;
 		}

@@ -50,8 +50,8 @@ public class FluidRenderer {
 		
 		world.fluids().getAllFluidParticles().stream().forEach(particle -> {
 			shapeRenderer.circle(
-				particle.position.x, 
-				particle.position.y, 
+				particle.getPosition().x, 
+				particle.getPosition().y, 
 				particle.getRadius()
 			);
 		});

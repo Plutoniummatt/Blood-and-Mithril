@@ -1,7 +1,6 @@
 package bloodandmithril.world;
 
 import static bloodandmithril.world.topography.Topography.convertToChunkCoord;
-import static bloodandmithril.world.topography.Topography.convertToWorldTileCoord;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -115,21 +114,7 @@ public class WorldFluids implements Serializable {
 	 * @param toAdd the {@link FluidParticle} to add
 	 */
 	public final void addFluidParticle(final FluidParticle toAdd) {
-		fluidParticles.put(toAdd.id, toAdd);
-		indexFluidParticle(toAdd);
-	}
-	
-	
-	public final void indexFluidParticle(final FluidParticle toAdd) {
-		for(int x = convertToWorldTileCoord(toAdd.position.x - toAdd.getRadius()); x <= convertToWorldTileCoord(toAdd.position.x + toAdd.getRadius()); x++) {
-			
-			float topY = toAdd.position.y + (float)Math.sqrt(Math.pow(toAdd.getRadius(), 2) - Math.pow(x - toAdd.position.x, 2));
-			float bottomY = toAdd.position.y - (float)Math.sqrt(Math.pow(toAdd.getRadius(), 2) - Math.pow(x - toAdd.position.x, 2));
-			
-			for(int y = convertToWorldTileCoord(bottomY); y <= convertToWorldTileCoord(topY); y++) {
-				Domain.getWorld(toAdd.worldId).getPositionalIndexChunkMap().getWithChunkCoords(x, y);
-			}
-		}
+		fluidParticles.put(toAdd.getId(), toAdd);
 	}
 
 
