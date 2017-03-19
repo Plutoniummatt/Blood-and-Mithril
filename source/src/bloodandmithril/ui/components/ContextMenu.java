@@ -88,8 +88,8 @@ public class ContextMenu extends Component {
 		y = y - maxHeight <= 0 ? maxHeight : y;
 
 		renderRectangle(
-			x + bottomLeft.getRegionWidth(),
-			y + bottomLeft.getRegionHeight(),
+			x + BOTTOM_LEFT.getRegionWidth(),
+			y + BOTTOM_LEFT.getRegionHeight(),
 			maxLength,
 			maxHeight,
 			isActive(),

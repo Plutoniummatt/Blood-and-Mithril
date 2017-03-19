@@ -3,7 +3,6 @@ package bloodandmithril.item.items.equipment.weapon.ranged;
 import java.io.Serializable;
 import java.util.Set;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Sets;
@@ -48,12 +47,6 @@ public abstract class Projectile implements Serializable {
 		this.velocity = velocity;
 		this.acceleration = acceleration;
 	}
-
-	/**
-	 * Renders this {@link Projectile}
-	 */
-	public abstract void render(SpriteBatch batch);
-
 
 	/**
 	 * @param called when this {@link Projectile} hits the victim

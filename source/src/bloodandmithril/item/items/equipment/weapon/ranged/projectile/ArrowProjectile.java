@@ -3,7 +3,6 @@ package bloodandmithril.item.items.equipment.weapon.ranged.projectile;
 import java.util.Map;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Maps;
@@ -13,7 +12,9 @@ import bloodandmithril.character.IndividualStateService;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Wiring;
+import bloodandmithril.graphics.RenderProjectileWith;
 import bloodandmithril.graphics.particles.ParticleService;
+import bloodandmithril.graphics.renderers.ArrowRenderer;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
@@ -35,12 +36,12 @@ import bloodandmithril.world.topography.tile.Tile;
  * @author Matt
  */
 @Copyright("Matthew Peck 2015")
+@RenderProjectileWith(ArrowRenderer.class)
 public class ArrowProjectile<T extends Metal> extends Projectile {
 	private static final long serialVersionUID = -4403381751507847926L;
 	public Class<T> arrowTipMaterial;
 
 	public static TextureRegion textureRegion;
-	private float angle;
 
 	/**
 	 * Constructor
@@ -48,24 +49,6 @@ public class ArrowProjectile<T extends Metal> extends Projectile {
 	public ArrowProjectile(final Class<T> metal, final Vector2 position, final Vector2 velocity) {
 		super(position, velocity, new Vector2());
 		this.arrowTipMaterial = metal;
-	}
-
-
-	@Override
-	public void render(final SpriteBatch batch) {
-		angle = velocity.angle();
-		batch.draw(
-			textureRegion,
-			position.x - 25,
-			position.y - 1.5f,
-			25,
-			1.5f,
-			textureRegion.getRegionWidth(),
-			textureRegion.getRegionHeight(),
-			1f,
-			1f,
-			angle
-		);
 	}
 
 

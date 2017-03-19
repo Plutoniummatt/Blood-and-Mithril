@@ -239,7 +239,7 @@ public abstract class Window extends Component {
 		closeButton = new Button(
 			UserInterface.uiTexture,
 			x + width - 9,
-			y - close.getRegionHeight() - top.getRegionHeight() + 5,
+			y - CLOSE.getRegionHeight() - TOP.getRegionHeight() + 5,
 			29,
 			0,
 			12,
@@ -251,7 +251,7 @@ public abstract class Window extends Component {
 		minimizeButton = new Button(
 			UserInterface.uiTexture,
 			x + width - 26,
-			y - close.getRegionHeight() - top.getRegionHeight() + 5,
+			y - CLOSE.getRegionHeight() - TOP.getRegionHeight() + 5,
 			15,
 			0,
 			12,
@@ -300,7 +300,7 @@ public abstract class Window extends Component {
 		final SpriteBatch batch = graphics.getSpriteBatch();
 
 		batch.begin();
-		renderRectangle(x + bottomLeft.getRegionWidth(), y + bottomLeft.getRegionHeight(), width, height, isActive(), backGroundColor, graphics);
+		renderRectangle(x + BOTTOM_LEFT.getRegionWidth(), y + BOTTOM_LEFT.getRegionHeight(), width, height, isActive(), backGroundColor, graphics);
 		renderBox(x, y, width, height, isActive(), borderColor, graphics);
 		renderSeparator(batch);
 		renderWindowButtons(graphics);
@@ -348,9 +348,9 @@ public abstract class Window extends Component {
 	 * Renders the separator that separates the body of the window from the head
 	 */
 	private void renderSeparator(final SpriteBatch batch) {
-		batch.draw(separatorEnd, x + left.getRegionWidth() + 4, y - 20);
-		batch.draw(separatorBody, x + left.getRegionWidth() + 5, y - 21, width - 10, separatorBody.getRegionHeight());
-		batch.draw(separatorEnd, x + width - 3, y - 20);
+		batch.draw(SEPARATOR_END, x + LEFT.getRegionWidth() + 4, y - 20);
+		batch.draw(SEPARATOR_BODY, x + LEFT.getRegionWidth() + 5, y - 21, width - 10, SEPARATOR_BODY.getRegionHeight());
+		batch.draw(SEPARATOR_END, x + width - 3, y - 20);
 	}
 
 
@@ -374,7 +374,7 @@ public abstract class Window extends Component {
 		if (closeable) {
 			closeButton.render(
 				x + width - 7,
-				y - close.getRegionHeight() - top.getRegionHeight() + 5,
+				y - CLOSE.getRegionHeight() - TOP.getRegionHeight() + 5,
 				isActive(),
 				isActive() ? getAlpha() : getAlpha() * 0.5f,
 				graphics
@@ -384,7 +384,7 @@ public abstract class Window extends Component {
 		if (minimizable) {
 			minimizeButton.render(
 				x + width - 24,
-				y - close.getRegionHeight() - top.getRegionHeight() + 5,
+				y - CLOSE.getRegionHeight() - TOP.getRegionHeight() + 5,
 				isActive(),
 				isActive() ? getAlpha() : getAlpha() * 0.5f,
 				graphics

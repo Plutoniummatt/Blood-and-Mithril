@@ -11,7 +11,7 @@ import bloodandmithril.prop.DummyPropRenderingService;
 import bloodandmithril.prop.renderservice.PropRenderingService;
 
 /**
- * Annotations a class to specify which class will render the annotated class
+ * Annotates a class to specify which class will render the annotated class
  * 
  * @author Matt
  */

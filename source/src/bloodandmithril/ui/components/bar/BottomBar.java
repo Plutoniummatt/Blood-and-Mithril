@@ -334,7 +334,7 @@ public class BottomBar extends Component {
 	protected void internalComponentRender(final Graphics graphics) {
 		graphics.getSpriteBatch().begin();
 		renderRectangle(0, 34, getGdxWidth(), 34, true, Color.BLACK, graphics);
-		renderBox(-left.getRegionWidth(), 32, getGdxWidth(), 34, true, Color.DARK_GRAY, graphics);
+		renderBox(-LEFT.getRegionWidth(), 32, getGdxWidth(), 34, true, Color.DARK_GRAY, graphics);
 		mainMenu.render(!gameClientStateTracker.isPaused() && !gameSaver.isSaving(), 1f, graphics);
 		windows.render(!gameClientStateTracker.isPaused() && !gameSaver.isSaving(), 1f, graphics);
 		chat.render(!gameClientStateTracker.isPaused() && !gameSaver.isSaving(), 1f, graphics);

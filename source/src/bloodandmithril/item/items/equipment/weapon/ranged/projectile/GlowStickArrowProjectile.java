@@ -7,10 +7,12 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.RenderProjectileWith;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.graphics.particles.DiminishingTracerParticle;
 import bloodandmithril.graphics.particles.Particle;
 import bloodandmithril.graphics.particles.Particle.MovementMode;
+import bloodandmithril.graphics.renderers.ArrowRenderer;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.weapon.ranged.Projectile;
@@ -21,6 +23,7 @@ import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
 
 @Copyright("Matthew Peck 2016")
+@RenderProjectileWith(ArrowRenderer.class)
 public class GlowStickArrowProjectile<T extends Metal> extends ArrowProjectile<T> {
 	private static final long serialVersionUID = -6641284233913835594L;
 	private float lightingDuration;

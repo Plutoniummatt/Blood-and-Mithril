@@ -13,9 +13,11 @@ import bloodandmithril.character.conditions.Burning;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Wiring;
+import bloodandmithril.graphics.RenderProjectileWith;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.graphics.particles.Particle.MovementMode;
 import bloodandmithril.graphics.particles.ParticleService;
+import bloodandmithril.graphics.renderers.ArrowRenderer;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.weapon.ranged.Projectile;
@@ -35,6 +37,7 @@ import bloodandmithril.world.World;
  * @author Matt
  */
 @Copyright("Matthew Peck 2015")
+@RenderProjectileWith(ArrowRenderer.class)
 public class FireArrowProjectile<T extends Metal> extends ArrowProjectile<T> {
 	private static final long serialVersionUID = -4345906143614035570L;
 	private float burnDuration;

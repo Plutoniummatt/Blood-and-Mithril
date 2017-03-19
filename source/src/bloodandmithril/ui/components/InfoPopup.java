@@ -59,8 +59,8 @@ public class InfoPopup extends Component {
 		setActive(true);
 		graphics.getSpriteBatch().begin();
 		renderRectangle(
-			getMouseScreenX() + bottomLeft.getRegionWidth() + 10,
-			getMouseScreenY() + bottomLeft.getRegionHeight() - 10,
+			getMouseScreenX() + BOTTOM_LEFT.getRegionWidth() + 10,
+			getMouseScreenY() + BOTTOM_LEFT.getRegionHeight() - 10,
 			panel.width + 10,
 			panel.height + 10,
 			true,

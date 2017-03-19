@@ -37,21 +37,21 @@ public abstract class Component {
 	
 	@Inject private UserInterface userInterface;
 
-	protected static final TextureRegion topLeft 		= new TextureRegion(uiTexture, 0, 8, 2, 2);
-	protected static final TextureRegion topRight 		= new TextureRegion(uiTexture, 12, 8, 2, 2);
-	protected static final TextureRegion bottomLeft 	= new TextureRegion(uiTexture, 0, 30, 2, 2);
-	protected static final TextureRegion bottomRight	= new TextureRegion(uiTexture, 12, 30, 2, 2);
+	protected static final TextureRegion TOP_LEFT 		= new TextureRegion(uiTexture, 0, 8, 2, 2);
+	protected static final TextureRegion TOP_RIGHT 		= new TextureRegion(uiTexture, 12, 8, 2, 2);
+	protected static final TextureRegion BOTTOM_LEFT 	= new TextureRegion(uiTexture, 0, 30, 2, 2);
+	protected static final TextureRegion BOTTOM_RIGHT	= new TextureRegion(uiTexture, 12, 30, 2, 2);
 
-	protected static final TextureRegion top			= new TextureRegion(uiTexture, 2, 8, 10, 2);
-	protected static final TextureRegion bottom			= new TextureRegion(uiTexture, 2, 30, 10, 2);
-	protected static final TextureRegion left			= new TextureRegion(uiTexture, 0, 10, 2, 20);
-	protected static final TextureRegion right			= new TextureRegion(uiTexture, 12, 10, 2, 20);
+	protected static final TextureRegion TOP			= new TextureRegion(uiTexture, 2, 8, 10, 2);
+	protected static final TextureRegion BOTTOM			= new TextureRegion(uiTexture, 2, 30, 10, 2);
+	protected static final TextureRegion LEFT			= new TextureRegion(uiTexture, 0, 10, 2, 20);
+	protected static final TextureRegion RIGHT			= new TextureRegion(uiTexture, 12, 10, 2, 20);
 
-	protected static final TextureRegion minimize		= new TextureRegion(uiTexture, 15, 0, 12, 12);
-	protected static final TextureRegion close			= new TextureRegion(uiTexture, 29, 0, 12, 12);
-	protected static final TextureRegion separatorBody	= new TextureRegion(uiTexture, 1, 32, 10, 2);
-	protected static final TextureRegion separatorEnd	= new TextureRegion(uiTexture, 0, 32, 1, 1);
-	protected static final TextureRegion resize			= new TextureRegion(uiTexture, 41, 0, 12, 12);
+	protected static final TextureRegion MINIMIZE		= new TextureRegion(uiTexture, 15, 0, 12, 12);
+	protected static final TextureRegion CLOSE			= new TextureRegion(uiTexture, 29, 0, 12, 12);
+	protected static final TextureRegion SEPARATOR_BODY	= new TextureRegion(uiTexture, 1, 32, 10, 2);
+	protected static final TextureRegion SEPARATOR_END	= new TextureRegion(uiTexture, 0, 32, 1, 1);
+	protected static final TextureRegion RESIZE			= new TextureRegion(uiTexture, 41, 0, 12, 12);
 
 	/** Utility {@link ShapeRenderer} for {@link Component}s */
 	protected static ShapeRenderer shapeRenderer = new ShapeRenderer();
@@ -132,41 +132,41 @@ public abstract class Component {
 		Shaders.filter.end();
 		batch.setShader(Shaders.filter);
 
-		batch.draw(topLeft, x, y);
-		batch.draw(topRight, x + topLeft.getRegionWidth() + length, y);
-		batch.draw(bottomLeft, x, y - height - bottom.getRegionHeight());
-		batch.draw(bottomRight, x + topLeft.getRegionWidth() + length, y - height - bottom.getRegionHeight());
+		batch.draw(TOP_LEFT, x, y);
+		batch.draw(TOP_RIGHT, x + TOP_LEFT.getRegionWidth() + length, y);
+		batch.draw(BOTTOM_LEFT, x, y - height - BOTTOM.getRegionHeight());
+		batch.draw(BOTTOM_RIGHT, x + TOP_LEFT.getRegionWidth() + length, y - height - BOTTOM.getRegionHeight());
 
 
 		batch.draw(
-			top,
-			x  + topLeft.getRegionWidth(),
+			TOP,
+			x  + TOP_LEFT.getRegionWidth(),
 			y,
 			length,
-			top.getRegionHeight()
+			TOP.getRegionHeight()
 		);
 
 		batch.draw(
-			bottom,
-			x + topLeft.getRegionWidth(),
-			y - height - bottomLeft.getRegionHeight(),
+			BOTTOM,
+			x + TOP_LEFT.getRegionWidth(),
+			y - height - BOTTOM_LEFT.getRegionHeight(),
 			length,
-			bottom.getRegionHeight()
+			BOTTOM.getRegionHeight()
 		);
 
 		batch.draw(
-			left,
+			LEFT,
 			x,
 			y - height,
-			left.getRegionWidth(),
+			LEFT.getRegionWidth(),
 			height
 		);
 
 		batch.draw(
-			right,
-			x + topLeft.getRegionWidth() + length,
+			RIGHT,
+			x + TOP_LEFT.getRegionWidth() + length,
 			y - height,
-			right.getRegionWidth(),
+			RIGHT.getRegionWidth(),
 			height
 		);
 	}
@@ -187,7 +187,7 @@ public abstract class Component {
 
 		shapeRenderer.rect(
 			renderX,
-			renderY - height - bottomLeft.getRegionHeight(),
+			renderY - height - BOTTOM_LEFT.getRegionHeight(),
 			length,
 			height,
 			color,
@@ -218,7 +218,7 @@ public abstract class Component {
 
 		shapeRenderer.rect(
 			renderX,
-			renderY - height - bottomLeft.getRegionHeight(),
+			renderY - height - BOTTOM_LEFT.getRegionHeight(),
 			length,
 			height,
 			color,

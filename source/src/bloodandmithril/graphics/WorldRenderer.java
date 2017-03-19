@@ -84,7 +84,7 @@ public class WorldRenderer {
 
 	public void setup() {
 		if (shapeRenderer == null) {
-			shapeRenderer 						= new ShapeRenderer();
+			shapeRenderer 					= new ShapeRenderer();
 		}
 
 		circle 								= new TextureRegion(Textures.GAME_WORLD_TEXTURE, 102, 422, 100, 100);
@@ -146,7 +146,7 @@ public class WorldRenderer {
 		Shaders.filter.setUniformMatrix("u_projTrans", graphics.getCam().combined);
 		Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
 		for (final Projectile projectile : world.projectiles().getProjectiles()) {
-			projectile.render(batch);
+			ProjectileRenderer.render(projectile);
 			batch.flush();
 		}
 		renderParticles(Depth.FOREGROUND, world);
