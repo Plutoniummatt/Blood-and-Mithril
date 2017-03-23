@@ -225,7 +225,9 @@ public class Threading {
 							}
 						});
 						for (final FluidParticle particle : activeWorld.fluids().getAllFluidParticles()) {
-							fluidUpdater.calculateParticleMovement(activeWorld, particle, 1f/60f);
+							fluidUpdater.calculateParticleCollision(activeWorld, particle, 1f/60f);
+						}
+						for (final FluidParticle particle : activeWorld.fluids().getAllFluidParticles()) {
 							fluidUpdater.updateParticle(activeWorld, particle, 1f/60f);
 						}
 					}

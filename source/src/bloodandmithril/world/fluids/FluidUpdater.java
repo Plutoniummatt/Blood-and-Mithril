@@ -117,18 +117,15 @@ public class FluidUpdater {
 	
 	
 	public boolean areParticlesColliding(final FluidParticle particle1, final FluidParticle particle2) {
+
 		float distanceToTouch = particle1.getRadius() + particle2.getRadius();
 		if( //basic box check first, it's a little more performant to do this first i think
 			Math.abs(particle1.getPosition().x - particle2.getPosition().x) <= distanceToTouch &&
 			Math.abs(particle1.getPosition().y - particle2.getPosition().y) <= distanceToTouch
 		) {
-			if(
-				particle1.getPosition().sub(particle2.getPosition()).len() <= distanceToTouch
-			) {
-				return true;
-			} else {
-				return false;
-			}
+//			System.out.println("v1b4 = " + Math.round(particle1.getVelocity().x) + ", " + Math.round(particle1.getVelocity().y));
+//			System.out.println("v1nxtb4 = " + Math.round(particle1.getNextVelocity().x) + ", " + Math.round(particle1.getNextVelocity().y));
+			return particle1.getPosition().cpy().dst2(particle2.getPosition().cpy()) <= distanceToTouch * distanceToTouch;
 		} else {
 			return false;
 		}
@@ -136,25 +133,27 @@ public class FluidUpdater {
 
 	
 	public void resolveCollision(final FluidParticle particle1, final FluidParticle particle2) {
-		particle1.getNextVelocity().set(
-				(particle1.getVelocity().x * (particle1.getVolume() - particle2.getVolume()) + (2 * particle2.getVolume() * particle2.getVelocity().x)) / (particle1.getVolume() + particle2.getVolume()),
-				(particle1.getVelocity().y * (particle1.getVolume() - particle2.getVolume()) + (2 * particle2.getVolume() * particle2.getVelocity().y)) / (particle1.getVolume() + particle2.getVolume())
-		);
-		
-		particle2.getNextVelocity().set(
-				(particle2.getVelocity().x * (particle2.getVolume() - particle1.getVolume()) + (2 * particle1.getVolume() * particle1.getVelocity().x)) / (particle1.getVolume() + particle2.getVolume()),
-				(particle2.getVelocity().y * (particle2.getVolume() - particle1.getVolume()) + (2 * particle1.getVolume() * particle1.getVelocity().y)) / (particle1.getVolume() + particle2.getVolume())
-		);
-		
-		//separate particles too close together
-		if (particle1.getPosition().sub(particle2.getPosition()).len() < (particle1.getRadius() + particle2.getRadius())) {
-			particle1.getNextVelocity().add(particle1.getPosition().sub(particle2.getPosition()).scl(20f));
-			particle2.getNextVelocity().add(particle2.getPosition().sub(particle1.getPosition()).scl(20f));
-		}
+
+		Vector2 positionDelta = particle1.getPosition().cpy().sub(particle2.getPosition().cpy());
+        Vector2 velocityDelta = particle2.getVelocity().cpy().sub(particle1.getVelocity().cpy());
+        float dotProduct = positionDelta.dot(velocityDelta);
+        //used for checking if the particles are moving towards one another. This avoids particles getting stuck on each other and constantly colliding within each other.
+        if(dotProduct >= 0) {
+        	float angle = particle1.getVelocity().cpy().angle(particle2.getPosition().cpy().sub(particle1.getPosition().cpy()));
+			int rotation = angle > 0 ? -1 : 1;
+        	int scale = angle > -90 && angle < 90 ? 1 : -1;
+        	Vector2 positionDifferenceAdjusted = angle > -90 && angle < 90 ? particle1.getPosition().cpy().sub(particle2.getPosition().cpy()) : particle2.getPosition().cpy().sub(particle1.getPosition().cpy());
+        	Vector2 positionDifferenceFixed = particle2.getPosition().cpy().sub(particle1.getPosition().cpy());
+        	//this works out the velocity which needs to be transfered from particle1 to particle2.
+			Vector2 transfer = positionDifferenceAdjusted.cpy().scl(particle1.getVelocity().cpy().crs(positionDifferenceFixed.cpy()
+					.rotate90(rotation).scl(1 / positionDifferenceAdjusted.cpy().crs(positionDifferenceFixed.cpy().rotate90(rotation)))));
+			particle1.getNextVelocity().sub(transfer);
+        	particle2.getNextVelocity().add(transfer);
+        }
 	}
 	
 
-	public void calculateParticleMovement(final World world, final FluidParticle particle1, final float delta) {
+	public void calculateParticleCollision(final World world, final FluidParticle particle1, final float delta) {
 		for (final FluidParticle particle2 : world.getPositionalIndexTileMap().getNearbyEntities(FluidParticle.class, particle1.getPosition())) {
 			if (particle1.getId() != particle2.getId()) {
 				if (areParticlesColliding(particle1, particle2)) {
@@ -162,54 +161,65 @@ public class FluidUpdater {
 				}
 			}
 		}
-		try {
-			particle1.getNextPosition().add(particle1.getVelocity().cpy().scl(0.016f));
+	}
+	
+	
+	public void calculateParticleMovement(final World world, final FluidParticle particle, final float delta) {
 
-			particle1.getNextPosition().add(particle1.getVelocity().cpy().scl(delta));
-			final float gravity = world.getGravity();
-			if (particle1.getNextVelocity().len() > 2000f) {
-				particle1.getNextVelocity().add(0f, -gravity * delta).scl(0.95f);
-			} else {
-				particle1.getNextVelocity().add(0f, -gravity * delta);
-			}
+//		try {
 
-			final Tile tile = world.getTopography().getTile(particle1.getNextPosition().x,
-					particle1.getNextPosition().y - 1, true);
-			if (!tile.isPassable()) {
-				particle1.getNextVelocity().y = 0f;
-			}
+			particle.getNextPosition().add(particle.getNextVelocity().cpy().scl(0.016f));
 
-			final Tile tileUnder = world.getTopography().getTile(particle1.getNextPosition().x,
-					particle1.getNextPosition().y, true);
-			if (!tileUnder.isPassable()) {
-				final Vector2 trial = particle1.getNextPosition().cpy();
-				trial.y += -particle1.getNextVelocity().y * delta;
-
-				if (world.getTopography().getTile(trial.x, trial.y, true).isPassable()) {
-					particle1.getNextPosition().x = particle1.getPosition().x;
-					particle1.getNextPosition().y = particle1.getPosition().y;
-					particle1.getNextVelocity().y = -particle1.getNextVelocity().y * 0.25f;
-				} else {
-					particle1.getNextVelocity().x = -particle1.getNextVelocity().x;
-					particle1.getNextPosition().x = particle1.getPosition().x;
-					particle1.getNextPosition().y = particle1.getPosition().y;
-				}
-			}
+			particle.getNextPosition().add(particle.getNextVelocity().cpy().scl(delta));
+			
+		
+			
+//			
+//			final float gravity = world.getGravity();
+//			if (particle1.getNextVelocity().len() > 2000f) {
+//				particle1.getNextVelocity().add(0f, -gravity * delta).scl(0.95f);
+//			} else {
+//				particle1.getNextVelocity().add(0f, -gravity * delta);
+//			}
+//
+//			final Tile tile = world.getTopography().getTile(particle1.getNextPosition().x,
+//					particle1.getNextPosition().y - 1, true);
+//			if (!tile.isPassable()) {
+//				particle1.getNextVelocity().y = 0f;
+//			}
+//
+//			final Tile tileUnder = world.getTopography().getTile(particle1.getNextPosition().x,
+//					particle1.getNextPosition().y, true);
+//			if (!tileUnder.isPassable()) {
+//				final Vector2 trial = particle1.getNextPosition().cpy();
+//				trial.y += -particle1.getNextVelocity().y * delta;
+//
+//				if (world.getTopography().getTile(trial.x, trial.y, true).isPassable()) {
+//					particle1.getNextPosition().x = particle1.getNextPosition().x;
+//					particle1.getNextPosition().y = particle1.getNextPosition().y;
+//					particle1.getNextVelocity().y = -particle1.getNextVelocity().y * 0.25f;
+//				} else {
+//					particle1.getNextVelocity().x = -particle1.getNextVelocity().x;
+//					particle1.getNextPosition().x = particle1.getNextPosition().x;
+//					particle1.getNextPosition().y = particle1.getNextPosition().y;
+//				}
+//			}
 			final Optional<FluidStrip> stripOn = world.fluids().getFluidStrip(
-					Topography.convertToWorldTileCoord(particle1.getNextPosition().x),
-					Topography.convertToWorldTileCoord(particle1.getNextPosition().y));
+					Topography.convertToWorldTileCoord(particle.getPosition().x),
+					Topography.convertToWorldTileCoord(particle.getPosition().y));
 			if (stripOn.isPresent()) {
-				if (particle1.getNextPosition().y < convertToWorldCoord(stripOn.get().worldTileY, true)
+				if (particle.getPosition().y < convertToWorldCoord(stripOn.get().worldTileY, true)
 						+ TILE_SIZE * stripOn.get().getVolume() / stripOn.get().width
 						|| stripOn.get().getVolume() == 0f) {
-					stripOn.get().addVolume(particle1.getVolume());
-					positionalIndexingService.removeFluidParticleIndex(particle1);
-					world.fluids().removeFluidParticle(particle1.getId());
+					stripOn.get().addVolume(particle.getVolume());
+					positionalIndexingService.removeFluidParticleIndex(particle);
+					world.fluids().removeFluidParticle(particle.getId());
 				}
 			}
-		} catch (final NoTileFoundException e) {
-
-		}
+			
+//		} catch (final NoTileFoundException e) {
+//
+//		}
 	}
 	
 	
@@ -218,6 +228,7 @@ public class FluidUpdater {
 	 */
 	public void updateParticle(final World world, final FluidParticle particle, final float delta) {
 		positionalIndexingService.removeFluidParticleIndex(particle);
+		calculateParticleMovement(world, particle, delta);
 		particle.getPosition().set(particle.getNextPosition().cpy());
 		particle.getVelocity().set(particle.getNextVelocity().cpy());
 		positionalIndexingService.indexFluidParticle(particle);

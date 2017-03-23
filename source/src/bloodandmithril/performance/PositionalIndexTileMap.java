@@ -190,8 +190,9 @@ public class PositionalIndexTileMap implements Serializable {
 		}
 
 		for (long id : getNearbyEntityIds(clazz, x, y)) {
-			if(function.apply(id) != null) {
-				ts.add(function.apply(id));
+			T t = function.apply(id);
+			if(t != null && !ts.contains(t)) {
+				ts.add(t);
 			}
 		}
 			

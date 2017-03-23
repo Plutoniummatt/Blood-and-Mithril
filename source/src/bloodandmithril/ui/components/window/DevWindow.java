@@ -164,8 +164,8 @@ public class DevWindow extends Window {
 
 
 		if (isKeyPressed(Keys.K)) {
-			for (int i = 0; i < 20; i++) {
-				final Vector2 rotate = new Vector2(Util.getRandom().nextFloat() * 200f, 0f).rotate(Util.getRandom().nextFloat() * 360f);
+			for (int i = 0; i < 5; i++) {
+				final Vector2 rotate = new Vector2(Util.getRandom().nextFloat() * 20f, 0f).rotate(Util.getRandom().nextFloat() * 360f);
 				fluidParticlePopulator.createFluidParticle(
 					getMouseWorldCoords(),
 					rotate,

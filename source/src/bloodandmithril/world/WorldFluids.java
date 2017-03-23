@@ -136,9 +136,6 @@ public class WorldFluids implements Serializable {
 
 	public Optional<FluidParticle> getFluidParticle(Long id) {
 		if(fluidParticles.get(id) == null) {
-			for(PositionalIndexTileNode node : Domain.getWorld(worldId).getPositionalIndexTileMap().getAllNodes()) {
-				node.removeFluidParticle(id);
-			}
 			return Optional.absent();
 		} else {
 			return Optional.of(fluidParticles.get(id));
