@@ -46,29 +46,29 @@ import bloodandmithril.world.weather.WeatherRenderer;
  * To-do before ALPHA release
  * IN PROGRESS
  *
- * <b><p> At least 5 types of NPC                                                                        </b></p>
- * <b><p> Ranged Combat 																                 </b></p>
- * <b><p> Combat (New animations, equipment framework + equipment animation framework)                   </b></p>
- * <b><p> Terraforming - Mining & Placing blocks                                                         </b></p>
- * <b><p> Generation                                                                                     </b></p>
- * <b><p> Fluids	                                                                                     </b></p>
+ * <b><p> At least 5 types of NPC                                                                    </b></p>
+ * <b><p> Ranged Combat 																             </b></p>
+ * <b><p> Combat (New animations, equipment framework + equipment animation framework)               </b></p>
+ * <b><p> Terraforming - Mining & Placing blocks                                                     </b></p>
+ * <b><p> Generation                                                                                 </b></p>
+ * <b><p> Fluids	                                                                                 </b></p>
  *
  * DONE
  *
- * <b><p> Resource gathering (At least the following: farming, hunting, foraging)			 	 		 </b></p>
- * <b><p> Customizable AI                                                                                </b></p>
- * <b><p> Window resizing                                          										 </b></p>
- * <b><p> Procedurally generated trees                             										 </b></p>
- * <b><p> Stockpiling                                              										 </b></p>
- * <b><p> Props (Trees, rocks, etc, and wiring these into generation)                                    </b></p>
- * <b><p> Prop and Construction (Prop construction and de-construction framework)                  		 </b></p>
- * <b><p> Main menu screen                                                                               </b></p>
- * <b><p> Dynamic tile-driven lighting                                      							 </b></p>
- * <b><p> Crafting and cooking                                     										 </b></p>
- * <b><p> Networking                                                                                     </b></p>
- * <b><p> Text input (Renaming elves, setting save path etc)                                             </b></p>
- * <b><p> Trading	                                              										 </b></p>
- * <b><p> Positional Indexing                                      										 </b></p>
+ * <b><p> Resource gathering (At least the following: farming, hunting, foraging)			 	 	 </b></p>
+ * <b><p> Customizable AI                                                                            </b></p>
+ * <b><p> Window resizing                                          									 </b></p>
+ * <b><p> Procedurally generated trees                             									 </b></p>
+ * <b><p> Stockpiling                                              									 </b></p>
+ * <b><p> Props (Trees, rocks, etc, and wiring these into generation)                                </b></p>
+ * <b><p> Prop and Construction (Prop construction and de-construction framework)                  	 </b></p>
+ * <b><p> Main menu screen                                                                           </b></p>
+ * <b><p> Dynamic tile-driven lighting                                      						 </b></p>
+ * <b><p> Crafting and cooking                                     									 </b></p>
+ * <b><p> Networking                                                                                 </b></p>
+ * <b><p> Text input (Renaming elves, setting save path etc)                                         </b></p>
+ * <b><p> Trading	                                              									 </b></p>
+ * <b><p> Positional Indexing                                      									 </b></p>
  *
  * @author Matt
  */
