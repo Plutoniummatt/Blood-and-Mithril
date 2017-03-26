@@ -9,7 +9,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
-import com.google.common.annotations.VisibleForTesting;
 import com.google.inject.Inject;
 
 import bloodandmithril.audio.SoundService;
@@ -87,21 +86,16 @@ public class BloodAndMithrilClient implements ApplicationListener {
 	@Inject private UserInterface userInterface;
 	@Inject private GaussianLightingRenderer gaussianLightingRenderer;
 	@Inject private WeatherRenderer weatherRenderer;
+	@Inject private ConfigPersistenceService configPersistenceService;
 
 	@Override
 	public void create() {
-		setupInjector();
+		Wiring.injector().injectMembers(this);
+		
 		loadResources();
 		startMusic();
 		createMainMenuWorld();
 		setInputProcessor(inputProcessor);
-	}
-
-
-	private void setupInjector() {
-		ClientServerInterface.setClient(true);
-		Wiring.setupInjector(new CommonModule());
-		Wiring.injector().injectMembers(this);
 	}
 
 
@@ -189,17 +183,10 @@ public class BloodAndMithrilClient implements ApplicationListener {
 
 			graphics.getCam().position.x = x;
 			graphics.getCam().position.y = y;
-
-			customRenderFunction();
 		} catch (final Exception e) {
 			e.printStackTrace();
 			Gdx.app.exit();
 		}
-	}
-
-
-	@VisibleForTesting
-	protected void customRenderFunction() {
 	}
 
 
@@ -231,9 +218,9 @@ public class BloodAndMithrilClient implements ApplicationListener {
 	public void resize(final int width, final int height) {
 		resizeWindowService.resize(width, height);
 
-		ConfigPersistenceService.getConfig().setResX(width);
-		ConfigPersistenceService.getConfig().setResY(height);
-		ConfigPersistenceService.saveConfig();
+		configPersistenceService.getConfig().setResX(width);
+		configPersistenceService.getConfig().setResY(height);
+		configPersistenceService.saveConfig();
 	}
 
 

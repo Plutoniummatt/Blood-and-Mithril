@@ -53,14 +53,10 @@ public class PositionalIndexingService {
 		final float worldX = Topography.convertToWorldCoord(fluidColumn.getX(), false);
 
 		// Removal
-		for (int y = fluidColumn.getY(); y < fluidColumn.getY() + height; y++) {
+		for (int y = fluidColumn.getY(); y <= fluidColumn.getY() + height; y++) {
 			for (final PositionalIndexNode node : Domain.getWorld(worldId).getPositionalIndexMap().getNearbyNodes(worldX,  Topography.convertToWorldCoord(y, false))) {
 				node.removeFluidColumn(fluidColumn.getId());
 			}
-		}
-
-		for (final PositionalIndexNode node : Domain.getWorld(worldId).getPositionalIndexMap().getNearbyNodes(worldX,  Topography.convertToWorldCoord(fluidColumn.getY() + height, false))) {
-			node.removeFluidColumn(fluidColumn.getId());
 		}
 
 		// Addition

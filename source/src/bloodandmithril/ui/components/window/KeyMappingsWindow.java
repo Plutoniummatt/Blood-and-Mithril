@@ -39,6 +39,7 @@ public class KeyMappingsWindow extends Window implements Refreshable {
 
 	@Inject	private Controls controls;
 	@Inject	private UserInterface userInterface;
+	@Inject private ConfigPersistenceService configPersistenceService;
 
 	private ScrollableListingPanel<MappedKey, String> keyMappings;
 	private Button saveButton = new Button(
@@ -49,7 +50,7 @@ public class KeyMappingsWindow extends Window implements Refreshable {
 		140,
 		16,
 		() -> {
-			ConfigPersistenceService.saveConfig();
+			configPersistenceService.saveConfig();
 			KeyMappingsWindow.this.setClosing(true);
 		},
 		Color.GREEN,
@@ -200,7 +201,7 @@ public class KeyMappingsWindow extends Window implements Refreshable {
 			}
 
 			map.put(
-				new ListingMenuItem<MappedKey>(
+				new ListingMenuItem<>(
 					mappedKey,
 					new Button(
 						mappedKey.description,
@@ -249,7 +250,7 @@ public class KeyMappingsWindow extends Window implements Refreshable {
 			);
 
 			map.put(
-				new ListingMenuItem<MappedKey>(
+				new ListingMenuItem<>(
 					mappedKey,
 					new Button(
 						mappedKey.description,

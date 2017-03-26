@@ -6,7 +6,10 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
 import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.core.CommonModule;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
+import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.persistence.ConfigPersistenceService;
 
 /**
@@ -20,6 +23,7 @@ public class Main {
 
 	public static void main(final String args[]) throws Exception {
 		BloodAndMithrilClient.devMode = true;
+		setupInjector();
 		startGameClient(new BloodAndMithrilClient());
 	}
 	
@@ -30,9 +34,9 @@ public class Main {
 		cfg.title = "Blood and Mithril";
 		cfg.useGL30 = false;
 		cfg.samples = 4;
-		cfg.width = ConfigPersistenceService.getConfig().getResX();
-		cfg.height = ConfigPersistenceService.getConfig().getResY();
-		cfg.fullscreen = ConfigPersistenceService.getConfig().isFullScreen();
+		cfg.width = Wiring.injector().getInstance(ConfigPersistenceService.class).getConfig().getResX();
+		cfg.height = Wiring.injector().getInstance(ConfigPersistenceService.class).getConfig().getResY();
+		cfg.fullscreen = Wiring.injector().getInstance(ConfigPersistenceService.class).getConfig().isFullScreen();
 		cfg.resizable = true;
 		cfg.addIcon("data/image/smallIcon.png", FileType.Internal);
 		cfg.addIcon("data/image/icon.png", FileType.Internal);
@@ -40,5 +44,11 @@ public class Main {
 
 		
 		new LwjglApplication(applicationListener, cfg);
+	}
+	
+	
+	private static void setupInjector() {
+		ClientServerInterface.setClient(true);
+		Wiring.setupInjector(new CommonModule());
 	}
 }

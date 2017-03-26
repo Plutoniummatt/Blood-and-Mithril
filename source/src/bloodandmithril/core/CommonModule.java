@@ -1,11 +1,12 @@
 package bloodandmithril.core;
 
-import static bloodandmithril.persistence.ConfigPersistenceService.getConfig;
-
 import com.google.inject.Binder;
 import com.google.inject.Module;
+import com.google.inject.Provides;
+import com.google.inject.Singleton;
 
 import bloodandmithril.control.Controls;
+import bloodandmithril.persistence.ConfigPersistenceService;
 
 /**
  * Common {@link Module} installed by client and server
@@ -17,6 +18,12 @@ public class CommonModule implements Module {
 
 	@Override
 	public void configure(Binder binder) {
-		binder.bind(Controls.class).toInstance(getConfig().getKeyMappings());
+	}
+	
+	
+	@Provides
+	@Singleton
+	public Controls provideControls(ConfigPersistenceService configPersistenceService) {
+		return configPersistenceService.getConfig().getKeyMappings();
 	}
 }

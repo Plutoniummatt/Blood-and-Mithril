@@ -85,12 +85,12 @@ public class GoToLocation extends AITask implements NextWaypointProvider {
 
 
 	public static GoToLocation goTo(final Individual host, final Vector2 start, final WayPoint destination, final boolean fly, final float forceTolerance, final boolean safe) {
-		return new GoToLocation(host, start, destination, fly, forceTolerance, safe);
+		return new GoToLocation(host, new Vector2(start.x, start.y + 1), destination, fly, forceTolerance, safe);
 	}
 
 
 	public static GoToLocation goToWithTerminationFunction(final Individual host, final Vector2 start, final WayPoint destination, final boolean fly, final SerializableFunction<Boolean> function, final boolean safe) {
-		return new GoToLocation(host, start, destination, fly, function, safe);
+		return new GoToLocation(host, new Vector2(start.x, start.y + 1), destination, fly, function, safe);
 	}
 
 

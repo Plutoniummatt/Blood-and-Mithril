@@ -2,6 +2,7 @@ package bloodandmithril.character.ai.pathfinding.implementations;
 
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static bloodandmithril.world.topography.Topography.convertToWorldCoord;
+import static bloodandmithril.world.topography.Topography.convertToWorldTileCoord;
 import static java.lang.Math.abs;
 import static java.lang.Math.round;
 
@@ -306,17 +307,7 @@ public final class AStarPathFinder extends PathFinder {
 			// will be used for the top most node, added one up the call stack
 			} else {
 				cascadeDownAndProcessPlatforms(to.x, to.y - TILE_SIZE, parent, destination, height, safeHeight, world);
-
-				for (int i = 1; i <= height + 1; i++) {
-					if (!world.getTopography().getTile(to.x, (float)to.y + i * TILE_SIZE, true).isPassable()) {
-						return 2;
-					}
-				}
-
-				if (!world.getTopography().getTile((float)to.x + (float)(right ? -TILE_SIZE : TILE_SIZE), to.y + (height + 1) * TILE_SIZE, true).isPassable()) {
-					return 2;
-				}
-				return 1;
+				return 2;
 			}
 		} catch (NoTileFoundException e) {
 			throw new UndiscoveredPathNotification();
@@ -427,7 +418,7 @@ public final class AStarPathFinder extends PathFinder {
 
 		@Override
 		public String toString() {
-			return "(" + x + ", " + y + ") Parent (" + parentX + ", " + parentY + ") " + "\n" +
+			return "(" + convertToWorldTileCoord(x) + ", " + convertToWorldTileCoord(y) + ") Parent (" + convertToWorldTileCoord(parentX) + ", " + convertToWorldTileCoord(parentY) + ") " + "\n" +
 				   "Cost: " + cost + ", Heuristic: " + heuristic + ", F: " + getF();
 		}
 	}

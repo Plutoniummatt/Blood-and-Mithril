@@ -88,6 +88,7 @@ import bloodandmithril.item.items.equipment.EquipperImpl.AlwaysTrueFunction;
 import bloodandmithril.item.items.equipment.EquipperImpl.FalseFunction;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.performance.PositionalIndexMap;
+import bloodandmithril.performance.PositionalIndexNode;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.persistence.world.ChunkProvider;
 import bloodandmithril.playerinteraction.individual.api.IndividualSelectionService;
@@ -395,6 +396,7 @@ public class UserInterface {
 				renderComponentBoundaries();
 			}
 			renderMouseOverTileHighlightBox(false);
+			renderPositionalIndexInformation();
 		}
 
 
@@ -436,6 +438,73 @@ public class UserInterface {
 		if (RENDER_TOPOGRAPHY) {
 			topographyDebugRenderer.render(graphics);
 		}
+	}
+
+
+	private void renderPositionalIndexInformation() {
+		PositionalIndexNode positionalIndexNode = gameClientStateTracker.getActiveWorld().getPositionalIndexMap().get(getMouseWorldX(), getMouseWorldY());
+		int x = CHUNK_SIZE * TILE_SIZE * convertToChunkCoord(getMouseWorldX());
+		int y = CHUNK_SIZE * TILE_SIZE * convertToChunkCoord(getMouseWorldY());
+
+		getShapeRenderer().begin(ShapeType.Filled);
+		gl.glEnable(GL_BLEND);
+		getShapeRenderer().setColor(0.2f, 0.5f, 0.7f, 0.3f);
+		getShapeRenderer().rect(worldToScreenX(x), worldToScreenY(y), CHUNK_SIZE * TILE_SIZE, CHUNK_SIZE * TILE_SIZE);
+		getShapeRenderer().end();
+		
+		positionalIndexNode.getAllEntitiesForType(Individual.class)
+		.stream()
+		.map(id -> Domain.getIndividual(id))
+		.forEach(individual -> {
+			Vector2 start = new Vector2(x + (CHUNK_SIZE * TILE_SIZE) / 2, y + (CHUNK_SIZE * TILE_SIZE) / 2);
+			Vector2 direction = individual.getState().position.cpy().sub(start).nor();
+			float distToCenter = individual.getState().position.dst(start);
+			
+			renderArrow(
+				start.add(direction.cpy().scl(distToCenter / 2f)), 
+				individual.getState().position.cpy(),
+				Color.RED,
+				3f, 
+				3f,
+				1000f
+			);
+		});
+		
+		positionalIndexNode.getAllEntitiesForType(Prop.class)
+		.stream()
+		.map(id -> gameClientStateTracker.getActiveWorld().props().getProp(id))
+		.forEach(prop -> {
+			Vector2 start = new Vector2(x + (CHUNK_SIZE * TILE_SIZE) / 2, y + (CHUNK_SIZE * TILE_SIZE) / 2);
+			Vector2 direction = prop.position.cpy().sub(start).nor();
+			float distToCenter = prop.position.dst(start);
+			
+			renderArrow(
+				start.add(direction.cpy().scl(distToCenter / 2f)), 
+				prop.position.cpy(),
+				Color.GREEN,
+				3f, 
+				3f,
+				1000f
+			);
+		});
+		
+		positionalIndexNode.getAllEntitiesForType(Item.class)
+		.stream()
+		.map(id -> gameClientStateTracker.getActiveWorld().items().getItem(id))
+		.forEach(item -> {
+			Vector2 start = new Vector2(x + (CHUNK_SIZE * TILE_SIZE) / 2, y + (CHUNK_SIZE * TILE_SIZE) / 2);
+			Vector2 direction = item.getPosition().cpy().sub(start).nor();
+			float distToCenter = item.getPosition().dst(start);
+			
+			renderArrow(
+				start.add(direction.cpy().scl(distToCenter / 2f)), 
+				item.getPosition().cpy(),
+				Color.YELLOW,
+				3f, 
+				3f,
+				1000f
+			);
+		});
 	}
 
 
