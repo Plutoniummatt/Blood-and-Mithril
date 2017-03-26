@@ -39,11 +39,11 @@ public class Graphics {
 
 	/** Whether the screen is currently fading */
 	private boolean fading;
-
+	
 	@Inject
-	public Graphics() {
-		this.width = ConfigPersistenceService.getConfig().getResX();
-		this.height = ConfigPersistenceService.getConfig().getResY();
+	public Graphics(ConfigPersistenceService configPersistenceService) {
+		this.width = configPersistenceService.getConfig().getResX();
+		this.height = configPersistenceService.getConfig().getResY();
 
 		camMarginX = 640 + 32 - width % 32;
 		camMarginY = 640 + 32 - height % 32;

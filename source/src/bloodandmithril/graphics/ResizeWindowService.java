@@ -46,7 +46,7 @@ public class ResizeWindowService {
 		worldRenderer.getShapeRenderer().setTransformMatrix(graphics.cam.view);
 
 		worldRenderer.dispose();
-		GaussianLightingRenderer.dispose();
+		gaussianLightingRenderer.dispose();
 		weatherRenderer.dispose();
 
 		worldRenderer.setup();

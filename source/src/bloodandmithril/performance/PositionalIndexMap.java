@@ -138,11 +138,17 @@ public class PositionalIndexMap implements Serializable {
 	}
 
 
+	/**
+	 * Returns nearby nodes relative to the specified coordinates, note that the node
+	 * at the specified coordinates is NOT included, this is to avoid race conditions
+	 * during re-indexing.
+	 * 
+	 * @return all nearby nodes relative to specified coordinates
+	 */
 	public Collection<PositionalIndexNode> getNearbyNodes(final float x, final float y) {
 		final LinkedList<PositionalIndexNode> nodes = Lists.newLinkedList();
 
 		final int i = CHUNK_SIZE * TILE_SIZE;
-		nodes.add(get(x, y));
 		nodes.add(get(x, y + i));
 		nodes.add(get(x + i, y + i));
 		nodes.add(get(x + i, y));

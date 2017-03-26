@@ -45,8 +45,8 @@ public final class WeatherRenderer {
 	private static final Color nightTopColor 							= new Color(33f/255f, 0f, 150f/255f, 1f);
 	private static final Color nightBottomColor 						= new Color(60f/255f, 0f, 152f/255f, 1f);
 
-	private static FrameBuffer skyBuffer								= new FrameBuffer(RGBA8888, getGdxWidth(), getGdxHeight(), false);
-	private static FrameBuffer working									= new FrameBuffer(RGBA8888, 1, 1, false);
+	private FrameBuffer skyBuffer								= new FrameBuffer(RGBA8888, getGdxWidth(), getGdxHeight(), false);
+	private FrameBuffer working									= new FrameBuffer(RGBA8888, 1, 1, false);
 
 	private final Vector2 sunPosition									= new Vector2();
 	private final LinkedList<CelestialBody> celestialBodies				= Lists.newLinkedList();

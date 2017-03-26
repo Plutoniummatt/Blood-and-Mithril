@@ -3,6 +3,7 @@ package bloodandmithril.graphics;
 import static bloodandmithril.util.Logger.generalDebug;
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.function.Predicate;
 
@@ -49,21 +50,7 @@ public class IndividualPlatformFilteringRenderer {
 	};
 
 	/** {@link Predicate} for filtering out those that ARE on platforms */
-	private Predicate<Individual> offPlatform = new Predicate<Individual>() {
-		@Override
-		public boolean test(final Individual individual) {
-			try {
-				if (Domain.getWorld(individual.getWorldId()).getTopography().getTile(individual.getState().position.x, individual.getState().position.y - TILE_SIZE/2, true).isPlatformTile ||
-					Domain.getWorld(individual.getWorldId()).getTopography().getTile(individual.getState().position.x, individual.getState().position.y - 3 * TILE_SIZE/2, true).isPlatformTile) {
-					return false;
-				} else {
-					return true;
-				}
-			} catch (final NoTileFoundException e) {
-				return false;
-			}
-		};
-	};
+	private Predicate<Individual> offPlatform = onPlatform.negate();
 
 	private Comparator<Individual> renderPrioritySorter = (i1, i2) -> {
 		return Integer.compare(getIndividualRenderPriority(i1), getIndividualRenderPriority(i2));
@@ -73,7 +60,9 @@ public class IndividualPlatformFilteringRenderer {
 	/** Renders all individuals, ones that are on platforms are rendered first */
 	public void renderIndividuals(final int worldId) {
 		try {
-			Domain.getWorld(worldId).getPositionalIndexMap().getOnScreenEntities(Individual.class, graphics)
+			Collection<Integer> onScreenEntities = Domain.getWorld(worldId).getPositionalIndexMap().getOnScreenEntities(Individual.class, graphics);
+			
+			onScreenEntities
 			.stream()
 			.map(id -> Domain.getIndividual(id))
 			.sorted(renderPrioritySorter)
@@ -82,7 +71,7 @@ public class IndividualPlatformFilteringRenderer {
 				IndividualRenderer.render(individual, graphics);
 			});
 			
-			Domain.getWorld(worldId).getPositionalIndexMap().getOnScreenEntities(Individual.class, graphics)
+			onScreenEntities
 			.stream()
 			.map(id -> Domain.getIndividual(id))
 			.sorted(renderPrioritySorter)
@@ -91,7 +80,7 @@ public class IndividualPlatformFilteringRenderer {
 				IndividualRenderer.render(individual, graphics);
 			});
 		} catch (final NullPointerException e) {
-			generalDebug("Nullpointer whilst rendering individual", LogLevel.INFO, e);
+			generalDebug("Nullpointer whilst rendering individual", LogLevel.OVERRIDE, e);
 		}
 	}
 

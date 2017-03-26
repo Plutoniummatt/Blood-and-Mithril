@@ -48,18 +48,18 @@ public class GaussianLightingRenderer {
 	public static boolean SEE_ALL = false;
 	public static boolean SEE_NOTHING = false;
 
-	public static FrameBuffer foregroundLightingFBOSmall, middleGroundLightingFBOSmall, smallWorking;
-	public static FrameBuffer foregroundLightingFBO, middleGroundLightingFBO;
-	public static FrameBuffer workingDownSampled;
-	public static FrameBuffer workingDownSampledXBlurColorBuffer;
-	public static FrameBuffer workingDownSampledYBlurColorBuffer;
-	public static FrameBuffer workingDownSampledXBlurColorBuffer2;
-	public static FrameBuffer workingDownSampledYBlurColorBuffer2;
-	public static FrameBuffer backgroundOcclusionFBO;
-	public static FrameBuffer backgroundOcclusionFBONearest;
-	public static FrameBuffer foregroundOcclusionFBO;
-	public static FrameBuffer foregroundShadowFBO;
-	public static FrameBuffer workingFBO, workingFBO2;
+	private static FrameBuffer foregroundLightingFBOSmall, middleGroundLightingFBOSmall, smallWorking;
+	private static FrameBuffer foregroundLightingFBO, middleGroundLightingFBO;
+	private static FrameBuffer workingDownSampled;
+	private static FrameBuffer workingDownSampledXBlurColorBuffer;
+	private static FrameBuffer workingDownSampledYBlurColorBuffer;
+	private static FrameBuffer workingDownSampledXBlurColorBuffer2;
+	private static FrameBuffer workingDownSampledYBlurColorBuffer2;
+	private static FrameBuffer backgroundOcclusionFBO;
+	private static FrameBuffer backgroundOcclusionFBONearest;
+	private static FrameBuffer foregroundOcclusionFBO;
+	private static FrameBuffer foregroundShadowFBO;
+	private static FrameBuffer workingFBO, workingFBO2;
 
 	private static final int MAX_PARTICLES = 100;
 	private static final int LIGHTING_FBO_DOWNSIZE_SAMPLER = 6;
@@ -111,7 +111,7 @@ public class GaussianLightingRenderer {
 	}
 
 
-	public static void dispose() {
+	public void dispose() {
 		foregroundLightingFBOSmall.dispose();
 		middleGroundLightingFBOSmall.dispose();
 		smallWorking.dispose();
@@ -277,7 +277,7 @@ public class GaussianLightingRenderer {
 	/**
 	 * Handles rendering to the lighting FBO.
 	 */
-	private static void lighting(final FrameBuffer lightingFboSmall, final FrameBuffer lightingFbo, final Depth depth, final World world, final SpriteBatch batch) {
+	private void lighting(final FrameBuffer lightingFboSmall, final FrameBuffer lightingFbo, final Depth depth, final World world, final SpriteBatch batch) {
 		workingFBO.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);

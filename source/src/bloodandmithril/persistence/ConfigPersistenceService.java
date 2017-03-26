@@ -6,6 +6,9 @@ import static bloodandmithril.persistence.PersistenceUtil.readFile;
 
 import java.io.IOException;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+
 import bloodandmithril.core.Copyright;
 
 /**
@@ -13,15 +16,20 @@ import bloodandmithril.core.Copyright;
  *
  * @author Matt
  */
+@Singleton
 @Copyright("Matthew Peck 2014")
 public class ConfigPersistenceService {
+	private Config config;
 
-	private static Config config = loadConfig();
+	@Inject
+	public ConfigPersistenceService() {
+		this.config = loadConfig();
+	}
 
 	/**
 	 * @return the single instance of config
 	 */
-	public static Config getConfig() {
+	public Config getConfig() {
 		return config == null ? loadConfig() : config;
 	}
 
@@ -29,7 +37,7 @@ public class ConfigPersistenceService {
 	/**
 	 * Loads config from disk
 	 */
-	private static Config loadConfig() {
+	private Config loadConfig() {
 		try {
 			return decode(readFile("config.txt"));
 		} catch (IOException e) {
@@ -41,7 +49,7 @@ public class ConfigPersistenceService {
 	/**
 	 * Saves the config to disk
 	 */
-	public static void saveConfig() {
+	public void saveConfig() {
 		PersistenceUtil.writeFile("config.txt", encode(config));
 	}
 }

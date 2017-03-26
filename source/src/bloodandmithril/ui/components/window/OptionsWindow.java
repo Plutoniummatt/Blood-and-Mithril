@@ -29,6 +29,7 @@ import bloodandmithril.util.Fonts;
 public class OptionsWindow extends Window {
 
 	@Inject private UserInterface userInterface;
+	@Inject private ConfigPersistenceService configPersistenceService;
 
 	private Button changeRes, fullScreen, controls;
 
@@ -57,7 +58,7 @@ public class OptionsWindow extends Window {
 						enteredWidth -> {
 							try {
 								final int resX = Integer.parseInt(enteredWidth[0].toString());
-								ConfigPersistenceService.getConfig().setResX(resX);
+								configPersistenceService.getConfig().setResX(resX);
 							} catch (final Exception e) {
 								userInterface.addLayeredComponent(
 									new MessageWindow(
@@ -85,7 +86,7 @@ public class OptionsWindow extends Window {
 									enteredHeight -> {
 										try {
 											final int resY = Integer.parseInt(enteredHeight[0].toString());
-											ConfigPersistenceService.getConfig().setResY(resY);
+											configPersistenceService.getConfig().setResY(resY);
 										} catch (final Exception e) {
 											userInterface.addLayeredComponent(
 												new MessageWindow(
@@ -115,7 +116,7 @@ public class OptionsWindow extends Window {
 											)
 										);
 
-										ConfigPersistenceService.saveConfig();
+										configPersistenceService.saveConfig();
 										userInterface.removeLayeredComponent("Options");
 									},
 									"Confirm",
@@ -137,15 +138,15 @@ public class OptionsWindow extends Window {
 		);
 
 		this.fullScreen = new Button(
-			ConfigPersistenceService.getConfig().isFullScreen() ? "Change to windowed" : "Change to full screen",
+				configPersistenceService.getConfig().isFullScreen() ? "Change to windowed" : "Change to full screen",
 			Fonts.defaultFont,
 			0,
 			0,
 			200,
 			16,
 			() -> {
-				ConfigPersistenceService.getConfig().setFullScreen(!ConfigPersistenceService.getConfig().isFullScreen());
-				ConfigPersistenceService.saveConfig();
+				configPersistenceService.getConfig().setFullScreen(!configPersistenceService.getConfig().isFullScreen());
+				configPersistenceService.saveConfig();
 
 				userInterface.addLayeredComponent(
 					new MessageWindow(
@@ -160,7 +161,7 @@ public class OptionsWindow extends Window {
 					)
 				);
 
-				fullScreen.text = ConfigPersistenceService.getConfig().isFullScreen() ? () -> {return "Change to windowed";} : () -> {return "Change to full screen";};
+				fullScreen.text = configPersistenceService.getConfig().isFullScreen() ? () -> {return "Change to windowed";} : () -> {return "Change to full screen";};
 			},
 			Color.ORANGE,
 			Color.GREEN,
